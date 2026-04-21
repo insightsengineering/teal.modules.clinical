@@ -474,16 +474,16 @@ tm_g_pp_patient_timeline <- function(label,
                                      dataname_adae = "ADAE",
                                      parentname = "ADSL",
                                      patient_col = "USUBJID",
-                                     aeterm = NULL,
-                                     cmdecod = NULL,
-                                     aetime_start = NULL,
-                                     aetime_end = NULL,
-                                     dstime_start = NULL,
-                                     dstime_end = NULL,
-                                     aerelday_start = NULL,
-                                     aerelday_end = NULL,
-                                     dsrelday_start = NULL,
-                                     dsrelday_end = NULL,
+                                     aeterm = teal.picks::variables("AETERM", fixed = TRUE),
+                                     cmdecod = teal.picks::variables("CMDECOD", fixed = TRUE),
+                                     aetime_start = teal.picks::variables("ASTDTM", fixed = TRUE),
+                                     aetime_end = teal.picks::variables("AENDTM", fixed = TRUE),
+                                     dstime_start = teal.picks::variables("CMASTDTM", fixed = TRUE),
+                                     dstime_end = teal.picks::variables("CMAENDTM", fixed = TRUE),
+                                     aerelday_start = teal.picks::variables("ASTDY", fixed = TRUE),
+                                     aerelday_end = teal.picks::variables("AENDY", fixed = TRUE),
+                                     dsrelday_start = teal.picks::variables("ASTDY", fixed = TRUE),
+                                     dsrelday_end = teal.picks::variables("AENDY", fixed = TRUE),
                                      font_size = c(12L, 12L, 25L),
                                      plot_height = c(700L, 200L, 2000L),
                                      plot_width = NULL,
@@ -493,21 +493,29 @@ tm_g_pp_patient_timeline <- function(label,
                                      transformators = list(),
                                      decorators = list()) {
   message("Initializing tm_g_pp_patient_timeline")
+
+  # Compatibility: coerce choices_selected
+  for (arg in c(
+    "aeterm", "cmdecod",
+    "aetime_start", "aetime_end", "dstime_start", "dstime_end",
+    "aerelday_start", "aerelday_end", "dsrelday_start", "dsrelday_end"
+  )) {
+    val <- get(arg)
+    if (!is.null(val) && inherits(val, "choices_selected")) assign(arg, teal.picks::as.picks(val))
+  }
+
   checkmate::assert_string(label)
   checkmate::assert_string(dataname_adcm)
   checkmate::assert_string(dataname_adae)
   checkmate::assert_string(parentname)
   checkmate::assert_string(patient_col)
-  checkmate::assert_class(aeterm, "choices_selected", null.ok = TRUE)
-  checkmate::assert_class(cmdecod, "choices_selected", null.ok = TRUE)
-  checkmate::assert_class(aetime_start, "choices_selected", null.ok = TRUE)
-  checkmate::assert_class(aetime_end, "choices_selected", null.ok = TRUE)
-  checkmate::assert_class(dstime_start, "choices_selected", null.ok = TRUE)
-  checkmate::assert_class(dstime_end, "choices_selected", null.ok = TRUE)
-  checkmate::assert_class(aerelday_start, "choices_selected", null.ok = TRUE)
-  checkmate::assert_class(aerelday_end, "choices_selected", null.ok = TRUE)
-  checkmate::assert_class(dsrelday_start, "choices_selected", null.ok = TRUE)
-  checkmate::assert_class(dsrelday_end, "choices_selected", null.ok = TRUE)
+  for (arg in c(
+    "aeterm", "cmdecod",
+    "aetime_start", "aetime_end", "dstime_start", "dstime_end",
+    "aerelday_start", "aerelday_end", "dsrelday_start", "dsrelday_end"
+  )) {
+    checkmate::assert_class(get(arg), "variables", null.ok = TRUE)
+  }
   checkmate::assert_numeric(font_size, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(font_size[1], lower = font_size[2], upper = font_size[3], .var.name = "font_size")
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
@@ -517,206 +525,195 @@ tm_g_pp_patient_timeline <- function(label,
     plot_width[1],
     lower = plot_width[2], upper = plot_width[3], null.ok = TRUE, .var.name = "plot_width"
   )
-  teal::assert_decorators(decorators, "plot")
+  assert_decorators(decorators, "plot")
 
   xor_error_string <- function(x, y) {
-    paste(
-      "Assertion on `", x, "` and `", y, "` failed:",
-      "Both `", x, "` and `", y, "` needs to be provided or both need to be `NULL`."
-    )
+    paste("Both `", x, "` and `", y, "` need to be provided or both need to be `NULL`.")
   }
-
   if (xor(is.null(aetime_start), is.null(aetime_end))) stop(xor_error_string("aetime_start", "aetime_end"))
   if (xor(is.null(dstime_start), is.null(dstime_end))) stop(xor_error_string("dstime_start", "dstime_end"))
   if (xor(is.null(aerelday_start), is.null(aerelday_end))) stop(xor_error_string("aerelday_start", "aerelday_end"))
   if (xor(is.null(dsrelday_start), is.null(dsrelday_end))) stop(xor_error_string("dsrelday_start", "dsrelday_end"))
-
   if (is.null(aeterm) && is.null(cmdecod)) {
     stop("At least one of 'aeterm' or 'cmdecod' needs to be provided.")
   }
-  if (!is.null(aeterm) && (is.null(aetime_start) || is.null(aerelday_start))) {
-    stop("If 'aeterm' is provided, then one of 'aetime_start' and 'aerelday_start' must not be empty.")
-  }
-  if (!is.null(cmdecod) && (is.null(dstime_start) || is.null(dsrelday_start))) {
-    stop("If 'cmdecod' is provided, then one of 'dstime_start' and 'dsrelday_start' must not be empty.")
+
+  # Build picks — AE variables bound to dataname_adae, CM variables to dataname_adcm
+  picks_adae_vars <- Filter(Negate(is.null), list(
+    aeterm = aeterm,
+    aetime_start = aetime_start,
+    aetime_end = aetime_end,
+    aerelday_start = aerelday_start,
+    aerelday_end = aerelday_end
+  ))
+  picks_adcm_vars <- Filter(Negate(is.null), list(
+    cmdecod = cmdecod,
+    dstime_start = dstime_start,
+    dstime_end = dstime_end,
+    dsrelday_start = dsrelday_start,
+    dsrelday_end = dsrelday_end
+  ))
+
+  picks_adae <- if (length(picks_adae_vars) > 0) {
+    do.call(teal.picks::picks, c(list(teal.picks::datasets(dataname_adae)), picks_adae_vars))
+  } else {
+    NULL
   }
 
-  checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
-  checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
-  checkmate::assert_class(ggplot2_args, "ggplot2_args")
+  picks_adcm <- if (length(picks_adcm_vars) > 0) {
+    do.call(teal.picks::picks, c(list(teal.picks::datasets(dataname_adcm)), picks_adcm_vars))
+  } else {
+    NULL
+  }
+
+  # Combine into a single picks list for the module
+  picks_timeline <- c(
+    if (!is.null(picks_adae)) as.list(picks_adae) else list(),
+    if (!is.null(picks_adcm)) as.list(picks_adcm) else list()
+  )
 
   args <- as.list(environment())
-  data_extract_list <- list(
-    aeterm = `if`(is.null(aeterm), NULL, cs_to_des_select(aeterm, dataname = dataname_adae)),
-    cmdecod = `if`(is.null(cmdecod), NULL, cs_to_des_select(cmdecod, dataname = dataname_adcm)),
-    aetime_start = `if`(is.null(aetime_start), NULL, cs_to_des_select(aetime_start, dataname = dataname_adae)),
-    aetime_end = `if`(is.null(aetime_end), NULL, cs_to_des_select(aetime_end, dataname = dataname_adae)),
-    dstime_start = `if`(is.null(dstime_start), NULL, cs_to_des_select(dstime_start, dataname = dataname_adcm)),
-    dstime_end = `if`(is.null(dstime_end), NULL, cs_to_des_select(dstime_end, dataname = dataname_adcm)),
-    aerelday_start = `if`(is.null(aerelday_start), NULL, cs_to_des_select(aerelday_start, dataname = dataname_adae)),
-    aerelday_end = `if`(is.null(aerelday_end), NULL, cs_to_des_select(aerelday_end, dataname = dataname_adae)),
-    dsrelday_start = `if`(is.null(dsrelday_start), NULL, cs_to_des_select(dsrelday_start, dataname = dataname_adcm)),
-    dsrelday_end = `if`(is.null(dsrelday_end), NULL, cs_to_des_select(dsrelday_end, dataname = dataname_adcm))
-  )
 
   module(
     label = label,
     ui = ui_g_patient_timeline,
-    ui_args = c(data_extract_list, args),
+    ui_args = args[names(args) %in% names(formals(ui_g_patient_timeline))],
     server = srv_g_patient_timeline,
-    server_args = c(
-      data_extract_list,
-      list(
-        dataname_adae = dataname_adae,
-        dataname_adcm = dataname_adcm,
-        parentname = parentname,
-        label = label,
-        patient_col = patient_col,
-        plot_height = plot_height,
-        plot_width = plot_width,
-        ggplot2_args = ggplot2_args,
-        decorators = decorators
-      )
-    ),
+    server_args = args[names(args) %in% names(formals(srv_g_patient_timeline))],
     transformators = transformators,
     datanames = c(dataname_adcm, dataname_adae, parentname)
   )
 }
 
 #' @keywords internal
-ui_g_patient_timeline <- function(id, ...) {
-  ui_args <- list(...)
-  is_single_dataset_value <- teal.transform::is_single_dataset(
-    ui_args$aeterm,
-    ui_args$cmdecod,
-    ui_args$aetime_start,
-    ui_args$aetime_end,
-    ui_args$dstime_start,
-    ui_args$dstime_end,
-    ui_args$aerelday_start,
-    ui_args$aerelday_end,
-    ui_args$dsrelday_start,
-    ui_args$dsrelday_end
-  )
-
+ui_g_patient_timeline <- function(id,
+                                  picks_timeline,
+                                  picks_adae,
+                                  picks_adcm,
+                                  aeterm,
+                                  cmdecod,
+                                  aetime_start,
+                                  aetime_end,
+                                  dstime_start,
+                                  dstime_end,
+                                  aerelday_start,
+                                  aerelday_end,
+                                  dsrelday_start,
+                                  dsrelday_end,
+                                  font_size,
+                                  pre_output,
+                                  post_output,
+                                  decorators) {
   ns <- NS(id)
+  has_relday <- !is.null(aerelday_start) || !is.null(dsrelday_start)
+  has_abstime <- !is.null(aetime_start) || !is.null(dstime_start)
+
   teal.widgets::standard_layout(
     output = teal.widgets::plot_with_settings_ui(id = ns("patient_timeline_plot")),
     encoding = tags$div(
       tags$label("Encodings", class = "text-primary"), tags$br(),
-      teal.transform::datanames_input(
-        ui_args[c(
-          "aeterm", "cmdecod",
-          "aetime_start", "aetime_end", "dstime_start", "dstime_end",
-          "aerelday_start", "aerelday_end", "dsrelday_start", "dsrelday_end"
-        )]
-      ),
       teal.widgets::optionalSelectInput(
         ns("patient_id"),
         "Select Patient:",
         multiple = FALSE,
         options = shinyWidgets::pickerOptions(`liveSearch` = TRUE)
       ),
-      teal.transform::data_extract_ui(
-        id = ns("cmdecod"),
-        label = "Select Medication standardized term variable:",
-        data_extract_spec = ui_args$cmdecod,
-        is_single_dataset = is_single_dataset_value
-      ),
-      teal.transform::data_extract_ui(
-        id = ns("aeterm"),
-        label = "Select AE reported term variable:",
-        data_extract_spec = ui_args$aeterm,
-        is_single_dataset = is_single_dataset_value
-      ),
-      if (!is.null(ui_args$aerelday_start) || !is.null(ui_args$dsrelday_start)) {
+      if (!is.null(cmdecod)) {
+        tags$div(
+          tags$label("Select Medication standardized term variable:"),
+          teal.picks::picks_ui(ns("cmdecod"), picks_timeline["cmdecod"])
+        )
+      },
+      if (!is.null(aeterm)) {
+        tags$div(
+          tags$label("Select AE reported term variable:"),
+          teal.picks::picks_ui(ns("aeterm"), picks_timeline["aeterm"])
+        )
+      },
+      if (has_relday || has_abstime) {
         tagList(
-          checkboxInput(ns("relday_x_axis"), label = "Use relative days on the x-axis", value = TRUE),
-          conditionalPanel(
-            paste0("input.relday_x_axis == true"),
-            ns = ns,
-            if (!is.null(ui_args$aerelday_start)) {
-              tagList(
-                teal.transform::data_extract_ui(
-                  id = ns("aerelday_start"),
-                  label = "Select AE relative start date variable:",
-                  data_extract_spec = ui_args$aerelday_start,
-                  is_single_dataset = is_single_dataset_value
-                ),
-                teal.transform::data_extract_ui(
-                  id = ns("aerelday_end"),
-                  label = "Select AE relative end date variable:",
-                  data_extract_spec = ui_args$aerelday_end,
-                  is_single_dataset = is_single_dataset_value
+          checkboxInput(ns("relday_x_axis"),
+            label = "Use relative days on the x-axis",
+            value = has_relday
+          ),
+          if (has_relday) {
+            conditionalPanel(
+              "input.relday_x_axis == true",
+              ns = ns,
+              if (!is.null(aerelday_start)) {
+                tagList(
+                  tags$div(
+                    tags$label("Select AE relative start day variable:"),
+                    teal.picks::picks_ui(ns("aerelday_start"), picks_timeline["aerelday_start"])
+                  ),
+                  tags$div(
+                    tags$label("Select AE relative end day variable:"),
+                    teal.picks::picks_ui(ns("aerelday_end"), picks_timeline["aerelday_end"])
+                  )
                 )
-              )
-            },
-            if (!is.null(ui_args$dsrelday_start)) {
-              tagList(
-                teal.transform::data_extract_ui(
-                  id = ns("dsrelday_start"),
-                  label = "Select Medication relative start date variable:",
-                  data_extract_spec = ui_args$dsrelday_start,
-                  is_single_dataset = is_single_dataset_value
-                ),
-                teal.transform::data_extract_ui(
-                  id = ns("dsrelday_end"),
-                  label = "Select Medication relative end date variable:",
-                  data_extract_spec = ui_args$dsrelday_end,
-                  is_single_dataset = is_single_dataset_value
+              },
+              if (!is.null(dsrelday_start)) {
+                tagList(
+                  tags$div(
+                    tags$label("Select Medication relative start day variable:"),
+                    teal.picks::picks_ui(ns("dsrelday_start"), picks_timeline["dsrelday_start"])
+                  ),
+                  tags$div(
+                    tags$label("Select Medication relative end day variable:"),
+                    teal.picks::picks_ui(ns("dsrelday_end"), picks_timeline["dsrelday_end"])
+                  )
                 )
-              )
-            }
-          )
+              }
+            )
+          }
         )
       } else {
         shinyjs::hidden(checkboxInput(ns("relday_x_axis"), label = "", value = FALSE))
       },
-      conditionalPanel(
-        paste0("input.relday_x_axis == false"),
-        ns = ns,
-        teal.transform::data_extract_ui(
-          id = ns("aetime_start"),
-          label = "Select ASTDTM variable:",
-          data_extract_spec = ui_args$aetime_start,
-          is_single_dataset = is_single_dataset_value
-        ),
-        teal.transform::data_extract_ui(
-          id = ns("aetime_end"),
-          label = "Select AENDTM variable:",
-          data_extract_spec = ui_args$aetime_end,
-          is_single_dataset = is_single_dataset_value
-        ),
-        teal.transform::data_extract_ui(
-          id = ns("dstime_start"),
-          label = "Select TRTSDTM variable:",
-          data_extract_spec = ui_args$dstime_start,
-          is_single_dataset = is_single_dataset_value
-        ),
-        teal.transform::data_extract_ui(
-          id = ns("dstime_end"),
-          label = "Select TRTEDTM variable:",
-          data_extract_spec = ui_args$dstime_end,
-          is_single_dataset = is_single_dataset_value
+      if (has_abstime) {
+        conditionalPanel(
+          "input.relday_x_axis == false",
+          ns = ns,
+          if (!is.null(aetime_start)) {
+            tagList(
+              tags$div(
+                tags$label("Select ASTDTM variable:"),
+                teal.picks::picks_ui(ns("aetime_start"), picks_timeline["aetime_start"])
+              ),
+              tags$div(
+                tags$label("Select AENDTM variable:"),
+                teal.picks::picks_ui(ns("aetime_end"), picks_timeline["aetime_end"])
+              )
+            )
+          },
+          if (!is.null(dstime_start)) {
+            tagList(
+              tags$div(
+                tags$label("Select TRTSDTM variable:"),
+                teal.picks::picks_ui(ns("dstime_start"), picks_timeline["dstime_start"])
+              ),
+              tags$div(
+                tags$label("Select TRTEDTM variable:"),
+                teal.picks::picks_ui(ns("dstime_end"), picks_timeline["dstime_end"])
+              )
+            )
+          }
         )
-      ),
-      teal::ui_transform_teal_data(ns("decorator"), transformators = select_decorators(ui_args$decorators, "plot")),
+      },
+      teal::ui_transform_teal_data(ns("decorator"), transformators = select_decorators(decorators, "plot")),
       bslib::accordion(
         open = TRUE,
         bslib::accordion_panel(
           title = "Plot settings",
           teal.widgets::optionalSliderInputValMinMax(
-            ns("font_size"),
-            "Font Size",
-            ui_args$font_size,
-            ticks = FALSE,
-            step = 1
+            ns("font_size"), "Font Size", font_size,
+            ticks = FALSE, step = 1
           )
         )
       )
     ),
-    pre_output = ui_args$pre_output,
-    post_output = ui_args$post_output
+    pre_output = pre_output,
+    post_output = post_output
   )
 }
 
@@ -727,6 +724,9 @@ srv_g_patient_timeline <- function(id,
                                    dataname_adcm,
                                    parentname,
                                    patient_col,
+                                   picks_timeline,
+                                   picks_adae,
+                                   picks_adcm,
                                    aeterm,
                                    cmdecod,
                                    aetime_start,
@@ -749,197 +749,140 @@ srv_g_patient_timeline <- function(id,
     teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
     patient_id <- reactive(input$patient_id)
 
-    # Init
+    # Init patient selector
     patient_data_base <- reactive(unique(data()[[parentname]][[patient_col]]))
     teal.widgets::updateOptionalSelectInput(
-      session,
-      "patient_id",
+      session, "patient_id",
       choices = patient_data_base(),
       selected = patient_data_base()[1]
     )
-
-    observeEvent(patient_data_base(),
-      handlerExpr = {
-        teal.widgets::updateOptionalSelectInput(
-          session,
-          "patient_id",
-          choices = patient_data_base(),
-          selected = if (length(patient_data_base()) == 1) {
-            patient_data_base()
-          } else {
-            intersect(patient_id(), patient_data_base())
-          }
-        )
-      },
-      ignoreInit = TRUE
-    )
-
-    # Patient timeline tab ----
-    check_box <- reactive(input$relday_x_axis)
-
-    check_relative <- function(main_param, return_name) {
-      function(value) {
-        if (length(selector_list()[[main_param]]()$select) > 0 && length(value) == 0) {
-          sprintf("Please add %s", return_name)
+    observeEvent(patient_data_base(), ignoreInit = TRUE, {
+      teal.widgets::updateOptionalSelectInput(
+        session, "patient_id",
+        choices = patient_data_base(),
+        selected = if (length(patient_data_base()) == 1) {
+          patient_data_base()
+        } else {
+          intersect(patient_id(), patient_data_base())
         }
-      }
-    }
-
-    rule_one_parameter <- function(other) {
-      function(value) {
-        if (length(value) == 0L && length(selector_list()[[other]]()$select) == 0L) {
-          "At least one term variable must be selected."
-        }
-      }
-    }
-
-    selector_list <- teal.transform::data_extract_multiple_srv(
-      data_extract = list(
-        dsrelday_start = dsrelday_start, dsrelday_end = dsrelday_end,
-        aerelday_start = aerelday_start, aerelday_end = aerelday_end,
-        aeterm = aeterm, aetime_start = aetime_start,
-        aetime_end = aetime_end, dstime_start = dstime_start, dstime_end = dstime_end, cmdecod = cmdecod
-      ),
-      datasets = data,
-      select_validation_rule = list(
-        # aeterm
-        aeterm = rule_one_parameter("cmdecod"),
-        aerelday_start = check_relative("aeterm", "AE start date."),
-        aerelday_end = check_relative("aeterm", "AE end date."),
-        aetime_start = check_relative("aeterm", "AE start date."),
-        aetime_end = check_relative("aeterm", "AE end date."),
-        # cmdecod
-        cmdecod = rule_one_parameter("aeterm"),
-        dsrelday_start = check_relative("cmdecod", "Medication start date."),
-        dsrelday_end = check_relative("cmdecod", "Medication end date."),
-        dstime_start = check_relative("cmdecod", "Medication start date."),
-        dstime_end = check_relative("cmdecod", "Medication end date.")
       )
-    )
-
-    iv_r <- reactive({
-      iv <- shinyvalidate::InputValidator$new()
-      iv$add_rule("patient_id", shinyvalidate::sv_required("Please select a patient"))
-      teal.transform::compose_and_enable_validators(iv, selector_list)
     })
 
-    anl_inputs <- teal.transform::merge_expression_srv(
-      datasets = data,
-      selector_list = selector_list
+    # Build selector IDs — only include variables that were provided
+    selector_ids <- names(Filter(Negate(is.null), list(
+      aeterm = aeterm, cmdecod = cmdecod,
+      aetime_start = aetime_start, aetime_end = aetime_end,
+      dstime_start = dstime_start, dstime_end = dstime_end,
+      aerelday_start = aerelday_start, aerelday_end = aerelday_end,
+      dsrelday_start = dsrelday_start, dsrelday_end = dsrelday_end
+    )))
+
+    selectors <- teal.picks::picks_srv(
+      picks = picks_timeline[selector_ids],
+      data  = data
     )
 
-    anl_q <- reactive({
-      obj <- data()
-      teal.reporter::teal_card(obj) <-
-        c(
-          teal.reporter::teal_card(obj),
-          teal.reporter::teal_card("## Module's output(s)")
+    validated_q <- reactive({
+      obj <- req(data())
+
+      validate_input(
+        inputId   = "patient_id",
+        condition = !is.null(input$patient_id) && nzchar(input$patient_id),
+        message   = "Please select a patient."
+      )
+      if (!is.null(aeterm)) {
+        validate_input(
+          inputId   = "aeterm-variables-selected",
+          condition = length(selectors$aeterm()$variables$selected) > 0,
+          message   = "Please select AE term variable."
         )
-      obj %>% teal.code::eval_code(code = as.expression(anl_inputs()$expr))
+      }
+      if (!is.null(cmdecod)) {
+        validate_input(
+          inputId   = "cmdecod-variables-selected",
+          condition = length(selectors$cmdecod()$variables$selected) > 0,
+          message   = "Please select Medication term variable."
+        )
+      }
+
+      teal.reporter::teal_card(obj) <- c(
+        teal.reporter::teal_card(obj),
+        teal.reporter::teal_card("## Module's output(s)")
+      )
+      obj
     })
+
+    anl_inputs <- teal.picks::merge_srv(
+      "anl_inputs",
+      data        = validated_q,
+      selectors   = selectors,
+      output_name = "ANL"
+    )
 
     all_q <- reactive({
-      teal::validate_inputs(iv_r())
+      vars <- anl_inputs$variables()
+      ANL <- anl_inputs$data()[["ANL"]]
 
-      aeterm <- input[[extract_input("aeterm", dataname_adae)]]
-      aetime_start <- input[[extract_input("aetime_start", dataname_adae)]]
-      aetime_end <- input[[extract_input("aetime_end", dataname_adae)]]
-      dstime_start <- input[[extract_input("dstime_start", dataname_adcm)]]
-      dstime_end <- input[[extract_input("dstime_end", dataname_adcm)]]
-      cmdecod <- input[[extract_input("cmdecod", dataname_adcm)]]
-      aerelday_start <- input[[extract_input("aerelday_start", dataname_adae)]]
-      aerelday_end <- input[[extract_input("aerelday_end", dataname_adae)]]
-      dsrelday_start <- input[[extract_input("dsrelday_start", dataname_adcm)]]
-      dsrelday_end <- input[[extract_input("dsrelday_end", dataname_adcm)]]
-      font_size <- input[["font_size"]]
+      p_time_data_pat <- ANL[ANL[[patient_col]] == patient_id(), ]
 
-      ae_chart_vars_null <- any(vapply(list(aeterm, aetime_start, aetime_end), is.null, FUN.VALUE = logical(1)))
-      ds_chart_vars_null <- any(vapply(list(cmdecod, dstime_start, dstime_end), is.null, FUN.VALUE = logical(1)))
+      use_relday <- isTRUE(input$relday_x_axis)
 
-      p_timeline_data <- anl_q()[["ANL"]]
-      # time variables can not be NA
-      p_time_data_pat <- p_timeline_data[p_timeline_data[[patient_col]] == patient_id(), ]
-
-      validate(
-        need(
-          input$relday_x_axis ||
-            (
-              sum(stats::complete.cases(p_time_data_pat[, c(aetime_start, aetime_end)])) > 0 ||
-                sum(stats::complete.cases(p_time_data_pat[, c(dstime_start, dstime_end)])) > 0
-            ),
-          "Selected patient is not in dataset (either due to filtering or missing values). Consider relaxing filters."
-        )
-      )
-
-      aerel_chart_vars_null <- any(vapply(list(aeterm, aerelday_start, aerelday_end), is.null, FUN.VALUE = logical(1)))
-      dsrel_chart_vars_null <- any(vapply(list(cmdecod, dsrelday_start, dsrelday_end), is.null, FUN.VALUE = logical(1)))
-
-      # These lines are needed because there is a naming conflict: ADCM and ADAE will be both pass in their ASTDY and
-      # AENDY columns to data_merge_module call above.
-      aerelday_start_name <- `if`(
-        length(aerelday_start),
-        anl_inputs()$columns_source$aerelday_start[[1]],
-        aerelday_start
-      )
-      aerelday_end_name <- `if`(
-        length(aerelday_end),
-        anl_inputs()$columns_source$aerelday_end[[1]],
-        aerelday_end
-      )
-      dsrelday_start_name <- `if`(
-        length(dsrelday_start),
-        anl_inputs()$columns_source$dsrelday_start[[1]],
-        dsrelday_start
-      )
-      dsrelday_end_name <- `if`(
-        length(dsrelday_end),
-        anl_inputs()$columns_source$dsrelday_end[[1]],
-        dsrelday_end
-      )
-
-      validate(
-        need(
-          !input$relday_x_axis ||
-            (
-              sum(stats::complete.cases(p_time_data_pat[, c(aerelday_start_name, aerelday_end_name)])) > 0 ||
-                sum(stats::complete.cases(p_time_data_pat[, c(dsrelday_start_name, dsrelday_end_name)])) > 0
-            ),
-          "Selected patient is not in dataset (either due to filtering or missing values). Consider relaxing filters."
-        )
-      )
+      if (!use_relday) {
+        abs_ae_cols <- c(vars$aetime_start, vars$aetime_end)
+        abs_cm_cols <- c(vars$dstime_start, vars$dstime_end)
+        abs_ae_cols <- abs_ae_cols[!is.null(abs_ae_cols)]
+        abs_cm_cols <- abs_cm_cols[!is.null(abs_cm_cols)]
+        validate(need(
+          (length(abs_ae_cols) > 0 &&
+            sum(stats::complete.cases(p_time_data_pat[, abs_ae_cols, drop = FALSE])) > 0) ||
+            (length(abs_cm_cols) > 0 &&
+              sum(stats::complete.cases(p_time_data_pat[, abs_cm_cols, drop = FALSE])) > 0),
+          "Selected patient has no valid absolute dates. Consider relaxing filters."
+        ))
+      } else {
+        rel_ae_cols <- c(vars$aerelday_start, vars$aerelday_end)
+        rel_cm_cols <- c(vars$dsrelday_start, vars$dsrelday_end)
+        rel_ae_cols <- rel_ae_cols[!is.null(rel_ae_cols)]
+        rel_cm_cols <- rel_cm_cols[!is.null(rel_cm_cols)]
+        validate(need(
+          (length(rel_ae_cols) > 0 &&
+            sum(stats::complete.cases(p_time_data_pat[, rel_ae_cols, drop = FALSE])) > 0) ||
+            (length(rel_cm_cols) > 0 &&
+              sum(stats::complete.cases(p_time_data_pat[, rel_cm_cols, drop = FALSE])) > 0),
+          "Selected patient has no valid relative days. Consider relaxing filters."
+        ))
+      }
 
       patient_timeline_calls <- template_patient_timeline(
-        dataname = "ANL",
-        aeterm = aeterm,
-        aetime_start = aetime_start,
-        aetime_end = aetime_end,
-        dstime_start = dstime_start,
-        dstime_end = dstime_end,
-        cmdecod = cmdecod,
-        aerelday_start = aerelday_start_name,
-        aerelday_end = aerelday_end_name,
-        dsrelday_start = dsrelday_start_name,
-        dsrelday_end = dsrelday_end_name,
-        font_size = font_size,
-        relative_day = input$relday_x_axis,
-        patient_id = patient_id(),
-        ggplot2_args = ggplot2_args
+        dataname       = "ANL",
+        aeterm         = vars$aeterm,
+        aetime_start   = vars$aetime_start,
+        aetime_end     = vars$aetime_end,
+        dstime_start   = vars$dstime_start,
+        dstime_end     = vars$dstime_end,
+        cmdecod        = vars$cmdecod,
+        aerelday_start = vars$aerelday_start,
+        aerelday_end   = vars$aerelday_end,
+        dsrelday_start = vars$dsrelday_start,
+        dsrelday_end   = vars$dsrelday_end,
+        font_size      = input[["font_size"]],
+        relative_day   = use_relday,
+        patient_id     = patient_id(),
+        ggplot2_args   = ggplot2_args
       )
 
       qenv <- teal.code::eval_code(
-        anl_q(),
+        anl_inputs$data(),
         substitute(
           expr = {
             ANL <- ANL[ANL[[patient_col]] == patient_id, ]
-          }, env = list(
-            patient_col = patient_col,
-            patient_id = patient_id()
-          )
+          },
+          env = list(patient_col = patient_col, patient_id = patient_id())
         )
       )
       obj <- qenv
       teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "### Plot")
-      teal.code::eval_code(object = obj, as.expression(patient_timeline_calls))
+      teal.code::eval_code(obj, as.expression(patient_timeline_calls))
     })
 
     decorated_all_q <- teal::srv_transform_teal_data(
@@ -952,10 +895,10 @@ srv_g_patient_timeline <- function(id,
     plot_r <- reactive(decorated_all_q()[["plot"]])
 
     pws <- teal.widgets::plot_with_settings_srv(
-      id = "patient_timeline_plot",
+      id     = "patient_timeline_plot",
       plot_r = plot_r,
       height = plot_height,
-      width = plot_width
+      width  = plot_width
     )
 
     set_chunk_dims(pws, decorated_all_q)

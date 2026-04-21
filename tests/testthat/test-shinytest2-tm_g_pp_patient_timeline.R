@@ -3,18 +3,18 @@ app_driver_tm_g_pp_patient_timeline <- function() { # nolint object_length.
   data <- within(data, {
     library(dplyr)
     ADAE <- tmc_ex_adae
-    ADSL <- tmc_ex_adsl %>% filter(USUBJID %in% ADAE$USUBJID)
-    ADCM <- tmc_ex_adcm %>% mutate(
+    ADSL <- tmc_ex_adsl |> filter(USUBJID %in% ADAE$USUBJID)
+    ADCM <- tmc_ex_adcm |> mutate(
       CMSTDY = case_when(
         CMCAT == "medcl B" ~ 20,
         CMCAT == "medcl C" ~ 150,
         TRUE ~ 1
-      ) %>% with_label("Study Day of Start of Medication"),
+      ) |> with_label("Study Day of Start of Medication"),
       CMENDY = case_when(
         CMCAT == "medcl B" ~ 700,
         CMCAT == "medcl C" ~ 1000,
         TRUE ~ 500
-      ) %>% with_label("Study Day of End of Medication"),
+      ) |> with_label("Study Day of End of Medication"),
       CMASTDTM = ASTDTM,
       CMAENDTM = AENDTM
     )
@@ -36,46 +36,16 @@ app_driver_tm_g_pp_patient_timeline <- function() { # nolint object_length.
         parentname = "ADSL",
         patient_col = "USUBJID",
         plot_height = c(600L, 200L, 2000L),
-        cmdecod = teal.transform::choices_selected(
-          choices = teal.transform::variable_choices(data[["ADCM"]], c("CMDECOD", "CMCAT")),
-          selected = "CMDECOD"
-        ),
-        aeterm = teal.transform::choices_selected(
-          choices = teal.transform::variable_choices(data[["ADAE"]], c("AETERM", "AESOC")),
-          selected = "AETERM"
-        ),
-        aetime_start = teal.transform::choices_selected(
-          choices = teal.transform::variable_choices(data[["ADAE"]], c("ASTDTM", "TRTSDTM")),
-          selected = "ASTDTM"
-        ),
-        aetime_end = teal.transform::choices_selected(
-          choices = teal.transform::variable_choices(data[["ADAE"]], c("AENDTM", "EOSDT")),
-          selected = "AENDTM"
-        ),
-        dstime_start = teal.transform::choices_selected(
-          choices = teal.transform::variable_choices(data[["ADCM"]], c("CMASTDTM", "TRTEDTM")),
-          selected = "CMASTDTM"
-        ),
-        dstime_end = teal.transform::choices_selected(
-          choices = teal.transform::variable_choices(data[["ADCM"]], c("CMAENDTM", "TRTEDTM")),
-          selected = "CMAENDTM"
-        ),
-        aerelday_start = teal.transform::choices_selected(
-          choices = teal.transform::variable_choices(data[["ADAE"]], c("ASTDY", "AENDY")),
-          selected = "ASTDY"
-        ),
-        aerelday_end = teal.transform::choices_selected(
-          choices = teal.transform::variable_choices(data[["ADAE"]], c("AENDY", "ASTDY")),
-          selected = "AENDY"
-        ),
-        dsrelday_start = teal.transform::choices_selected(
-          choices = teal.transform::variable_choices(data[["ADCM"]], c("ASTDY", "AENDY")),
-          selected = "ASTDY"
-        ),
-        dsrelday_end = teal.transform::choices_selected(
-          choices = teal.transform::variable_choices(data[["ADCM"]], c("AENDY", "ASTDY")),
-          selected = "AENDY"
-        ),
+        cmdecod = teal.picks::variables(c("CMDECOD", "CMCAT"), multiple = FALSE),
+        aeterm = teal.picks::variables(c("AETERM", "AESOC"), multiple = FALSE),
+        aetime_start = teal.picks::variables(c("ASTDTM", "TRTSDTM"), multiple = FALSE),
+        aetime_end = teal.picks::variables(c("AENDTM", "EOSDT"), multiple = FALSE),
+        dstime_start = teal.picks::variables(c("CMASTDTM", "TRTEDTM"), multiple = FALSE),
+        dstime_end = teal.picks::variables(c("CMAENDTM", "TRTEDTM"), multiple = FALSE),
+        aerelday_start = teal.picks::variables(c("ASTDY", "AENDY"), multiple = FALSE),
+        aerelday_end = teal.picks::variables(c("AENDY", "ASTDY"), multiple = FALSE),
+        dsrelday_start = teal.picks::variables(c("ASTDY", "AENDY"), multiple = FALSE),
+        dsrelday_end = teal.picks::variables(c("AENDY", "ASTDY"), multiple = FALSE),
         font_size = c(12L, 12L, 25L),
         plot_width = NULL,
         pre_output = NULL,
@@ -91,6 +61,7 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_patient_timeline()
+    withr::defer(app_driver$stop())
     app_driver$expect_no_shiny_error()
     app_driver$expect_no_validation_error()
 
@@ -98,17 +69,16 @@ testthat::test_that(
       app_driver$get_active_module_plot_output("patient_timeline_plot"),
       "data:image/png;base64,"
     )
-
-    app_driver$stop()
   }
 )
 
 testthat::test_that(
   "e2e - tm_g_pp_patient_timeline: Starts with specified label, patient_id, cmdecod, aeterm, aetime_start,
-  aetime_end, dstime_start, dstime_end, aerelday_start, aerelday_end, dsrelday_start, dsrelday_en.",
+  aetime_end, dstime_start, dstime_end, aerelday_start, aerelday_end, dsrelday_start, dsrelday_end.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_patient_timeline()
+    withr::defer(app_driver$stop())
 
     testthat::expect_equal(
       app_driver$get_text("a.nav-link.active"),
@@ -118,44 +88,51 @@ testthat::test_that(
       app_driver$get_active_module_input("patient_id"),
       "AB12345-CHN-11-id-2"
     )
+
+    exported_values <- app_driver$get_values()$export
+    names(exported_values) <- gsub(
+      sprintf("%s-", app_driver$namespaces()$module(NULL)), "", names(exported_values),
+      fixed = TRUE
+    )
+
     testthat::expect_equal(
-      app_driver$get_active_module_input("cmdecod-dataset_ADCM_singleextract-select"),
+      exported_values[["cmdecod-picks_resolved"]]$variables$selected,
       "CMDECOD"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("aeterm-dataset_ADAE_singleextract-select"),
+      exported_values[["aeterm-picks_resolved"]]$variables$selected,
       "AETERM"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("aetime_start-dataset_ADAE_singleextract-select"),
+      exported_values[["aetime_start-picks_resolved"]]$variables$selected,
       "ASTDTM"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("aetime_end-dataset_ADAE_singleextract-select"),
+      exported_values[["aetime_end-picks_resolved"]]$variables$selected,
       "AENDTM"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("dstime_start-dataset_ADCM_singleextract-select"),
+      exported_values[["dstime_start-picks_resolved"]]$variables$selected,
       "CMASTDTM"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("dstime_end-dataset_ADCM_singleextract-select"),
+      exported_values[["dstime_end-picks_resolved"]]$variables$selected,
       "CMAENDTM"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("aerelday_start-dataset_ADAE_singleextract-select"),
+      exported_values[["aerelday_start-picks_resolved"]]$variables$selected,
       "ASTDY"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("aerelday_end-dataset_ADAE_singleextract-select"),
+      exported_values[["aerelday_end-picks_resolved"]]$variables$selected,
       "AENDY"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("dsrelday_start-dataset_ADCM_singleextract-select"),
+      exported_values[["dsrelday_start-picks_resolved"]]$variables$selected,
       "ASTDY"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("dsrelday_end-dataset_ADCM_singleextract-select"),
+      exported_values[["dsrelday_end-picks_resolved"]]$variables$selected,
       "AENDY"
     )
     testthat::expect_true(app_driver$get_active_module_input("relday_x_axis"))
@@ -163,8 +140,6 @@ testthat::test_that(
       app_driver$get_active_module_input("font_size"),
       12
     )
-
-    app_driver$stop()
   }
 )
 
@@ -174,19 +149,19 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_patient_timeline()
-    app_driver$expect_visible(app_driver$namespaces(TRUE)$module("aerelday_start-dataset_ADAE_singleextract-select"))
-    app_driver$expect_visible(app_driver$namespaces(TRUE)$module("aerelday_end-dataset_ADAE_singleextract-select"))
-    app_driver$expect_visible(app_driver$namespaces(TRUE)$module("dsrelday_start-dataset_ADCM_singleextract-select"))
-    app_driver$expect_visible(app_driver$namespaces(TRUE)$module("dsrelday_end-dataset_ADCM_singleextract-select"))
+    withr::defer(app_driver$stop())
+
+    app_driver$expect_visible(app_driver$namespaces(TRUE)$module("aerelday_start-variables-selected"))
+    app_driver$expect_visible(app_driver$namespaces(TRUE)$module("aerelday_end-variables-selected"))
+    app_driver$expect_visible(app_driver$namespaces(TRUE)$module("dsrelday_start-variables-selected"))
+    app_driver$expect_visible(app_driver$namespaces(TRUE)$module("dsrelday_end-variables-selected"))
 
     app_driver$set_active_module_input("relday_x_axis", FALSE)
 
-    app_driver$expect_hidden(app_driver$namespaces(TRUE)$module("aerelday_start-dataset_ADAE_singleextract-select"))
-    app_driver$expect_hidden(app_driver$namespaces(TRUE)$module("aerelday_end-dataset_ADAE_singleextract-select"))
-    app_driver$expect_hidden(app_driver$namespaces(TRUE)$module("dsrelday_start-dataset_ADCM_singleextract-select"))
-    app_driver$expect_hidden(app_driver$namespaces(TRUE)$module("dsrelday_end-dataset_ADCM_singleextract-select"))
-
-    app_driver$stop()
+    app_driver$expect_hidden(app_driver$namespaces(TRUE)$module("aerelday_start-variables-selected"))
+    app_driver$expect_hidden(app_driver$namespaces(TRUE)$module("aerelday_end-variables-selected"))
+    app_driver$expect_hidden(app_driver$namespaces(TRUE)$module("dsrelday_start-variables-selected"))
+    app_driver$expect_hidden(app_driver$namespaces(TRUE)$module("dsrelday_end-variables-selected"))
   }
 )
 
@@ -196,20 +171,19 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_patient_timeline()
+    withr::defer(app_driver$stop())
 
-    app_driver$expect_hidden(app_driver$namespaces(TRUE)$module("aetime_start-dataset_ADAE_singleextract-select"))
-    app_driver$expect_hidden(app_driver$namespaces(TRUE)$module("aetime_end-dataset_ADAE_singleextract-select"))
-    app_driver$expect_hidden(app_driver$namespaces(TRUE)$module("dstime_start-dataset_ADCM_singleextract-select"))
-    app_driver$expect_hidden(app_driver$namespaces(TRUE)$module("dstime_end-dataset_ADCM_singleextract-select"))
+    app_driver$expect_hidden(app_driver$namespaces(TRUE)$module("aetime_start-variables-selected"))
+    app_driver$expect_hidden(app_driver$namespaces(TRUE)$module("aetime_end-variables-selected"))
+    app_driver$expect_hidden(app_driver$namespaces(TRUE)$module("dstime_start-variables-selected"))
+    app_driver$expect_hidden(app_driver$namespaces(TRUE)$module("dstime_end-variables-selected"))
 
     app_driver$set_active_module_input("relday_x_axis", FALSE)
 
-    app_driver$expect_visible(app_driver$namespaces(TRUE)$module("aetime_start-dataset_ADAE_singleextract-select"))
-    app_driver$expect_visible(app_driver$namespaces(TRUE)$module("aetime_end-dataset_ADAE_singleextract-select"))
-    app_driver$expect_visible(app_driver$namespaces(TRUE)$module("dstime_start-dataset_ADCM_singleextract-select"))
-    app_driver$expect_visible(app_driver$namespaces(TRUE)$module("dstime_end-dataset_ADCM_singleextract-select"))
-
-    app_driver$stop()
+    app_driver$expect_visible(app_driver$namespaces(TRUE)$module("aetime_start-variables-selected"))
+    app_driver$expect_visible(app_driver$namespaces(TRUE)$module("aetime_end-variables-selected"))
+    app_driver$expect_visible(app_driver$namespaces(TRUE)$module("dstime_start-variables-selected"))
+    app_driver$expect_visible(app_driver$namespaces(TRUE)$module("dstime_end-variables-selected"))
   }
 )
 
@@ -218,6 +192,7 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_patient_timeline()
+    withr::defer(app_driver$stop())
     plot_before <- app_driver$get_active_module_plot_output("patient_timeline_plot")
     app_driver$set_active_module_input("patient_id", "AB12345-USA-2-id-3")
     testthat::expect_false(
@@ -227,21 +202,21 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
   }
 )
 
 testthat::test_that("e2e - tm_g_pp_patient_timeline: Deselecting patient_id column throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_pp_patient_timeline()
+  withr::defer(app_driver$stop())
   app_driver$set_active_module_input("patient_id", NULL)
   testthat::expect_identical(app_driver$get_active_module_plot_output("patient_timeline_plot"), character(0))
-  testthat::expect_identical(
-    app_driver$get_text(app_driver$namespaces(TRUE)$module("patient_id_input > div > span")),
-    "Please select a patient"
-  )
   app_driver$expect_validation_error()
-  app_driver$stop()
+  testthat::expect_match(
+    app_driver$get_text(app_driver$namespaces(TRUE)$module("patient_timeline_plot-plot_main")),
+    "Please select a patient.",
+    fixed = TRUE
+  )
 })
 
 testthat::test_that(
@@ -249,8 +224,9 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_patient_timeline()
+    withr::defer(app_driver$stop())
     plot_before <- app_driver$get_active_module_plot_output("patient_timeline_plot")
-    app_driver$set_active_module_input("cmdecod-dataset_ADCM_singleextract-select", "CMCAT")
+    set_teal_picks_slot(app_driver, "cmdecod", "variables", "CMCAT")
     testthat::expect_false(
       identical(
         plot_before,
@@ -258,7 +234,6 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
   }
 )
 
@@ -267,11 +242,11 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_patient_timeline()
+    withr::defer(app_driver$stop())
     plot_before <- app_driver$get_active_module_plot_output("patient_timeline_plot")
-    app_driver$set_active_module_input("cmdecod-dataset_ADCM_singleextract-select", NULL)
+    set_teal_picks_slot(app_driver, "cmdecod", "variables", character(0L))
     testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("patient_timeline_plot")))
     app_driver$expect_no_validation_error()
-    app_driver$stop()
   }
 )
 
@@ -280,8 +255,9 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_patient_timeline()
+    withr::defer(app_driver$stop())
     plot_before <- app_driver$get_active_module_plot_output("patient_timeline_plot")
-    app_driver$set_active_module_input("aeterm-dataset_ADAE_singleextract-select", "AESOC")
+    set_teal_picks_slot(app_driver, "aeterm", "variables", "AESOC")
     testthat::expect_false(
       identical(
         plot_before,
@@ -289,7 +265,6 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
   }
 )
 
@@ -298,11 +273,11 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_patient_timeline()
+    withr::defer(app_driver$stop())
     plot_before <- app_driver$get_active_module_plot_output("patient_timeline_plot")
-    app_driver$set_active_module_input("aeterm-dataset_ADAE_singleextract-select", NULL)
+    set_teal_picks_slot(app_driver, "aeterm", "variables", character(0L))
     testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("patient_timeline_plot")))
     app_driver$expect_no_validation_error()
-    app_driver$stop()
   }
 )
 
@@ -311,9 +286,10 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_patient_timeline()
+    withr::defer(app_driver$stop())
     app_driver$set_active_module_input("relday_x_axis", FALSE)
     plot_before <- app_driver$get_active_module_plot_output("patient_timeline_plot")
-    app_driver$set_active_module_input("aetime_start-dataset_ADAE_singleextract-select", "TRTSDTM")
+    set_teal_picks_slot(app_driver, "aetime_start", "variables", "TRTSDTM")
     testthat::expect_false(
       identical(
         plot_before,
@@ -321,26 +297,20 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
   }
 )
 
 testthat::test_that(
-  "e2e - tm_g_pp_patient_timeline: Deselecting aetime_start throws validation error.",
+  "e2e - tm_g_pp_patient_timeline: Deselecting aetime_start changes plot and doesn't throw validation error.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_patient_timeline()
+    withr::defer(app_driver$stop())
     app_driver$set_active_module_input("relday_x_axis", FALSE)
-    app_driver$set_active_module_input("aetime_start-dataset_ADAE_singleextract-select", NULL)
-    testthat::expect_identical(app_driver$get_active_module_plot_output("myplot"), character(0))
-    testthat::expect_identical(
-      app_driver$get_text(
-        app_driver$namespaces(TRUE)$module("aetime_start-dataset_ADAE_singleextract-select_input > div > span")
-      ),
-      "Please add AE start date."
-    )
-    app_driver$expect_validation_error()
-    app_driver$stop()
+    plot_before <- app_driver$get_active_module_plot_output("patient_timeline_plot")
+    set_teal_picks_slot(app_driver, "aetime_start", "variables", character(0L))
+    testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("patient_timeline_plot")))
+    app_driver$expect_no_validation_error()
   }
 )
 
@@ -349,9 +319,10 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_patient_timeline()
+    withr::defer(app_driver$stop())
     app_driver$set_active_module_input("relday_x_axis", FALSE)
     plot_before <- app_driver$get_active_module_plot_output("patient_timeline_plot")
-    app_driver$set_active_module_input("aetime_end-dataset_ADAE_singleextract-select", "EOSDT")
+    set_teal_picks_slot(app_driver, "aetime_end", "variables", "EOSDT")
     testthat::expect_false(
       identical(
         plot_before,
@@ -359,26 +330,20 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
   }
 )
 
 testthat::test_that(
-  "e2e - tm_g_pp_patient_timeline: Deselecting aetime_end throws validation error.",
+  "e2e - tm_g_pp_patient_timeline: Deselecting aetime_end changes plot and doesn't throw validation error.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_patient_timeline()
+    withr::defer(app_driver$stop())
     app_driver$set_active_module_input("relday_x_axis", FALSE)
-    app_driver$set_active_module_input("aetime_end-dataset_ADAE_singleextract-select", NULL)
-    testthat::expect_identical(app_driver$get_active_module_plot_output("myplot"), character(0))
-    testthat::expect_identical(
-      app_driver$get_text(
-        app_driver$namespaces(TRUE)$module("aetime_end-dataset_ADAE_singleextract-select_input > div > span")
-      ),
-      "Please add AE end date."
-    )
-    app_driver$expect_validation_error()
-    app_driver$stop()
+    plot_before <- app_driver$get_active_module_plot_output("patient_timeline_plot")
+    set_teal_picks_slot(app_driver, "aetime_end", "variables", character(0L))
+    testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("patient_timeline_plot")))
+    app_driver$expect_no_validation_error()
   }
 )
 
@@ -387,8 +352,9 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_patient_timeline()
+    withr::defer(app_driver$stop())
     plot_before <- app_driver$get_active_module_plot_output("patient_timeline_plot")
-    app_driver$set_active_module_input("aerelday_start-dataset_ADAE_singleextract-select", "AENDY")
+    set_teal_picks_slot(app_driver, "aerelday_start", "variables", "AENDY")
     testthat::expect_false(
       identical(
         plot_before,
@@ -396,25 +362,19 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
   }
 )
 
 testthat::test_that(
-  "e2e - tm_g_pp_patient_timeline: Deselecting aerelday_start throws validation error.",
+  "e2e - tm_g_pp_patient_timeline: Deselecting aerelday_start changes plot and doesn't throw validation error.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_patient_timeline()
-    app_driver$set_active_module_input("aerelday_start-dataset_ADAE_singleextract-select", NULL)
-    testthat::expect_identical(app_driver$get_active_module_plot_output("myplot"), character(0))
-    testthat::expect_identical(
-      app_driver$get_text(
-        app_driver$namespaces(TRUE)$module("aerelday_start-dataset_ADAE_singleextract-select_input > div > span")
-      ),
-      "Please add AE start date."
-    )
-    app_driver$expect_validation_error()
-    app_driver$stop()
+    withr::defer(app_driver$stop())
+    plot_before <- app_driver$get_active_module_plot_output("patient_timeline_plot")
+    set_teal_picks_slot(app_driver, "aerelday_start", "variables", character(0L))
+    testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("patient_timeline_plot")))
+    app_driver$expect_no_validation_error()
   }
 )
 
@@ -423,8 +383,9 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_patient_timeline()
+    withr::defer(app_driver$stop())
     plot_before <- app_driver$get_active_module_plot_output("patient_timeline_plot")
-    app_driver$set_active_module_input("aerelday_end-dataset_ADAE_singleextract-select", "ASTDY")
+    set_teal_picks_slot(app_driver, "aerelday_end", "variables", "ASTDY")
     testthat::expect_false(
       identical(
         plot_before,
@@ -432,25 +393,19 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
   }
 )
 
 testthat::test_that(
-  "e2e - tm_g_pp_patient_timeline: Deselecting aerelday_end throws validation error.",
+  "e2e - tm_g_pp_patient_timeline: Deselecting aerelday_end changes plot and doesn't throw validation error.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_patient_timeline()
-    app_driver$set_active_module_input("aerelday_end-dataset_ADAE_singleextract-select", NULL)
-    testthat::expect_identical(app_driver$get_active_module_plot_output("myplot"), character(0))
-    testthat::expect_identical(
-      app_driver$get_text(
-        app_driver$namespaces(TRUE)$module("aerelday_end-dataset_ADAE_singleextract-select_input > div > span")
-      ),
-      "Please add AE end date."
-    )
-    app_driver$expect_validation_error()
-    app_driver$stop()
+    withr::defer(app_driver$stop())
+    plot_before <- app_driver$get_active_module_plot_output("patient_timeline_plot")
+    set_teal_picks_slot(app_driver, "aerelday_end", "variables", character(0L))
+    testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("patient_timeline_plot")))
+    app_driver$expect_no_validation_error()
   }
 )
 
@@ -459,9 +414,10 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_patient_timeline()
+    withr::defer(app_driver$stop())
     app_driver$set_active_module_input("relday_x_axis", FALSE)
     plot_before <- app_driver$get_active_module_plot_output("patient_timeline_plot")
-    app_driver$set_active_module_input("dstime_start-dataset_ADCM_singleextract-select", "TRTEDTM")
+    set_teal_picks_slot(app_driver, "dstime_start", "variables", "TRTEDTM")
     testthat::expect_false(
       identical(
         plot_before,
@@ -469,26 +425,20 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
   }
 )
 
 testthat::test_that(
-  "e2e - tm_g_pp_patient_timeline: Deselecting dstime_start throws validation error.",
+  "e2e - tm_g_pp_patient_timeline: Deselecting dstime_start changes plot and doesn't throw validation error.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_patient_timeline()
+    withr::defer(app_driver$stop())
     app_driver$set_active_module_input("relday_x_axis", FALSE)
-    app_driver$set_active_module_input("dstime_start-dataset_ADCM_singleextract-select", NULL)
-    testthat::expect_identical(app_driver$get_active_module_plot_output("myplot"), character(0))
-    testthat::expect_identical(
-      app_driver$get_text(
-        app_driver$namespaces(TRUE)$module("dstime_start-dataset_ADCM_singleextract-select_input > div > span")
-      ),
-      "Please add Medication start date."
-    )
-    app_driver$expect_validation_error()
-    app_driver$stop()
+    plot_before <- app_driver$get_active_module_plot_output("patient_timeline_plot")
+    set_teal_picks_slot(app_driver, "dstime_start", "variables", character(0L))
+    testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("patient_timeline_plot")))
+    app_driver$expect_no_validation_error()
   }
 )
 
@@ -497,9 +447,10 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_patient_timeline()
+    withr::defer(app_driver$stop())
     app_driver$set_active_module_input("relday_x_axis", FALSE)
     plot_before <- app_driver$get_active_module_plot_output("patient_timeline_plot")
-    app_driver$set_active_module_input("dstime_end-dataset_ADCM_singleextract-select", "TRTEDTM")
+    set_teal_picks_slot(app_driver, "dstime_end", "variables", "TRTEDTM")
     testthat::expect_false(
       identical(
         plot_before,
@@ -507,26 +458,20 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
   }
 )
 
 testthat::test_that(
-  "e2e - tm_g_pp_patient_timeline: Deselecting dstime_end throws validation error.",
+  "e2e - tm_g_pp_patient_timeline: Deselecting dstime_end changes plot and doesn't throw validation error.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_patient_timeline()
+    withr::defer(app_driver$stop())
     app_driver$set_active_module_input("relday_x_axis", FALSE)
-    app_driver$set_active_module_input("dstime_end-dataset_ADCM_singleextract-select", NULL)
-    testthat::expect_identical(app_driver$get_active_module_plot_output("myplot"), character(0))
-    testthat::expect_identical(
-      app_driver$get_text(
-        app_driver$namespaces(TRUE)$module("dstime_end-dataset_ADCM_singleextract-select_input > div > span")
-      ),
-      "Please add Medication end date."
-    )
-    app_driver$expect_validation_error()
-    app_driver$stop()
+    plot_before <- app_driver$get_active_module_plot_output("patient_timeline_plot")
+    set_teal_picks_slot(app_driver, "dstime_end", "variables", character(0L))
+    testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("patient_timeline_plot")))
+    app_driver$expect_no_validation_error()
   }
 )
 
@@ -535,8 +480,9 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_patient_timeline()
+    withr::defer(app_driver$stop())
     plot_before <- app_driver$get_active_module_plot_output("patient_timeline_plot")
-    app_driver$set_active_module_input("dsrelday_start-dataset_ADCM_singleextract-select", "AENDY")
+    set_teal_picks_slot(app_driver, "dsrelday_start", "variables", "AENDY")
     testthat::expect_false(
       identical(
         plot_before,
@@ -544,25 +490,19 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
   }
 )
 
 testthat::test_that(
-  "e2e - tm_g_pp_patient_timeline: Deselecting dsrelday_start throws validation error.",
+  "e2e - tm_g_pp_patient_timeline: Deselecting dsrelday_start changes plot and doesn't throw validation error.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_patient_timeline()
-    app_driver$set_active_module_input("dsrelday_start-dataset_ADCM_singleextract-select", NULL)
-    testthat::expect_identical(app_driver$get_active_module_plot_output("myplot"), character(0))
-    testthat::expect_identical(
-      app_driver$get_text(
-        app_driver$namespaces(TRUE)$module("dsrelday_start-dataset_ADCM_singleextract-select_input > div > span")
-      ),
-      "Please add Medication start date."
-    )
-    app_driver$expect_validation_error()
-    app_driver$stop()
+    withr::defer(app_driver$stop())
+    plot_before <- app_driver$get_active_module_plot_output("patient_timeline_plot")
+    set_teal_picks_slot(app_driver, "dsrelday_start", "variables", character(0L))
+    testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("patient_timeline_plot")))
+    app_driver$expect_no_validation_error()
   }
 )
 
@@ -571,8 +511,9 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_patient_timeline()
+    withr::defer(app_driver$stop())
     plot_before <- app_driver$get_active_module_plot_output("patient_timeline_plot")
-    app_driver$set_active_module_input("dsrelday_end-dataset_ADCM_singleextract-select", "ASTDY")
+    set_teal_picks_slot(app_driver, "dsrelday_end", "variables", "ASTDY")
     testthat::expect_false(
       identical(
         plot_before,
@@ -580,24 +521,18 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
   }
 )
 
 testthat::test_that(
-  "e2e - tm_g_pp_patient_timeline: Deselecting dsrelday_end throws validation error.",
+  "e2e - tm_g_pp_patient_timeline: Deselecting dsrelday_end changes plot and doesn't throw validation error.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_patient_timeline()
-    app_driver$set_active_module_input("dsrelday_end-dataset_ADCM_singleextract-select", NULL)
-    testthat::expect_identical(app_driver$get_active_module_plot_output("myplot"), character(0))
-    testthat::expect_identical(
-      app_driver$get_text(
-        app_driver$namespaces(TRUE)$module("dsrelday_end-dataset_ADCM_singleextract-select_input > div > span")
-      ),
-      "Please add Medication end date."
-    )
-    app_driver$expect_validation_error()
-    app_driver$stop()
+    withr::defer(app_driver$stop())
+    plot_before <- app_driver$get_active_module_plot_output("patient_timeline_plot")
+    set_teal_picks_slot(app_driver, "dsrelday_end", "variables", character(0L))
+    testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("patient_timeline_plot")))
+    app_driver$expect_no_validation_error()
   }
 )
