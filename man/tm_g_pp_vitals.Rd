@@ -9,9 +9,10 @@ tm_g_pp_vitals(
   dataname = "ADVS",
   parentname = "ADSL",
   patient_col = "USUBJID",
-  paramcd = teal.picks::variables("PARAMCD"),
-  aval_var = teal.picks::variables("AVAL"),
-  xaxis = teal.picks::variables("ADY"),
+  paramcd = NULL,
+  aval = lifecycle::deprecated(),
+  aval_var = NULL,
+  xaxis = NULL,
   font_size = c(12L, 12L, 25L),
   plot_height = c(700L, 200L, 2000L),
   plot_width = NULL,
@@ -34,10 +35,12 @@ tm_g_pp_vitals(
 \item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
 available choices and preselected option for the parameter code variable from \code{dataname}.}
 
+\item{aval}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use the \code{aval_var} argument instead.}
+
 \item{aval_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
 all available choices and pre-selected option for the analysis variable.}
 
-\item{xaxis}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
+\item{xaxis}{(\link[teal.picks:picks]{teal.picks::variables} or \code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
 available choices and preselected option for the time variable from \code{dataname} to be put on the plot x-axis.}
 
 \item{font_size}{(\code{numeric})\cr numeric vector of length 3 of current, minimum and maximum font size values.}
@@ -144,18 +147,9 @@ app <- init(
       parentname = "ADSL",
       patient_col = "USUBJID",
       plot_height = c(600L, 200L, 2000L),
-      paramcd = choices_selected(
-        choices = variable_choices(ADVS, "PARAMCD"),
-        selected = "PARAMCD"
-      ),
-      xaxis = choices_selected(
-        choices = variable_choices(ADVS, "ADY"),
-        selected = "ADY"
-      ),
-      aval_var = choices_selected(
-        choices = variable_choices(ADVS, "AVAL"),
-        selected = "AVAL"
-      )
+      paramcd = teal.picks::variables("PARAMCD"),
+      aval_var = teal.picks::variables("AVAL"),
+      xaxis = teal.picks::variables("ADY"),
     )
   )
 )
@@ -167,8 +161,8 @@ if (interactive()) {
 \section{Examples in Shinylive}{
 \describe{
   \item{example-1}{
-    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo6AIIAIgDKADKROqQwBDFwAB4xUPyi1KUVlQBq1Q1NLe2d-JqiSgC+QQBWRLkxANZwrKL5yTap-HDGUMKkMQT8tKIti8trG8DQ8JsFcgC6rhBVdQ0FwMAKYB+1P7PV7vQbDXbJH5-KpDIEgpRoVANXKZdh9Ao6AC8OgKuD6fCEIlEWJ0BOEYjREDKZSaMQA5jF0DFNJluJs+tSdNQoPQ4NQSX8BqzqNM8BzqQV7rpsdCwX88VTOTpUCwKKQpQL-jVAWLFZyVRo1SciPyZWAHNUHAAhABSAElKvLxWVUP5jlk4LQ6VlSCSCOwAGwABiDtSKACYQ2GdJGo3IFUrlSxYKc-VklgQxDFRHy4Oo4PxKYmygR0zIxCTNCxaDyRCcy5nNjDqkU-gAFcpYcoAWQAwo6wPHndScyJ8-xNR2u32B8Oh3rqW0oG1zmmM1nR3nyIXhyWGxXsVXGDX6HXS+um2DW1qAJp-efFnSb8eaqp3sBzhNKqBV2JHtflqI2a5uORbFuegGVtWtZwPWF7sM217lAM5Q6g+xbPtur4oTqc7ikEZRBEEtDGDo7C5OQagaNo1g2CUiqiDkECsOU6DsIiAAkgi0EUnE5ow2iBLMShgDMzxAA}{Open in Shinylive}
-    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo6AIIAIgDKADKROqQwBDFwAB4xUPyi1KUVlQBq1Q1NLe2d-JqiSgC+QQBWRLkxANZwrKL5yTap-HDGUMKkMQT8tKIti8trG8DQ8JsFcgC6rhBVdQ0FwMAKYB+1P7PV7vQbDXbJH5-KpDIEgpRoVANXKZdh9Ao6AC8OgKuD6fCEIlEWJ0BOEYjREDKZSaMQA5jF0DFNJluJs+tSdNQoPQ4NQSX8BqzqNM8BzqQV7rpsdCwX88VTOTpUCwKKQpQL-jVAWLFZyVRo1SciPyZWAHNUHAAhABSAElKvLxWVUP5jlk4LQ6VlSCSCOwAGwABiDtSKACYQ2GdJGo3IFUrlSxYKc-VklgQxDFRHy4Oo4PxKYmygR0zIxCTNCxaDyRCcy5nNjDqkU-gAFcpYcoAWQAwo6wPHndScyJ8-xNR2u32B8Oh3rqW0oG1zmmM1nR3nyIXhyWGxXsVXGDX6HXS+um2DW1qAJp-efFnSb8eaqp3sBzhNKqBV2JHtflqI2a5uORbFuegGVtWtZwPWF7sM217lAM5Q6g+xbPtur4oTqc7ikEZRBEEtDGDo7C5OQagaNo1g2CUiqiDkECsOU6DsIiAAkgi0EUnE5ow2iBLMShgDMzxAA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo6AIIAIgDKADKROqQwBDFwAB4xUPyi1KUVlQBq1Q1NLe2d-JqiSgC+QQBWRLkxANZwrKL5yTap-HDGUMKkMQT8tKIti8trG8DQ8JsFcgC6rhBVdQ0FwMAKYB+1P7PV7vQbDXbJH5-KpDIEgpRoVANXKZdh9Ao6AC8OgKuD6fCEIlEWJ0BOEYjREDKZSaMQA5jF0DFNJluJs+tSdNQoPQ4NQSX8BqzqNM8BzqQV7rpsdCwX88VTOTpUCwKKQpQL-jVAWLFZyVRo1SciPyZWAHNUHAAhABSAElKvLxWVUP5jlk4LQ6VlSCSCOwAGwABiDtSKACYQ2GdJGo3IFUrlSxYKcSdEMKgZCtRIhEJoWLQeUS0WAAArlLDlACyAGFHWB486dFB87F84w03BuBmszm8wWixToQNyjrG3rqW0oG1zp3u5mCNnc+3C-Ri7KAJp-cecoJlIJBWjGHTsXLkNQabTWGwlRWiHIQVjldDsREAEkEtCK79Eqm0gVmJQwBmZ4gA}{Open in Shinylive}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo6AIIAIgDKADKROqQwBDFwAB4xUPyi1KUVlQBq1Q1NLe2d-JqiSgC+QQBWRLkxANZwrKL5yTap-HDGUMKkMQT8tKIti8trG8DQ8JsFcgC6rhBVdQ0FwMAKYB+1P7PV7vQbDXbJH5-KpDIEgpRoVANXKZdh9Ao6AC8OgKuD6fCEIlEWJ0BOEYjREDKZSaMQA5jF0DFNJluJs+tSdNQoPQ4NQSX8BqzqNM8BzqQV7rpsdCwX88VTOTpUCwKKQpQL-jVAWLFZyVRo1SciPyZWAHNUHAAhABSAElKvLxWVUP5jlk4LQ6VlSCSCOwAGwABiDtSKACYQ2GdJGo3IFUrlSxYKcSdEMKgZCtRIhEJoWLQeUS0WAAArlLDlACyAGFHWB486dFB87F84w03BuBmszm8wWixToQNyjrG3rqW0oG1zp3u5mCNnc+3C-Ri7KAJp-cecoJlIJBWjGHTsXLkNQabTWGwlRWiHIQVjldDsREAEkEtCK79Eqm0gVmJQwBmZ4gA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
     \if{html}{\out{<a style='height: 800px; display: block;'></a>}}
   }
 }
