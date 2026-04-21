@@ -35,6 +35,7 @@ app_driver_tm_a_mmrm <- function(fit_model = TRUE) {
         arm_var = teal.picks::variables(c("ARM", "ARMCD")),
         visit_var = teal.picks::variables(c("AVISIT", "AVISITN")),
         arm_ref_comp = arm_ref_comp,
+        paramcd_var = teal.picks::variables("PARAMCD"),
         paramcd_values = paramcd_values,
         cov_var = teal.picks::variables(c("BASE", "AGE", "SEX", teal.picks::interaction_vars("BASE", "AVISIT")), NULL),
         method = teal.picks::values(c("Satterthwaite", "Kenward-Roger", "Kenward-Roger-Linear"), "Satterthwaite"),
