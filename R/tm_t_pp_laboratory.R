@@ -196,7 +196,6 @@ tm_t_pp_laboratory <- function(label,
                                transformators = list()) {
   message("Initializing tm_t_pp_laboratory")
 
-  # Compatibility: accept choices_selected and convert
   timepoints <- deprecate_pick_variables_arg(timepoints, "timepoints")
   aval_var <- deprecate_pick_variables_arg(aval_var, "aval_var")
   avalu_var <- deprecate_pick_variables_arg(avalu_var, "avalu_var")
