@@ -3,9 +3,9 @@ app_driver_tm_g_forest_rsp <- function() {
     library(dplyr)
     library(tern)
     ADSL <- teal.data::rADSL
-    ADRS <- teal.data::rADRS %>%
-      mutate(AVALC = d_onco_rsp_label(AVALC)) %>%
-      with_label("Character Result/Finding") %>%
+    ADRS <- teal.data::rADRS |>
+      mutate(AVALC = d_onco_rsp_label(AVALC)) |>
+      with_label("Character Result/Finding") |>
       filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")
   })
   teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
@@ -21,6 +21,12 @@ app_driver_tm_g_forest_rsp <- function() {
     )
   )
 
+  testthat::expect_warning(
+    paramcd_value <- teal.picks::values(selected = "INVET", multiple = FALSE),
+    "doesn't guarantee that `selected` is a subset of `choices`.",
+    fixed = TRUE
+  )
+
   init_teal_app_driver(
     teal::init(
       data = data,
@@ -29,30 +35,23 @@ app_driver_tm_g_forest_rsp <- function() {
           label = "Forest Response",
           dataname = "ADRS",
           parentname = "ADSL",
-          arm_var = teal.transform::choices_selected(
-            teal.transform::variable_choices(data[["ADSL"]], c("ARM", "ARMCD")),
-            "ARMCD"
-          ),
+          arm_var = teal.picks::variables(c("ARM", "ARMCD"), selected = "ARMCD", multiple = FALSE),
           arm_ref_comp = arm_ref_comp,
-          paramcd = teal.transform::choices_selected(
-            teal.transform::value_choices(data[["ADRS"]], "PARAMCD", "PARAM"),
-            "INVET"
+          paramcd_var = teal.picks::variables("PARAMCD"),
+          paramcd_value = paramcd_value,
+          aval_var = teal.picks::variables("AVALC", fixed = TRUE),
+          subgroup_var = teal.picks::variables(
+            c("BMRKR2", "SEX"),
+            selected = c("BMRKR2", "SEX"),
+            multiple = TRUE
           ),
-          aval_var = teal.transform::choices_selected(
-            teal.transform::variable_choices(data[["ADRS"]], "AVALC"),
-            "AVALC",
-            fixed = TRUE
-          ),
-          subgroup_var = teal.transform::choices_selected(
-            teal.transform::variable_choices(data[["ADSL"]], names(data[["ADSL"]])),
-            c("BMRKR2", "SEX")
-          ),
-          strata_var = teal.transform::choices_selected(
-            teal.transform::variable_choices(data[["ADSL"]], c("STRATA1", "STRATA2")),
-            "STRATA2"
+          strata_var = teal.picks::variables(
+            c("STRATA1", "STRATA2"),
+            selected = "STRATA2",
+            multiple = TRUE
           ),
           fixed_symbol_size = TRUE,
-          conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8, 2), 0.95, keep_order = TRUE),
+          conf_level = teal.picks::values(c("0.95", "0.9", "0.8"), "0.95", keep_order = TRUE),
           plot_height = c(600L, 200L, 2000L),
           default_responses = list(
             BESRSPI = list(
@@ -90,11 +89,10 @@ testthat::test_that("e2e - tm_g_forest_rsp: Module initializes in teal without e
   skip_if_too_deep(5)
 
   app_driver <- app_driver_tm_g_forest_rsp()
+  withr::defer(app_driver$stop())
   app_driver$expect_no_shiny_error()
   app_driver$expect_no_validation_error()
   app_driver$expect_visible(app_driver$namespaces(TRUE)$module("myplot-plot_main"))
-
-  app_driver$stop()
 })
 
 testthat::test_that(
@@ -105,38 +103,41 @@ testthat::test_that(
     skip_if_too_deep(5)
 
     app_driver <- app_driver_tm_g_forest_rsp()
+    withr::defer(app_driver$stop())
 
     testthat::expect_equal(
       app_driver$get_text("a.nav-link.active"),
       "Forest Response"
     )
 
+    exported_values <- app_driver$get_values()$export
+    names(exported_values) <- gsub(
+      sprintf("%s-", app_driver$namespaces()$module(NULL)), "", names(exported_values),
+      fixed = TRUE
+    )
+
     testthat::expect_equal(
-      app_driver$get_active_module_input("arm_var-dataset_ADSL_singleextract-select"),
+      exported_values[["arm_var-picks_resolved"]]$variables$selected,
       "ARMCD"
     )
-
     testthat::expect_equal(
-      app_driver$get_active_module_input("paramcd-dataset_ADRS_singleextract-filter1-vals"),
+      exported_values[["paramcd-picks_resolved"]]$values$selected,
       "INVET"
     )
-
     testthat::expect_equal(
-      app_driver$get_active_module_input("aval_var-dataset_ADRS_singleextract-select"),
+      exported_values[["aval_var-picks_resolved"]]$variables$selected,
       "AVALC"
     )
-
     testthat::expect_equal(
       app_driver$get_active_module_input("responders"),
       c("Complete Response (CR)", "Partial Response (PR)")
     )
-
     testthat::expect_equal(
-      app_driver$get_active_module_input("subgroup_var-dataset_ADSL_singleextract-select"),
-      c("SEX", "BMRKR2")
+      sort(exported_values[["subgroup_var-picks_resolved"]]$variables$selected),
+      sort(c("SEX", "BMRKR2"))
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("strata_var-dataset_ADSL_singleextract-select"),
+      exported_values[["strata_var-picks_resolved"]]$variables$selected,
       "STRATA2"
     )
     testthat::expect_equal(
@@ -152,183 +153,198 @@ testthat::test_that(
       app_driver$get_active_module_input("font_size"),
       15
     )
-
-    app_driver$stop()
   }
 )
 
 testthat::test_that("e2e - tm_g_forest_rsp: Selecting arm_var changes plot and doesn't throw validation errors.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_forest_rsp()
+  withr::defer(app_driver$stop())
   plot_before <- app_driver$get_active_module_plot_output("myplot")
-  app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", "ARM")
+  set_teal_picks_slot(app_driver, "arm_var", "variables", "ARM")
   testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
   app_driver$expect_no_validation_error()
-  app_driver$stop()
 })
 
 testthat::test_that("e2e - tm_g_forest_rsp: Deselecting arm_var throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_forest_rsp()
-  app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", NULL)
+  withr::defer(app_driver$stop())
+  set_teal_picks_slot(app_driver, "arm_var", "variables", character(0L))
+  testthat::expect_identical(app_driver$get_active_module_plot_output("myplot"), character(0))
   app_driver$expect_validation_error()
   testthat::expect_match(
     app_driver$get_text(app_driver$namespaces(TRUE)$module("myplot-plot_out_main")),
-    "Treatment variable must be selected"
+    "A treatment variable is required.",
+    fixed = TRUE
   )
-  app_driver$stop()
 })
 
 testthat::test_that("e2e - tm_g_forest_rsp: Selecting paramcd changes plot and doesn't throw validation errors.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_forest_rsp()
+  withr::defer(app_driver$stop())
   plot_before <- app_driver$get_active_module_plot_output("myplot")
-  app_driver$set_active_module_input("paramcd-dataset_ADRS_singleextract-filter1-vals", "OVRINV")
+  set_teal_picks_slot(app_driver, "paramcd", "values", "OVRINV")
   testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
   app_driver$expect_no_validation_error()
-  app_driver$stop()
 })
 
 testthat::test_that("e2e - tm_g_forest_rsp: Deselecting paramcd throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_forest_rsp()
-  app_driver$set_active_module_input("paramcd-dataset_ADRS_singleextract-filter1-vals", NULL)
+  withr::defer(app_driver$stop())
+  set_teal_picks_slot(app_driver, "paramcd", "values", character(0L))
+  testthat::expect_identical(app_driver$get_active_module_plot_output("myplot"), character(0))
   app_driver$expect_validation_error()
   testthat::expect_match(
     app_driver$get_text(app_driver$namespaces(TRUE)$module("myplot-plot_out_main")),
-    "Please select Endpoint filter"
+    "Please select an endpoint (PARAMCD).",
+    fixed = TRUE
   )
-  app_driver$stop()
 })
 
 testthat::test_that("e2e - tm_g_forest_rsp: Selecting responders changes plot and doesn't throw validation errors.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_forest_rsp()
+  withr::defer(app_driver$stop())
   plot_before <- app_driver$get_active_module_plot_output("myplot")
   app_driver$set_active_module_input("responders", "Complete Response (CR)")
   testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
   app_driver$expect_no_validation_error()
-  app_driver$stop()
 })
 
 testthat::test_that("e2e - tm_g_forest_rsp: Deselecting responders throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_forest_rsp()
+  withr::defer(app_driver$stop())
   app_driver$set_active_module_input("responders", NULL)
+  testthat::expect_identical(app_driver$get_active_module_plot_output("myplot"), character(0))
   app_driver$expect_validation_error()
   testthat::expect_match(
     app_driver$get_text(app_driver$namespaces(TRUE)$module("myplot-plot_out_main")),
-    "`Responders` field is empty"
+    "`Responders` field is empty.",
+    fixed = TRUE
   )
-  app_driver$stop()
 })
 
 testthat::test_that("e2e - tm_g_forest_rsp: Selecting subgroup_var changes plot and doesn't throw validation errors.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_forest_rsp()
+  withr::defer(app_driver$stop())
   plot_before <- app_driver$get_active_module_plot_output("myplot")
-  app_driver$set_active_module_input("subgroup_var-dataset_ADSL_singleextract-select", c("SEX", "BMRKR2", "AGEU"))
+  set_teal_picks_slot(app_driver, "subgroup_var", "variables", c("SEX", "BMRKR2", "AGEU"))
   testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
   app_driver$expect_no_validation_error()
-  app_driver$stop()
 })
 
 testthat::test_that("e2e - tm_g_forest_rsp: Selecting a non-factors column in subgroup_var throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_forest_rsp()
-  app_driver$set_active_module_input("subgroup_var-dataset_ADSL_singleextract-select", c("SEX", "AGE"))
+  withr::defer(app_driver$stop())
+  set_teal_picks_slot(app_driver, "subgroup_var", "variables", c("SEX", "AGE"))
   app_driver$expect_validation_error()
   testthat::expect_match(
     app_driver$get_text(app_driver$namespaces(TRUE)$module("myplot-plot_out_main")),
-    "Not all subgroup variables are factors"
+    "Not all subgroup variables are factors.",
+    fixed = TRUE
   )
-  app_driver$stop()
 })
 
 testthat::test_that("e2e - tm_g_forest_rsp: Deselecting subgroup_var changes plot and doesn't throw validation errors.", { # nolint: line_length
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_forest_rsp()
+  withr::defer(app_driver$stop())
   plot_before <- app_driver$get_active_module_plot_output("myplot")
-  app_driver$set_active_module_input("subgroup_var-dataset_ADSL_singleextract-select", NULL)
+  set_teal_picks_slot(app_driver, "subgroup_var", "variables", character(0L))
   testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
   app_driver$expect_no_validation_error()
-  app_driver$stop()
 })
 
 testthat::test_that("e2e - tm_g_forest_rsp: Selecting strata_var changes plot and doesn't throw validation errors.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_forest_rsp()
+  withr::defer(app_driver$stop())
   plot_before <- app_driver$get_active_module_plot_output("myplot")
-  app_driver$set_active_module_input("strata_var-dataset_ADSL_singleextract-select", "STRATA1")
+  set_teal_picks_slot(app_driver, "strata_var", "variables", "STRATA1")
   testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
   app_driver$expect_no_validation_error()
-  app_driver$stop()
 })
 
 testthat::test_that("e2e - tm_g_forest_rsp: Deselecting strata_var changes plot and doesn't throw validation errors.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_forest_rsp()
+  withr::defer(app_driver$stop())
   plot_before <- app_driver$get_active_module_plot_output("myplot")
-  app_driver$set_active_module_input("strata_var-dataset_ADSL_singleextract-select", NULL)
+  set_teal_picks_slot(app_driver, "strata_var", "variables", character(0L))
   testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
   app_driver$expect_no_validation_error()
-  app_driver$stop()
 })
 
 testthat::test_that("e2e - tm_g_forest_rsp: Selecting conf_level changes plot and doesn't throw validation errors.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_forest_rsp()
+  withr::defer(app_driver$stop())
   plot_before <- app_driver$get_active_module_plot_output("myplot")
   app_driver$set_active_module_input("conf_level", "0.9")
   testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
   app_driver$expect_no_validation_error()
-  app_driver$stop()
 })
 
-testthat::test_that("e2e - tm_g_forest_rsp: Deselecting conf_level or selecting outside the range of 0-1 throws validation error.", { # nolint: line_length
+testthat::test_that("e2e - tm_g_forest_rsp: Deselecting conf_level throws validation error.", { # nolint: line_length
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_forest_rsp()
+  withr::defer(app_driver$stop())
   app_driver$set_active_module_input("conf_level", NULL)
+  testthat::expect_identical(app_driver$get_active_module_plot_output("myplot"), character(0))
   app_driver$expect_validation_error()
   testthat::expect_match(
     app_driver$get_text(app_driver$namespaces(TRUE)$module("myplot-plot_out_main")),
-    "Please choose a confidence level between 0 and 1"
+    "Please choose a confidence level.",
+    fixed = TRUE
   )
-  app_driver$set_active_module_input("conf_level", 2)
+})
+
+testthat::test_that("e2e - tm_g_forest_rsp: Selecting conf_level outside range 0-1 throws validation error.", { # nolint: line_length
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_g_forest_rsp()
+  withr::defer(app_driver$stop())
+  app_driver$set_active_module_input("conf_level", "2")
+  testthat::expect_identical(app_driver$get_active_module_plot_output("myplot"), character(0))
   app_driver$expect_validation_error()
   testthat::expect_match(
     app_driver$get_text(app_driver$namespaces(TRUE)$module("myplot-plot_out_main")),
-    "Please choose a confidence level between 0 and 1"
+    "Confidence level must be between 0 and 1.",
+    fixed = TRUE
   )
-  app_driver$stop()
 })
 
 testthat::test_that("e2e - tm_g_forest_rsp: Unsetting fixed_symbol_size changes plot and doesn't throw validation errors.", { # nolint: line_length
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_forest_rsp()
+  withr::defer(app_driver$stop())
   plot_before <- app_driver$get_active_module_plot_output("myplot")
   app_driver$set_active_module_input("fixed_symbol_size", FALSE)
   testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
   app_driver$expect_no_validation_error()
-  app_driver$stop()
 })
 
 testthat::test_that("e2e - tm_g_forest_rsp: Changing rel_width_forest changes plot and doesn't throw validation errors.", { # nolint: line_length
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_forest_rsp()
+  withr::defer(app_driver$stop())
   plot_before <- app_driver$get_active_module_plot_output("myplot")
   app_driver$set_active_module_input("rel_width_forest", 30)
   testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
   app_driver$expect_no_validation_error()
-  app_driver$stop()
 })
 
 testthat::test_that("e2e - tm_g_forest_rsp: Changing font_size changes plot and doesn't throw validation errors.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_forest_rsp()
+  withr::defer(app_driver$stop())
   plot_before <- app_driver$get_active_module_plot_output("myplot")
   app_driver$set_active_module_input("font_size", 25)
   testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
   app_driver$expect_no_validation_error()
-  app_driver$stop()
 })
