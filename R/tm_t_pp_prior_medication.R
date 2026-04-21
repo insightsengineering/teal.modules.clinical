@@ -101,22 +101,10 @@ template_prior_medication <- function(dataname = "ANL",
 #'       dataname = "ADCM",
 #'       parentname = "ADSL",
 #'       patient_col = "USUBJID",
-#'       atirel = choices_selected(
-#'         choices = variable_choices(ADCM, "ATIREL"),
-#'         selected = "ATIREL"
-#'       ),
-#'       cmdecod = choices_selected(
-#'         choices = variable_choices(ADCM, "CMDECOD"),
-#'         selected = "CMDECOD"
-#'       ),
-#'       cmindc = choices_selected(
-#'         choices = variable_choices(ADCM, "CMINDC"),
-#'         selected = "CMINDC"
-#'       ),
-#'       cmstdy = choices_selected(
-#'         choices = variable_choices(ADCM, "ASTDY"),
-#'         selected = "ASTDY"
-#'       )
+#'       atirel = teal.picks::variables("ATIREL", fixed = TRUE),
+#'       cmdecod = teal.picks::variables("CMDECOD", fixed = TRUE),
+#'       cmindc = teal.picks::variables("CMINDC", fixed = TRUE),
+#'       cmstdy = teal.picks::variables("ASTDY", fixed = TRUE),
 #'     )
 #'   )
 #' )
@@ -129,10 +117,10 @@ tm_t_pp_prior_medication <- function(label,
                                      dataname = "ADCM",
                                      parentname = "ADSL",
                                      patient_col = "USUBJID",
-                                     atirel = teal.picks::variables("ATIREL", fixed = TRUE),
-                                     cmdecod = teal.picks::variables("CMDECOD", fixed = TRUE),
-                                     cmindc = teal.picks::variables("CMINDC", fixed = TRUE),
-                                     cmstdy = teal.picks::variables("ASTDY", fixed = TRUE),
+                                     atirel = NULL,
+                                     cmdecod = NULL,
+                                     cmindc = NULL,
+                                     cmstdy = NULL,
                                      pre_output = NULL,
                                      post_output = NULL,
                                      transformators = list()) {
@@ -146,28 +134,23 @@ tm_t_pp_prior_medication <- function(label,
 
   message("Initializing tm_t_pp_prior_medication")
 
-  # Compatibility: accept choices_selected and convert
-  atirel <- deprecate_pick_variables_arg(atirel, "atirel")
-  cmdecod <- deprecate_pick_variables_arg(cmdecod, "cmdecod")
-  cmindc <- deprecate_pick_variables_arg(cmindc, "cmindc")
-  cmstdy <- deprecate_pick_variables_arg(cmstdy, "cmstdy")
+  atirel <- deprecate_pick_variables_arg(atirel, "atirel", null.ok = TRUE)
+  cmdecod <- deprecate_pick_variables_arg(cmdecod, "cmdecod", null.ok = TRUE)
+  cmindc <- deprecate_pick_variables_arg(cmindc, "cmindc", null.ok = TRUE)
+  cmstdy <- deprecate_pick_variables_arg(cmstdy, "cmstdy", null.ok = TRUE)
 
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_string(patient_col)
-  checkmate::assert_class(atirel, "variables", null.ok = TRUE)
-  checkmate::assert_class(cmdecod, "variables", null.ok = TRUE)
-  checkmate::assert_class(cmindc, "variables", null.ok = TRUE)
-  checkmate::assert_class(cmstdy, "variables", null.ok = TRUE)
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
 
   # Build picks bound to the dataset
-  if (!is.null(atirel))  atirel  <- teal.picks::picks(datasets(dataname, dataname), atirel)
+  if (!is.null(atirel)) atirel <- teal.picks::picks(datasets(dataname, dataname), atirel)
   if (!is.null(cmdecod)) cmdecod <- teal.picks::picks(datasets(dataname, dataname), cmdecod)
-  if (!is.null(cmindc))  cmindc  <- teal.picks::picks(datasets(dataname, dataname), cmindc)
-  if (!is.null(cmstdy))  cmstdy  <- teal.picks::picks(datasets(dataname, dataname), cmstdy)
+  if (!is.null(cmindc)) cmindc <- teal.picks::picks(datasets(dataname, dataname), cmindc)
+  if (!is.null(cmstdy)) cmstdy <- teal.picks::picks(datasets(dataname, dataname), cmstdy)
 
   args <- as.list(environment())
 
@@ -203,22 +186,30 @@ ui_t_prior_medication <- function(id,
         multiple = FALSE,
         options = shinyWidgets::pickerOptions(`liveSearch` = TRUE)
       ),
-      if (!is.null(cmdecod)) tags$div(
-        tags$label("Select the medication decoding column:"),
-        teal.picks::picks_ui(ns("cmdecod"), cmdecod)
-      ),
-      if (!is.null(atirel)) tags$div(
-        tags$label("Select ATIREL variable:"),
-        teal.picks::picks_ui(ns("atirel"), atirel)
-      ),
-      if (!is.null(cmindc)) tags$div(
-        tags$label("Select CMINDC variable:"),
-        teal.picks::picks_ui(ns("cmindc"), cmindc)
-      ),
-      if (!is.null(cmstdy)) tags$div(
-        tags$label("Select CMSTDY variable:"),
-        teal.picks::picks_ui(ns("cmstdy"), cmstdy)
-      )
+      if (!is.null(cmdecod)) {
+        tags$div(
+          tags$label("Select the medication decoding column:"),
+          teal.picks::picks_ui(ns("cmdecod"), cmdecod)
+        )
+      },
+      if (!is.null(atirel)) {
+        tags$div(
+          tags$label("Select ATIREL variable:"),
+          teal.picks::picks_ui(ns("atirel"), atirel)
+        )
+      },
+      if (!is.null(cmindc)) {
+        tags$div(
+          tags$label("Select CMINDC variable:"),
+          teal.picks::picks_ui(ns("cmindc"), cmindc)
+        )
+      },
+      if (!is.null(cmstdy)) {
+        tags$div(
+          tags$label("Select CMSTDY variable:"),
+          teal.picks::picks_ui(ns("cmstdy"), cmstdy)
+        )
+      }
     ),
     pre_output = pre_output,
     post_output = post_output
@@ -330,10 +321,10 @@ srv_t_prior_medication <- function(id,
 
       my_calls <- template_prior_medication(
         dataname = "ANL",
-        atirel  = anl_inputs$variables()$atirel,
+        atirel = anl_inputs$variables()$atirel,
         cmdecod = anl_inputs$variables()$cmdecod,
-        cmindc  = anl_inputs$variables()$cmindc,
-        cmstdy  = anl_inputs$variables()$cmstdy
+        cmindc = anl_inputs$variables()$cmindc,
+        cmstdy = anl_inputs$variables()$cmstdy
       )
 
       obj <- teal.code::eval_code(
