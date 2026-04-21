@@ -86,9 +86,9 @@ template_basic_info <- function(dataname = "ANL",
 #'       dataname = "ADSL",
 #'       patient_col = "USUBJID",
 #'       vars = teal.picks::variables(
-#'        selected = c("ARM", "AGE", "SEX", "COUNTRY", "RACE", "EOSSTT"),
-#'        multiple = TRUE
-#'      )
+#'         selected = c("ARM", "AGE", "SEX", "COUNTRY", "RACE", "EOSSTT"),
+#'         multiple = TRUE
+#'       )
 #'     )
 #'   )
 #' )
