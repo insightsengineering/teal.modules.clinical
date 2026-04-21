@@ -270,12 +270,12 @@ tm_g_pp_adverse_events <- function(label,
                                    dataname = "ADAE",
                                    parentname = "ADSL",
                                    patient_col = "USUBJID",
-                                   aeterm = teal.picks::variables("AETERM", fixed = TRUE),
-                                   tox_grade = teal.picks::variables("AETOXGR", fixed = TRUE),
-                                   causality = teal.picks::variables("AEREL", fixed = TRUE),
-                                   outcome = teal.picks::variables("AEOUT", fixed = TRUE),
-                                   action = teal.picks::variables("AEACN", fixed = TRUE),
-                                   time = teal.picks::variables("ASTDY", fixed = TRUE),
+                                   aeterm = teal.picks::variables("AETERM"),
+                                   tox_grade = teal.picks::variables("AETOXGR"),
+                                   causality = teal.picks::variables("AEREL"),
+                                   outcome = teal.picks::variables("AEOUT"),
+                                   action = teal.picks::variables("AEACN"),
+                                   time = teal.picks::variables("ASTDY"),
                                    decod = NULL,
                                    font_size = c(12L, 12L, 25L),
                                    plot_height = c(700L, 200L, 2000L),
@@ -287,7 +287,7 @@ tm_g_pp_adverse_events <- function(label,
                                    decorators = list()) {
   message("Initializing tm_g_pp_adverse_events.picks")
 
-  aeterm <- deprecate_pick_variables_arg(aeterm, "aeterm")
+  aeterm <- deprecate_pick_variables_arg(aeterm, "aeterm", TRUE)
   tox_grade <- deprecate_pick_variables_arg(tox_grade, "tox_grade", TRUE)
   causality <- deprecate_pick_variables_arg(causality, "causality", TRUE)
   outcome <- deprecate_pick_variables_arg(outcome, "outcome", TRUE)
@@ -299,12 +299,12 @@ tm_g_pp_adverse_events <- function(label,
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_string(patient_col)
-  checkmate::assert_class(aeterm, "variables")
-  checkmate::assert_class(tox_grade, "variables")
-  checkmate::assert_class(causality, "variables")
-  checkmate::assert_class(outcome, "variables")
-  checkmate::assert_class(action, "variables")
-  checkmate::assert_class(time, "variables")
+  checkmate::assert_class(aeterm, "variables", null.ok = TRUE)
+  checkmate::assert_class(tox_grade, "variables", null.ok = TRUE)
+  checkmate::assert_class(causality, "variables", null.ok = TRUE)
+  checkmate::assert_class(outcome, "variables", null.ok = TRUE)
+  checkmate::assert_class(action, "variables", null.ok = TRUE)
+  checkmate::assert_class(time, "variables", null.ok = TRUE)
   checkmate::assert_class(decod, "variables", null.ok = TRUE)
   checkmate::assert_numeric(font_size, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(font_size[1], lower = font_size[2], upper = font_size[3], .var.name = "font_size")
