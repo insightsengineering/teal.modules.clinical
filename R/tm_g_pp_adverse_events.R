@@ -161,19 +161,19 @@ template_adverse_events <- function(dataname = "ANL",
 #' @inheritParams module_arguments
 #' @inheritParams teal::module
 #' @inheritParams template_adverse_events
-#' @param aeterm ([teal.transform::choices_selected()])\cr object with all
+#' @param aeterm ([teal.picks::variables] or [teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `AETERM` variable from `dataname`.
-#' @param tox_grade ([teal.transform::choices_selected()])\cr object with all
+#' @param tox_grade ([teal.picks::variables] or [teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `AETOXGR` variable from `dataname`.
-#' @param causality ([teal.transform::choices_selected()])\cr object with all
+#' @param causality ([teal.picks::variables] or [teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `AEREL` variable from `dataname`.
-#' @param outcome ([teal.transform::choices_selected()])\cr object with all
+#' @param outcome ([teal.picks::variables] or [teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `AEOUT` variable from `dataname`.
-#' @param action ([teal.transform::choices_selected()])\cr object with all
+#' @param action ([teal.picks::variables] or [teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `AEACN` variable from `dataname`.
-#' @param time ([teal.transform::choices_selected()])\cr object with all
+#' @param time ([teal.picks::variables] or [teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `ASTDY` variable from `dataname`.
-#' @param decod ([teal.transform::choices_selected()])\cr object with all
+#' @param decod ([teal.picks::variables] or [teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `AEDECOD` variable from `dataname`.
 #'
 #' @inherit module_arguments return
@@ -233,30 +233,12 @@ template_adverse_events <- function(dataname = "ANL",
 #'       parentname = "ADSL",
 #'       patient_col = "USUBJID",
 #'       plot_height = c(600L, 200L, 2000L),
-#'       aeterm = choices_selected(
-#'         choices = variable_choices(ADAE, "AETERM"),
-#'         selected = "AETERM"
-#'       ),
-#'       tox_grade = choices_selected(
-#'         choices = variable_choices(ADAE, "AETOXGR"),
-#'         selected = "AETOXGR"
-#'       ),
-#'       causality = choices_selected(
-#'         choices = variable_choices(ADAE, "AEREL"),
-#'         selected = "AEREL"
-#'       ),
-#'       outcome = choices_selected(
-#'         choices = variable_choices(ADAE, "AEOUT"),
-#'         selected = "AEOUT"
-#'       ),
-#'       action = choices_selected(
-#'         choices = variable_choices(ADAE, "AEACN"),
-#'         selected = "AEACN"
-#'       ),
-#'       time = choices_selected(
-#'         choices = variable_choices(ADAE, "ASTDY"),
-#'         selected = "ASTDY"
-#'       ),
+#'       aeterm = teal.picks::variables("AETERM"),
+#'        tox_grade = teal.picks::variables("AETOXGR"),
+#'        causality = teal.picks::variables("AEREL"),
+#'        outcome = teal.picks::variables("AEOUT"),
+#'        action = teal.picks::variables("AEACN"),
+#'        time = teal.picks::variables("ASTDY"),
 #'       decod = NULL
 #'     )
 #'   )
@@ -270,12 +252,12 @@ tm_g_pp_adverse_events <- function(label,
                                    dataname = "ADAE",
                                    parentname = "ADSL",
                                    patient_col = "USUBJID",
-                                   aeterm = teal.picks::variables("AETERM"),
-                                   tox_grade = teal.picks::variables("AETOXGR"),
-                                   causality = teal.picks::variables("AEREL"),
-                                   outcome = teal.picks::variables("AEOUT"),
-                                   action = teal.picks::variables("AEACN"),
-                                   time = teal.picks::variables("ASTDY"),
+                                   aeterm = NULL,
+                                   tox_grade = NULL,
+                                   causality = NULL,
+                                   outcome = NULL,
+                                   action = NULL,
+                                   time = NULL,
                                    decod = NULL,
                                    font_size = c(12L, 12L, 25L),
                                    plot_height = c(700L, 200L, 2000L),
@@ -287,25 +269,18 @@ tm_g_pp_adverse_events <- function(label,
                                    decorators = list()) {
   message("Initializing tm_g_pp_adverse_events.picks")
 
-  aeterm <- deprecate_pick_variables_arg(aeterm, "aeterm", TRUE)
-  tox_grade <- deprecate_pick_variables_arg(tox_grade, "tox_grade", TRUE)
-  causality <- deprecate_pick_variables_arg(causality, "causality", TRUE)
-  outcome <- deprecate_pick_variables_arg(outcome, "outcome", TRUE)
-  action <- deprecate_pick_variables_arg(action, "action", TRUE)
-  time <- deprecate_pick_variables_arg(time, "time", TRUE)
-  decod <- deprecate_pick_variables_arg(decod, "decod", TRUE)
+  aeterm <- deprecate_pick_variables_arg(aeterm, "aeterm", null.ok = TRUE)
+  tox_grade <- deprecate_pick_variables_arg(tox_grade, "tox_grade", null.ok = TRUE)
+  causality <- deprecate_pick_variables_arg(causality, "causality", null.ok = TRUE)
+  outcome <- deprecate_pick_variables_arg(outcome, "outcome", null.ok = TRUE)
+  action <- deprecate_pick_variables_arg(action, "action", null.ok = TRUE)
+  time <- deprecate_pick_variables_arg(time, "time", null.ok = TRUE)
+  decod <- deprecate_pick_variables_arg(decod, "decod", null.ok = TRUE)
 
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_string(patient_col)
-  checkmate::assert_class(aeterm, "variables", null.ok = TRUE)
-  checkmate::assert_class(tox_grade, "variables", null.ok = TRUE)
-  checkmate::assert_class(causality, "variables", null.ok = TRUE)
-  checkmate::assert_class(outcome, "variables", null.ok = TRUE)
-  checkmate::assert_class(action, "variables", null.ok = TRUE)
-  checkmate::assert_class(time, "variables", null.ok = TRUE)
-  checkmate::assert_class(decod, "variables", null.ok = TRUE)
   checkmate::assert_numeric(font_size, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(font_size[1], lower = font_size[2], upper = font_size[3], .var.name = "font_size")
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
