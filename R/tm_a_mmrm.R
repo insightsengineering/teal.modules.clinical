@@ -443,7 +443,7 @@ template_mmrm_plots <- function(fit_name,
 #' @inheritParams teal::module
 #' @inheritParams template_mmrm_tables
 #' @inheritParams template_mmrm_plots
-#' @param method ([teal.transform::choices_selected()])\cr object with
+#' @param method ([teal.picks::values] or [teal.transform::choices_selected()])\cr object with
 #'   all available choices and pre-selected option for the adjustment method.
 #' @param ggplot2_args (`ggplot2_args`) optional\cr object created by [`teal.widgets::ggplot2_args()`]
 #'   with settings for all the plots or named list of `ggplot2_args` objects for plot-specific settings.
@@ -537,10 +537,10 @@ template_mmrm_plots <- function(fit_name,
 #'     tm_a_mmrm(
 #'       label = "MMRM",
 #'       dataname = "ADQS",
-#'       aval_var = variables(c("AVAL", "CHG"), 1L),
-#'       id_var = variables(c("USUBJID", "SUBJID"), 1L),
-#'       arm_var = variables(c("ARM", "ARMCD"), 1L),
-#'       visit_var = variables(c("AVISIT", "AVISITN"), 1L),
+#'       aval_var = teal.picks::variables(c("AVAL", "CHG"), multiple = FALSE),
+#'       id_var = teal.picks::variables(c("USUBJID", "SUBJID"), multiple = FALSE),
+#'       arm_var = teal.picks::variables(c("ARM", "ARMCD")),
+#'       visit_var = teal.picks::variables(c("AVISIT", "AVISITN")),
 #'       arm_ref_comp = arm_ref_comp,
 #'       paramcd_var = variables("PARAMCD"),
 #'       paramcd_values = values(selected = "FKSI-FWB"),
@@ -556,15 +556,15 @@ template_mmrm_plots <- function(fit_name,
 tm_a_mmrm <- function(label,
                       dataname,
                       parentname = "ADSL",
-                      aval_var = teal.picks::variables(c("AVAL", "CHG"), multiple = FALSE),
-                      id_var = teal.picks::variables(c("USUBJID", "SUBJID"), multiple = FALSE),
-                      arm_var = teal.picks::variables(c("ARM", "ARMCD")),
-                      visit_var = teal.picks::variables(c("AVISIT", "AVISITN")),
-                      cov_var = teal.picks::variables(selected = NULL),
+                      aval_var,
+                      id_var,
+                      arm_var,
+                      visit_var,
+                      cov_var,
                       arm_ref_comp = NULL,
                       paramcd = lifecycle::deprecated(),
-                      paramcd_var = teal.picks::variables(c("PARAMCD", "PARAM"), multiple = FALSE),
-                      paramcd_values = teal.picks::values(multiple = FALSE),
+                      paramcd_var,
+                      paramcd_values,
                       method = teal.picks::values(
                         c("Satterthwaite", "Kenward-Roger", "Kenward-Roger-Linear"),
                         "Satterthwaite"
@@ -586,15 +586,11 @@ tm_a_mmrm <- function(label,
   arm_var <- deprecate_pick_variables_arg(arm_var, "arm_var")
   visit_var <- deprecate_pick_variables_arg(visit_var, "visit_var")
   cov_var <- deprecate_pick_variables_arg(cov_var, "cov_var")
+  method <- deprecate_pick_values_arg(method, "method")
 
   checkmate::assert_string(label)
   checkmate::assert_string(total_label)
   checkmate::assert_string(dataname)
-  checkmate::assert_class(aval_var, "variables")
-  checkmate::assert_class(id_var, "variables")
-  checkmate::assert_class(arm_var, "variables")
-  checkmate::assert_class(visit_var, "variables")
-  checkmate::assert_class(cov_var, "variables")
   if (!missing(paramcd)) {
     if (!missing(paramcd_var) || !missing(paramcd_values)) {
       stop("Please provide either `paramcd` or `paramcd_var` with `paramcd_values`, not both.")
