@@ -169,15 +169,42 @@ tm_t_pp_laboratory <- function(label,
                                parentname = "ADSL",
                                patient_col = "USUBJID",
                                timepoints = NULL,
+                               aval = lifecycle::deprecated(),
                                aval_var = NULL,
+                               avalu = lifecycle::deprecated(),
                                avalu_var = NULL,
                                param = NULL,
                                paramcd = NULL,
                                anrind = NULL,
                                pre_output = NULL,
                                post_output = NULL,
-                               transformators = list()) {
+                               transformators = list(),
+                               decorators = lifecycle::deprecated()) {
   message("Initializing tm_t_pp_laboratory")
+
+  if (lifecycle::is_present(decorators)) {
+    lifecycle::deprecate_warn(
+      when = "0.11.0",
+      what = "tm_t_pp_laboratory(decorators)",
+      details = "Decorators functionality was removed from this module. The `decorators` argument will be ignored."
+    )
+  }
+
+  if (lifecycle::is_present(aval)) {
+    lifecycle::deprecate_stop(
+      when = "0.8.16",
+      what = "tm_t_pp_laboratory(aval)",
+      with = "tm_t_pp_laboratory(aval_var)"
+    )
+  }
+
+  if (lifecycle::is_present(avalu)) {
+    lifecycle::deprecate_stop(
+      when = "0.8.16",
+      what = "tm_t_pp_laboratory(avalu)",
+      with = "tm_t_pp_laboratory(avalu_var)"
+    )
+  }
 
   timepoints <- deprecate_pick_variables_arg(timepoints, "timepoints", null.ok = TRUE)
   aval_var <- deprecate_pick_variables_arg(aval_var, "aval_var", null.ok = TRUE)
