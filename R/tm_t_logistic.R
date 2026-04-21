@@ -301,9 +301,9 @@ tm_t_logistic <- function(label,
                           arm_var = NULL,
                           arm_ref_comp = NULL,
                           paramcd = lifecycle::deprecated(),
-                          paramcd_var = teal.picks::variables("PARAMCD", "PARAMCD"),
-                          paramcd_values = teal.picks::values(multiple = FALSE),
-                          cov_var = teal.picks::variables(selected = NULL),
+                          paramcd_var,
+                          paramcd_values,
+                          cov_var = NULL,
                           avalc_var = teal.picks::variables("AVALC", fixed = TRUE),
                           conf_level = teal.picks::values(c("0.95", "0.9", "0.8"), "0.95", keep_order = TRUE),
                           pre_output = NULL,
@@ -313,10 +313,11 @@ tm_t_logistic <- function(label,
                           decorators = list()) {
   message("Initializing tm_t_logistic")
 
-  arm_var <- deprecate_pick_variables_arg(arm_var, "arm_var")
-  cov_var <- deprecate_pick_variables_arg(cov_var, "cov_var")
+  arm_var <- deprecate_pick_variables_arg(arm_var, "arm_var", null.ok = TRUE)
+  cov_var <- deprecate_pick_variables_arg(cov_var, "cov_var", null.ok = TRUE)
   avalc_var <- deprecate_pick_variables_arg(avalc_var, "avalc_var")
   conf_level <- deprecate_pick_values_arg(conf_level, "conf_level")
+
   if (!missing(paramcd)) {
     lifecycle::deprecate_warn(
       when = "0.13.0",
@@ -332,9 +333,6 @@ tm_t_logistic <- function(label,
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
-  checkmate::assert_class(arm_var, "variables", null.ok = TRUE)
-  checkmate::assert_class(cov_var, "variables", null.ok = TRUE)
-  checkmate::assert_class(avalc_var, "variables")
   checkmate::assert_class(conf_level, "values")
   checkmate::assert_list(arm_ref_comp, names = "named", null.ok = TRUE)
   checkmate::assert_class(paramcd_var, "variables")
@@ -342,7 +340,7 @@ tm_t_logistic <- function(label,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
-  assert_decorators(decorators, "table")
+  teal::assert_decorators(decorators, "table")
 
   for (var in c("arm_var", "paramcd_var", "paramcd_values")) {
     if (isTRUE(attr(get(var), "multiple", exact = TRUE))) {
@@ -354,10 +352,8 @@ tm_t_logistic <- function(label,
     }
   }
 
-  if (!is.null(arm_var)) {
-    arm_var <- teal.picks::picks(datasets(parentname, parentname), arm_var)
-  }
-  cov_var <- teal.picks::picks(datasets(dataname, dataname), cov_var)
+  arm_var <- if (!is.null(arm_var)) teal.picks::picks(datasets(parentname, parentname), arm_var)
+  cov_var <- if (!is.null(cov_var)) teal.picks::picks(datasets(parentname, parentname), cov_var)
   avalc_var <- teal.picks::picks(datasets(dataname, dataname), avalc_var)
   paramcd <- teal.picks::picks(datasets(dataname, dataname), variables = paramcd_var, values = paramcd_values)
 
