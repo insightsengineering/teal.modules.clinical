@@ -206,12 +206,12 @@ template_logistic <- function(dataname,
 #' @inheritParams module_arguments
 #' @inheritParams teal::module
 #' @inheritParams template_logistic
-#' @param arm_var ([teal.transform::choices_selected()] or `NULL`)\cr object
+#' @param arm_var ([teal.picks::variables] or [teal.transform::choices_selected()] or `NULL`)\cr object
 #'   with all available choices and preselected option for variable names that can be used as `arm_var`. This defines
 #'   the grouping variable(s) in the results table. If there are two elements selected for `arm_var`, the second
 #'   variable will be nested under the first variable. If `NULL`, no arm/treatment variable is included in the
 #'   logistic model.
-#' @param avalc_var ([teal.transform::choices_selected()])\cr object with all
+#' @param avalc_var ([teal.picks::variables] or [teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the analysis variable (categorical).
 #' @param paramcd_var ([teal.picks::variables()])\cr object with all available choices and
 #' preselected option for the parameter code variable.
@@ -282,19 +282,11 @@ template_logistic <- function(dataname,
 #'     tm_t_logistic(
 #'       label = "Logistic Regression",
 #'       dataname = "ADRS",
-#'       arm_var = choices_selected(
-#'         choices = variable_choices(ADRS, c("ARM", "ARMCD")),
-#'         selected = "ARM"
-#'       ),
-#'       arm_ref_comp = arm_ref_comp,
-#'       paramcd = choices_selected(
-#'         choices = value_choices(ADRS, "PARAMCD", "PARAM"),
-#'         selected = "BESRSPI"
-#'       ),
-#'       cov_var = choices_selected(
-#'         choices = c("SEX", "AGE", "BMRKR1", "BMRKR2"),
-#'         selected = "SEX"
-#'       )
+#'       paramcd_var = teal.picks::variables("PARAMCD", "PARAMCD"),
+#'       paramcd_values = teal.picks::values(multiple = FALSE),
+#'       cov_var = teal.picks::variables(selected = NULL),
+#'       avalc_var = teal.picks::variables("AVALC", fixed = TRUE),
+#'       conf_level = teal.picks::values(c("0.95", "0.9", "0.8"), "0.95", keep_order = TRUE)
 #'     )
 #'   )
 #' )
@@ -308,6 +300,7 @@ tm_t_logistic <- function(label,
                           parentname = "ADSL",
                           arm_var = NULL,
                           arm_ref_comp = NULL,
+                          paramcd = lifecycle::deprecated(),
                           paramcd_var = teal.picks::variables("PARAMCD", "PARAMCD"),
                           paramcd_values = teal.picks::values(multiple = FALSE),
                           cov_var = teal.picks::variables(selected = NULL),
@@ -317,8 +310,7 @@ tm_t_logistic <- function(label,
                           post_output = NULL,
                           basic_table_args = teal.widgets::basic_table_args(),
                           transformators = list(),
-                          decorators = list(),
-                          paramcd) {
+                          decorators = list()) {
   message("Initializing tm_t_logistic")
 
   arm_var <- deprecate_pick_variables_arg(arm_var, "arm_var")
@@ -326,14 +318,14 @@ tm_t_logistic <- function(label,
   avalc_var <- deprecate_pick_variables_arg(avalc_var, "avalc_var")
   conf_level <- deprecate_pick_values_arg(conf_level, "conf_level")
   if (!missing(paramcd)) {
-    if (!missing(paramcd_var) || !missing(paramcd_values)) {
-      stop("Please provide either `paramcd` or `paramcd_var` with `paramcd_values`, not both.")
-    }
     lifecycle::deprecate_warn(
       when = "0.13.0",
       what = "tm_a_mmrm(paramcd)",
       details = "Use of paramcd was removed in `tm_a_mmrm` module usage with teal.picks"
     )
+    if (!missing(paramcd_var) || !missing(paramcd_values)) {
+      stop("Please provide either `paramcd` or `paramcd_var` with `paramcd_values`, not both.")
+    }
     paramcd_values <- deprecate_pick_values_arg(paramcd, "paramcd")
   }
 
