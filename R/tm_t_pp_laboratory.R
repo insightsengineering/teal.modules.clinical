@@ -149,13 +149,12 @@ template_laboratory <- function(dataname = "ANL",
 #'       label = "Vitals",
 #'       dataname = "ADLB",
 #'       patient_col = "USUBJID",
-#'        timepoints = teal.picks::variables("ADY", fixed = TRUE),
-#'        aval_var = teal.picks::variables("AVAL", fixed = TRUE),
-#'        avalu_var = teal.picks::variables("AVALU", fixed = TRUE),
-#'        param = teal.picks::variables("PARAM", fixed = TRUE),
-#'        paramcd = teal.picks::variables("PARAMCD", fixed = TRUE),
-#'        anrind = teal.picks::variables("ANRIND", fixed = TRUE),
-#'
+#'       timepoints = teal.picks::variables("ADY", fixed = TRUE),
+#'       aval_var = teal.picks::variables("AVAL", fixed = TRUE),
+#'       avalu_var = teal.picks::variables("AVALU", fixed = TRUE),
+#'       param = teal.picks::variables("PARAM", fixed = TRUE),
+#'       paramcd = teal.picks::variables("PARAMCD", fixed = TRUE),
+#'       anrind = teal.picks::variables("ANRIND", fixed = TRUE),
 #'     )
 #'   )
 #' )
