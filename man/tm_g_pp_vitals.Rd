@@ -147,9 +147,9 @@ app <- init(
       parentname = "ADSL",
       patient_col = "USUBJID",
       plot_height = c(600L, 200L, 2000L),
-      paramcd = teal.picks::variables("PARAMCD"),
-      aval_var = teal.picks::variables("AVAL"),
-      xaxis = teal.picks::variables("ADY"),
+      paramcd = variables("PARAMCD"),
+      aval_var = variables("AVAL"),
+      xaxis = variables("ADY"),
     )
   )
 )
@@ -161,8 +161,8 @@ if (interactive()) {
 \section{Examples in Shinylive}{
 \describe{
   \item{example-1}{
-    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo6AIIAIgDKADKROqQwBDFwAB4xUPyi1KUVlQBq1Q1NLe2d-JqiSgC+QQBWRLkxANZwrKL5yTap-HDGUMKkMQT8tKIti8trG8DQ8JsFcgC6rhBVdQ0FwMAKYB+1P7PV7vQbDXbJH5-KpDIEgpRoVANXKZdh9Ao6AC8OgKuD6fCEIlEWJ0BOEYjREDKZSaMQA5jF0DFNJluJs+tSdNQoPQ4NQSX8BqzqNM8BzqQV7rpsdCwX88VTOTpUCwKKQpQL-jVAWLFZyVRo1SciPyZWAHNUHAAhABSAElKvLxWVUP5jlk4LQ6VlSCSCOwAGwABiDtSKACYQ2GdJGo3IFUrlSxYKcSdEMKgZCtRIhEJoWLQeUS0WAAArlLDlACyAGFHWB486dFB87F84w03BuBmszm8wWixToQNyjrG3rqW0oG1zp3u5mCNnc+3C-Ri7KAJp-cecoJlIJBWjGHTsXLkNQabTWGwlRWiHIQVjldDsREAEkEtCK79Eqm0gVmJQwBmZ4gA}{Open in Shinylive}
-    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo6AIIAIgDKADKROqQwBDFwAB4xUPyi1KUVlQBq1Q1NLe2d-JqiSgC+QQBWRLkxANZwrKL5yTap-HDGUMKkMQT8tKIti8trG8DQ8JsFcgC6rhBVdQ0FwMAKYB+1P7PV7vQbDXbJH5-KpDIEgpRoVANXKZdh9Ao6AC8OgKuD6fCEIlEWJ0BOEYjREDKZSaMQA5jF0DFNJluJs+tSdNQoPQ4NQSX8BqzqNM8BzqQV7rpsdCwX88VTOTpUCwKKQpQL-jVAWLFZyVRo1SciPyZWAHNUHAAhABSAElKvLxWVUP5jlk4LQ6VlSCSCOwAGwABiDtSKACYQ2GdJGo3IFUrlSxYKcSdEMKgZCtRIhEJoWLQeUS0WAAArlLDlACyAGFHWB486dFB87F84w03BuBmszm8wWixToQNyjrG3rqW0oG1zp3u5mCNnc+3C-Ri7KAJp-cecoJlIJBWjGHTsXLkNQabTWGwlRWiHIQVjldDsREAEkEtCK79Eqm0gVmJQwBmZ4gA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo6AIIAIgDKADKROqQwBDFwAB4xUPyi1KUVlQBq1Q1NLe2d-JqiSgC+QQBWRLkxANZwrKL5yTap-HDGUMKkMQT8tKIti8trG8DQ8JsFcgC6rhBVdQ0FwMAKYB+1P7PV7vQbDXbJH5-KpDIEgpRoVANXKZdh9Ao6AC8OgKuD6fCEIlEWJ0BOEYjREDKZSaMQA5jF0DFNJluJs+tSdNQoPQ4NQSX8BqzqNM8BzqQV7rpsdCwX88VTOTpUCwKKQpQL-jVAWLFZyVRo1SciPyZWAHNUHAAhABSAElKvLxWVUP5jlk4LQ6VlSCSCOwAGwABiDtSKACYQ2GdJGo3IFUrlSxYKcSZoWLQeUS0WAAArlLDlACyAGFHWB486dFB07F04w0xmsxToQNyjrK3rqW0oG1zo3GJn6NnZQBNP6dzlBMpBIK0Yw6di5chqDTaaw2EqK0Q5CCscrodiIgAkgloRRPolU2kCsyUYBmzyAA}{Open in Shinylive}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo6AIIAIgDKADKROqQwBDFwAB4xUPyi1KUVlQBq1Q1NLe2d-JqiSgC+QQBWRLkxANZwrKL5yTap-HDGUMKkMQT8tKIti8trG8DQ8JsFcgC6rhBVdQ0FwMAKYB+1P7PV7vQbDXbJH5-KpDIEgpRoVANXKZdh9Ao6AC8OgKuD6fCEIlEWJ0BOEYjREDKZSaMQA5jF0DFNJluJs+tSdNQoPQ4NQSX8BqzqNM8BzqQV7rpsdCwX88VTOTpUCwKKQpQL-jVAWLFZyVRo1SciPyZWAHNUHAAhABSAElKvLxWVUP5jlk4LQ6VlSCSCOwAGwABiDtSKACYQ2GdJGo3IFUrlSxYKcSZoWLQeUS0WAAArlLDlACyAGFHWB486dFB07F04w0xmsxToQNyjrK3rqW0oG1zo3GJn6NnZQBNP6dzlBMpBIK0Yw6di5chqDTaaw2EqK0Q5CCscrodiIgAkgloRRPolU2kCsyUYBmzyAA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
     \if{html}{\out{<a style='height: 800px; display: block;'></a>}}
   }
 }
