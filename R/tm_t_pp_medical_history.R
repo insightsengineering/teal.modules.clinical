@@ -137,18 +137,9 @@ template_medical_history <- function(dataname = "ANL",
 #'       dataname = "ADMH",
 #'       parentname = "ADSL",
 #'       patient_col = "USUBJID",
-#'       mhterm = choices_selected(
-#'         choices = variable_choices(ADMH, c("MHTERM")),
-#'         selected = "MHTERM"
-#'       ),
-#'       mhbodsys = choices_selected(
-#'         choices = variable_choices(ADMH, "MHBODSYS"),
-#'         selected = "MHBODSYS"
-#'       ),
-#'       mhdistat = choices_selected(
-#'         choices = variable_choices(ADMH, "MHDISTAT"),
-#'         selected = "MHDISTAT"
-#'       )
+#'       mhterm = teal.picks::variables("MHTERM", fixed = TRUE),
+#'       mhbodsys = teal.picks::variables("MHBODSYS", fixed = TRUE),
+#'       mhdistat = teal.picks::variables("MHDISTAT", fixed = TRUE),
 #'     )
 #'   )
 #' )
@@ -161,26 +152,23 @@ tm_t_pp_medical_history <- function(label,
                                     dataname = "ADMH",
                                     parentname = "ADSL",
                                     patient_col = "USUBJID",
-                                    mhterm = teal.picks::variables("MHTERM", fixed = TRUE),
-                                    mhbodsys = teal.picks::variables("MHBODSYS", fixed = TRUE),
-                                    mhdistat = teal.picks::variables("MHDISTAT", fixed = TRUE),
+                                    mhterm = NULL,
+                                    mhbodsys = NULL,
+                                    mhdistat = NULL,
                                     pre_output = NULL,
                                     post_output = NULL,
                                     transformators = list(),
                                     decorators = list()) {
   message("Initializing tm_t_pp_medical_history")
 
-  mhterm <- deprecate_pick_variables_arg(mhterm, "mhterm")
-  mhbodsys <- deprecate_pick_variables_arg(mhbodsys, "mhbodsys")
-  mhdistat <- deprecate_pick_variables_arg(mhdistat, "mhdistat")
+  mhterm <- deprecate_pick_variables_arg(mhterm, "mhterm", null.ok = TRUE)
+  mhbodsys <- deprecate_pick_variables_arg(mhbodsys, "mhbodsys", null.ok = TRUE)
+  mhdistat <- deprecate_pick_variables_arg(mhdistat, "mhdistat", null.ok = TRUE)
 
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_string(patient_col)
-  checkmate::assert_class(mhterm, "variables", null.ok = TRUE)
-  checkmate::assert_class(mhbodsys, "variables", null.ok = TRUE)
-  checkmate::assert_class(mhdistat, "variables", null.ok = TRUE)
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   assert_decorators(decorators, "table")
