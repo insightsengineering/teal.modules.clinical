@@ -10,6 +10,7 @@ tm_t_logistic(
   parentname = "ADSL",
   arm_var = NULL,
   arm_ref_comp = NULL,
+  paramcd = lifecycle::deprecated(),
   paramcd_var = teal.picks::variables("PARAMCD", "PARAMCD"),
   paramcd_values = teal.picks::values(multiple = FALSE),
   cov_var = teal.picks::variables(selected = NULL),
@@ -19,8 +20,7 @@ tm_t_logistic(
   post_output = NULL,
   basic_table_args = teal.widgets::basic_table_args(),
   transformators = list(),
-  decorators = list(),
-  paramcd
+  decorators = list()
 )
 }
 \arguments{
@@ -30,7 +30,7 @@ tm_t_logistic(
 
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{NULL})\cr object
+\item{arm_var}{(\link[teal.picks:picks]{teal.picks::variables} or \code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{NULL})\cr object
 with all available choices and preselected option for variable names that can be used as \code{arm_var}. This defines
 the grouping variable(s) in the results table. If there are two elements selected for \code{arm_var}, the second
 variable will be nested under the first variable. If \code{NULL}, no arm/treatment variable is included in the
@@ -42,6 +42,9 @@ with delayed \code{\link[teal.transform:variable_choices]{teal.transform::variab
 with the elements named \code{ref} and \code{comp} that the defined the default
 reference and comparison arms when the arm variable is changed.}
 
+\item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
+available choices and preselected option for the parameter code variable from \code{dataname}.}
+
 \item{paramcd_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}})\cr object with all available choices and
 preselected option for the parameter code variable.}
 
@@ -51,7 +54,7 @@ option for the parameter code values.}
 \item{cov_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
 available choices and preselected option for the covariates variables.}
 
-\item{avalc_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
+\item{avalc_var}{(\link[teal.picks:picks]{teal.picks::variables} or \code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
 available choices and preselected option for the analysis variable (categorical).}
 
 \item{conf_level}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
@@ -77,9 +80,6 @@ decorator for tables or plots included in the module output reported.
 The decorators are applied to the respective output objects.
 
 See section "Decorating Module" below for more details.}
-
-\item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
-available choices and preselected option for the parameter code variable from \code{dataname}.}
 }
 \value{
 a \code{teal_module} object.
@@ -162,19 +162,11 @@ app <- init(
     tm_t_logistic(
       label = "Logistic Regression",
       dataname = "ADRS",
-      arm_var = choices_selected(
-        choices = variable_choices(ADRS, c("ARM", "ARMCD")),
-        selected = "ARM"
-      ),
-      arm_ref_comp = arm_ref_comp,
-      paramcd = choices_selected(
-        choices = value_choices(ADRS, "PARAMCD", "PARAM"),
-        selected = "BESRSPI"
-      ),
-      cov_var = choices_selected(
-        choices = c("SEX", "AGE", "BMRKR1", "BMRKR2"),
-        selected = "SEX"
-      )
+      paramcd_var = teal.picks::variables("PARAMCD", "PARAMCD"),
+      paramcd_values = teal.picks::values(multiple = FALSE),
+      cov_var = teal.picks::variables(selected = NULL),
+      avalc_var = teal.picks::variables("AVALC", fixed = TRUE),
+      conf_level = teal.picks::values(c("0.95", "0.9", "0.8"), "0.95", keep_order = TRUE)
     )
   )
 )
@@ -190,8 +182,8 @@ apps implementing this module can be found.
 \section{Examples in Shinylive}{
 \describe{
   \item{example-1}{
-    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsO-VNVaNFEEr8UKRQ+kZc1AD6waHWQSFhhjoA7rSkABa0EOyxULg6IEo6OgCCACIAygAy4TqkMARRcAAeUVD8otTFZeVYlXUNTa3t-IyiOgCkAHyTPSXGtNTkjOwACqVYpQCyAMLlU9mTOgTsCmAAQk6V-WsAkucF53cAcgBqTrbncgEAvgEAKyI2SiAGs4KxRLlEjZkvw4MYoMJSFECPxaKImkCQeDIcBoPAoXk5ABdVwQCo1Op5YDAc6U6rnElkil9AZwxK0+lspkspQsGBRRgI1FEGCoOp0USkM4QEqlXa2TZ7A4AXh0Upl8x0wuMOnV9Kw2x0F0e2uI4v1JzOYGVZUeOkNxt23x6clwPTt6s1spKJV1VvOF0QOjW1CgBDg9CIZrlfotEvVp3pIfKjEEAHMdAANB3nXYh3Zi+jZEKWQJgAIlAIBfnoOrZdK+nR5K15D1xvhCEQTdVd4RiZslBpRFHUIgZjEaZNxv0aqD0ODUQNgaoTqcyHRYOAZ4WiUTl2Nzkp5Am6A22nl4bUlAVRTQsK0EDLAyOiKKiJdwdRwfhD4-Pq+YhWg+jC0AuIioi+MiDhU-QFMmtpGnmSEqt87o3n6n4iD+-Arsq5yYRhs5+neuqipa6pkSKCYdseOioCwsBok+0Fvh+X64f+c6ATBvY6A+1CCHAUFAVCcGVE8YAbFsaF4I60mbDs3x0fROjYd+5B4ReVw3JU9yESR1aqTxRCaPej5JmxYgcThWncfG1n8YhlROLm8n0gA4i4HmXNsWAANJYAAjChFz+UFABMKmYSUGm4SurnuUR2pVjoNZKLQersNkKwRho2jWDYRRxqIWQQKwpToOwaCoAAJIItAFLVdWfow2j+EovxKGAvwkkAA}{Open in Shinylive}
-    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsO-VNVaNFEEr8UKRQ+kZc1AD6waHWQSFhhjoA7rSkABa0EOyxULg6IEo6OgCCACIAygAy4TqkMARRcAAeUVD8otTFZeVYlXUNTa3t-IyiOgCkAHyTPSXGtNTkjOwACqVYpQCyAMLlU9mTOgTsCmAAQk6V-WsAkucF53cAcgBqTrbncgEAvgEAKyI2SiAGs4KxRLlEjZkvw4MYoMJSFECPxaKImkCQeDIcBoPAoXk5ABdVwQCo1Op5YDAc6U6rnElkil9AZwxK0+lspkspQsGBRRgI1FEGCoOp0USkM4QEqlXa2TZ7A4AXh0Upl8x0wuMOnV9Kw2x0F0e2uI4v1JzOYGVZUeOkNxt23x6clwPTt6s1spKJV1VvOF0QOjW1CgBDg9CIZrlfotEvVp3pIfKjEEAHMdAANB3nXYh3Zi+jZEKWQJgAIlAIBfnoOrZdK+nR5K15D1xvhCEQTdVd4RiZslBpRFHUIgZjEaZNxv0aqD0ODUQNgaoTqcyHRYOAZ4WiUTl2Nzkp5Am6A22nl4bUlAVRTQsK0EDLAyOiKKiJdwdRwfhD4-Pq+YhWg+jC0AuIioi+MiDhU-QFMmtpGnmSEqt87o3n6n4iD+-Arsq5yYRhs5+neuqipa6pkSKCYdseOioCwsBok+0Fvh+X64f+c6ATBvY6A+1CCHAUFAVCcGVE8YAbFsaF4I60mbDs3x0fROjYd+5B4ReVw3JU9yESR1aqTxRCaPej5JmxYgcThWncfG1n8YhlROLm8n0gA4i4HmXNsWAANJYAAjChFz+UFABMKmYSUGm4SurnuUR2pVjoNZKLQersNkKwRho2jWDYRRxqIWQQKwpToOwaCoAAJIItAFLVdWfow2j+EovxKGAvwkkAA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsO-VNVaNFEEr8UKRQ+kZc1AD6waHWQSFhhjoA7rSkABa0EOyxULg6IEo6OgCCACIAygAy4TqkMARRcAAeUVD8otTFZeVYlXUNTa3t-IyiOgCkAHyTPSXGtNTkjOwACqVYpQCyAMLlU9mTOgTsCmAAQk6V-WsAkucF53cAcgBqTrbncgEAvgEAKyI2SiAGs4KxRLlEjZkvw4MYoMJSFECPxaKImkCQeDIcBoPAoXk5ABdVwQCo1Op5YDAc6U6rnElkil9AZwxK0+lspkspQsGBRRgI1FEGCoOp0USkM4QEqlXa2TZ7A4AXh0Upl8x0wuMOnV9Kw2x0F0e2uI4v1JzOYGVZUeOkNxt23x6clwPTt6s1spKJV1VvOF0QOjW1CgBDg9CIZrlfotEvVp3pIfKjEEAHMdAANB3nXYh3Zi+jZEKWQJgAIlAIBfnoOrZdK+nR5K15D1xvhCEQTdVd4RiZslBpRFHUIgZjEaZNxv0aqD0ODUQNgaoTqcyHRYOAZ4WiUTl2Nzkp5Am6A22nl4bUlVAsWBoqKaFhWyIYVAyUGiRCIZ+MWgLj2NobFsKp5mAIE7Ps3wdseOh3swjT8E+3CCGIr5wNw76ft+v6oYOMDIrQPjnjoABipTVJUTjujeJxEJoKGMBhWEfgQX4-n+AH0EBohLnA6hwPwVovA41TVLRs5+lAz7UE0f4sTwbEcXh-6AYO9JvJRLp4CYtAtEJVr2M4klwcQEDGFEIjaMu6pvspuGyWhULJmAAAMGAAJwAKzgR5nl+RgAAcMGOu5Xm+bp4JwKgUREIw8LMeqxk0dqVY6DWSi0Hq7DZCsEYaNo1g2EUcaiFkECsKU6DsGgqAACSCLQBR1fVfGMNo-hKL8ShgL8JJAA}{Open in Shinylive}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsO-VNVaNFEEr8UKRQ+kZc1AD6waHWQSFhhjoA7rSkABa0EOyxULg6IEo6OgCCACIAygAy4TqkMARRcAAeUVD8otTFZeVYlXUNTa3t-IyiOgCkAHyTPSXGtNTkjOwACqVYpQCyAMLlU9mTOgTsCmAAQk6V-WsAkucF53cAcgBqTrbncgEAvgEAKyI2SiAGs4KxRLlEjZkvw4MYoMJSFECPxaKImkCQeDIcBoPAoXk5ABdVwQCo1Op5YDAc6U6rnElkil9AZwxK0+lspkspQsGBRRgI1FEGCoOp0USkM4QEqlXa2TZ7A4AXh0Upl8x0wuMOnV9Kw2x0F0e2uI4v1JzOYGVZUeOkNxt23x6clwPTt6s1spKJV1VvOF0QOjW1CgBDg9CIZrlfotEvVp3pIfKjEEAHMdAANB3nXYh3Zi+jZEKWQJgAIlAIBfnoOrZdK+nR5K15D1xvhCEQTdVd4RiZslBpRFHUIgZjEaZNxv0aqD0ODUQNgaoTqcyHRYOAZ4WiUTl2Nzkp5Am6A22nl4bUlVAsWBoqKaFhWyIYVAyUGiRCIZ+MWgLj2NobFsKp5mAIE7Ps3wdseOh3swjT8E+3CCGIr5wNw76ft+v6oYOMDIrQPjnjoABipTVJUTjujeJxEJoKGMBhWEfgQX4-n+AH0EBohLnA6hwPwVovA41TVLRs5+lAz7UE0f4sTwbEcXh-6AYO9JvJRLp4CYtAtEJVr2M4klwcQEDGFEIjaMu6pvspuGyWhULJmAAAMGAAJwAKzgR5nl+RgAAcMGOu5Xm+bp4JwKgUREIw8LMeqxk0dqVY6DWSi0Hq7DZCsEYaNo1g2EUcaiFkECsKU6DsGgqAACSCLQBR1fVfGMNo-hKL8ShgL8JJAA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
     \if{html}{\out{<a style='height: 800px; display: block;'></a>}}
   }
 }
