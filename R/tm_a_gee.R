@@ -193,15 +193,12 @@ template_a_gee <- function(output_table,
 #'     tm_a_gee(
 #'       label = "GEE",
 #'       dataname = "ADQS",
-#'       aval_var = choices_selected("AVALBIN", fixed = TRUE),
-#'       id_var = choices_selected(c("USUBJID", "SUBJID"), "USUBJID"),
-#'       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-#'       visit_var = choices_selected(c("AVISIT", "AVISITN"), "AVISIT"),
-#'       paramcd = choices_selected(
-#'         choices = value_choices(data[["ADQS"]], "PARAMCD", "PARAM"),
-#'         selected = "FKSI-FWB"
-#'       ),
-#'       cov_var = choices_selected(c("BASE", "AGE", "SEX", "BASE:AVISIT"), NULL)
+#'       aval_var = teal.picks::variables(choices = "AVALBIN", fixed = TRUE),
+#'       id_var = teal.picks::variables(choices = c("USUBJID", "SUBJID"), selected = "USUBJID"),
+#'       arm_var = teal.picks::variables(choices = c("ARM", "ARMCD"), selected = "ARM"),
+#'       visit_var = teal.picks::variables(choices = c("AVISIT", "AVISITN"), selected = "AVISIT"),
+#'       paramcd = teal.picks::variables(choices = c("PARAMCD", "PARAM")),
+#'       cov_var = teal.picks::variables(choices = c("BASE", "AGE", "SEX", "BASE:AVISIT"), selected = NULL)
 #'     )
 #'   )
 #' )
@@ -212,11 +209,7 @@ template_a_gee <- function(output_table,
 #' @export
 tm_a_gee <- function(label,
                      dataname,
-                     parentname = ifelse(
-                       inherits(arm_var, "data_extract_spec"),
-                       teal.transform::datanames_input(arm_var),
-                       "ADSL"
-                     ),
+                     parentname = "ADSL",
                      aval_var,
                      id_var,
                      arm_var,
@@ -224,7 +217,7 @@ tm_a_gee <- function(label,
                      cov_var,
                      arm_ref_comp = NULL,
                      paramcd,
-                     conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+                     conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95, multiple = FALSE),
                      pre_output = NULL,
                      post_output = NULL,
                      basic_table_args = teal.widgets::basic_table_args(),
@@ -232,68 +225,62 @@ tm_a_gee <- function(label,
                      decorators = list()) {
   message("Initializing tm_a_gee (prototype)")
 
-  cov_var <- teal.transform::add_no_selected_choices(cov_var, multiple = TRUE)
-
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
-  checkmate::assert_class(aval_var, "choices_selected")
-  checkmate::assert_class(id_var, "choices_selected")
-  checkmate::assert_class(arm_var, "choices_selected")
-  checkmate::assert_class(visit_var, "choices_selected")
-  checkmate::assert_class(cov_var, "choices_selected")
-  checkmate::assert_class(paramcd, "choices_selected")
-  checkmate::assert_class(conf_level, "choices_selected")
+  aval_var <- deprecate_pick_variables_arg(aval_var, "aval_var")
+  id_var <- deprecate_pick_variables_arg(id_var, "id_var")
+  arm_var <- deprecate_pick_variables_arg(arm_var, "arm_var")
+  visit_var <- deprecate_pick_variables_arg(visit_var, "visit_var")
+  cov_var <- deprecate_pick_variables_arg(cov_var, "cov_var")
+  paramcd <- deprecate_pick_variables_arg(paramcd, "paramcd")
+  conf_level <- deprecate_pick_values_arg(conf_level, "conf_level")
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
   teal::assert_decorators(decorators, "table")
 
-  args <- as.list(environment())
-
-  data_extract_list <- list(
-    arm_var = cs_to_des_select(arm_var, dataname = parentname),
-    paramcd = cs_to_des_filter(paramcd, dataname = dataname),
-    id_var = cs_to_des_select(id_var, dataname = dataname),
-    visit_var = cs_to_des_select(visit_var, dataname = dataname),
-    cov_var = cs_to_des_select(cov_var, dataname = dataname, multiple = TRUE),
-    split_covariates = cs_to_des_select(split_choices(cov_var), dataname = dataname, multiple = TRUE),
-    aval_var = cs_to_des_select(aval_var, dataname = dataname)
+  aval_var <- teal.picks::picks(teal.picks::datasets(dataname), aval_var)
+  id_var <- teal.picks::picks(teal.picks::datasets(dataname), id_var)
+  arm_var <- teal.picks::picks(teal.picks::datasets(parentname), arm_var)
+  visit_var <- teal.picks::picks(teal.picks::datasets(dataname), visit_var)
+  split_covariates <- teal.picks::picks(
+    teal.picks::datasets(dataname),
+    split_choices_variables(cov_var)
   )
+  cov_var <- teal.picks::picks(teal.picks::datasets(dataname), cov_var)
+  paramcd <- teal.picks::picks(
+    teal.picks::datasets(dataname),
+    paramcd,
+    values(all_values, first_value)
+  )
+
+  args <- as.list(environment())
 
   teal::module(
     label = label,
     server = srv_gee,
     ui = ui_gee,
-    ui_args = c(data_extract_list, args),
-    server_args = c(
-      data_extract_list,
-      list(
-        dataname = dataname,
-        parentname = parentname,
-        arm_ref_comp = arm_ref_comp,
-        label = label,
-        basic_table_args = basic_table_args,
-        decorators = decorators
-      )
-    ),
+    ui_args = args[names(args) %in% names(formals(ui_gee))],
+    server_args = args[names(args) %in% names(formals(srv_gee))],
     transformators = transformators,
-    datanames = teal.transform::get_extract_datanames(data_extract_list)
+    datanames = union(parentname, dataname)
   )
 }
 
-ui_gee <- function(id, ...) {
-  a <- list(...) # module args
-
+ui_gee <- function(id,
+                   arm_var,
+                   aval_var,
+                   id_var,
+                   visit_var,
+                   cov_var,
+                   split_covariates,
+                   paramcd,
+                   conf_level,
+                   pre_output,
+                   post_output,
+                   decorators) {
   ns <- NS(id)
-  is_single_dataset_value <- teal.transform::is_single_dataset(
-    a$arm_var,
-    a$paramcd,
-    a$id_var,
-    a$visit_var,
-    a$cov_var,
-    a$aval_var
-  )
 
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(
@@ -302,45 +289,14 @@ ui_gee <- function(id, ...) {
     ),
     encoding = tags$div(
       tags$label("Encodings", class = "text-primary"), tags$br(),
-      teal.transform::datanames_input(a[c("arm_var", "paramcd", "id_var", "visit_var", "cov_var", "aval_var")]),
-      teal.transform::data_extract_ui(
-        id = ns("aval_var"),
-        label = "Analysis Variable",
-        data_extract_spec = a$aval_var,
-        is_single_dataset = is_single_dataset_value
-      ),
-      teal.transform::data_extract_ui(
-        id = ns("paramcd"),
-        label = "Select Endpoint",
-        data_extract_spec = a$paramcd,
-        is_single_dataset = is_single_dataset_value
-      ),
-      teal.transform::data_extract_ui(
-        id = ns("visit_var"),
-        label = "Visit Variable",
-        data_extract_spec = a$visit_var,
-        is_single_dataset = is_single_dataset_value
-      ),
-      teal.transform::data_extract_ui(
-        id = ns("cov_var"),
-        label = "Covariates",
-        data_extract_spec = a$cov_var,
-        is_single_dataset = is_single_dataset_value
-      ),
+      tags$div(tags$label("Analysis Variable"), teal.picks::picks_ui(ns("aval_var"), aval_var)),
+      tags$div(tags$label("Select Endpoint"), teal.picks::picks_ui(ns("paramcd"), paramcd)),
+      tags$div(tags$label("Visit Variable"), teal.picks::picks_ui(ns("visit_var"), visit_var)),
+      tags$div(tags$label("Covariates"), teal.picks::picks_ui(ns("cov_var"), cov_var)),
       shinyjs::hidden(
-        teal.transform::data_extract_ui(
-          id = ns("split_covariates"),
-          label = "Split Covariates",
-          data_extract_spec = a$split_covariates,
-          is_single_dataset = is_single_dataset_value
-        )
+        tags$div(tags$label("Split Covariates"), teal.picks::picks_ui(ns("split_covariates"), split_covariates))
       ),
-      teal.transform::data_extract_ui(
-        id = ns("arm_var"),
-        label = "Select Treatment Variable",
-        data_extract_spec = a$arm_var,
-        is_single_dataset = is_single_dataset_value
-      ),
+      tags$div(tags$label("Select Treatment Variable"), teal.picks::picks_ui(ns("arm_var"), arm_var)),
       shinyjs::hidden(
         uiOutput(ns("arms_buckets")),
         helpText(
@@ -352,12 +308,7 @@ ui_gee <- function(id, ...) {
           value = FALSE
         )
       ),
-      teal.transform::data_extract_ui(
-        id = ns("id_var"),
-        label = "Subject Identifier",
-        data_extract_spec = a$id_var,
-        is_single_dataset = is_single_dataset_value
-      ),
+      tags$div(tags$label("Subject Identifier"), teal.picks::picks_ui(ns("id_var"), id_var)),
       selectInput(
         ns("cor_struct"),
         "Correlation Structure",
@@ -373,10 +324,10 @@ ui_gee <- function(id, ...) {
       teal.widgets::optionalSelectInput(
         ns("conf_level"),
         "Confidence Level",
-        a$conf_level$choices,
-        a$conf_level$selected,
+        conf_level$choices,
+        conf_level$selected,
         multiple = FALSE,
-        fixed = a$conf_level$fixed
+        fixed = teal.picks::is_pick_fixed(conf_level)
       ),
       radioButtons(
         ns("output_table"),
@@ -388,10 +339,10 @@ ui_gee <- function(id, ...) {
         ),
         selected = "t_gee_lsmeans"
       ),
-      teal::ui_transform_teal_data(ns("decorator"), transformators = select_decorators(a$decorators, "table"))
+      teal::ui_transform_teal_data(ns("decorator"), transformators = select_decorators(decorators, "table"))
     ),
-    pre_output = a$pre_output,
-    post_output = a$post_output
+    pre_output = pre_output,
+    post_output = post_output
   )
 }
 
@@ -408,8 +359,6 @@ srv_gee <- function(id,
                     aval_var,
                     arm_ref_comp,
                     label,
-                    plot_height,
-                    plot_width,
                     basic_table_args,
                     decorators) {
   checkmate::assert_class(data, "reactive")
@@ -417,114 +366,108 @@ srv_gee <- function(id,
 
   moduleServer(id, function(input, output, session) {
     teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
-    ## split_covariates ----
-    observeEvent(input[[extract_input("cov_var", dataname)]],
-      ignoreNULL = FALSE,
-      {
-        # update covariates as actual variables
-        split_interactions_values <- split_interactions(
-          input[[extract_input("cov_var", dataname)]]
-        )
-        arm_var_value <- input[[extract_input("arm_var", parentname)]]
-        arm_in_cov <- length(intersect(split_interactions_values, arm_var_value)) >= 1L
-        if (arm_in_cov) {
-          split_covariates_selected <- setdiff(split_interactions_values, arm_var_value)
-        } else {
-          split_covariates_selected <- split_interactions_values
-        }
-        teal.widgets::updateOptionalSelectInput(
-          session,
-          inputId = extract_input("split_covariates", dataname),
-          selected = split_covariates_selected
-        )
-      }
-    )
 
-    ## arm_ref_comp_observer ----
-    arm_ref_comp_observer(
-      session,
-      input,
-      output,
-      id_arm_var = extract_input("arm_var", parentname),
-      data = reactive(data()[[parentname]]),
-      arm_ref_comp = arm_ref_comp,
-      module = "tm_a_gee"
-    )
-
-    ## data_merge_modules ----
-    selector_list <- teal.transform::data_extract_multiple_srv(
-      data_extract = list(
+    anl_selectors <- teal.picks::picks_srv(
+      id = "",
+      picks = list(
         arm_var = arm_var,
         paramcd = paramcd,
         id_var = id_var,
         visit_var = visit_var,
+        cov_var = cov_var,
         split_covariates = split_covariates,
         aval_var = aval_var
       ),
-      datasets = data,
-      select_validation_rule = list(
-        aval_var = shinyvalidate::sv_required("An analysis variable is required"),
-        arm_var = shinyvalidate::sv_required("A treatment variable is required"),
-        id_var = shinyvalidate::sv_required("A Subject identifier is required"),
-        visit_var = shinyvalidate::sv_required("A visit variable is required")
-      ),
-      filter_validation_rule = list(
-        paramcd = shinyvalidate::sv_required("An endpoint is required")
-      )
+      data = data
     )
 
-    iv_r <- reactive({
-      iv <- shinyvalidate::InputValidator$new()
-      iv$add_rule("conf_level", shinyvalidate::sv_required("Please choose a confidence level"))
-      iv$add_rule(
-        "conf_level",
-        shinyvalidate::sv_between(
-          0, 1,
-          inclusive = c(FALSE, FALSE),
-          message_fmt = "Confidence level must be between 0 and 1"
-        )
-      )
-      iv$add_rule("cor_struct", shinyvalidate::sv_required("Please choose a correlation structure"))
-      teal.transform::compose_and_enable_validators(iv, selector_list)
+    ## split_covariates ----
+    # Derive split_covariates reactively from cov_var, excluding arm_var if present
+    split_covariates_r <- reactive({
+      cov_selected <- anl_selectors$cov_var()$variables$selected
+      arm_selected <- anl_selectors$arm_var()$variables$selected
+      split_vals <- split_interactions(cov_selected)
+      if (length(intersect(split_vals, arm_selected)) >= 1L) {
+        setdiff(split_vals, arm_selected)
+      } else {
+        split_vals
+      }
     })
 
-    anl_inputs <- teal.transform::merge_expression_srv(
-      datasets = data,
-      selector_list = selector_list,
-      merge_function = "dplyr::inner_join"
+    arm_var_r <- reactive(anl_selectors$arm_var()$variables$selected)
+
+    ## arm_ref_comp_observer ----
+    arm_ref_comp_observer_picks(
+      session,
+      input,
+      output,
+      id_arm_var = "arm_var-variables-selected",
+      data = reactive(data()[[parentname]]),
+      arm_ref_comp = arm_ref_comp,
+      module = "tm_a_gee",
+      on_off = reactive(TRUE),
+      arm_var_r = arm_var_r
     )
 
-    adsl_inputs <- teal.transform::merge_expression_module(
-      datasets = data,
-      data_extract = list(arm_var = arm_var),
-      anl_name = "ANL_ADSL"
-    )
-
-    anl_q <- reactive({
+    data_with_card <- reactive({
       obj <- data()
       teal.reporter::teal_card(obj) <-
         c(
           teal.reporter::teal_card(obj),
           teal.reporter::teal_card("## Module's output(s)")
         )
-      obj %>%
-        teal.code::eval_code(as.expression(anl_inputs()$expr)) %>%
-        teal.code::eval_code(as.expression(adsl_inputs()$expr))
+      obj
     })
 
-    merged <- list(
-      anl_input_r = anl_inputs,
-      adsl_input_r = adsl_inputs,
-      anl_q = anl_q
-    )
+    merged_anl <- merge_srv("merge_anl", data = data_with_card, selectors = anl_selectors, output_name = "ANL")
+    anl_q <- merged_anl$data
 
-    # Initially hide the output title because there is no output yet.
+    # Create ANL_ADSL for use as alt_counts_df in rtables::build_table()
+    anl_q_with_adsl <- reactive({
+      teal.code::eval_code(
+        anl_q(),
+        bquote(ANL_ADSL <- .(as.name(parentname)))
+      )
+    })
+
     shinyjs::show("gee_title")
 
     validate_checks <- reactive({
-      teal::validate_inputs(iv_r())
-
-      # To do in production: add validations.
+      validate(
+        need(
+          length(anl_selectors$arm_var()$variables$selected) >= 1L,
+          "A treatment variable is required"
+        ),
+        need(
+          length(anl_selectors$aval_var()$variables$selected) >= 1L,
+          "An analysis variable is required"
+        ),
+        need(
+          length(anl_selectors$id_var()$variables$selected) >= 1L,
+          "A subject identifier is required"
+        ),
+        need(
+          length(anl_selectors$visit_var()$variables$selected) >= 1L,
+          "A visit variable is required"
+        ),
+        need(
+          length(anl_selectors$paramcd()$variables$selected) >= 1L,
+          "An endpoint is required"
+        ),
+        need(
+          !is.null(input$conf_level) && nzchar(input$conf_level),
+          "Please choose a confidence level"
+        ),
+        need(
+          is.na(suppressWarnings(as.numeric(input$conf_level))) ||
+            (as.numeric(input$conf_level) > 0 && as.numeric(input$conf_level) < 1),
+          "Confidence level must be between 0 and 1"
+        ),
+        need(
+          !is.null(input$cor_struct) && nzchar(input$cor_struct),
+          "Please choose a correlation structure"
+        )
+      )
       NULL
     })
 
@@ -533,16 +476,22 @@ srv_gee <- function(id,
       validate_checks()
       output_table <- input$output_table
       conf_level <- as.numeric(input$conf_level)
-      col_source <- merged$anl_input_r()$columns_source
-      filter_info <- merged$anl_input_r()$filter_info
 
       req(output_table)
 
+      input_aval_var <- as.vector(anl_selectors$aval_var()$variables$selected)
+      input_arm_var <- as.vector(anl_selectors$arm_var()$variables$selected)
+      input_id_var <- as.vector(anl_selectors$id_var()$variables$selected)
+      input_visit_var <- as.vector(anl_selectors$visit_var()$variables$selected)
+      input_paramcd <- as.vector(anl_selectors$paramcd()$variables$selected)
+      input_values_paramcd <- as.vector(anl_selectors$paramcd()$values$selected)
+      input_split_covariates <- split_covariates_r()
+
       basic_table_args$subtitles <- paste0(
-        "Analysis Variable: ", col_source$aval_var,
-        ",  Endpoint: ", filter_info$paramcd[[1]]$selected[[1]],
-        ifelse(length(col_source$split_covariates) == 0, "",
-          paste(",  Covariates:", paste(col_source$split_covariates, collapse = ", "))
+        "Analysis Variable: ", input_aval_var,
+        ",  Endpoint:", paste(input_paramcd, input_values_paramcd, collapse = ", "),
+        ifelse(length(input_split_covariates) == 0, "",
+          paste(",  Covariates:", paste(input_split_covariates, collapse = ", "))
         )
       )
       basic_table_args$main_footer <- c(paste("Correlation Structure:", input$cor_struct))
@@ -551,13 +500,13 @@ srv_gee <- function(id,
         output_table = output_table,
         data_model_fit = "ANL",
         dataname_lsmeans = "ANL_ADSL",
-        input_arm_var = as.vector(col_source$arm_var),
+        input_arm_var = input_arm_var,
         conf_level = conf_level,
-        aval_var = col_source$aval_var,
-        split_covariates = col_source$split_covariates,
-        id_var = col_source$id_var,
-        arm_var = col_source$arm_var,
-        visit_var = col_source$visit_var,
+        aval_var = input_aval_var,
+        split_covariates = input_split_covariates,
+        id_var = input_id_var,
+        arm_var = input_arm_var,
+        visit_var = input_visit_var,
         cor_struct = input$cor_struct,
         basic_table_args = basic_table_args
       )
@@ -568,16 +517,13 @@ srv_gee <- function(id,
         "t_gee_lsmeans" = "LS Means Estimates"
       )
 
-      obj <- merged$anl_q()
+      obj <- anl_q_with_adsl()
       teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), paste("### ", table_type, "Table"))
       teal.code::eval_code(obj, as.expression(unlist(my_calls)))
     })
 
     output$gee_title <- renderText({
-      # Input on output type.
-      output_table <- input$output_table
-
-      output_title <- switch(output_table,
+      output_title <- switch(input$output_table,
         "t_gee_cov" = "Residual Covariance Matrix Estimate",
         "t_gee_coef" = "Model Coefficients",
         "t_gee_lsmeans" = "LS Means Estimates"
@@ -603,3 +549,11 @@ srv_gee <- function(id,
     decorated_table_q
   })
 }
+
+all_values <- make_des_delayed(function(x) {
+  unique(x)
+})
+
+first_value <- make_des_delayed(function(x) {
+  unique(x)[1]
+})
