@@ -294,11 +294,35 @@ template_g_ci <- function(dataname,
 #'
 #' @export
 tm_g_ci <- function(label,
-                    x_var,
-                    y_var,
-                    color,
+                    x_var = teal.picks::picks(
+                      teal.picks::datasets("ADLS"),
+                      teal.picks::variables(
+                        choices = c("ARMCD", "BMRKR2"),
+                        selected = "ARMCD",
+                        multiple = FALSE
+                      )
+                    ),
+                    y_var = teal.picks::picks(
+                      teal.picks::datasets("ADLB"),
+                      teal.picks::variables(
+                        choices = c("AVAL", "CHG"),
+                        selected = "AVAL",
+                        multiple = FALSE
+                      )
+                    ),
+                    color = teal.picks::picks(
+                      teal.picks::variables(
+                        choices = c("SEX", "STRATA1", "STRATA2"),
+                        selected = "STRATA1",
+                        multiple = FALSE
+                      )
+                    ),
                     stat = c("mean", "median"),
-                    conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+                    conf_level = teal.picks::values(
+                      c("0.95", "0.9", "0.8"),
+                      selected = "0.95",
+                      keep_order = TRUE
+                    ),
                     plot_height = c(700L, 200L, 2000L),
                     plot_width = NULL,
                     pre_output = NULL,
@@ -306,6 +330,23 @@ tm_g_ci <- function(label,
                     ggplot2_args = teal.widgets::ggplot2_args(),
                     transformators = list(),
                     decorators = list()) {
+  UseMethod("tm_g_ci", x_var)
+}
+
+#' @export
+tm_g_ci.data_extract_spec <- function(label,
+                                      x_var,
+                                      y_var,
+                                      color,
+                                      stat = c("mean", "median"),
+                                      conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+                                      plot_height = c(700L, 200L, 2000L),
+                                      plot_width = NULL,
+                                      pre_output = NULL,
+                                      post_output = NULL,
+                                      ggplot2_args = teal.widgets::ggplot2_args(),
+                                      transformators = list(),
+                                      decorators = list()) {
   message("Initializing tm_g_ci")
   checkmate::assert_string(label)
   stat <- match.arg(stat)
