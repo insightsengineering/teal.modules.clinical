@@ -321,13 +321,13 @@ tm_g_pp_adverse_events <- function(label,
   assert_decorators(decorators, names = "plot")
 
   # Build picks — all vars bound to dataname
-  aeterm <- if (!is.null(aeterm)) teal.picks::picks(teal.picks::datasets(dataname, dataname), variables = aeterm)
-  tox_grade <- if (!is.null(tox_grade)) teal.picks::picks(teal.picks::datasets(dataname, dataname), variables = tox_grade)
-  causality <- if (!is.null(causality)) teal.picks::picks(teal.picks::datasets(dataname, dataname), variables = causality)
-  outcome <- if (!is.null(outcome)) teal.picks::picks(teal.picks::datasets(dataname, dataname), variables = outcome)
-  action <- if (!is.null(action)) teal.picks::picks(teal.picks::datasets(dataname, dataname), variables = action)
-  time <- if (!is.null(time)) teal.picks::picks(teal.picks::datasets(dataname, dataname), variables = time)
-  decod <- if (!is.null(decod)) teal.picks::picks(teal.picks::datasets(dataname, dataname), variables = decod)
+  aeterm <- if (!is.null(aeterm)) teal.picks::picks(teal.picks::datasets(dataname, dataname), aeterm)
+  tox_grade <- if (!is.null(tox_grade)) teal.picks::picks(teal.picks::datasets(dataname, dataname), tox_grade)
+  causality <- if (!is.null(causality)) teal.picks::picks(teal.picks::datasets(dataname, dataname), causality)
+  outcome <- if (!is.null(outcome)) teal.picks::picks(teal.picks::datasets(dataname, dataname), outcome)
+  action <- if (!is.null(action)) teal.picks::picks(teal.picks::datasets(dataname, dataname), action)
+  time <- if (!is.null(time)) teal.picks::picks(teal.picks::datasets(dataname, dataname), time)
+  decod <- if (!is.null(decod)) teal.picks::picks(teal.picks::datasets(dataname, dataname), decod)
 
   args <- as.list(environment())
 
