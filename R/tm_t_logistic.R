@@ -321,7 +321,7 @@ tm_t_logistic <- function(label,
   if (!missing(paramcd)) {
     lifecycle::deprecate_warn(
       when = "0.13.0",
-      what = "tm_a_mmrm(paramcd)",
+      what = "tm_t_logistic(paramcd)",
       details = "Use of paramcd was removed in `tm_t_logistic` module usage with teal.picks"
     )
     if (!missing(paramcd_var) || !missing(paramcd_values)) {
