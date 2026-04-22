@@ -282,11 +282,11 @@ template_logistic <- function(dataname,
 #'     tm_t_logistic(
 #'       label = "Logistic Regression",
 #'       dataname = "ADRS",
-#'       paramcd_var = teal.picks::variables("PARAMCD", "PARAMCD"),
-#'       paramcd_values = teal.picks::values(multiple = FALSE),
-#'       cov_var = teal.picks::variables(selected = NULL),
-#'       avalc_var = teal.picks::variables("AVALC", fixed = TRUE),
-#'       conf_level = teal.picks::values(c("0.95", "0.9", "0.8"), "0.95", keep_order = TRUE)
+#'       paramcd_var = variables("PARAMCD", "PARAMCD"),
+#'       paramcd_values = values(multiple = FALSE),
+#'       cov_var = variables(selected = NULL),
+#'       avalc_var = variables("AVALC", fixed = TRUE),
+#'       conf_level = values(c("0.95", "0.9", "0.8"), "0.95", keep_order = TRUE)
 #'     )
 #'   )
 #' )
