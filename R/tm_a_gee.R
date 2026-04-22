@@ -549,11 +549,3 @@ srv_gee <- function(id,
     decorated_table_q
   })
 }
-
-all_values <- make_des_delayed(function(x) {
-  unique(x)
-})
-
-first_value <- make_des_delayed(function(x) {
-  unique(x)[1]
-})

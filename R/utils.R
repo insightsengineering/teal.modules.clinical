@@ -1172,8 +1172,17 @@ deprecate_pick_values_arg <- function(x, arg_name) {
 
 #' Add the class "des-delayed" to a function
 #' @keywords internal
+#' @param my_fun function to add the class
 make_des_delayed <- function(my_fun) {
   checkmate::assert_class(my_fun, "function")
   class(my_fun) <- "des-delayed"
   my_fun
 }
+
+all_values <- make_des_delayed(function(x) {
+  unique(x)
+})
+
+first_value <- make_des_delayed(function(x) {
+  unique(x)[1]
+})
