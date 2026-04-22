@@ -352,10 +352,10 @@ tm_t_logistic <- function(label,
     }
   }
 
-  arm_var <- if (!is.null(arm_var)) teal.picks::picks(datasets(parentname, parentname), arm_var)
-  cov_var <- if (!is.null(cov_var)) teal.picks::picks(datasets(parentname, parentname), cov_var)
-  avalc_var <- teal.picks::picks(datasets(dataname, dataname), avalc_var)
-  paramcd <- teal.picks::picks(datasets(dataname, dataname), variables = paramcd_var, values = paramcd_values)
+  arm_var <- if (!is.null(arm_var)) teal.picks::picks(teal.picks::datasets(parentname, parentname), arm_var)
+  cov_var <- if (!is.null(cov_var)) teal.picks::picks(teal.picks::datasets(parentname, parentname), cov_var)
+  avalc_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), avalc_var)
+  paramcd <- teal.picks::picks(teal.picks::datasets(dataname, dataname), variables = paramcd_var, values = paramcd_values)
 
   args <- as.list(environment())
 
