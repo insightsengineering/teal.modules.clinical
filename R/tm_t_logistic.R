@@ -333,7 +333,6 @@ tm_t_logistic <- function(label,
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
-  checkmate::assert_class(conf_level, "values")
   checkmate::assert_list(arm_ref_comp, names = "named", null.ok = TRUE)
   checkmate::assert_class(paramcd_var, "variables")
   checkmate::assert_class(paramcd_values, "values")
