@@ -24,16 +24,15 @@ app_driver_tm_a_gee <- function() {
         label = "GEE",
         dataname = "ADQS",
         parentname = "ADSL",
-        aval_var = teal.transform::choices_selected("AVALBIN", fixed = TRUE),
-        id_var = teal.transform::choices_selected(c("USUBJID", "SUBJID"), "USUBJID"),
-        arm_var = teal.transform::choices_selected(c("ARM", "ARMCD"), "ARM"),
-        visit_var = teal.transform::choices_selected(c("AVISIT", "AVISITN"), "AVISIT"),
-        paramcd = teal.transform::choices_selected(
-          choices = teal.transform::value_choices(data[["ADQS"]], "PARAMCD", "PARAM"),
-          selected = "FKSI-FWB"
+        aval_var = teal.picks::variables(choices = "AVALBIN", fixed = TRUE),
+        id_var = teal.picks::variables(choices = c("USUBJID", "SUBJID"), selected = "USUBJID"),
+        arm_var = teal.picks::variables(choices = c("ARM", "ARMCD"), selected = "ARM"),
+        visit_var = teal.picks::variables(choices = c("AVISIT", "AVISITN"), selected = "AVISIT"),
+        paramcd = teal.picks::variables(
+          choices = c("PARAMCD", "PARAM")
         ),
-        cov_var = teal.transform::choices_selected(c("BASE", "AGE", "SEX", "BASE:AVISIT"), NULL),
-        conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8, -1), 0.95, keep_order = TRUE),
+        cov_var = teal.picks::variables(choices = c("BASE", "AGE", "SEX", "BASE:AVISIT"), selected = NULL),
+        conf_level = teal.picks::values(c(0.95, 0.9, 0.8, -1), 0.95, multiple = FALSE),
         arm_ref_comp = NULL,
         pre_output = NULL,
         post_output = NULL,
@@ -66,32 +65,38 @@ testthat::test_that(
       "GEE"
     )
 
+    exported_values <- app_driver$get_values()$export
+    names(exported_values) <- gsub(
+      sprintf("%s-", app_driver$namespaces()$module(NULL)), "", names(exported_values),
+      fixed = TRUE
+    )
+
     testthat::expect_equal(
-      app_driver$get_active_module_input(ns_des_input("aval_var", "ADQS", "select")),
+      exported_values[["aval_var-picks_resolved"]]$variables$selected,
       "AVALBIN"
     )
 
     testthat::expect_equal(
-      app_driver$get_active_module_input(ns_des_input("id_var", "ADQS", "select")),
+      exported_values[["id_var-picks_resolved"]]$variables$selected,
       "USUBJID"
     )
 
     testthat::expect_equal(
-      app_driver$get_active_module_input(ns_des_input("arm_var", "ADSL", "select")),
+      exported_values[["arm_var-picks_resolved"]]$variables$selected,
       "ARM"
     )
 
     testthat::expect_equal(
-      app_driver$get_active_module_input(ns_des_input("visit_var", "ADQS", "select")),
+      exported_values[["visit_var-picks_resolved"]]$variables$selected,
       "AVISIT"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input(ns_des_input("paramcd", "ADQS", "filter1-vals")),
-      "FKSI-FWB"
+      exported_values[["paramcd-picks_resolved"]]$variables$selected,
+      "PARAMCD"
     )
 
     testthat::expect_equal(
-      app_driver$get_active_module_input("cov_var-dataset_ADQS_singleextract-select"),
+      exported_values[["cov_var_resolved"]]$variables$selected,
       NULL
     )
 
@@ -115,7 +120,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_a_gee()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input(ns_des_input("id_var", "ADQS", "select"), "SUBJID")
+    set_teal_picks_slot(app_driver, "id_var", "variables", "SUBJID")
     testthat::expect_true(
       identical(
         table_before,
@@ -130,16 +135,16 @@ testthat::test_that(
 testthat::test_that("e2e - tm_a_gee: Deselection of id_var throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_a_gee()
-  app_driver$set_active_module_input(ns_des_input("id_var", "ADQS", "select"), character(0))
+  set_teal_picks_slot(app_driver, "id_var", "variables", character(0))
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
     app_driver$get_text(
       app_driver$namespaces(TRUE)$module(
-        "id_var-dataset_ADQS_singleextract-select_input > div > span"
+        "table-table_out_main"
       )
     ),
-    "A Subject identifier is required"
+    "A subject identifier is required"
   )
   app_driver$stop()
 })
@@ -149,7 +154,7 @@ testthat::test_that("e2e - tm_a_gee: Change in arm_var changes the table and doe
   app_driver <- app_driver_tm_a_gee()
 
   table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-  app_driver$set_active_module_input(ns_des_input("arm_var", "ADSL", "select"), "ARMCD")
+  set_teal_picks_slot(app_driver, "arm_var", "variables", "ARMCD")
   testthat::expect_false(
     identical(
       table_before,
@@ -163,14 +168,14 @@ testthat::test_that("e2e - tm_a_gee: Change in arm_var changes the table and doe
 testthat::test_that("e2e - tm_a_gee: Deselection of arm_var throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_a_gee()
-  app_driver$set_active_module_input(ns_des_input("arm_var", "ADSL", "select"), character(0))
+  set_teal_picks_slot(app_driver, "arm_var", "variables", character(0))
   testthat::expect_identical(
     app_driver$get_active_module_table_output("table-table-with-settings"), data.frame()
   )
   app_driver$expect_validation_error()
   testthat::expect_equal(
     app_driver$get_text(
-      app_driver$namespaces(TRUE)$module("arm_var-dataset_ADSL_singleextract-select_input > div > span")
+      app_driver$namespaces(TRUE)$module("table-table_out_main")
     ),
     "A treatment variable is required"
   )
@@ -183,7 +188,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_a_gee()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input(ns_des_input("visit_var", "ADQS", "select"), "AVISITN")
+    set_teal_picks_slot(app_driver, "visit_var", "variables", "AVISITN")
     testthat::expect_true(
       identical(
         table_before,
@@ -198,13 +203,13 @@ testthat::test_that(
 testthat::test_that("e2e - tm_a_gee: Deselection of visit_var throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_a_gee()
-  app_driver$set_active_module_input(ns_des_input("visit_var", "ADQS", "select"), character(0))
+  set_teal_picks_slot(app_driver, "visit_var", "variables", character(0))
   app_driver$wait_for_idle()
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
     app_driver$get_text(
-      app_driver$namespaces(TRUE)$module("visit_var-dataset_ADQS_singleextract-select_input > div > span")
+      app_driver$namespaces(TRUE)$module("table-table_out_main")
     ),
     "A visit variable is required"
   )
@@ -215,7 +220,7 @@ testthat::test_that("e2e - tm_a_gee: Selection of paramcd changes the table and 
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_a_gee()
   table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-  app_driver$set_active_module_input(ns_des_input("paramcd", "ADQS", "filter1-vals"), "BFIALL")
+  set_teal_picks_slot(app_driver, "paramcd", "values", "FATIGI")
   testthat::expect_false(
     identical(
       table_before,
@@ -229,12 +234,12 @@ testthat::test_that("e2e - tm_a_gee: Selection of paramcd changes the table and 
 testthat::test_that("e2e - tm_a_gee: Deselection of paramcd throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_a_gee()
-  app_driver$set_active_module_input(ns_des_input("paramcd", "ADQS", "filter1-vals"), character(0))
+  set_teal_picks_slot(app_driver, "paramcd", "variables", character(0))
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
     app_driver$get_text(
-      app_driver$namespaces(TRUE)$module("paramcd-dataset_ADQS_singleextract-filter1-vals_input > div > span")
+      app_driver$namespaces(TRUE)$module("table-table_out_main")
     ),
     "An endpoint is required"
   )
@@ -245,7 +250,7 @@ testthat::test_that("e2e - tm_a_gee: Selection of cov_var changes the table and 
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_a_gee()
   table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-  app_driver$set_active_module_input("cov_var-dataset_ADQS_singleextract-select", "BASE")
+  set_teal_picks_slot(app_driver, "cov_var", "variables", "AGE")
   testthat::expect_false(
     identical(
       table_before,
@@ -279,7 +284,7 @@ testthat::test_that("e2e - tm_a_gee: Selection of conf_level out of [0,1] range 
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$get_text(app_driver$namespaces(TRUE)$module("conf_level_input > div > span")),
+    app_driver$get_text(app_driver$namespaces(TRUE)$module("table-table_out_main")),
     "Confidence level must be between 0 and 1"
   )
   app_driver$stop()
@@ -292,8 +297,8 @@ testthat::test_that("e2e - tm_a_gee: Deselection of conf_level throws validation
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$get_text(app_driver$namespaces(TRUE)$module("conf_level_input > div > span")),
-    "Please choose a confidence level"
+    app_driver$get_text(app_driver$namespaces(TRUE)$module("table-table_out_main")),
+    "Please choose a confidence level\nConfidence level must be between 0 and 1"
   )
   app_driver$stop()
 })
