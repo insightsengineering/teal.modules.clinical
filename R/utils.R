@@ -1112,8 +1112,13 @@ set_chunk_dims <- function(pws, q_r, inner_classes = NULL) {
 #'
 #' @keywords internal
 #' @noRd
-deprecate_pick_variables_arg <- function(x, arg_name, null.ok = FALSE) { # nolint: object_name_linter.
+deprecate_pick_variables_arg <- function(x,
+                                         arg_name = checkmate::vname(x),
+                                         multiple = TRUE,
+                                         null.ok = FALSE) { # nolint: object_name_linter.
   checkmate::assert_string(arg_name)
+  checkmate::assert_flag(multiple)
+  checkmate::assert_flag(null.ok)
   if (isTRUE(null.ok) && is.null(x)) {
     return(x)
   }
@@ -1128,6 +1133,14 @@ deprecate_pick_variables_arg <- function(x, arg_name, null.ok = FALSE) { # nolin
       )
     )
     x <- teal.picks::as.picks(x, quiet = FALSE)
+    attr(x, "multiple") <- multiple && length(x$selected) > 1L
+  } else {
+    if (!identical(attr(x, "multiple", exact = TRUE), multiple)) {
+      stop(
+        sprintf("Multiple variables are not allowed for %s.", arg_name),
+        " Please set multiple = TRUE in the picks object."
+      )
+    }
   }
   checkmate::assert_class(x, "variables", null.ok = null.ok, .var.name = arg_name)
   x
@@ -1140,8 +1153,9 @@ deprecate_pick_variables_arg <- function(x, arg_name, null.ok = FALSE) { # nolin
 #'
 #' @keywords internal
 #' @noRd
-deprecate_pick_values_arg <- function(x, arg_name) {
+deprecate_pick_values_arg <- function(x, arg_name = checkmate::vname(x), multiple = TRUE) {
   checkmate::assert_string(arg_name)
+  checkmate::assert_flag(multiple)
   if (inherits(x, "choices_selected")) {
     lifecycle::deprecate_warn(
       when = "0.13.0",
@@ -1163,9 +1177,43 @@ deprecate_pick_values_arg <- function(x, arg_name) {
     checkmate::assert_character(choices, min.len = 1L)
     checkmate::assert_character(selected, min.len = 1L)
     fixed <- isTRUE(x$fixed)
-    multiple <- length(selected) > 1L
+    multiple <- multiple && length(selected) > 1L
     x <- teal.picks::values(choices, selected, multiple = multiple, fixed = fixed)
   }
   checkmate::assert_class(x, "values", .var.name = arg_name)
   x
+}
+
+#' Coerce legacy `choices_selected`-based specs to `picks` with deprecation
+#'
+#' @param x (`picks` or legacy `choices_selected`) object.
+#' @param arg_name (`character(1)`) argument name.
+#' @keywords internal
+#' @noRd
+deprecate_value_choices <- function(x, multiple = TRUE, arg_name = checkmate::vname(x)) {
+  if (!inherits(x, "picks")) {
+    values <- deprecate_pick_values_arg(x, multiple = multiple, arg_name = arg_name)
+    variable_name <- attr(x$choices, "var_choices", exact = TRUE)
+    if (inherits(x, "choices_selected") && is.null(variable_name)) {
+      stop(
+        sprintf("When using choices_selected for %s", arg_name),
+        " it should have 'var_choices' attribute specifying variable choices.",
+        " Cannot convert to picks object without this information.",
+        call. = FALSE
+      )
+    }
+    teal.picks::picks(
+      teal.picks::variables(variable_name, variable_name),
+      values,
+      check_dataset = FALSE
+    )
+  } else {
+    if (!identical(attr(x$values, "multiple", exact = TRUE), multiple)) {
+      stop(
+        sprintf("Multiple variables are not allowed for %s.", arg_name),
+        " Please set multiple = TRUE in the picks object."
+      )
+    }
+    x
+  }
 }
