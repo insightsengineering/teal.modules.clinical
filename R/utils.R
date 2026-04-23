@@ -1104,9 +1104,11 @@ set_chunk_dims <- function(pws, q_r, inner_classes = NULL) {
 #' Coerce legacy `teal.transform` specs to [`teal.picks::variables()`] with deprecation
 #'
 #' If `x` is a legacy `choices_selected`, `filter_spec`, or `select_spec` object, it is converted
-#' via [`teal.picks::as.picks()`]. Otherwise `x` must already inherit `"variables"`.
+#' via [`teal.picks::as.picks()`]. A [`teal.picks::picks()`] object is reduced to its
+#' `variables()` element (any `values()` piece is ignored; the module supplies `datasets()`).
+#' Otherwise `x` must already inherit `"variables"`.
 #'
-#' @param x (`variables` or legacy `teal.transform` class) object.
+#' @param x (`variables`, [`teal.picks::picks()`], or legacy `teal.transform` class) object.
 #' @param arg_name (`character(1)`) argument name (used in deprecation messages).
 #' @param null.ok (`logical(1)`) whether `NULL` is allowed.
 #'
@@ -1123,12 +1125,34 @@ deprecate_pick_variables_arg <- function(x, arg_name, null.ok = FALSE) { # nolin
       when = "0.13.0",
       what = I(paste0("`", arg_name, "`")),
       details = paste(
-        "Pass `teal.picks::variables()` (or a full `teal.picks::picks()` chain).",
+        "Pass `teal.picks::variables()` (or `picks()` whose variable slot is used).",
         "Support for legacy `teal.transform::choices_selected()`, `filter_spec`, and `select_spec` is deprecated."
       )
     )
     x <- teal.picks::as.picks(x, quiet = FALSE)
+    if (is.null(x)) {
+      stop(
+        "Cannot convert `", arg_name, "` to picks; specify `variables()` or `picks()` explicitly.",
+        call. = FALSE
+      )
+    }
   }
+
+  if (inherits(x, "picks")) {
+    if (!is.null(x$values)) {
+      warning(
+        "`", arg_name, "` uses only the `variables()` part of `picks()`; `values()` is ignored ",
+        "(the module wraps with `datasets()` and builds its own selector).",
+        call. = FALSE
+      )
+    }
+    var_pick <- x$variables
+    if (is.null(var_pick)) {
+      stop("`", arg_name, "` must be `variables()` or `picks()` containing `variables()`.", call. = FALSE)
+    }
+    x <- var_pick
+  }
+
   checkmate::assert_class(x, "variables", null.ok = null.ok, .var.name = arg_name)
   x
 }
@@ -1168,4 +1192,104 @@ deprecate_pick_values_arg <- function(x, arg_name) {
   }
   checkmate::assert_class(x, "values", .var.name = arg_name)
   x
+}
+
+#' Coerce legacy `paramcd` input before [`normalize_tm_paramcd_picks()`]
+#'
+#' @param x (`variables`, [`teal.picks::picks()`], or legacy `teal.transform` class).
+#' @param arg_name (`character(1)`) argument name (used in deprecation messages).
+#' @param null.ok (`logical(1)`) whether `NULL` is allowed.
+#'
+#' @keywords internal
+#' @noRd
+deprecate_pick_pick_arg <- function(x, arg_name, null.ok = FALSE) { # nolint: object_name_linter.
+  checkmate::assert_string(arg_name)
+  if (isTRUE(null.ok) && is.null(x)) {
+    return(x)
+  }
+
+  legacy_transform <- c("choices_selected", "filter_spec", "select_spec")
+  if (inherits(x, legacy_transform)) {
+    lifecycle::deprecate_warn(
+      when = "0.13.0",
+      what = I(paste0("`", arg_name, "`")),
+      details = paste(
+        "Pass `teal.picks::variables()`, `teal.picks::picks()`, or (full spec) `picks(datasets(), ...)`.",
+        "Support for legacy `teal.transform::choices_selected()`, `filter_spec`, and `select_spec` is deprecated."
+      )
+    )
+    x <- teal.picks::as.picks(x, quiet = FALSE)
+    if (is.null(x)) {
+      stop(
+        "Cannot convert `", arg_name, "`; specify `variables()` / `picks()` explicitly.",
+        call. = FALSE
+      )
+    }
+  }
+
+  checkmate::assert_multi_class(
+    x,
+    c("variables", "values", "picks"),
+    null.ok = null.ok,
+    .var.name = arg_name
+  )
+  x
+}
+
+#' Build full [`teal.picks::picks()`] for `paramcd` from module `dataname`
+#'
+#' * **`variables`**: `picks(datasets(dataname), variables, values(multiple = FALSE))`.
+#' * **`picks`** without leading `datasets()`: `picks(datasets(dataname), variables, values)` (default
+#'   `values(multiple = FALSE)` if `values` missing).
+#' * **`picks`** with leading `datasets()` (full app-developer spec): returned unchanged.
+#'
+#' @param paramcd (`variables`, `values`, or `picks`). See Details.
+#' @param dataname (`character(1)`) analysis dataset name for `datasets(dataname, dataname)`.
+#'
+#' @keywords internal
+#' @noRd
+normalize_tm_paramcd_picks <- function(paramcd, dataname) {
+  checkmate::assert_string(dataname)
+
+  if (inherits(paramcd, "picks")) {
+    if (inherits(paramcd[[1]], "datasets")) {
+      return(paramcd)
+    }
+    var_pick <- paramcd$variables
+    if (is.null(var_pick)) {
+      stop("`paramcd` picks() must contain `variables()`.", call. = FALSE)
+    }
+    val_pick <- paramcd$values
+    if (is.null(val_pick)) {
+      val_pick <- teal.picks::values(multiple = FALSE)
+    }
+    return(
+      teal.picks::picks(
+        teal.picks::datasets(dataname, dataname),
+        var_pick,
+        val_pick
+      )
+    )
+  }
+
+  if (inherits(paramcd, "variables")) {
+    attr(paramcd, "multiple") <- FALSE
+    attr(paramcd, "fixed") <- TRUE
+    return(
+      teal.picks::picks(
+        teal.picks::datasets(dataname, dataname),
+        paramcd,
+        teal.picks::values(multiple = FALSE)
+      )
+    )
+  }
+
+  if (inherits(paramcd, "values")) {
+    stop(
+      "`paramcd` cannot be `teal.picks::values()` alone; pass `variables()` or `picks(variables(), values())`.",
+      call. = FALSE
+    )
+  }
+
+  stop("`paramcd` must be `variables()`, `picks()`, or legacy input coerced by `deprecate_pick_pick_arg()`.", call. = FALSE)
 }

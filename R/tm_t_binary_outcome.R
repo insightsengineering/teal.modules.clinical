@@ -336,6 +336,10 @@ template_binary_outcome <- function(dataname,
 #' @inheritParams module_arguments
 #' @inheritParams teal::module
 #' @inheritParams template_binary_outcome
+#' @param paramcd ([`teal.picks::variables()`], [`teal.picks::picks()`], or legacy coerced with deprecation)\cr
+#'   * `variables()` is wrapped as `picks(datasets(dataname), variables, values(multiple = FALSE))`.
+#'   * `picks(variables(), values())` without `datasets()` is prefixed with `datasets(dataname)` (adds `values(multiple = FALSE)` if missing).
+#'   * `picks(datasets(), ...)` (full spec) is not modified. A bare [`teal.picks::values()`] is not valid.
 #' @param rsp_table (`logical`)\cr whether the initial set-up of the module should match `RSPT01`. Defaults to `FALSE`.
 #' @param conf_level ([teal.picks::values()]; legacy `teal.transform::choices_selected()` is deprecated but still accepted)\cr
 #'   available confidence levels and default selection in (0, 1). Choice order follows the vector passed to
@@ -498,7 +502,8 @@ tm_t_binary_outcome <- function(label,
                                 decorators = list()) {
   message("Initializing tm_t_binary_outcome")
   arm_var <- deprecate_pick_variables_arg(arm_var, "arm_var")
-  paramcd <- deprecate_pick_variables_arg(paramcd, "paramcd")
+  paramcd <- deprecate_pick_pick_arg(paramcd, "paramcd")
+  paramcd <- normalize_tm_paramcd_picks(paramcd, dataname)
   strata_var <- deprecate_pick_variables_arg(strata_var, "strata_var")
   aval_var <- deprecate_pick_variables_arg(aval_var, "aval_var")
   conf_level <- deprecate_pick_values_arg(conf_level, "conf_level")
@@ -541,7 +546,6 @@ tm_t_binary_outcome <- function(label,
   denom <- match.arg(denom)
 
   arm_var <- teal.picks::picks(teal.picks::datasets(parentname, parentname), arm_var)
-  paramcd <- teal.picks::picks(teal.picks::datasets(dataname, dataname), paramcd, values())
   aval_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), aval_var)
   strata_var <- teal.picks::picks(teal.picks::datasets(parentname, parentname), strata_var)
 
