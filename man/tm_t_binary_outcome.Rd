@@ -49,8 +49,12 @@ with delayed \code{\link[teal.transform:variable_choices]{teal.transform::variab
 with the elements named \code{ref} and \code{comp} that the defined the default
 reference and comparison arms when the arm variable is changed.}
 
-\item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
-available choices and preselected option for the parameter code variable from \code{dataname}.}
+\item{paramcd}{(\code{\link[teal.picks:picks]{teal.picks::variables()}}, \code{\link[teal.picks:picks]{teal.picks::picks()}}, or legacy coerced with deprecation)\cr
+\itemize{
+\item \code{variables()} is wrapped as \code{picks(datasets(dataname), variables, values(multiple = FALSE))}.
+\item \code{picks(variables(), values())} without \code{datasets()} is prefixed with \code{datasets(dataname)} (adds \code{values(multiple = FALSE)} if missing).
+\item \code{picks(datasets(), ...)} (full spec) is not modified. A bare \code{\link[teal.picks:picks]{teal.picks::values()}} is not valid.
+}}
 
 \item{strata_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr names of
 the variables for stratified analysis.}
