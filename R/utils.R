@@ -1112,10 +1112,10 @@ set_chunk_dims <- function(pws, q_r, inner_classes = NULL) {
 #'
 #' @keywords internal
 #' @noRd
-deprecate_pick_variables_arg <- function(x,
-                                         arg_name = checkmate::vname(x),
-                                         multiple = TRUE,
-                                         null.ok = FALSE) { # nolint: object_name_linter.
+deprecate_choices_selected_variables <- function(x, # nolint: object_name_linter.
+                                                 arg_name = checkmate::vname(x),
+                                                 multiple = TRUE,
+                                                 null.ok = FALSE) { # nolint: object_name_linter.
   checkmate::assert_string(arg_name)
   checkmate::assert_flag(multiple)
   checkmate::assert_flag(null.ok)
@@ -1153,7 +1153,9 @@ deprecate_pick_variables_arg <- function(x,
 #'
 #' @keywords internal
 #' @noRd
-deprecate_pick_values_arg <- function(x, arg_name = checkmate::vname(x), multiple = TRUE) {
+deprecate_choices_selected_values <- function(x, # nolint: object_name_linter.
+                                              arg_name = checkmate::vname(x),
+                                              multiple = TRUE) {
   checkmate::assert_string(arg_name)
   checkmate::assert_flag(multiple)
   if (inherits(x, "choices_selected")) {
