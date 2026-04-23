@@ -198,7 +198,10 @@ template_a_gee <- function(output_table,
 #'       arm_var = teal.picks::variables(choices = c("ARM", "ARMCD"), selected = "ARM"),
 #'       visit_var = teal.picks::variables(choices = c("AVISIT", "AVISITN"), selected = "AVISIT"),
 #'       paramcd = teal.picks::variables(choices = c("PARAMCD", "PARAM")),
-#'       cov_var = teal.picks::variables(choices = c("BASE", "AGE", "SEX", "BASE:AVISIT"), selected = NULL)
+#'       cov_var = teal.picks::variables(
+#'         choices = c("BASE", "AGE", "SEX", "BASE:AVISIT"),
+#'         selected = NULL
+#'       )
 #'     )
 #'   )
 #' )
