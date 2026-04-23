@@ -1112,7 +1112,7 @@ set_chunk_dims <- function(pws, q_r, inner_classes = NULL) {
 #'
 #' @keywords internal
 #' @noRd
-deprecate_choices_selected_to_variables <- function(x, # nolint: object_name_linter.
+deprecate_choices_selected_to_variables <- function(x, # nolint: object_length_linter
                                                     arg_name = checkmate::vname(x),
                                                     multiple = TRUE,
                                                     null.ok = FALSE) { # nolint: object_name_linter.
@@ -1153,7 +1153,7 @@ deprecate_choices_selected_to_variables <- function(x, # nolint: object_name_lin
 #'
 #' @keywords internal
 #' @noRd
-deprecate_choices_selected_to_values <- function(x, # nolint: object_name_linter.
+deprecate_choices_selected_to_values <- function(x, # nolint: object_length_linter
                                                  arg_name = checkmate::vname(x),
                                                  multiple = TRUE) {
   checkmate::assert_string(arg_name)
@@ -1192,7 +1192,7 @@ deprecate_choices_selected_to_values <- function(x, # nolint: object_name_linter
 #' @param arg_name (`character(1)`) argument name.
 #' @keywords internal
 #' @noRd
-deprecate_value_choices_to_picks <- function(x, # nolint: object_name_linter.
+deprecate_value_choices_to_picks <- function(x, # nolint: object_length_linter.
                                              multiple = TRUE,
                                              arg_name = checkmate::vname(x)) {
   if (!inherits(x, "picks")) {
