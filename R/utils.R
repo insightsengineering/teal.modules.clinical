@@ -1112,10 +1112,10 @@ set_chunk_dims <- function(pws, q_r, inner_classes = NULL) {
 #'
 #' @keywords internal
 #' @noRd
-deprecate_choices_selected_variables <- function(x, # nolint: object_name_linter.
-                                                 arg_name = checkmate::vname(x),
-                                                 multiple = TRUE,
-                                                 null.ok = FALSE) { # nolint: object_name_linter.
+deprecate_choices_selected_to_variables <- function(x, # nolint: object_name_linter.
+                                                    arg_name = checkmate::vname(x),
+                                                    multiple = TRUE,
+                                                    null.ok = FALSE) { # nolint: object_name_linter.
   checkmate::assert_string(arg_name)
   checkmate::assert_flag(multiple)
   checkmate::assert_flag(null.ok)
@@ -1153,9 +1153,9 @@ deprecate_choices_selected_variables <- function(x, # nolint: object_name_linter
 #'
 #' @keywords internal
 #' @noRd
-deprecate_choices_selected_values <- function(x, # nolint: object_name_linter.
-                                              arg_name = checkmate::vname(x),
-                                              multiple = TRUE) {
+deprecate_choices_selected_to_values <- function(x, # nolint: object_name_linter.
+                                                 arg_name = checkmate::vname(x),
+                                                 multiple = TRUE) {
   checkmate::assert_string(arg_name)
   checkmate::assert_flag(multiple)
   if (inherits(x, "choices_selected")) {
@@ -1192,9 +1192,11 @@ deprecate_choices_selected_values <- function(x, # nolint: object_name_linter.
 #' @param arg_name (`character(1)`) argument name.
 #' @keywords internal
 #' @noRd
-deprecate_value_choices <- function(x, multiple = TRUE, arg_name = checkmate::vname(x)) {
+deprecate_value_choices_to_picks <- function(x, # nolint: object_name_linter.
+                                             multiple = TRUE,
+                                             arg_name = checkmate::vname(x)) {
   if (!inherits(x, "picks")) {
-    values <- deprecate_pick_values_arg(x, multiple = multiple, arg_name = arg_name)
+    values <- deprecate_choices_selected_to_values(x, multiple = multiple, arg_name = arg_name)
     variable_name <- attr(x$choices, "var_choices", exact = TRUE)
     if (inherits(x, "choices_selected") && is.null(variable_name)) {
       stop(
