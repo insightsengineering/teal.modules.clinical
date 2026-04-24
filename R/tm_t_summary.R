@@ -220,15 +220,18 @@ template_summary <- function(dataname,
 #' @inheritParams module_arguments
 #' @inheritParams teal::module
 #' @inheritParams template_summary
-#' @param arm_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
+#' @param arm_var ([teal.picks::variables()]; legacy `teal.transform` objects are
+#' deprecated but still accepted)\cr
 #'   object with all available choices and preselected
 #'   option for variable names that can be used as `arm_var`.
 #'   It defines the grouping variable(s) in the results table.
 #'   If there are two elements selected for `arm_var`,
 #'   second variable will be nested under the first variable.
-#' @param summarize_vars ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
+#' @param summarize_vars ([teal.picks::variables()]; legacy `teal.transform` objects
+#' are deprecated but still accepted)\cr
 #'   variable(s) to summarize.
-#' @param show_arm_var_labels (`flag`)\cr whether arm variable label(s) should be displayed. Defaults to `TRUE`.
+#' @param show_arm_var_labels (`flag`)\cr whether arm variable label(s) should be
+#' displayed. Defaults to `TRUE`.
 #'
 #' @inherit module_arguments return seealso
 #'
@@ -317,8 +320,9 @@ tm_t_summary <- function(label,
                          transformators = list(),
                          decorators = list()) {
   message("Initializing tm_t_summary")
-  arm_var <- deprecate_pick_variables_arg(arm_var, "arm_var")
-  summarize_vars <- deprecate_pick_variables_arg(summarize_vars, "summarize_vars")
+  arm_var <- migrate_choices_selected_to_variables(arm_var, multiple = FALSE)
+  summarize_vars <- migrate_choices_selected_to_variables(summarize_vars)
+
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
@@ -343,9 +347,9 @@ tm_t_summary <- function(label,
   denominator <- match.arg(denominator)
   numeric_stats <- match.arg(numeric_stats, several.ok = TRUE)
 
-
-  arm_var <- teal.picks::picks(teal.picks::datasets(parentname, parentname), arm_var)
-  summarize_vars <- teal.picks::picks(teal.picks::datasets(dataname, dataname), summarize_vars)
+  # variables()/values() or picks() or picks(variables(), values(), check_dataset = FALSE)
+  arm_var <- .create_picks(teal.picks::datasets(parentname, parentname), arm_var)
+  summarize_vars <- .create_picks(teal.picks::datasets(dataname, dataname), summarize_vars)
 
   args <- as.list(environment())
 
