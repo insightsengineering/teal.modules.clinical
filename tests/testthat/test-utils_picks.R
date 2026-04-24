@@ -2,7 +2,8 @@ describe("migrate_value_choices_to_picks", {
   it("returns a teal.picks::values() object", {
     withr::local_options(lifecycle_verbosity = "quiet")
     output <- migrate_value_choices_to_picks(
-      choices_selected(value_choices(teal.data::rADTTE, "PARAMCD")), multiple = FALSE
+      choices_selected(value_choices(teal.data::rADTTE, "PARAMCD")),
+      multiple = FALSE
     )
     expect_s3_class(output, "picks")
     expect_s3_class(output$variables, "variables")
