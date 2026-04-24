@@ -322,12 +322,12 @@ tm_t_shift_by_arm_by_worst <- function(label,
   checkmate::assert_class(basic_table_args, "basic_table_args")
   teal::assert_decorators(decorators, "table")
 
-  arm_var <- teal.picks::picks(teal.picks::datasets(parentname, parentname), arm_var)
-  paramcd <- teal.picks::picks(teal.picks::datasets(dataname, dataname), paramcd, values(multiple = FALSE))
-  aval_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), aval_var)
-  baseline_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), baseline_var)
-  worst_flag_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), worst_flag_var)
-  treatment_flag_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), treatment_flag_var)
+  arm_var <- create_picks_helper(teal.picks::datasets(parentname, parentname), arm_var)
+  paramcd <- create_picks_helper(teal.picks::datasets(dataname, dataname), paramcd)
+  aval_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), aval_var)
+  baseline_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), baseline_var)
+  worst_flag_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), worst_flag_var)
+  treatment_flag_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), treatment_flag_var)
 
   args <- as.list(environment())
 
