@@ -572,12 +572,12 @@ tm_t_coxreg <- function(label,
   checkmate::assert_class(basic_table_args, "basic_table_args")
   teal::assert_decorators(decorators, "table")
 
-  arm_var <- teal.picks::picks(teal.picks::datasets(parentname, parentname), arm_var)
-  paramcd <- teal.picks::picks(teal.picks::datasets(dataname, dataname), paramcd, values())
-  strata_var <- teal.picks::picks(teal.picks::datasets(parentname, parentname), strata_var)
-  aval_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), aval_var)
-  cnsr_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), cnsr_var)
-  cov_var <- teal.picks::picks(teal.picks::datasets(parentname, parentname), cov_var)
+  arm_var <- create_picks_helper(teal.picks::datasets(parentname, parentname), arm_var)
+  paramcd <- create_picks_helper(teal.picks::datasets(dataname, dataname), paramcd)
+  strata_var <- create_picks_helper(teal.picks::datasets(parentname, parentname), strata_var)
+  aval_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), aval_var)
+  cnsr_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), cnsr_var)
+  cov_var <- create_picks_helper(teal.picks::datasets(parentname, parentname), cov_var)
 
   args <- as.list(environment())
 
