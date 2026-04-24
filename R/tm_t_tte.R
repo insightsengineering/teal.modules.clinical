@@ -523,13 +523,13 @@ tm_t_tte <- function(label,
   checkmate::assert_class(basic_table_args, "basic_table_args")
   teal::assert_decorators(decorators, "table")
 
-  arm_var <- teal.picks::picks(teal.picks::datasets(parentname, parentname), arm_var)
-  strata_var <- teal.picks::picks(teal.picks::datasets(parentname, parentname), strata_var)
-  paramcd <- teal.picks::picks(teal.picks::datasets(dataname, dataname), paramcd, values())
-  aval_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), aval_var)
-  cnsr_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), cnsr_var)
-  time_unit_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), time_unit_var)
-  event_desc_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), event_desc_var)
+  arm_var <- create_picks_helper(teal.picks::datasets(parentname, parentname), arm_var)
+  strata_var <- create_picks_helper(teal.picks::datasets(parentname, parentname), strata_var)
+  paramcd <- create_picks_helper(teal.picks::datasets(dataname, dataname), paramcd)
+  aval_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), aval_var)
+  cnsr_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), cnsr_var)
+  time_unit_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), time_unit_var)
+  event_desc_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), event_desc_var)
 
   args <- as.list(environment())
 
