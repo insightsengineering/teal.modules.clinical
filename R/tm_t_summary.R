@@ -347,7 +347,6 @@ tm_t_summary <- function(label,
   denominator <- match.arg(denominator)
   numeric_stats <- match.arg(numeric_stats, several.ok = TRUE)
 
-  # variables()/values() or picks() or picks(variables(), values(), check_dataset = FALSE)
   arm_var <- .create_picks(teal.picks::datasets(parentname, parentname), arm_var)
   summarize_vars <- .create_picks(teal.picks::datasets(dataname, dataname), summarize_vars)
 
