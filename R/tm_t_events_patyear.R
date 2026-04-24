@@ -341,11 +341,11 @@ tm_t_events_patyear <- function(label,
   checkmate::assert_class(basic_table_args, "basic_table_args")
   teal::assert_decorators(decorators, "table")
 
-  arm_var <- teal.picks::picks(teal.picks::datasets(parentname, parentname), arm_var)
-  paramcd <- teal.picks::picks(teal.picks::datasets(dataname, dataname), paramcd, values())
-  events_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), events_var)
-  aval_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), aval_var)
-  avalu_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), avalu_var)
+  arm_var <- create_picks_helper(teal.picks::datasets(parentname, parentname), arm_var)
+  paramcd <- create_picks_helper(teal.picks::datasets(dataname, dataname), paramcd)
+  events_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), events_var)
+  aval_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), aval_var)
+  avalu_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), avalu_var)
 
   args <- as.list(environment())
 
