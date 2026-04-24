@@ -37,11 +37,10 @@ migrate_choices_selected_to_variables <- function(x, # nolint: object_length_lin
     x <- teal.picks::as.picks(x, quiet = FALSE)
     attr(x, "multiple") <- (!is.null(multiple) && multiple) || (is.null(multiple) && length(x$selected) > 1L)
   } else {
-    multiple <- (!is.null(multiple) && multiple) || (is.null(multiple) && length(x$selected) > 1L)
-    if (!identical(attr(x, "multiple", exact = TRUE), multiple)) {
+    if (!is.null(multiple) && !identical(attr(x, "multiple", exact = TRUE), multiple)) {
       stop(
         sprintf("Multiple variables are not allowed for %s.", arg_name),
-        " Please set multiple = TRUE in the picks object."
+        sprintf(" Please set multiple = %s in the picks object.", multiple)
       )
     }
   }
@@ -92,12 +91,7 @@ migrate_choices_selected_to_values <- function(x, # nolint: object_length_linter
     checkmate::assert_character(selected, min.len = 1L)
     fixed <- isTRUE(x$fixed)
     multiple <- (!is.null(multiple) && multiple) || (is.null(multiple) && length(selected) > 1L)
-    x <- teal.picks::values(
-      choices,
-      selected,
-      multiple = multiple,
-      fixed = fixed
-    )
+    x <- teal.picks::values(choices, selected, fixed = fixed, multiple = multiple)
   }
   checkmate::assert_class(x, "values", .var.name = arg_name)
   x
@@ -113,11 +107,10 @@ migrate_value_choices_to_picks <- function(x, # nolint: object_length_linter.
                                            multiple = NULL,
                                            arg_name = checkmate::vname(x)) {
   if (inherits(x, "picks")) {
-    multiple_calc <- (!is.null(multiple) && multiple) || (is.null(multiple) && length(x$values$selected) > 1L)
-    if (!is.null(multiple) && !identical(attr(x$values, "multiple", exact = TRUE), multiple_calc)) {
+    if (!is.null(multiple) && !identical(attr(x$values, "multiple", exact = TRUE), multiple)) {
       stop(
         sprintf("Multiple variables are not allowed for %s.", arg_name),
-        " Please set multiple = TRUE in the picks object."
+        sprintf(" Please set multiple = %s in the picks object.", multiple)
       )
     }
     return(x)
