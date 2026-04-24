@@ -7,22 +7,14 @@
 tm_t_abnormality_by_worst_grade(
   label,
   dataname,
-  parentname = ifelse(inherits(arm_var, "data_extract_spec"),
-    teal.transform::datanames_input(arm_var), "ADSL"),
-  arm_var,
-  id_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
-    subset = "USUBJID"), selected = "USUBJID", fixed = TRUE),
-  paramcd,
-  atoxgr_var =
-    teal.transform::choices_selected(teal.transform::variable_choices(dataname, subset =
-    "ATOXGR"), selected = "ATOXGR", fixed = TRUE),
-  worst_high_flag_var =
-    teal.transform::choices_selected(teal.transform::variable_choices(dataname, subset =
-    "WGRHIFL"), selected = "WGRHIFL", fixed = TRUE),
-  worst_low_flag_var =
-    teal.transform::choices_selected(teal.transform::variable_choices(dataname, subset =
-    "WGRLOFL"), selected = "WGRLOFL", fixed = TRUE),
-  worst_flag_indicator = teal.transform::choices_selected("Y"),
+  parentname = "ADSL",
+  arm_var = variables(choices = c("ARM", "ARMCD")),
+  id_var = variables(choices = "USUBJID"),
+  paramcd = variables(choices = "PARAMCD"),
+  atoxgr_var = variables(choices = "ATOXGR"),
+  worst_high_flag_var = variables(choices = "WGRHIFL"),
+  worst_low_flag_var = variables(choices = "WGRLOFL"),
+  worst_flag_indicator = teal.picks::values(c("Y", "N", ""), "Y", multiple = FALSE),
   add_total = TRUE,
   total_label = default_total_label(),
   drop_arm_levels = TRUE,
@@ -40,29 +32,27 @@ tm_t_abnormality_by_worst_grade(
 
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
-available choices and preselected option for variable names that can be used as \code{arm_var}.
-It defines the grouping variable in the results table.}
+\item{arm_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr object with all available choices and preselected
+option for the treatment variable.}
 
-\item{id_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object specifying
-the variable name for subject id.}
+\item{id_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr subject identifier variable.}
 
-\item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
-available choices and preselected option for the parameter code variable from \code{dataname}.}
+\item{paramcd}{(\code{\link[teal.picks:picks]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr variable used to filter the analysis dataset
+(typically \code{PARAMCD}). The \code{values()} element is added internally to allow users to pick
+laboratory parameter value(s) interactively.}
 
-\item{atoxgr_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr
-object with all available choices and preselected option
-for variable names that can be used as Analysis Toxicity Grade.}
+\item{atoxgr_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr object with all available choices and preselected
+option for the analysis toxicity grade variable.}
 
-\item{worst_high_flag_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr
-object with all available choices and preselected option for variable names that can be used as Worst High
-Grade flag.}
+\item{worst_high_flag_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr object with all available choices and
+preselected option for the worst high grade flag variable.}
 
-\item{worst_low_flag_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr
-object with all available choices and preselected option for variable names that can be used as Worst Low Grade flag.}
+\item{worst_low_flag_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr object with all available choices and
+preselected option for the worst low grade flag variable.}
 
-\item{worst_flag_indicator}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr
-value indicating worst grade.}
+\item{worst_flag_indicator}{(\code{\link[teal.picks:picks]{teal.picks::values()}}; legacy \code{teal.transform::choices_selected()} is deprecated but still accepted)\cr
+Value(s) matching the worst high/low flag variables (default \code{"Y"}). Uses explicit candidate levels including an empty string where needed.
+The UI shows the selected value as static text (not an interactive control).}
 
 \item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
 
@@ -165,14 +155,8 @@ app <- init(
     tm_t_abnormality_by_worst_grade(
       label = "Laboratory Test Results with Highest Grade Post-Baseline",
       dataname = "ADLB",
-      arm_var = choices_selected(
-        choices = variable_choices(ADSL, subset = c("ARM", "ARMCD")),
-        selected = "ARM"
-      ),
-      paramcd = choices_selected(
-        choices = value_choices(ADLB, "PARAMCD", "PARAM"),
-        selected = c("ALT", "CRP", "IGA")
-      ),
+      arm_var = variables(choices = c("ARM", "ARMCD"), selected = "ARM"),
+      paramcd = variables(choices = "PARAMCD"),
       add_total = FALSE
     )
   ),
@@ -193,8 +177,8 @@ apps implementing this module can be found.
 \section{Examples in Shinylive}{
 \describe{
   \item{example-1}{
-    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsO-VNVaNFEEr8UKRQ+kZc1AD6waHWQSFhhjoA7rSkABa0EOyxULg6IEo6OgCCACIAygAy4TqkMARRcAAeUVD8otTFZeXVAEJ1DU2t7fzU9DoApAB8Uz0lxrTU5IzsAISlAGoAkpU7ttPZUzoE7ApglQDCWE5OAHI79wDiFwUX-aWVTtVPLmByAIAXwCACsiNkogBrOCsUS5RI2ZL8ODGKDCUhRAj8WiiJrgyEwuHAaDweF5OQAXVcEAqNTqeWAwAudOqF0p1NpfUGyMSTJZ3PZnKUaFQdWy6XOEBKeR0AF4dHlcD0+EIRKJ5TpVcIxFKSiUGlFMVB6BAiIwYNx0qwovQbSlzaJMQBzZgovX6krUE1waiai7VE3mkLm1h2MSkHRYMQYjVpTI6AAStGdGQjOmebt0AAUiE6DP0oKJfdk4G8Fvq8qTdAqBQNy9LPToWDAopoWJqCBkIQQxFFiyJ1HB+B6m6duzIxJr24xaCaRFiJ734ayCqJBPRi5GFWcWVgALJvHR7-dXcoXQHKxtjgdwIf8f1gUoHi4VkpyK9j1AsWDYztLvtb3vUcmy7HspwVdtqEEOBF3AlduXeMBs2fUpT3PPBj2Q1DDwBT8xx0IDyAfHdzifapbCPC4bmzKiwB2Z5SgvN8dA-FiOn4I0iFCP0FQAMVKapvgrAJ33wpYVlUTVIn7OhlxAmSuknMjWToypSj4vi2Uwojh0fABNC98INOBuFk5S636OiAHl7nsWwtKPXSSKwwyAR6AIAloYwdHYbJVigCxtGsGwikbUQsggVhSnQdhRQAEkEWgCgS4tGG0fwlCBJQwCBSkgA}{Open in Shinylive}
-    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsO-VNVaNFEEr8UKRQ+kZc1AD6waHWQSFhhjoA7rSkABa0EOyxULg6IEo6OgCCACIAygAy4TqkMARRcAAeUVD8otTFZeXVAEJ1DU2t7fzU9DoApAB8Uz0lxrTU5IzsAISlAGoAkpU7ttPZUzoE7ApglQDCWE5OAHI79wDiFwUX-aWVTtVPLmByAIAXwCACsiNkogBrOCsUS5RI2ZL8ODGKDCUhRAj8WiiJrgyEwuHAaDweF5OQAXVcEAqNTqeWAwAudOqF0p1NpfUGyMSTJZ3PZnKUaFQdWy6XOEBKeR0AF4dHlcD0+EIRKJ5TpVcIxFKSiUGlFMVB6BAiIwYNx0qwovQbSlzaJMQBzZgovX6krUE1waiai7VE3mkLm1h2MSkHRYMQYjVpTI6AAStGdGQjOmebt0AAUiE6DP0oKJfdk4G8Fvq8qTdAqBQNy9LPToWDAopoWJqCBkIQQxFFiyJ1HB+B6m6duzIxJr24xaCaRFiJ734ayCqJBPRi5GFWcWVgALJvHR7-dXcoXQHKxtjgdwIf8f1gUoHi4VkpyK9j1AsWDYztLvtb3vUcmy7HspwVdtqEEOBF3AlduXeMBs2fUpT3PPBj2Q1DDwBT8xx0IDyAfHdzifapbCPC4bmzKiwB2Z5SgvN8dA-FiOn4I0iFCP0FQAMVKapvgrAJ33wpYVlUTVIn7OhlxAmSuknMjWToypSj4vi2Uwojh0fABNC98INOBuFk5S636OiAHl7nsWwtKPXSSKwwyAR6AIAloYwdHYbJVigCxtGsGwikbUQsggVhSnQdhRQAEkEWgCgS4tGG0fwlCBJQwCBSkgA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsO-VNVaNFEEr8UKRQ+kZc1AD6waHWQSFhhjoA7rSkABa0EOyxULg6IEo6OgCCACIAygAy4TqkMARRcAAeUVD8otTFZeXVAEJ1DU2t7fzU9DoApAB8Uz0lxrTU5IzsAISlAGoAkpU7ttPZUzoE7ApglQDCWE5OAHI79wDiFwUX-aWVTtVPLmByAIAXwCACsiNkogBrOCsUS5RI2ZL8ODGKDCUhRAj8WiiJrgyEwuHAaDweF5OQAXVcEAqNTqeWAwAudOqF0p1NpfUGyMSTJZ3PZnKUaFQdWy6XOEBKeR0AF4dHlcD0+EIRKJ5TpVcIxFKSiUGlFMVB6BAiIwYNx0qwovQbSlzaJMQBzZgovX6krUE1waiai7VE3mkLm1h2MSkHRYMQYjVpTI6AAStGdGQjOmebt0AAUiE6DP0oKJfdk4G8Fvq8qTdAqBQNy9LPToWDAopoWJr24xaCb1ewCBkIQQxJqziysABZN46ccTq7lC5yArFkTqOD8f1gUqTxfKxue1AsWDYzssHv0PsDocj2tgbPb0pzhcAvdN5v8fhGoihP0KgBipTVN8FYBCUS49EsKyqJqkRRF0Mi6hWsHwcO5xblUbJ4DOlylH+f6YcuvpwGuG63gAmruSFwNwcF0Khdb9NOFwAPL3PYtj4dOK7EeQpHYRRAI9AEAS0MYOjsNkqxQBY2jWDYRSNqIWQQKwpToOwooACSCLQBRacWjDaP4ShAkoYBApSQA}{Open in Shinylive}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsO-VNVaNFEEr8UKRQ+kZc1AD6waHWQSFhhjoA7rSkABa0EOyxULg6IEo6OgCCACIAygAy4TqkMARRcAAeUVD8otTFZeXVAEJ1DU2t7fzU9DoApAB8Uz0lxrTU5IzsAISlAGoAkpU7ttPZUzoE7ApglQDCWE5OAHI79wDiFwUX-aWVTtVPLmByAIAXwCACsiNkogBrOCsUS5RI2ZL8ODGKDCUhRAj8WiiJrgyEwuHAaDweF5OQAXVcEAqNTqeWAwAudOqF0p1NpfUGyMSTJZ3PZnKUaFQdWy6XOEBKeR0AF4dHlcD0+EIRKJ5TpVcIxFKSiUGlFMVB6BAiIwYNx0qwovQbSlzaJMQBzZgovX6krUE1waiai7VE3mkLm1h2MSkHRYMQYjVpTI6AAStGdGQjOmebt0AAUiE6DP0oKJfdk4G8Fvq8qTdAqBQNy9LPToWDAopoWJr24xaCb1ewCBkIQQxJqziysABZN46ccTq7lC5yArFkTqOD8f1gUqTxfKxue1AsWDYzssHv0PsDocj2tgbPb0pzhcAvdN5v8fhGoihP0KgBipTVN8FYBCUS49EsKyqJqkRRF0Mi6hWsHwcO5xblUbJ4DOlylH+f6YcuvpwGuG63gAmruSFwNwcF0Khdb9NOFwAPL3PYtj4dOK7EeQpHYRRAI9AEAS0MYOjsNkqxQBY2jWDYRSNqIWQQKwpToOwooACSCLQBRacWjDaP4ShAkoYBApSQA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
     \if{html}{\out{<a style='height: 800px; display: block;'></a>}}
   }
 }
