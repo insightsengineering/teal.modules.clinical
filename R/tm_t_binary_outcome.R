@@ -540,10 +540,10 @@ tm_t_binary_outcome <- function(label,
 
   denom <- match.arg(denom)
 
-  arm_var <- teal.picks::picks(teal.picks::datasets(parentname, parentname), arm_var)
-  paramcd <- teal.picks::picks(teal.picks::datasets(dataname, dataname), paramcd, values())
-  aval_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), aval_var)
-  strata_var <- teal.picks::picks(teal.picks::datasets(parentname, parentname), strata_var)
+  arm_var <- create_picks_helper(teal.picks::datasets(parentname, parentname), arm_var)
+  paramcd <- create_picks_helper(teal.picks::datasets(dataname, dataname), paramcd)
+  aval_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), aval_var)
+  strata_var <- create_picks_helper(teal.picks::datasets(parentname, parentname), strata_var)
 
   args <- as.list(environment())
 
