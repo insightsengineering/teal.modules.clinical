@@ -3,8 +3,11 @@
 #' If `x` is a legacy `choices_selected`, `filter_spec`, or `select_spec` object, it is converted
 #' via [`teal.picks::as.picks()`]. Otherwise `x` must already inherit `"variables"`.
 #'
-#' @param x (`variables` or legacy `teal.transform` class) object.
-#' @param arg_name (`character(1)`) argument name (used in deprecation messages).
+#' @param x (`values`, `choices_selected` or `picks`) object.
+#' @param arg_name optional (`character(1)`) argument name.
+#' @param multiple optional (`logical(1)`) whether multiple values are allowed.
+#' If `NULL` (default), it is not validated and inferred from the length of `selected` in the
+#' `choices_selected` object.
 #' @param null.ok (`logical(1)`) whether `NULL` is allowed.
 #'
 #' @keywords internal
@@ -55,8 +58,11 @@ migrate_choices_selected_to_variables <- function(x, # nolint: object_length_lin
 
 #' Coerce legacy `choices_selected` to [`teal.picks::values()`] with deprecation
 #'
-#' @param x (`values` or `choices_selected`) object.
-#' @param arg_name (`character(1)`) argument name.
+#' @param x (`values`, `choices_selected` or `picks`) object.
+#' @param arg_name optional (`character(1)`) argument name.
+#' @param multiple optional (`logical(1)`) whether multiple values are allowed.
+#' If `NULL` (default), it is not validated and inferred from the length of `selected` in the
+#' `choices_selected` object.
 #'
 #' @keywords internal
 #' @noRd
@@ -99,8 +105,12 @@ migrate_choices_selected_to_values <- function(x, # nolint: object_length_linter
 
 #' Coerce legacy `choices_selected`-based specs to `picks` with deprecation
 #'
-#' @param x (`picks` or legacy `choices_selected`) object.
-#' @param arg_name (`character(1)`) argument name.
+#' @param x (`values`, `choices_selected` or `picks`) object.
+#' @param arg_name optional (`character(1)`) argument name.
+#' @param multiple optional (`logical(1)`) whether multiple values are allowed.
+#' If `NULL` (default), it is not validated and inferred from the length of `selected` in the
+#' `choices_selected` object.
+#'
 #' @keywords internal
 #' @noRd
 migrate_value_choices_to_picks <- function(x, # nolint: object_length_linter.
