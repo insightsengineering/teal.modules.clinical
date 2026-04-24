@@ -344,8 +344,8 @@ tm_t_summary <- function(label,
   numeric_stats <- match.arg(numeric_stats, several.ok = TRUE)
 
 
-  arm_var <- teal.picks::picks(teal.picks::datasets(parentname, parentname), arm_var)
-  summarize_vars <- teal.picks::picks(teal.picks::datasets(dataname, dataname), summarize_vars)
+  arm_var <- create_picks_helper(teal.picks::datasets(parentname, parentname), arm_var)
+  summarize_vars <- create_picks_helper(teal.picks::datasets(dataname, dataname), summarize_vars)
 
   args <- as.list(environment())
 
