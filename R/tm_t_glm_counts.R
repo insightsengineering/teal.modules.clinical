@@ -139,11 +139,11 @@ tm_t_glm_counts <- function(label = "Counts Module",
   checkmate::assert_class(basic_table_args, "basic_table_args")
   teal::assert_decorators(decorators, "table")
 
-  arm_var <- teal.picks::picks(teal.picks::datasets(parentname, parentname), arm_var)
-  aval_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), aval_var)
-  cov_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), cov_var)
-  offset_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), offset_var)
-  strata_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), strata_var)
+  arm_var <- create_picks_helper(teal.picks::datasets(parentname, parentname), arm_var)
+  aval_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), aval_var)
+  cov_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), cov_var)
+  offset_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), offset_var)
+  strata_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), strata_var)
 
   args <- as.list(environment())
 
