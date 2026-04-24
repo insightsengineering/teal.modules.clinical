@@ -395,11 +395,11 @@ tm_t_abnormality <- function(label,
   checkmate::assert_class(basic_table_args, "basic_table_args")
   teal::assert_decorators(decorators, "table")
 
-  arm_var <- teal.picks::picks(teal.picks::datasets(parentname, parentname), arm_var)
-  by_vars <- teal.picks::picks(teal.picks::datasets(dataname, dataname), by_vars)
-  grade <- teal.picks::picks(teal.picks::datasets(dataname, dataname), grade)
-  id_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), id_var)
-  baseline_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), baseline_var)
+  arm_var <- create_picks_helper(teal.picks::datasets(parentname, parentname), arm_var)
+  by_vars <- create_picks_helper(teal.picks::datasets(dataname, dataname), by_vars)
+  grade <- create_picks_helper(teal.picks::datasets(dataname, dataname), grade)
+  id_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), id_var)
+  baseline_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), baseline_var)
   treatment_flag_var <- teal.picks::picks(
     teal.picks::datasets(dataname, dataname),
     treatment_flag_var,
