@@ -317,8 +317,8 @@ tm_t_summary <- function(label,
                          transformators = list(),
                          decorators = list()) {
   message("Initializing tm_t_summary")
-  arm_var <- deprecate_pick_variables_arg(arm_var, "arm_var")
-  summarize_vars <- deprecate_pick_variables_arg(summarize_vars, "summarize_vars")
+  arm_var <- migrate_choices_selected_to_variables(arm_var, arg_name = "arm_var")
+  summarize_vars <- migrate_choices_selected_to_variables(summarize_vars, arg_name = "summarize_vars")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
