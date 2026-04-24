@@ -12,7 +12,7 @@
 migrate_choices_selected_to_variables <- function(x, # nolint: object_length_linter
                                                   arg_name = checkmate::vname(x),
                                                   multiple = NULL,
-                                                  null.ok = FALSE) {
+                                                  null.ok = FALSE) { # nolint: object_name_linter.
   # nolint: object_name_linter.
   checkmate::assert_string(arg_name)
   checkmate::assert_flag(multiple, null.ok = TRUE)
