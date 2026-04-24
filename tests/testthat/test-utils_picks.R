@@ -117,3 +117,65 @@ describe("migrate_choices_selected_to_variables", {
     )
   })
 })
+
+describe("create_picks_helper", {
+  it("returns x unchanged if it already has datasets attached", {
+    x <- teal.picks::picks(
+      datasets("ADSL", "ADSL"),
+      teal.picks::variables("PARAMCD", "PARAMCD"),
+      teal.picks::values(c("A", "B"), "A"),
+      check_dataset = FALSE
+    )
+    output <- create_picks_helper(datasets = datasets("ADSL", "ADSL"), x = x)
+    expect_identical(output, x)
+  })
+
+  it("errors when datasets is NULL", {
+    x <- teal.picks::picks(
+      teal.picks::variables("PARAMCD", "PARAMCD"),
+      teal.picks::values(c("A", "B"), "A"),
+      check_dataset = FALSE
+    )
+    expect_error(
+      create_picks_helper(datasets = NULL, x = x),
+      class = "error"
+    )
+  })
+
+  it("errors when datasets is not a 'datasets' object", {
+    x <- teal.picks::picks(
+      teal.picks::variables("PARAMCD", "PARAMCD"),
+      teal.picks::values(c("A", "B"), "A"),
+      check_dataset = FALSE
+    )
+    expect_error(
+      create_picks_helper(datasets = list(), x = x),
+      class = "error"
+    )
+  })
+
+  it("errors when x is neither pick nor picks", {
+    expect_error(
+      create_picks_helper(datasets = datasets("ADSL", "ADSL"), x = "not_a_pick"),
+      class = "error"
+    )
+  })
+
+  it("wraps a picks object (without datasets) with the supplied datasets", {
+    x <- teal.picks::picks(
+      teal.picks::variables("PARAMCD", "PARAMCD"),
+      teal.picks::values(c("A", "B"), "A"),
+      check_dataset = FALSE
+    )
+    output <- create_picks_helper(datasets = datasets("ADSL", "ADSL"), x = x)
+    expect_s3_class(output, "picks")
+    expect_identical(output$datasets, datasets("ADSL", "ADSL"))
+  })
+
+  it("wraps a pick object with the supplied datasets", {
+    x <- teal.picks::variables("PARAMCD", "PARAMCD")
+    output <- create_picks_helper(datasets = datasets("ADSL", "ADSL"), x = x)
+    expect_s3_class(output, "picks")
+    expect_identical(output$datasets, datasets("ADSL", "ADSL"))
+  })
+})

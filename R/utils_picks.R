@@ -133,7 +133,7 @@ migrate_value_choices_to_picks <- function(x, # nolint: object_length_linter.
   )
 }
 
-.create_picks <- function(datasets = NULL, x) {
+create_picks_helper <- function(datasets = NULL, x) {
   if (inherits(x, "picks") && !is.null(x$datasets)) {
     return(x)
   }
