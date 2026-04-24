@@ -448,11 +448,11 @@ tm_t_summary_by <- function(label,
                             transformators = list(),
                             decorators = list()) {
   message("Initializing tm_t_summary_by")
-  arm_var <- deprecate_pick_variables_arg(arm_var, "arm_var")
-  by_vars <- deprecate_pick_variables_arg(by_vars, "by_vars")
-  summarize_vars <- deprecate_pick_variables_arg(summarize_vars, "summarize_vars")
-  id_var <- deprecate_pick_variables_arg(id_var, "id_var")
-  if (!is.null(paramcd)) paramcd <- deprecate_pick_variables_arg(paramcd, "paramcd")
+  arm_var <- migrate_choices_selected_to_variables(arm_var, arg_name = "arm_var")
+  by_vars <- migrate_choices_selected_to_variables(by_vars, arg_name = "by_vars")
+  summarize_vars <- migrate_choices_selected_to_variables(summarize_vars, arg_name = "summarize_vars")
+  id_var <- migrate_choices_selected_to_variables(id_var, arg_name = "id_var")
+  if (!is.null(paramcd)) paramcd <- migrate_value_choices_to_picks(paramcd, multiple = FALSE, arg_name = "paramcd")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
