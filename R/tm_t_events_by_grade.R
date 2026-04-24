@@ -900,10 +900,10 @@ tm_t_events_by_grade <- function(label,
                                  transformators = list(),
                                  decorators = list()) {
   message("Initializing tm_t_events_by_grade")
-  arm_var <- deprecate_pick_variables_arg(arm_var, "arm_var")
-  hlt <- deprecate_pick_variables_arg(hlt, "hlt")
-  llt <- deprecate_pick_variables_arg(llt, "llt")
-  grade <- deprecate_pick_variables_arg(grade, "grade")
+  arm_var <- migrate_choices_selected_to_variables(arm_var, arg_name = "arm_var")
+  hlt <- migrate_choices_selected_to_variables(hlt, arg_name = "hlt")
+  llt <- migrate_choices_selected_to_variables(llt, arg_name = "llt")
+  grade <- migrate_choices_selected_to_variables(grade, arg_name = "grade")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
