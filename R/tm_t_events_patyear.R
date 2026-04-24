@@ -323,11 +323,11 @@ tm_t_events_patyear <- function(label,
                                 transformators = list(),
                                 decorators = list()) {
   message("Initializing tm_t_events_patyear")
-  arm_var <- deprecate_pick_variables_arg(arm_var, "arm_var")
-  events_var <- deprecate_pick_variables_arg(events_var, "events_var")
-  paramcd <- deprecate_pick_variables_arg(paramcd, "paramcd")
-  aval_var <- deprecate_pick_variables_arg(aval_var, "aval_var")
-  avalu_var <- deprecate_pick_variables_arg(avalu_var, "avalu_var")
+  arm_var <- migrate_choices_selected_to_variables(arm_var, arg_name = "arm_var")
+  events_var <- migrate_choices_selected_to_variables(events_var, arg_name = "events_var")
+  paramcd <- migrate_value_choices_to_picks(paramcd, multiple = FALSE, arg_name = "paramcd")
+  aval_var <- migrate_choices_selected_to_variables(aval_var, arg_name = "aval_var")
+  avalu_var <- migrate_choices_selected_to_variables(avalu_var, arg_name = "avalu_var")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
