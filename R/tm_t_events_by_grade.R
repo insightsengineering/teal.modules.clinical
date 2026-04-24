@@ -919,10 +919,10 @@ tm_t_events_by_grade <- function(label,
   checkmate::assert_class(basic_table_args, "basic_table_args")
   teal::assert_decorators(decorators, "table")
 
-  arm_var <- teal.picks::picks(teal.picks::datasets(parentname, parentname), arm_var)
-  hlt <- teal.picks::picks(teal.picks::datasets(dataname, dataname), hlt)
-  llt <- teal.picks::picks(teal.picks::datasets(dataname, dataname), llt)
-  grade <- teal.picks::picks(teal.picks::datasets(dataname, dataname), grade)
+  arm_var <- create_picks_helper(teal.picks::datasets(parentname, parentname), arm_var)
+  hlt <- create_picks_helper(teal.picks::datasets(dataname, dataname), hlt)
+  llt <- create_picks_helper(teal.picks::datasets(dataname, dataname), llt)
+  grade <- create_picks_helper(teal.picks::datasets(dataname, dataname), grade)
 
   args <- as.list(environment())
 
