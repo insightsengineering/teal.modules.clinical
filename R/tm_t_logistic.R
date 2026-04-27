@@ -313,10 +313,10 @@ tm_t_logistic <- function(label,
                           decorators = list()) {
   message("Initializing tm_t_logistic")
 
-  arm_var <- deprecate_pick_variables_arg(arm_var, "arm_var", null.ok = TRUE)
-  cov_var <- deprecate_pick_variables_arg(cov_var, "cov_var", null.ok = TRUE)
-  avalc_var <- deprecate_pick_variables_arg(avalc_var, "avalc_var")
-  conf_level <- deprecate_pick_values_arg(conf_level, "conf_level")
+  arm_var <- migrate_choices_selected_to_variables(arm_var, arg_name = "arm_var", null.ok = TRUE)
+  cov_var <- migrate_choices_selected_to_variables(cov_var, arg_name = "cov_var", null.ok = TRUE)
+  avalc_var <- migrate_choices_selected_to_variables(avalc_var, arg_name = "avalc_var")
+  conf_level <- migrate_choices_selected_to_values(conf_level, arg_name = "conf_level")
 
   if (!missing(paramcd)) {
     lifecycle::deprecate_warn(
@@ -327,7 +327,7 @@ tm_t_logistic <- function(label,
     if (!missing(paramcd_var) || !missing(paramcd_values)) {
       stop("Please provide either `paramcd` or `paramcd_var` with `paramcd_values`, not both.")
     }
-    paramcd_values <- deprecate_pick_values_arg(paramcd, "paramcd")
+    paramcd_values <- migrate_choices_selected_to_values(paramcd, arg_name = "paramcd")
   }
 
   checkmate::assert_string(label)
