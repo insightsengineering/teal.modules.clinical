@@ -188,7 +188,7 @@ template_a_gee <- function(output_table,
 #' join_keys(data) <- default_cdisc_join_keys[names(data)]
 #'
 #' all_values <- function(x) unique(x)
-#' class(all_values) <- append(class(all_values),"des-delayed")
+#' class(all_values) <- append(class(all_values), "des-delayed")
 #'
 #' app <- init(
 #'   data = data,
@@ -229,7 +229,8 @@ tm_a_gee <- function(label,
                      paramcd = teal.picks::picks(
                        variables = variables(choices = c("PARAMCD", "PARAM")),
                        values = values(),
-                       check_dataset = FALSE),
+                       check_dataset = FALSE
+                     ),
                      conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95, multiple = FALSE),
                      pre_output = NULL,
                      post_output = NULL,
