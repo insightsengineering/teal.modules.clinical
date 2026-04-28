@@ -187,6 +187,9 @@ template_a_gee <- function(output_table,
 #' })
 #' join_keys(data) <- default_cdisc_join_keys[names(data)]
 #'
+#' all_values <- function(x) unique(x)
+#' class(all_values) <- append(class(all_values),"des-delayed")
+#'
 #' app <- init(
 #'   data = data,
 #'   modules = modules(
@@ -197,7 +200,11 @@ template_a_gee <- function(output_table,
 #'       id_var = teal.picks::variables(choices = c("USUBJID", "SUBJID"), selected = "USUBJID"),
 #'       arm_var = teal.picks::variables(choices = c("ARM", "ARMCD"), selected = "ARM"),
 #'       visit_var = teal.picks::variables(choices = c("AVISIT", "AVISITN"), selected = "AVISIT"),
-#'       paramcd = teal.picks::variables(choices = c("PARAMCD", "PARAM")),
+#'       paramcd = teal.picks::picks(
+#'         variables(choices = c("PARAMCD", "PARAM")),
+#'         values(all_values, "FKSI-FWB"),
+#'         check_dataset = FALSE
+#'       ),
 #'       cov_var = teal.picks::variables(
 #'         choices = c("BASE", "AGE", "SEX", "BASE:AVISIT"),
 #'         selected = NULL
@@ -219,7 +226,10 @@ tm_a_gee <- function(label,
                      visit_var = teal.picks::variables(choices = c("AVISIT", "AVISITN")),
                      cov_var = teal.picks::variables(choices = c("BASE", "AGE", "SEX", "BASE:AVISIT")),
                      arm_ref_comp = NULL,
-                     paramcd = teal.picks::variables(choices = c("PARAMCD", "PARAM")),
+                     paramcd = teal.picks::picks(
+                       variables = variables(choices = c("PARAMCD", "PARAM")),
+                       values = values(),
+                       check_dataset = FALSE),
                      conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95, multiple = FALSE),
                      pre_output = NULL,
                      post_output = NULL,
@@ -231,32 +241,28 @@ tm_a_gee <- function(label,
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
-  aval_var <- deprecate_pick_variables_arg(aval_var, "aval_var")
-  id_var <- deprecate_pick_variables_arg(id_var, "id_var")
-  arm_var <- deprecate_pick_variables_arg(arm_var, "arm_var")
-  visit_var <- deprecate_pick_variables_arg(visit_var, "visit_var")
-  cov_var <- deprecate_pick_variables_arg(cov_var, "cov_var")
-  paramcd <- deprecate_pick_variables_arg(paramcd, "paramcd")
-  conf_level <- deprecate_pick_values_arg(conf_level, "conf_level")
+  aval_var <- migrate_choices_selected_to_variables(aval_var, "aval_var")
+  id_var <- migrate_choices_selected_to_variables(id_var, "id_var")
+  arm_var <- migrate_choices_selected_to_variables(arm_var, "arm_var")
+  visit_var <- migrate_choices_selected_to_variables(visit_var, "visit_var")
+  cov_var <- migrate_choices_selected_to_variables(cov_var, "cov_var")
+  paramcd <- migrate_value_choices_to_picks(paramcd, arg_name = "paramcd")
+  conf_level <- migrate_choices_selected_to_values(conf_level, "conf_level")
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
   teal::assert_decorators(decorators, "table")
 
-  aval_var <- teal.picks::picks(teal.picks::datasets(dataname), aval_var)
-  id_var <- teal.picks::picks(teal.picks::datasets(dataname), id_var)
-  arm_var <- teal.picks::picks(teal.picks::datasets(parentname), arm_var)
-  visit_var <- teal.picks::picks(teal.picks::datasets(dataname), visit_var)
-  split_covariates <- teal.picks::picks(
-    teal.picks::datasets(dataname),
+  aval_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), aval_var)
+  id_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), id_var)
+  arm_var <- create_picks_helper(teal.picks::datasets(parentname, parentname), arm_var)
+  visit_var <- create_picks_helper(teal.picks::datasets(dataname), visit_var)
+  split_covariates <- create_picks_helper(
+    teal.picks::datasets(dataname, dataname),
     split_choices_variables(cov_var)
   )
-  cov_var <- teal.picks::picks(teal.picks::datasets(dataname), cov_var)
-  paramcd <- teal.picks::picks(
-    teal.picks::datasets(dataname),
-    paramcd,
-    values(all_values, first_value)
-  )
+  cov_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), cov_var)
+  paramcd <- create_picks_helper(teal.picks::datasets(dataname, dataname), paramcd)
 
   args <- as.list(environment())
 
