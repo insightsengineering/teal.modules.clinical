@@ -74,9 +74,9 @@
 #'   modules = modules(
 #'     tm_g_barchart_simple(
 #'       label = "ADAE Analysis",
-#'       x = teal.picks::picks(
-#'         teal.picks::datasets("ADSL"),
-#'         teal.picks::variables(
+#'       x = picks(
+#'         datasets("ADSL"),
+#'         variables(
 #'           choices = c(
 #'             "ARM", "ACTARM", "SEX",
 #'             "RACE", "ITTFL", "SAFFL", "STRATA2"
@@ -85,9 +85,9 @@
 #'           multiple = FALSE
 #'         )
 #'       ),
-#'       fill = teal.picks::picks(
-#'         teal.picks::datasets(choices = c("ADSL", "ADAE")),
-#'         teal.picks::variables(
+#'       fill = picks(
+#'         datasets(choices = c("ADSL", "ADAE")),
+#'         variables(
 #'           choices = c(
 #'             "ARM", "ACTARM", "SEX",
 #'             "RACE", "ITTFL", "SAFFL", "STRATA2",
@@ -97,9 +97,9 @@
 #'           multiple = FALSE
 #'         )
 #'       ),
-#'       x_facet = teal.picks::picks(
-#'         teal.picks::datasets(choices = c("ADAE", "ADSL")),
-#'         teal.picks::variables(
+#'       x_facet = picks(
+#'         datasets(choices = c("ADAE", "ADSL")),
+#'         variables(
 #'           choices = c(
 #'             "AETOXGR", "AESEV", "AESER",
 #'             "ARM", "ACTARM", "SEX",
@@ -109,9 +109,9 @@
 #'           multiple = FALSE
 #'         )
 #'       ),
-#'       y_facet = teal.picks::picks(
-#'         teal.picks::datasets(choices = c("ADAE", "ADSL")),
-#'         teal.picks::variables(
+#'       y_facet = picks(
+#'         datasets(choices = c("ADAE", "ADSL")),
+#'         variables(
 #'           choices = c(
 #'             "AETOXGR", "AESEV", "AESER",
 #'             "ARM", "ACTARM", "SEX",
