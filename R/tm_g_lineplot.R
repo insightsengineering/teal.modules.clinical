@@ -201,6 +201,11 @@ template_g_lineplot <- function(dataname = "ANL",
 #' @inheritParams module_arguments
 #' @inheritParams teal::module
 #' @inheritParams template_g_lineplot
+#' @param group_var,x,y,y_unit ([`teal.picks::variables()`], [`teal.picks::picks()`], or legacy `choices_selected`)\cr
+#'   encodings; legacy inputs are coerced with a deprecation warning.
+#' @param param ([`teal.picks::picks()`], legacy `choices_selected` from `value_choices()`, or `NULL`)\cr
+#'   biomarker (`PARAMCD`) filter; `NULL` uses a default `ALT` / `CRP` / `IGA` choice set.
+#' @param conf_level ([`teal.picks::values()`] or legacy `choices_selected`)\cr confidence levels shown in the UI.
 #' @param strata `r lifecycle::badge("deprecated")` Please use the `group_var` argument instead.
 #'
 #' @inherit module_arguments return seealso
@@ -259,17 +264,25 @@ template_g_lineplot <- function(dataname = "ANL",
 #'     tm_g_lineplot(
 #'       label = "Line Plot",
 #'       dataname = "ADLB",
-#'       group_var = choices_selected(
-#'         variable_choices(ADSL, c("ARM", "ARMCD", "ACTARMCD")),
-#'         "ARM"
+#'       parentname = "ADSL",
+#'       group_var = teal.picks::variables(
+#'         choices = c("ARM", "ARMCD", "ACTARMCD"),
+#'         selected = "ARM",
+#'         multiple = FALSE
 #'       ),
-#'       y = choices_selected(
-#'         variable_choices(ADLB, c("AVAL", "BASE", "CHG", "PCHG")),
-#'         "AVAL"
+#'       y = teal.picks::variables(
+#'         choices = c("AVAL", "BASE", "CHG", "PCHG"),
+#'         selected = "AVAL",
+#'         multiple = FALSE
 #'       ),
-#'       param = choices_selected(
-#'         value_choices(ADLB, "PARAMCD", "PARAM"),
-#'         "ALT"
+#'       param = teal.picks::picks(
+#'         teal.picks::datasets("ADLB"),
+#'         teal.picks::variables("PARAMCD", fixed = TRUE),
+#'         teal.picks::values(
+#'           choices = levels(data[["ADLB"]]$PARAMCD),
+#'           selected = "ALT",
+#'           multiple = FALSE
+#'         )
 #'       )
 #'     )
 #'   )
@@ -281,15 +294,26 @@ template_g_lineplot <- function(dataname = "ANL",
 #' @export
 tm_g_lineplot <- function(label,
                           dataname,
-                          parentname = "ADSL",
+                          parentname = NULL,
                           strata = lifecycle::deprecated(),
-                          group_var = teal.picks::variables(c("ARM", "ARMCD", "ACTARMCD"), selected = "ARM"),
+                          group_var = teal.picks::variables(
+                            choices = c("ARM", "ARMCD", "ACTARMCD"),
+                            selected = "ARM",
+                            multiple = FALSE
+                          ),
                           x = teal.picks::variables("AVISIT", fixed = TRUE),
-                          y = teal.picks::variables(c("AVAL", "BASE", "CHG", "PCHG"), selected = "AVAL"),
+                          y = teal.picks::variables(
+                            choices = c("AVAL", "BASE", "CHG", "PCHG"),
+                            selected = "AVAL",
+                            multiple = FALSE
+                          ),
                           y_unit = teal.picks::variables("AVALU", fixed = TRUE),
-                          paramcd = teal.picks::variables("PARAMCD", fixed = TRUE),
-                          param = teal.picks::values(multiple = FALSE),
-                          conf_level = teal.picks::values(c("0.95", "0.9", "0.8"), "0.95", keep_order = TRUE),
+                          param = NULL,
+                          conf_level = teal.picks::values(
+                            c("0.95", "0.9", "0.8"),
+                            selected = "0.95",
+                            keep_order = TRUE
+                          ),
                           interval = "mean_ci",
                           mid = "mean",
                           whiskers = c("mean_ci_lwr", "mean_ci_upr"),
@@ -304,34 +328,44 @@ tm_g_lineplot <- function(label,
                           ggplot2_args = teal.widgets::ggplot2_args(),
                           transformators = list(),
                           decorators = list()) {
+  if (lifecycle::is_present(strata)) {
+    lifecycle::deprecate_stop(
+      when = "0.9.1",
+      what = "tm_g_lineplot(strata)",
+      with = "tm_g_lineplot(group_var)"
+    )
+  }
+
   message("Initializing tm_g_lineplot")
 
-  group_var <- deprecate_pick_variables_arg(group_var, "group_var")
-  x <- deprecate_pick_variables_arg(x, "x")
-  y <- deprecate_pick_variables_arg(y, "y")
-  y_unit <- deprecate_pick_variables_arg(y_unit, "y_unit")
-  param_var <- deprecate_pick_variables_arg(param_var, "param_var")
-  # Compatibility: accept choices_selected and convert to picks
-  for (arg in c("group_var", "x", "y", "y_unit")) {
-    if (inherits(get(arg), "choices_selected")) {
-      assign(arg, teal.picks::as.picks(get(arg)))
-    }
+  if (is.null(parentname)) {
+    parentname <- "ADSL"
   }
-  if (inherits(conf_level, "choices_selected")) {
-    conf_level <- teal.picks::as.picks(conf_level)
-    class(conf_level) <- gsub("variables", "values", class(conf_level), fixed = TRUE)
+
+  group_var <- migrate_choices_selected_to_variables(group_var, arg_name = "group_var")
+  x <- migrate_choices_selected_to_variables(x, arg_name = "x")
+  y <- migrate_choices_selected_to_variables(y, arg_name = "y")
+  y_unit <- migrate_choices_selected_to_variables(y_unit, arg_name = "y_unit")
+
+  if (is.null(param)) {
+    param <- teal.picks::picks(
+      teal.picks::variables("PARAMCD", fixed = TRUE),
+      teal.picks::values(
+        choices = c("ALT", "CRP", "IGA"),
+        selected = "ALT",
+        multiple = FALSE
+      ),
+      check_dataset = FALSE
+    )
   }
+  param <- migrate_value_choices_to_picks(param, multiple = FALSE, arg_name = "param")
+
+  conf_level <- migrate_choices_selected_to_values(conf_level, arg_name = "conf_level")
+  checkmate::assert_false(teal.picks::is_pick_multiple(conf_level))
 
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
-  checkmate::assert_class(group_var, "variables")
-  checkmate::assert_class(x, "variables")
-  checkmate::assert_class(y, "variables")
-  checkmate::assert_class(y_unit, "variables")
-  checkmate::assert_class(param_var, "variables")
-  checkmate::assert_class(param_value, "values")
-  checkmate::assert_class(conf_level, "values")
   checkmate::assert_string(mid)
   checkmate::assert_string(interval, null.ok = TRUE)
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
@@ -344,14 +378,13 @@ tm_g_lineplot <- function(label,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
-  assert_decorators(decorators, "plot")
+  teal::assert_decorators(decorators, "plot")
 
-  # Build picks objects bound to their datasets
-  group_var <- teal.picks::picks(datasets(parentname), group_var)
-  x <- teal.picks::picks(datasets(dataname), x)
-  y <- teal.picks::picks(datasets(dataname), y)
-  y_unit <- teal.picks::picks(datasets(dataname), y_unit)
-  param <- teal.picks::picks(datasets(dataname), variables = param_var, values = param_value)
+  group_var <- create_picks_helper(teal.picks::datasets(parentname, parentname), group_var)
+  x <- create_picks_helper(teal.picks::datasets(dataname, dataname), x)
+  y <- create_picks_helper(teal.picks::datasets(dataname, dataname), y)
+  y_unit <- create_picks_helper(teal.picks::datasets(dataname, dataname), y_unit)
+  param <- create_picks_helper(teal.picks::datasets(dataname, dataname), param)
 
   args <- as.list(environment())
 
@@ -578,11 +611,12 @@ srv_g_lineplot <- function(id,
       adsl_filtered <- anl_q[[parentname]]
       anl_filtered <- anl_q[[dataname]]
 
-      input_strata <- anl_inputs$variables()$group_var
-      input_x_var <- anl_inputs$variables()$x
-      input_y <- anl_inputs$variables()$y
-      input_y_unit <- anl_inputs$variables()$y_unit
-      input_paramcd <- anl_inputs$variables()$param_var %||% "PARAMCD"
+      vm <- anl_inputs$variables()
+      input_strata <- vm$group_var[[1L]]
+      input_x_var <- vm$x[[1L]]
+      input_y <- vm$y[[1L]]
+      input_y_unit <- vm$y_unit[[1L]]
+      input_paramcd <- vm$param[[1L]]
 
       validate_args <- list(
         adsl = adsl_filtered,
@@ -617,13 +651,18 @@ srv_g_lineplot <- function(id,
         input_whiskers <- names(tern::s_summary(0)[[input_interval]][whiskers_selected])
       }
 
+      vm <- anl_inputs$variables()
+      param_col <- vm$param[[1L]]
+      param_val <- as.character(unique(ANL[[param_col]]))[1L]
+
       my_calls <- template_g_lineplot(
         dataname = "ANL",
-        group_var = anl_inputs$variables()$group_var,
-        y = anl_inputs$variables()$y,
-        x = anl_inputs$variables()$x,
-        paramcd = anl_inputs$variables()$param_var %||% "PARAMCD",
-        y_unit = anl_inputs$variables()$y_unit,
+        group_var = vm$group_var[[1L]],
+        y = vm$y[[1L]],
+        x = vm$x[[1L]],
+        paramcd = vm$param[[1L]],
+        y_unit = vm$y_unit[[1L]],
+        param = param_val,
         conf_level = as.numeric(input$conf_level),
         incl_screen = input$incl_screen,
         mid = input$mid,
@@ -644,7 +683,7 @@ srv_g_lineplot <- function(id,
       id = "decorator",
       data = all_q,
       transformators = select_decorators(decorators, "plot"),
-      expr = plot
+      expr = quote(plot)
     )
     plot_r <- reactive(decorated_all_q()[["plot"]])
 

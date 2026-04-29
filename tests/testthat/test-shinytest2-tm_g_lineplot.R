@@ -11,12 +11,6 @@ app_driver_tm_g_lineplot <- function() {
   })
   teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
 
-  testthat::expect_warning(
-    param_value <- teal.picks::values(selected = "ALT", multiple = FALSE),
-    "doesn't guarantee that `selected` is a subset of `choices`.",
-    fixed = TRUE
-  )
-
   init_teal_app_driver(
     teal::init(
       data = data,
@@ -24,12 +18,27 @@ app_driver_tm_g_lineplot <- function() {
         label = "Line Plot",
         dataname = "ADLB",
         parentname = "ADSL",
-        group_var = teal.picks::variables(c("ARM", "ARMCD", "ACTARMCD"), selected = "ARM"),
+        group_var = teal.picks::variables(
+          choices = c("ARM", "ARMCD", "ACTARMCD"),
+          selected = "ARM",
+          multiple = FALSE
+        ),
         x = teal.picks::variables("AVISIT", fixed = TRUE),
-        y = teal.picks::variables(c("AVAL", "BASE", "CHG", "PCHG"), selected = "AVAL"),
+        y = teal.picks::variables(
+          choices = c("AVAL", "BASE", "CHG", "PCHG"),
+          selected = "AVAL",
+          multiple = FALSE
+        ),
         y_unit = teal.picks::variables("AVALU", fixed = TRUE),
-        param_var = teal.picks::variables("PARAMCD", fixed = TRUE),
-        param_value = param_value,
+        param = teal.picks::picks(
+          teal.picks::datasets("ADLB"),
+          teal.picks::variables("PARAMCD", fixed = TRUE),
+          teal.picks::values(
+            choices = levels(data[["ADLB"]]$PARAMCD),
+            selected = "ALT",
+            multiple = FALSE
+          )
+        ),
         conf_level = teal.picks::values(c("0.95", "0.9", "0.8"), "0.95", keep_order = TRUE),
         interval = "mean_ci",
         mid = "mean",
