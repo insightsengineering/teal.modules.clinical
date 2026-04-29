@@ -203,8 +203,8 @@ template_g_lineplot <- function(dataname = "ANL",
 #' @inheritParams template_g_lineplot
 #' @param group_var,x,y,y_unit ([`teal.picks::variables()`], [`teal.picks::picks()`], or legacy `choices_selected`)\cr
 #'   encodings; legacy inputs are coerced with a deprecation warning.
-#' @param param ([`teal.picks::picks()`], legacy `choices_selected` from `value_choices()`, or `NULL`)\cr
-#'   biomarker (`PARAMCD`) filter; `NULL` uses a default `ALT` / `CRP` / `IGA` choice set.
+#' @param param ([`teal.picks::picks()`] or legacy `choices_selected` from `value_choices()`)\cr
+#'   biomarker (`PARAMCD`) filter; defaults to `ALT` / `CRP` / `IGA` with `ALT` selected.
 #' @param conf_level ([`teal.picks::values()`] or legacy `choices_selected`)\cr confidence levels shown in the UI.
 #' @param strata `r lifecycle::badge("deprecated")` Please use the `group_var` argument instead.
 #'
@@ -309,7 +309,15 @@ tm_g_lineplot <- function(label,
                             multiple = FALSE
                           ),
                           y_unit = teal.picks::variables("AVALU", fixed = TRUE),
-                          param = NULL,
+                          param = teal.picks::picks(
+                            teal.picks::variables("PARAMCD", fixed = TRUE),
+                            teal.picks::values(
+                              choices = c("ALT", "CRP", "IGA"),
+                              selected = "ALT",
+                              multiple = FALSE
+                            ),
+                            check_dataset = FALSE
+                          ),
                           conf_level = teal.picks::values(
                             c("0.95", "0.9", "0.8"),
                             selected = "0.95",
@@ -348,17 +356,6 @@ tm_g_lineplot <- function(label,
   y <- migrate_choices_selected_to_variables(y, arg_name = "y")
   y_unit <- migrate_choices_selected_to_variables(y_unit, arg_name = "y_unit")
 
-  if (is.null(param)) {
-    param <- teal.picks::picks(
-      teal.picks::variables("PARAMCD", fixed = TRUE),
-      teal.picks::values(
-        choices = c("ALT", "CRP", "IGA"),
-        selected = "ALT",
-        multiple = FALSE
-      ),
-      check_dataset = FALSE
-    )
-  }
   param <- migrate_value_choices_to_picks(param, multiple = FALSE, arg_name = "param")
 
   conf_level <- migrate_choices_selected_to_values(conf_level, arg_name = "conf_level")
