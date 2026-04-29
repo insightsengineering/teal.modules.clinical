@@ -243,6 +243,7 @@ template_g_lineplot <- function(dataname = "ANL",
 #'
 #' @examples
 #' library(nestcolor)
+#' library(teal.picks)
 #'
 #' data <- teal_data()
 #' data <- within(data, {
@@ -265,20 +266,20 @@ template_g_lineplot <- function(dataname = "ANL",
 #'       label = "Line Plot",
 #'       dataname = "ADLB",
 #'       parentname = "ADSL",
-#'       group_var = teal.picks::variables(
+#'       group_var = variables(
 #'         choices = c("ARM", "ARMCD", "ACTARMCD"),
 #'         selected = "ARM",
 #'         multiple = FALSE
 #'       ),
-#'       y = teal.picks::variables(
+#'       y = variables(
 #'         choices = c("AVAL", "BASE", "CHG", "PCHG"),
 #'         selected = "AVAL",
 #'         multiple = FALSE
 #'       ),
-#'       param = teal.picks::picks(
-#'         teal.picks::datasets("ADLB"),
-#'         teal.picks::variables("PARAMCD", fixed = TRUE),
-#'         teal.picks::values(
+#'       param = picks(
+#'         datasets("ADLB"),
+#'         variables("PARAMCD", fixed = TRUE),
+#'         values(
 #'           choices = levels(data[["ADLB"]]$PARAMCD),
 #'           selected = "ALT",
 #'           multiple = FALSE
