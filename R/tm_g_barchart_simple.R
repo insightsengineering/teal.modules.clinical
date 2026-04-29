@@ -129,10 +129,22 @@
 #' }
 #'
 #' @export
-tm_g_barchart_simple <- function(x = NULL,
-                                 fill = NULL,
-                                 x_facet = NULL,
-                                 y_facet = NULL,
+tm_g_barchart_simple <- function(x = teal.picks::picks(
+                                   teal.picks::datasets(),
+                                   teal.picks::variables(selected = NULL, multiple = FALSE)
+                                 ),
+                                 fill = teal.picks::picks(
+                                   teal.picks::datasets(),
+                                   teal.picks::variables(selected = NULL, multiple = FALSE)
+                                 ),
+                                 x_facet = teal.picks::picks(
+                                   teal.picks::datasets(),
+                                   teal.picks::variables(selected = NULL, multiple = FALSE)
+                                 ),
+                                 y_facet = teal.picks::picks(
+                                   teal.picks::datasets(),
+                                   teal.picks::variables(selected = NULL, multiple = FALSE)
+                                 ),
                                  label = "Count Barchart",
                                  plot_options = NULL,
                                  plot_height = c(600L, 200L, 2000L),
