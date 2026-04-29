@@ -3,41 +3,20 @@
 tm_t_tte.picks <- function(label,
                            dataname,
                            parentname = "ADSL",
-                           arm_var = teal.picks::picks(
-                             teal.picks::datasets(parentname, parentname),
-                             teal.picks::variables(choices = c("ARM", "ARMCD", "ACTARMCD"))
-                           ),
+                           arm_var = teal.picks::variables(choices = c("ARM", "ARMCD", "ACTARMCD")),
                            arm_ref_comp = NULL,
-                           paramcd = teal.picks::picks(
-                             teal.picks::datasets(dataname, dataname),
-                             teal.picks::variables(choices = "PARAMCD")
+                           paramcd = teal.picks::variables(choices = "PARAMCD"),
+                           strata_var = teal.picks::variables(
+                             choices = c("SEX", "BMRKR2"),
+                             selected = "SEX"
                            ),
-                           strata_var = teal.picks::picks(
-                             teal.picks::datasets(parentname, parentname),
-                             teal.picks::variables(
-                               choices = c("SEX", "BMRKR2"),
-                               selected = "SEX"
-                             )
-                           ),
-                           aval_var = teal.picks::picks(
-                             teal.picks::datasets(dataname, dataname),
-                             teal.picks::variables(choices = "AVAL", fixed = TRUE)
-                           ),
-                           cnsr_var = teal.picks::picks(
-                             teal.picks::datasets(dataname, dataname),
-                             teal.picks::variables(choices = "CNSR", fixed = TRUE)
-                           ),
+                           aval_var = teal.picks::variables(choices = "AVAL", fixed = TRUE),
+                           cnsr_var = teal.picks::variables(choices = "CNSR", fixed = TRUE),
                            conf_level_coxph = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                            conf_level_survfit = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                            time_points = teal.transform::choices_selected(c(182, 243), 182),
-                           time_unit_var = teal.picks::picks(
-                             teal.picks::datasets(dataname, dataname),
-                             teal.picks::variables(choices = "AVALU", fixed = TRUE)
-                           ),
-                           event_desc_var = teal.picks::picks(
-                             teal.picks::datasets(dataname, dataname),
-                             teal.picks::variables(choices = "EVNTDESC", fixed = TRUE)
-                           ),
+                           time_unit_var = teal.picks::variables(choices = "AVALU", fixed = TRUE),
+                           event_desc_var = teal.picks::variables(choices = "EVNTDESC", fixed = TRUE),
                            add_total = FALSE,
                            total_label = default_total_label(),
                            na_level = tern::default_na_str(),
