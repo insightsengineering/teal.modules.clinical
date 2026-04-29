@@ -1,18 +1,62 @@
 #' @describeIn tm_g_barchart_simple [teal.picks]-based encodings (`picks`).
 #' @export
-tm_g_barchart_simple.picks <- function(x = NULL,
-                                       fill = NULL,
-                                       x_facet = NULL,
-                                       y_facet = NULL,
-                                       label = "Count Barchart",
-                                       plot_options = NULL,
-                                       plot_height = c(600L, 200L, 2000L),
-                                       plot_width = NULL,
-                                       pre_output = NULL,
-                                       post_output = NULL,
-                                       ggplot2_args = teal.widgets::ggplot2_args(),
-                                       transformators = list(),
-                                       decorators = list()) {
+tm_g_barchart_simple.picks <- function(
+    x = teal.picks::picks(
+      teal.picks::datasets("ADSL"),
+      teal.picks::variables(
+        choices = c(
+          "ARM", "ACTARM", "SEX",
+          "RACE", "ITTFL", "SAFFL", "STRATA2"
+        ),
+        selected = "ACTARM",
+        multiple = FALSE
+      )
+    ),
+    fill = teal.picks::picks(
+      teal.picks::datasets(choices = c("ADSL", "ADAE")),
+      teal.picks::variables(
+        choices = c(
+          "ARM", "ACTARM", "SEX",
+          "RACE", "ITTFL", "SAFFL", "STRATA2",
+          "AETOXGR", "AESEV", "AESER"
+        ),
+        selected = "SEX",
+        multiple = FALSE
+      )
+    ),
+    x_facet = teal.picks::picks(
+      teal.picks::datasets(choices = c("ADAE", "ADSL")),
+      teal.picks::variables(
+        choices = c(
+          "AETOXGR", "AESEV", "AESER",
+          "ARM", "ACTARM", "SEX",
+          "RACE", "ITTFL", "SAFFL", "STRATA2"
+        ),
+        selected = "AETOXGR",
+        multiple = FALSE
+      )
+    ),
+    y_facet = teal.picks::picks(
+      teal.picks::datasets(choices = c("ADAE", "ADSL")),
+      teal.picks::variables(
+        choices = c(
+          "AETOXGR", "AESEV", "AESER",
+          "ARM", "ACTARM", "SEX",
+          "RACE", "ITTFL", "SAFFL", "STRATA2"
+        ),
+        selected = "AESEV",
+        multiple = FALSE
+      )
+    ),
+    label = "Count Barchart",
+    plot_options = NULL,
+    plot_height = c(600L, 200L, 2000L),
+    plot_width = NULL,
+    pre_output = NULL,
+    post_output = NULL,
+    ggplot2_args = teal.widgets::ggplot2_args(),
+    transformators = list(),
+    decorators = list()) {
   message("Initializing tm_g_barchart_simple")
   checkmate::assert_list(plot_options, null.ok = TRUE)
 
