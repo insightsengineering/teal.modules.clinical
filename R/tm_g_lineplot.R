@@ -203,8 +203,9 @@ template_g_lineplot <- function(dataname = "ANL",
 #' @inheritParams template_g_lineplot
 #' @param group_var,x,y,y_unit ([`teal.picks::variables()`], [`teal.picks::picks()`], or legacy `choices_selected`)\cr
 #'   encodings; legacy inputs are coerced with a deprecation warning.
-#' @param param ([`teal.picks::picks()`] or legacy `choices_selected` from `value_choices()`)\cr
-#'   biomarker (`PARAMCD`) filter; defaults to `ALT` / `CRP` / `IGA` with `ALT` selected.
+#' @param paramcd ([`teal.picks::picks()`] or legacy `choices_selected` from `value_choices()`)\cr
+#'   parameter code filter: a `picks()` chain with the `PARAMCD` variable and biomarker `values()`;
+#'   defaults to `ALT` / `CRP` / `IGA` with `ALT` selected.
 #' @param conf_level ([`teal.picks::values()`] or legacy `choices_selected`)\cr confidence levels shown in the UI.
 #' @param strata `r lifecycle::badge("deprecated")` Please use the `group_var` argument instead.
 #'
@@ -243,7 +244,6 @@ template_g_lineplot <- function(dataname = "ANL",
 #'
 #' @examples
 #' library(nestcolor)
-#' library(teal.picks)
 #'
 #' data <- teal_data()
 #' data <- within(data, {
@@ -276,7 +276,7 @@ template_g_lineplot <- function(dataname = "ANL",
 #'         selected = "AVAL",
 #'         multiple = FALSE
 #'       ),
-#'       param = picks(
+#'       paramcd = picks(
 #'         datasets("ADLB"),
 #'         variables("PARAMCD", fixed = TRUE),
 #'         values(
@@ -309,7 +309,7 @@ tm_g_lineplot <- function(label,
                             multiple = FALSE
                           ),
                           y_unit = teal.picks::variables("AVALU", fixed = TRUE),
-                          param = teal.picks::picks(
+                          paramcd = teal.picks::picks(
                             teal.picks::variables("PARAMCD", fixed = TRUE),
                             teal.picks::values(
                               choices = c("ALT", "CRP", "IGA"),
@@ -356,7 +356,7 @@ tm_g_lineplot <- function(label,
   y <- migrate_choices_selected_to_variables(y, arg_name = "y")
   y_unit <- migrate_choices_selected_to_variables(y_unit, arg_name = "y_unit")
 
-  param <- migrate_value_choices_to_picks(param, multiple = FALSE, arg_name = "param")
+  paramcd <- migrate_value_choices_to_picks(paramcd, multiple = FALSE, arg_name = "paramcd")
 
   conf_level <- migrate_choices_selected_to_values(
     conf_level,
@@ -385,7 +385,7 @@ tm_g_lineplot <- function(label,
   x <- create_picks_helper(teal.picks::datasets(dataname, dataname), x)
   y <- create_picks_helper(teal.picks::datasets(dataname, dataname), y)
   y_unit <- create_picks_helper(teal.picks::datasets(dataname, dataname), y_unit)
-  param <- create_picks_helper(teal.picks::datasets(dataname, dataname), param)
+  paramcd <- create_picks_helper(teal.picks::datasets(dataname, dataname), paramcd)
 
   args <- as.list(environment())
 
@@ -403,7 +403,7 @@ tm_g_lineplot <- function(label,
 #' @keywords internal
 ui_g_lineplot <- function(id,
                           group_var,
-                          param,
+                          paramcd,
                           x,
                           y,
                           y_unit,
@@ -426,7 +426,7 @@ ui_g_lineplot <- function(id,
       tags$label("Encodings", class = "text-primary"), tags$br(),
       tags$div(
         tags$label("Select Biomarker:"),
-        teal.picks::picks_ui(ns("param"), param)
+        teal.picks::picks_ui(ns("paramcd"), paramcd)
       ),
       tags$div(
         tags$label("Select Treatment Variable:"),
@@ -533,7 +533,7 @@ srv_g_lineplot <- function(id,
                            dataname,
                            parentname,
                            group_var,
-                           param,
+                           paramcd,
                            x,
                            y,
                            y_unit,
@@ -551,7 +551,7 @@ srv_g_lineplot <- function(id,
     selectors <- teal.picks::picks_srv(
       picks = list(
         group_var = group_var,
-        param     = param,
+        paramcd   = paramcd,
         x         = x,
         y         = y,
         y_unit    = y_unit
@@ -578,8 +578,8 @@ srv_g_lineplot <- function(id,
         message = "Please select a time variable."
       )
       teal:::validate_input(
-        inputId = "param-values-selected",
-        condition = !is.null(selectors$param()$values$selected),
+        inputId = "paramcd-values-selected",
+        condition = !is.null(selectors$paramcd()$values$selected),
         message = "Please select a Biomarker filter."
       )
       teal:::validate_input(
@@ -617,7 +617,7 @@ srv_g_lineplot <- function(id,
       input_x_var <- vm$x[[1L]]
       input_y <- vm$y[[1L]]
       input_y_unit <- vm$y_unit[[1L]]
-      input_paramcd <- vm$param[[1L]]
+      input_paramcd <- vm$paramcd[[1L]]
 
       validate_args <- list(
         adsl = adsl_filtered,
@@ -653,7 +653,7 @@ srv_g_lineplot <- function(id,
       }
 
       vm <- anl_inputs$variables()
-      param_col <- vm$param[[1L]]
+      param_col <- vm$paramcd[[1L]]
       param_val <- as.character(unique(ANL[[param_col]]))[1L]
 
       my_calls <- template_g_lineplot(
@@ -661,7 +661,7 @@ srv_g_lineplot <- function(id,
         group_var = vm$group_var[[1L]],
         y = vm$y[[1L]],
         x = vm$x[[1L]],
-        paramcd = vm$param[[1L]],
+        paramcd = vm$paramcd[[1L]],
         y_unit = vm$y_unit[[1L]],
         param = param_val,
         conf_level = as.numeric(input$conf_level),

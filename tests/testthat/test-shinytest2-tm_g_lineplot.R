@@ -30,7 +30,7 @@ app_driver_tm_g_lineplot <- function() {
           multiple = FALSE
         ),
         y_unit = teal.picks::variables("AVALU", fixed = TRUE),
-        param = teal.picks::picks(
+        paramcd = teal.picks::picks(
           teal.picks::datasets("ADLB"),
           teal.picks::variables("PARAMCD", fixed = TRUE),
           teal.picks::values(
@@ -70,7 +70,7 @@ testthat::test_that("e2e - tm_g_lineplot: Module initializes in teal without err
 })
 
 testthat::test_that(
-  "e2e - tm_g_lineplot: Starts with specified label, param, group_var, y, x, mid, interval, incl_screen,
+  "e2e - tm_g_lineplot: Starts with specified label, paramcd, group_var, y, x, mid, interval, incl_screen,
     plot_settings and table_settings.",
   {
     skip_if_too_deep(5)
@@ -86,7 +86,7 @@ testthat::test_that(
       fixed = TRUE
     )
 
-    testthat::expect_equal(exported_values[["param-picks_resolved"]]$values$selected, "ALT")
+    testthat::expect_equal(exported_values[["paramcd-picks_resolved"]]$values$selected, "ALT")
     testthat::expect_equal(exported_values[["group_var-picks_resolved"]]$variables$selected, "ARM")
     testthat::expect_equal(exported_values[["y-picks_resolved"]]$variables$selected, "AVAL")
     testthat::expect_equal(exported_values[["x-picks_resolved"]]$variables$selected, "AVISIT")
@@ -122,11 +122,11 @@ testthat::test_that("e2e - tm_g_lineplot: Selecting param changes plot and doesn
   app_driver$expect_no_validation_error()
 })
 
-testthat::test_that("e2e - tm_g_lineplot: Deselecting param throws validation error.", {
+testthat::test_that("e2e - tm_g_lineplot: Deselecting paramcd throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_lineplot()
   withr::defer(app_driver$stop())
-  set_teal_picks_slot(app_driver, "param", "values", character(0L))
+  set_teal_picks_slot(app_driver, "paramcd", "values", character(0L))
   testthat::expect_identical(app_driver$get_active_module_plot_output("myplot"), character(0))
   app_driver$expect_validation_error()
   testthat::expect_match(
