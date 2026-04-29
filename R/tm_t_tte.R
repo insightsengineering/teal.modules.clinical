@@ -372,6 +372,40 @@ template_tte <- function(dataname = "ANL",
   y
 }
 
+#' Prepare `event_desc_var` before [`tm_t_tte()`] S3 dispatch (`choices_selected` -> `variables`).
+#'
+#' @keywords internal
+#' @noRd
+.tm_t_tte_prepare_event_desc <- function(x) {
+  if (inherits(x, "choices_selected")) {
+    migrate_choices_selected_to_variables(x, arg_name = "event_desc_var")
+  } else {
+    x
+  }
+}
+
+#' Validate `event_desc_var` class for [`tm_t_tte()`] dispatch.
+#'
+#' @keywords internal
+#' @noRd
+.tm_t_tte_event_desc_encoding_kind <- function(event_desc_var) {
+  if (inherits(event_desc_var, "data_extract_spec")) {
+    return(invisible(NULL))
+  }
+  if (inherits(event_desc_var, "picks") || inherits(event_desc_var, "variables")) {
+    return(invisible(NULL))
+  }
+  if (is.list(event_desc_var) && length(event_desc_var) > 0L &&
+      all(vapply(event_desc_var, inherits, logical(1L), "data_extract_spec"))) {
+    return(invisible(NULL))
+  }
+  stop(
+    "`event_desc_var` must be `teal.picks::variables()` / `picks()`, legacy `choices_selected`, ",
+    "or `teal.transform::data_extract_spec()` / a list thereof.",
+    call. = FALSE
+  )
+}
+
 #' teal Module: Time-To-Event Table
 #'
 #' This module produces a time-to-event analysis summary table, consistent with the TLG Catalog
@@ -388,7 +422,10 @@ template_tte <- function(dataname = "ANL",
 #' @param aval_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr variable for analysis value (time-to-event).
 #' @param cnsr_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr variable for censoring indicator.
 #' @param time_unit_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr variable for time unit.
-#' @param event_desc_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr variable for event description.
+#' @param event_desc_var ([`teal.picks::variables()`], [`teal.picks::picks()`], legacy [`teal.transform::choices_selected()`],
+#'   [`teal.transform::data_extract_spec()`], or a `list` of `data_extract_spec`)\cr
+#'   variable for event description. S3 dispatch uses the class of `event_desc_var`
+#'   ([`tm_t_tte.picks()`] / [`tm_t_tte.variables()`] vs legacy [`tm_t_tte.default()`] / [`tm_t_tte.list()`]).
 #' @param conf_level_coxph ([teal.transform::choices_selected()])\cr object with all available choices and
 #'   pre-selected option for confidence level, each within range of (0, 1).
 #' @param conf_level_survfit ([teal.transform::choices_selected()])\cr object with all available choices and
@@ -502,6 +539,38 @@ tm_t_tte <- function(label,
                      transformators = list(),
                      decorators = list()) {
   message("Initializing tm_t_tte")
+  event_desc_var <- .tm_t_tte_prepare_event_desc(event_desc_var)
+  .tm_t_tte_event_desc_encoding_kind(event_desc_var)
+  UseMethod("tm_t_tte", event_desc_var)
+}
+
+#' @describeIn tm_t_tte [`teal.picks::picks()`]-based `event_desc_var`.
+#' @export
+tm_t_tte.picks <- function(label,
+                           dataname,
+                           parentname = "ADSL",
+                           arm_var = variables(choices = c("ARM", "ARMCD", "ACTARMCD")),
+                           arm_ref_comp = NULL,
+                           paramcd = variables(choices = "PARAMCD"),
+                           strata_var = variables(
+                             choices = c("SEX", "BMRKR2"),
+                             selected = "SEX"
+                           ),
+                           aval_var = variables(choices = "AVAL", fixed = TRUE),
+                           cnsr_var = variables(choices = "CNSR", fixed = TRUE),
+                           conf_level_coxph = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+                           conf_level_survfit = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+                           time_points = teal.transform::choices_selected(c(182, 243), 182),
+                           time_unit_var = variables(choices = "AVALU", fixed = TRUE),
+                           event_desc_var = variables(choices = "EVNTDESC", fixed = TRUE),
+                           add_total = FALSE,
+                           total_label = default_total_label(),
+                           na_level = tern::default_na_str(),
+                           pre_output = NULL,
+                           post_output = NULL,
+                           basic_table_args = teal.widgets::basic_table_args(),
+                           transformators = list(),
+                           decorators = list()) {
   arm_var <- migrate_choices_selected_to_variables(arm_var, arg_name = "arm_var")
   paramcd <- migrate_value_choices_to_picks(paramcd, multiple = FALSE, arg_name = "paramcd")
   strata_var <- migrate_choices_selected_to_variables(strata_var, arg_name = "strata_var")
@@ -543,6 +612,72 @@ tm_t_tte <- function(label,
     datanames = c(dataname, parentname)
   )
 }
+
+#' @describeIn tm_t_tte [`teal.picks::variables()`] for `event_desc_var` (same as [`tm_t_tte.picks()`]).
+#' @export
+tm_t_tte.variables <- tm_t_tte.picks
+
+#' @keywords internal
+#' @noRd
+tm_t_tte_legacy_event_desc <- function(label,
+                                       dataname,
+                                       parentname = "ADSL",
+                                       arm_var = variables(choices = c("ARM", "ARMCD", "ACTARMCD")),
+                                       arm_ref_comp = NULL,
+                                       paramcd = variables(choices = "PARAMCD"),
+                                       strata_var = variables(
+                                         choices = c("SEX", "BMRKR2"),
+                                         selected = "SEX"
+                                       ),
+                                       aval_var = variables(choices = "AVAL", fixed = TRUE),
+                                       cnsr_var = variables(choices = "CNSR", fixed = TRUE),
+                                       conf_level_coxph = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+                                       conf_level_survfit = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+                                       time_points = teal.transform::choices_selected(c(182, 243), 182),
+                                       time_unit_var = variables(choices = "AVALU", fixed = TRUE),
+                                       event_desc_var,
+                                       add_total = FALSE,
+                                       total_label = default_total_label(),
+                                       na_level = tern::default_na_str(),
+                                       pre_output = NULL,
+                                       post_output = NULL,
+                                       basic_table_args = teal.widgets::basic_table_args(),
+                                       transformators = list(),
+                                       decorators = list()) {
+  event_desc_var <- migrate_list_extract_spec_to_picks(event_desc_var, arg_name = "event_desc_var")
+  tm_t_tte.picks(
+    label = label,
+    dataname = dataname,
+    parentname = parentname,
+    arm_var = arm_var,
+    arm_ref_comp = arm_ref_comp,
+    paramcd = paramcd,
+    strata_var = strata_var,
+    aval_var = aval_var,
+    cnsr_var = cnsr_var,
+    conf_level_coxph = conf_level_coxph,
+    conf_level_survfit = conf_level_survfit,
+    time_points = time_points,
+    time_unit_var = time_unit_var,
+    event_desc_var = event_desc_var,
+    add_total = add_total,
+    total_label = total_label,
+    na_level = na_level,
+    pre_output = pre_output,
+    post_output = post_output,
+    basic_table_args = basic_table_args,
+    transformators = transformators,
+    decorators = decorators
+  )
+}
+
+#' @describeIn tm_t_tte Legacy [`teal.transform::data_extract_spec()`] for `event_desc_var`.
+#' @export
+tm_t_tte.default <- tm_t_tte_legacy_event_desc
+
+#' @describeIn tm_t_tte Legacy `list` of [`teal.transform::data_extract_spec()`] for `event_desc_var`.
+#' @export
+tm_t_tte.list <- tm_t_tte_legacy_event_desc
 
 #' @keywords internal
 ui_t_tte <- function(id,
