@@ -358,8 +358,11 @@ tm_g_lineplot <- function(label,
 
   param <- migrate_value_choices_to_picks(param, multiple = FALSE, arg_name = "param")
 
-  conf_level <- migrate_choices_selected_to_values(conf_level, arg_name = "conf_level")
-  checkmate::assert_false(teal.picks::is_pick_multiple(conf_level))
+  conf_level <- migrate_choices_selected_to_values(
+    conf_level,
+    arg_name = "conf_level",
+    multiple = FALSE
+  )
 
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)

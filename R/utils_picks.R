@@ -62,7 +62,7 @@ migrate_choices_selected_to_variables <- function(x, # nolint: object_length_lin
 #' @param arg_name optional (`character(1)`) argument name.
 #' @param multiple optional (`logical(1)`) whether multiple values are allowed.
 #' If `NULL` (default), it is not validated and inferred from the length of `selected` in the
-#' `choices_selected` object.
+#' `choices_selected` object. If `FALSE`, the result is checked with [teal.picks::is_pick_multiple()].
 #'
 #' @keywords internal
 #' @noRd
@@ -72,7 +72,12 @@ migrate_choices_selected_to_values <- function(x, # nolint: object_length_linter
   checkmate::assert_string(arg_name)
   checkmate::assert_flag(multiple, null.ok = TRUE)
 
+  multiple_req <- multiple
+
   if (inherits(x, "picks")) {
+    if (!is.null(multiple_req) && !multiple_req && !is.null(x$values)) {
+      checkmate::assert_false(teal.picks::is_pick_multiple(x$values), .var.name = arg_name)
+    }
     return(x)
   }
   if (inherits(x, "choices_selected")) {
@@ -96,10 +101,14 @@ migrate_choices_selected_to_values <- function(x, # nolint: object_length_linter
     checkmate::assert_character(choices, min.len = 1L)
     checkmate::assert_character(selected, min.len = 1L)
     fixed <- isTRUE(x$fixed)
-    multiple <- (!is.null(multiple) && multiple) || (is.null(multiple) && length(selected) > 1L)
-    x <- teal.picks::values(choices, selected, fixed = fixed, multiple = multiple)
+    multiple_flag <- (!is.null(multiple_req) && multiple_req) ||
+      (is.null(multiple_req) && length(selected) > 1L)
+    x <- teal.picks::values(choices, selected, fixed = fixed, multiple = multiple_flag)
   }
   checkmate::assert_class(x, "values", .var.name = arg_name)
+  if (!is.null(multiple_req) && !multiple_req) {
+    checkmate::assert_false(teal.picks::is_pick_multiple(x), .var.name = arg_name)
+  }
   x
 }
 
