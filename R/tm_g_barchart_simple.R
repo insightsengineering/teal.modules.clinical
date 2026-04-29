@@ -1,4 +1,4 @@
-#' teal Module: Simple Bar Chart and Table of Counts per Category
+﻿#' teal Module: Simple Bar Chart and Table of Counts per Category
 #'
 #' This module produces a [ggplot2::ggplot()] type bar chart and summary table of counts per category.
 #'
@@ -8,10 +8,13 @@
 #' @inheritParams module_arguments
 #' @inheritParams teal::module
 #' @inheritParams template_arguments
-#' @param x (`data_extract_spec`)\cr variable on the x-axis.
-#' @param fill (`data_extract_spec`)\cr grouping variable to determine bar colors.
-#' @param x_facet (`data_extract_spec`)\cr row-wise faceting groups.
-#' @param y_facet (`data_extract_spec`)\cr column-wise faceting groups.
+#' @param x (`NULL`, `picks`, `variables`, `data_extract_spec`, or `list` of `data_extract_spec`)\cr
+#'   variable on the x-axis. S3 dispatch uses the **first non-`NULL`** slot among `x`, `fill`,
+#'   `x_facet`, and `y_facet` (`tm_g_barchart_simple.default()` vs `tm_g_barchart_simple.picks()`).
+#'   Do not mix `data_extract_spec` and `picks` / `variables` encodings in one call.
+#' @param fill (`NULL`, `picks`, `variables`, `data_extract_spec`, or `list`)\cr grouping variable for bar colors.
+#' @param x_facet (`NULL`, `picks`, `variables`, `data_extract_spec`, or `list`)\cr column-wise faceting groups.
+#' @param y_facet (`NULL`, `picks`, `variables`, `data_extract_spec`, or `list`)\cr row-wise faceting groups.
 #' @param plot_options (`list`)\cr list of plot options.
 #'
 #' @inherit module_arguments return seealso
@@ -71,90 +74,51 @@
 #'   modules = modules(
 #'     tm_g_barchart_simple(
 #'       label = "ADAE Analysis",
-#'       x = data_extract_spec(
-#'         dataname = "ADSL",
-#'         select = select_spec(
-#'           choices = variable_choices(
-#'             ADSL,
-#'             c(
-#'               "ARM", "ACTARM", "SEX",
-#'               "RACE", "ITTFL", "SAFFL", "STRATA2"
-#'             )
+#'       x = teal.picks::picks(
+#'         teal.picks::datasets("ADSL"),
+#'         teal.picks::variables(
+#'           choices = c(
+#'             "ARM", "ACTARM", "SEX",
+#'             "RACE", "ITTFL", "SAFFL", "STRATA2"
 #'           ),
 #'           selected = "ACTARM",
 #'           multiple = FALSE
 #'         )
 #'       ),
-#'       fill = list(
-#'         data_extract_spec(
-#'           dataname = "ADSL",
-#'           select = select_spec(
-#'             choices = variable_choices(
-#'               ADSL,
-#'               c(
-#'                 "ARM", "ACTARM", "SEX",
-#'                 "RACE", "ITTFL", "SAFFL", "STRATA2"
-#'               )
-#'             ),
-#'             selected = "SEX",
-#'             multiple = FALSE
-#'           )
-#'         ),
-#'         data_extract_spec(
-#'           dataname = "ADAE",
-#'           select = select_spec(
-#'             choices = variable_choices(ADAE, c("AETOXGR", "AESEV", "AESER")),
-#'             selected = NULL,
-#'             multiple = FALSE
-#'           )
+#'       fill = teal.picks::picks(
+#'         teal.picks::datasets(choices = c("ADSL", "ADAE")),
+#'         teal.picks::variables(
+#'           choices = c(
+#'             "ARM", "ACTARM", "SEX",
+#'             "RACE", "ITTFL", "SAFFL", "STRATA2",
+#'             "AETOXGR", "AESEV", "AESER"
+#'           ),
+#'           selected = "SEX",
+#'           multiple = FALSE
 #'         )
 #'       ),
-#'       x_facet = list(
-#'         data_extract_spec(
-#'           dataname = "ADAE",
-#'           select = select_spec(
-#'             choices = variable_choices(ADAE, c("AETOXGR", "AESEV", "AESER")),
-#'             selected = "AETOXGR",
-#'             multiple = FALSE
-#'           )
-#'         ),
-#'         data_extract_spec(
-#'           dataname = "ADSL",
-#'           select = select_spec(
-#'             choices = variable_choices(
-#'               ADSL,
-#'               c(
-#'                 "ARM", "ACTARM", "SEX",
-#'                 "RACE", "ITTFL", "SAFFL", "STRATA2"
-#'               )
-#'             ),
-#'             selected = NULL,
-#'             multiple = FALSE
-#'           )
+#'       x_facet = teal.picks::picks(
+#'         teal.picks::datasets(choices = c("ADAE", "ADSL")),
+#'         teal.picks::variables(
+#'           choices = c(
+#'             "AETOXGR", "AESEV", "AESER",
+#'             "ARM", "ACTARM", "SEX",
+#'             "RACE", "ITTFL", "SAFFL", "STRATA2"
+#'           ),
+#'           selected = "AETOXGR",
+#'           multiple = FALSE
 #'         )
 #'       ),
-#'       y_facet = list(
-#'         data_extract_spec(
-#'           dataname = "ADAE",
-#'           select = select_spec(
-#'             choices = variable_choices(ADAE, c("AETOXGR", "AESEV", "AESER")),
-#'             selected = "AESEV",
-#'             multiple = FALSE
-#'           )
-#'         ),
-#'         data_extract_spec(
-#'           dataname = "ADSL",
-#'           select = select_spec(
-#'             choices = variable_choices(
-#'               ADSL,
-#'               c(
-#'                 "ARM", "ACTARM", "SEX",
-#'                 "RACE", "ITTFL", "SAFFL", "STRATA2"
-#'               )
-#'             ),
-#'             selected = NULL,
-#'             multiple = FALSE
-#'           )
+#'       y_facet = teal.picks::picks(
+#'         teal.picks::datasets(choices = c("ADAE", "ADSL")),
+#'         teal.picks::variables(
+#'           choices = c(
+#'             "AETOXGR", "AESEV", "AESER",
+#'             "ARM", "ACTARM", "SEX",
+#'             "RACE", "ITTFL", "SAFFL", "STRATA2"
+#'           ),
+#'           selected = "AESEV",
+#'           multiple = FALSE
 #'         )
 #'       )
 #'     )
@@ -178,6 +142,30 @@ tm_g_barchart_simple <- function(x = NULL,
                                  ggplot2_args = teal.widgets::ggplot2_args(),
                                  transformators = list(),
                                  decorators = list()) {
+  if (length(c(x, fill, x_facet, y_facet)) == 0L) {
+    stop("at least one must be specified. 'x', 'fill', 'x_facet', 'y_facet' is NULL")
+  }
+  checkmate::assert_string(label)
+  .tm_g_barchart_encoding_kind(x, fill, x_facet, y_facet)
+  enc <- .tm_g_barchart_first_encoding(x, fill, x_facet, y_facet)
+  UseMethod("tm_g_barchart_simple", enc)
+}
+
+#' @describeIn tm_g_barchart_simple Legacy `teal.transform::data_extract_spec()` encodings.
+#' @export
+tm_g_barchart_simple.default <- function(x = NULL,
+                                         fill = NULL,
+                                         x_facet = NULL,
+                                         y_facet = NULL,
+                                         label = "Count Barchart",
+                                         plot_options = NULL,
+                                         plot_height = c(600L, 200L, 2000L),
+                                         plot_width = NULL,
+                                         pre_output = NULL,
+                                         post_output = NULL,
+                                         ggplot2_args = teal.widgets::ggplot2_args(),
+                                         transformators = list(),
+                                         decorators = list()) {
   message("Initializing tm_g_barchart_simple")
   checkmate::assert_string(label)
   checkmate::assert_list(plot_options, null.ok = TRUE)
@@ -193,7 +181,9 @@ tm_g_barchart_simple <- function(x = NULL,
   teal.transform::check_no_multiple_selection(x_facet)
   teal.transform::check_no_multiple_selection(y_facet)
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
-  checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")
+  checkmate::assert_numeric(
+    plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height"
+  )
   checkmate::assert_numeric(plot_width, len = 3, any.missing = FALSE, null.ok = TRUE, finite = TRUE)
   checkmate::assert_numeric(
     plot_width[1],
@@ -234,6 +224,64 @@ tm_g_barchart_simple <- function(x = NULL,
     ),
     transformators = transformators,
     datanames = teal.transform::get_extract_datanames(data_extract_list)
+  )
+}
+
+#' First non-`NULL` encoding among bar chart slots (used for S3 dispatch).
+#'
+#' @keywords internal
+#' @noRd
+.tm_g_barchart_first_encoding <- function(x, fill, x_facet, y_facet) {
+  for (z in list(x, fill, x_facet, y_facet)) {
+    if (!is.null(z)) {
+      return(z)
+    }
+  }
+  stop("internal error: no encoding found", call. = FALSE)
+}
+
+#' Infer whether encodings use legacy `data_extract_spec` or `teal.picks`
+#'
+#' @keywords internal
+#' @noRd
+.tm_g_barchart_encoding_kind <- function(x, fill, x_facet, y_facet) {
+  slots <- list(x = x, fill = fill, x_facet = x_facet, y_facet = y_facet)
+  is_legacy_slot <- function(z) {
+    if (is.null(z)) {
+      return(FALSE)
+    }
+    if (inherits(z, "data_extract_spec")) {
+      return(TRUE)
+    }
+    if (is.list(z) && length(z) > 0L && all(vapply(z, inherits, logical(1L), "data_extract_spec"))) {
+      return(TRUE)
+    }
+    FALSE
+  }
+  is_picks_slot <- function(z) {
+    if (is.null(z)) {
+      return(FALSE)
+    }
+    inherits(z, "picks") || inherits(z, "variables")
+  }
+  legacy_any <- any(vapply(slots, is_legacy_slot, logical(1L)))
+  picks_any <- any(vapply(slots, is_picks_slot, logical(1L)))
+  if (legacy_any && picks_any) {
+    stop(
+      "Mixing `teal.transform::data_extract_spec()` and `teal.picks` encodings is not supported. ",
+      "Use only data extract specs, or only picks/variables().",
+      call. = FALSE
+    )
+  }
+  if (legacy_any) {
+    return("legacy")
+  }
+  if (picks_any) {
+    return("picks")
+  }
+  stop(
+    "Could not classify encodings: pass `data_extract_spec`/`list` thereof, or `picks`/`variables`.",
+    call. = FALSE
   )
 }
 
@@ -594,6 +642,7 @@ srv_g_barchart_simple <- function(id,
     ###
   })
 }
+
 
 # Helper functions for qenv ----
 
