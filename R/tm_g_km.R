@@ -287,6 +287,12 @@ template_g_km <- function(dataname = "ANL",
 #'
 #' @inheritSection teal::example_module Reporting
 #'
+#' @section Faceting:
+#' Never pass [`teal.picks::variables()`] with empty `selected` (for example
+#' `selected = character(0)`): that fails inside \pkg{teal.picks} while arguments are evaluated,
+#' before `tm_g_km()` runs. For no faceting, omit `facet_var` or pass `facet_var = NULL` (the module
+#' default), or pass legacy [`teal.transform::choices_selected()`] with `selected = NULL`.
+#'
 #' @examplesShinylive
 #' library(teal.modules.clinical)
 #' interactive <- function() TRUE
