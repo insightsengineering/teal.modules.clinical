@@ -1,53 +1,10 @@
 #' @describeIn tm_g_barchart_simple [teal.picks]-based encodings (`picks`).
 #' @export
 tm_g_barchart_simple.picks <- function(
-    x = teal.picks::picks(
-      teal.picks::datasets("ADSL"),
-      teal.picks::variables(
-        choices = c(
-          "ARM", "ACTARM", "SEX",
-          "RACE", "ITTFL", "SAFFL", "STRATA2"
-        ),
-        selected = "ACTARM",
-        multiple = FALSE
-      )
-    ),
-    fill = teal.picks::picks(
-      teal.picks::datasets(choices = c("ADSL", "ADAE")),
-      teal.picks::variables(
-        choices = c(
-          "ARM", "ACTARM", "SEX",
-          "RACE", "ITTFL", "SAFFL", "STRATA2",
-          "AETOXGR", "AESEV", "AESER"
-        ),
-        selected = "SEX",
-        multiple = FALSE
-      )
-    ),
-    x_facet = teal.picks::picks(
-      teal.picks::datasets(choices = c("ADAE", "ADSL")),
-      teal.picks::variables(
-        choices = c(
-          "AETOXGR", "AESEV", "AESER",
-          "ARM", "ACTARM", "SEX",
-          "RACE", "ITTFL", "SAFFL", "STRATA2"
-        ),
-        selected = "AETOXGR",
-        multiple = FALSE
-      )
-    ),
-    y_facet = teal.picks::picks(
-      teal.picks::datasets(choices = c("ADAE", "ADSL")),
-      teal.picks::variables(
-        choices = c(
-          "AETOXGR", "AESEV", "AESER",
-          "ARM", "ACTARM", "SEX",
-          "RACE", "ITTFL", "SAFFL", "STRATA2"
-        ),
-        selected = "AESEV",
-        multiple = FALSE
-      )
-    ),
+    x = NULL,
+    fill = NULL,
+    x_facet = NULL,
+    y_facet = NULL,
     label = "Count Barchart",
     plot_options = NULL,
     plot_height = c(600L, 200L, 2000L),
@@ -57,18 +14,20 @@ tm_g_barchart_simple.picks <- function(
     ggplot2_args = teal.widgets::ggplot2_args(),
     transformators = list(),
     decorators = list()) {
-  message("Initializing tm_g_barchart_simple")
   checkmate::assert_list(plot_options, null.ok = TRUE)
 
-  x <- migrate_list_extract_spec_to_picks(x, arg_name = "x", allow_null = TRUE)
-  fill <- migrate_list_extract_spec_to_picks(fill, arg_name = "fill", allow_null = TRUE)
-  x_facet <- migrate_list_extract_spec_to_picks(x_facet, arg_name = "x_facet", allow_null = TRUE)
-  y_facet <- migrate_list_extract_spec_to_picks(y_facet, arg_name = "y_facet", allow_null = TRUE)
-
-  assert_picks_single_variable_slot(x, "x")
-  assert_picks_single_variable_slot(fill, "fill")
-  assert_picks_single_variable_slot(x_facet, "x_facet")
-  assert_picks_single_variable_slot(y_facet, "y_facet")
+  encoding_slots <- list(x = x, fill = fill, x_facet = x_facet, y_facet = y_facet)
+  for (arg_name in names(encoding_slots)) {
+    p <- encoding_slots[[arg_name]]
+    if (is.null(p)) {
+      next
+    }
+    checkmate::assert_class(p, "picks", .var.name = arg_name)
+    checkmate::assert_false(
+      teal.picks::is_pick_multiple(p$variables),
+      .var.name = sprintf("`%s` must use variables(..., multiple = FALSE)", arg_name)
+    )
+  }
 
   picks_slot_datanames <- function(p) {
     if (is.null(p)) {
@@ -94,13 +53,6 @@ tm_g_barchart_simple.picks <- function(
   if (length(all_datanames) == 0L) {
     stop("Could not infer dataset names from `x`, `fill`, `x_facet`, and `y_facet`. ", call. = FALSE)
   }
-
-  datasets_binding <- teal.picks::datasets(choices = sort(all_datanames))
-
-  if (!is.null(x)) x <- create_picks_helper(datasets_binding, x)
-  if (!is.null(fill)) fill <- create_picks_helper(datasets_binding, fill)
-  if (!is.null(x_facet)) x_facet <- create_picks_helper(datasets_binding, x_facet)
-  if (!is.null(y_facet)) y_facet <- create_picks_helper(datasets_binding, y_facet)
 
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(
@@ -145,38 +97,6 @@ tm_g_barchart_simple.picks <- function(
     server_args = args[names(args) %in% names(formals(srv_g_barchart_simple_picks))],
     transformators = transformators,
     datanames = all_datanames
-  )
-}
-
-#' @describeIn tm_g_barchart_simple `variables` specification as first encoding (same behavior as `picks`).
-#' @export
-tm_g_barchart_simple.variables <- function(x = NULL,
-                                           fill = NULL,
-                                           x_facet = NULL,
-                                           y_facet = NULL,
-                                           label = "Count Barchart",
-                                           plot_options = NULL,
-                                           plot_height = c(600L, 200L, 2000L),
-                                           plot_width = NULL,
-                                           pre_output = NULL,
-                                           post_output = NULL,
-                                           ggplot2_args = teal.widgets::ggplot2_args(),
-                                           transformators = list(),
-                                           decorators = list()) {
-  tm_g_barchart_simple.picks(
-    x = x,
-    fill = fill,
-    x_facet = x_facet,
-    y_facet = y_facet,
-    label = label,
-    plot_options = plot_options,
-    plot_height = plot_height,
-    plot_width = plot_width,
-    pre_output = pre_output,
-    post_output = post_output,
-    ggplot2_args = ggplot2_args,
-    transformators = transformators,
-    decorators = decorators
   )
 }
 

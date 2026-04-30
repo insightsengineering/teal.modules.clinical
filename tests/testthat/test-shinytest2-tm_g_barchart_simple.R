@@ -17,79 +17,51 @@ app_driver_tm_g_barchart_simple <- function() { # nolint: object_length.
       data = data,
       modules = tm_g_barchart_simple(
         label = "ADAE Analysis (e-2-e)",
-        x = teal.transform::data_extract_spec(
-          dataname = "ADSL",
-          select = teal.transform::select_spec(
-            choices = teal.transform::variable_choices(
-              "ADSL", c("ARM", "ACTARM", "SEX", "RACE", "ITTFL", "SAFFL", "STRATA2")
+        x = teal.picks::picks(
+          teal.picks::datasets("ADSL"),
+          teal.picks::variables(
+            choices = c(
+              "ARM", "ACTARM", "SEX",
+              "RACE", "ITTFL", "SAFFL", "STRATA2"
             ),
             selected = "ACTARM",
             multiple = FALSE
           )
         ),
-        fill = list(
-          teal.transform::data_extract_spec(
-            dataname = "ADSL",
-            select = teal.transform::select_spec(
-              choices = teal.transform::variable_choices(
-                "ADSL", c("ARM", "ACTARM", "SEX", "RACE", "ITTFL", "SAFFL", "STRATA2")
-              ),
-              selected = "SEX",
-              multiple = FALSE
-            )
-          ),
-          teal.transform::data_extract_spec(
-            dataname = "ADAE",
-            select = teal.transform::select_spec(
-              choices = teal.transform::variable_choices("ADAE", c("AETOXGR", "AESEV", "AESER")),
-              selected = NULL,
-              multiple = FALSE
-            )
+        fill = teal.picks::picks(
+          teal.picks::datasets(choices = c("ADSL", "ADAE")),
+          teal.picks::variables(
+            choices = c(
+              "ARM", "ACTARM", "SEX",
+              "RACE", "ITTFL", "SAFFL", "STRATA2",
+              "AETOXGR", "AESEV", "AESER"
+            ),
+            selected = "SEX",
+            multiple = FALSE
           )
         ),
-        x_facet = list(
-          teal.transform::data_extract_spec(
-            dataname = "ADAE",
-            select = teal.transform::select_spec(
-              choices = teal.transform::variable_choices("ADAE", c("AETOXGR", "AESEV", "AESER")),
-              selected = "AETOXGR",
-              multiple = FALSE
-            )
-          ),
-          teal.transform::data_extract_spec(
-            dataname = "ADSL",
-            select = teal.transform::select_spec(
-              choices = teal.transform::variable_choices(
-                "ADSL",
-                c("ARM", "ACTARM", "SEX", "RACE", "ITTFL", "SAFFL", "STRATA2")
-              ),
-              selected = NULL,
-              multiple = FALSE
-            )
+        x_facet = teal.picks::picks(
+          teal.picks::datasets(choices = c("ADAE", "ADSL")),
+          teal.picks::variables(
+            choices = c(
+              "AETOXGR", "AESEV", "AESER",
+              "ARM", "ACTARM", "SEX",
+              "RACE", "ITTFL", "SAFFL", "STRATA2"
+            ),
+            selected = "AETOXGR",
+            multiple = FALSE
           )
         ),
-        y_facet = list(
-          data_extract_spec(
-            dataname = "ADAE",
-            select = teal.transform::select_spec(
-              choices = teal.transform::variable_choices(
-                "ADAE",
-                c("AETOXGR", "AESEV", "AESER")
-              ),
-              selected = "AESEV",
-              multiple = FALSE
-            )
-          ),
-          data_extract_spec(
-            dataname = "ADSL",
-            select = teal.transform::select_spec(
-              choices = teal.transform::variable_choices(
-                "ADSL",
-                c("ARM", "ACTARM", "SEX", "RACE", "ITTFL", "SAFFL", "STRATA2")
-              ),
-              selected = NULL,
-              multiple = FALSE
-            )
+        y_facet = teal.picks::picks(
+          teal.picks::datasets(choices = c("ADAE", "ADSL")),
+          teal.picks::variables(
+            choices = c(
+              "AETOXGR", "AESEV", "AESER",
+              "ARM", "ACTARM", "SEX",
+              "RACE", "ITTFL", "SAFFL", "STRATA2"
+            ),
+            selected = "AESEV",
+            multiple = FALSE
           )
         ),
         plot_options = list(
@@ -133,8 +105,7 @@ testthat::test_that("e2e - tm_g_barchart_simple: Module initializes in teal with
 })
 
 testthat::test_that(
-  "e2e - tm_g_barchart_simple: Starts with specified label, id_var, arm_var, visit_var,
-  paramcd, cov_var, conf_level and conf_struct.",
+  "e2e - tm_g_barchart_simple: Starts with specified label and default encoding selections.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_barchart_simple()

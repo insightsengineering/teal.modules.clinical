@@ -5,7 +5,6 @@
 \alias{tm_g_barchart_simple}
 \alias{tm_g_barchart_simple.default}
 \alias{tm_g_barchart_simple.picks}
-\alias{tm_g_barchart_simple.variables}
 \title{teal Module: Simple Bar Chart and Table of Counts per Category}
 \usage{
 tm_g_barchart_simple(
@@ -56,33 +55,16 @@ tm_g_barchart_simple(
   decorators = list()
 )
 
-\method{tm_g_barchart_simple}{variables}(
-  x = NULL,
-  fill = NULL,
-  x_facet = NULL,
-  y_facet = NULL,
-  label = "Count Barchart",
-  plot_options = NULL,
-  plot_height = c(600L, 200L, 2000L),
-  plot_width = NULL,
-  pre_output = NULL,
-  post_output = NULL,
-  ggplot2_args = teal.widgets::ggplot2_args(),
-  transformators = list(),
-  decorators = list()
-)
 }
 \arguments{
-\item{x}{(\code{NULL}, \code{picks}, \code{variables}, \code{data_extract_spec}, or \code{list} of \code{data_extract_spec})\cr
-variable on the x-axis. S3 dispatch uses the \strong{first non-\code{NULL}} slot among \code{x}, \code{fill},
-\code{x_facet}, and \code{y_facet} (\code{tm_g_barchart_simple.default()} vs \code{tm_g_barchart_simple.picks()}).
-Do not mix \code{data_extract_spec} and \code{picks} / \code{variables} encodings in one call.}
+\item{x}{(\code{NULL}, \code{picks}, \code{data_extract_spec}, or \code{list} of \code{data_extract_spec})\cr
+variable on the x-axis.}
 
-\item{fill}{(\code{NULL}, \code{picks}, \code{variables}, \code{data_extract_spec}, or \code{list})\cr grouping variable for bar colors.}
+\item{fill}{(\code{NULL}, \code{picks}, \code{data_extract_spec}, or \code{list} thereof)\cr grouping variable for bar colors.}
 
-\item{x_facet}{(\code{NULL}, \code{picks}, \code{variables}, \code{data_extract_spec}, or \code{list})\cr column-wise faceting groups.}
+\item{x_facet}{(\code{NULL}, \code{picks}, \code{data_extract_spec}, or \code{list} thereof)\cr column-wise faceting groups.}
 
-\item{y_facet}{(\code{NULL}, \code{picks}, \code{variables}, \code{data_extract_spec}, or \code{list})\cr row-wise faceting groups.}
+\item{y_facet}{(\code{NULL}, \code{picks}, \code{data_extract_spec}, or \code{list} thereof)\cr row-wise faceting groups.}
 
 \item{label}{(\code{character})\cr menu item label of the module in the teal app.}
 
@@ -124,14 +106,17 @@ This module produces a \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}} type bar 
 \details{
 Categories can be defined up to four levels deep and are defined through the \code{x}, \code{fill},
 \code{x_facet}, and \code{y_facet} parameters. Any parameters set to \code{NULL} (default) are ignored.
+
+S3 dispatch uses the \strong{first non-\code{NULL}} slot among \code{x}, \code{fill}, \code{x_facet}, and \code{y_facet}
+(\code{tm_g_barchart_simple.default()} for \code{teal.transform::data_extract_spec()} vs
+\code{tm_g_barchart_simple.picks()} for \code{\link[teal.picks:picks]{teal.picks::picks()}}). Do not mix
+\code{data_extract_spec} and \code{picks} encodings in one call.
 }
 \section{Methods (by class)}{
 \itemize{
 \item \code{tm_g_barchart_simple(default)}: Legacy \code{teal.transform::data_extract_spec()} encodings.
 
 \item \code{tm_g_barchart_simple(picks)}: \link{teal.picks}-based encodings (\code{picks}).
-
-\item \code{tm_g_barchart_simple(variables)}: \code{variables} specification as first encoding (same behavior as \code{picks}).
 
 }}
 \section{Decorating Module}{
@@ -253,6 +238,34 @@ app <- init(
 )
 if (interactive()) {
   shinyApp(app$ui, app$server)
+}
+
+# Legacy `teal.transform::data_extract_spec()` encodings (default S3 method):
+\dontrun{
+data <- teal_data()
+data <- within(data, {
+  library(dplyr)
+  ADSL <- tmc_ex_adsl \%>\%
+    mutate(ITTFL = factor("Y") \%>\% with_label("Intent-To-Treat Population Flag"))
+})
+join_keys(data) <- default_cdisc_join_keys[names(data)]
+
+app <- init(
+  data = data,
+  modules = modules(
+    tm_g_barchart_simple(
+      x = teal.transform::data_extract_spec(
+        dataname = "ADSL",
+        select = teal.transform::select_spec(
+          choices = teal.transform::variable_choices("ADSL", c("ARM", "SEX")),
+          selected = "ARM",
+          multiple = FALSE
+        )
+      )
+    )
+  )
+)
+shiny::shinyApp(app$ui, app$server)
 }
 
 }

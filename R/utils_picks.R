@@ -265,17 +265,69 @@ migrate_list_extract_spec_to_picks <- function(x,
   )
 }
 
+#' First non-`NULL` element of a named encoding list (S3 dispatch helper).
+#'
+#' @param arg_list (`named list`) typically `x`, `fill`, `x_facet`, `y_facet` slots; at least one
+#'   non-`NULL` when used from module generics.
+#'
 #' @keywords internal
 #' @noRd
-assert_picks_single_variable_slot <- function(picks_obj, arg_name) {
-  checkmate::assert_string(arg_name)
-  if (is.null(picks_obj)) {
-    return(invisible(NULL))
+.module_arg_first_encoding <- function(arg_list) {
+  checkmate::assert_list(arg_list, all.missing = FALSE)
+  non_null <- vapply(arg_list, Negate(is.null), logical(1L))
+  if (!any(non_null)) {
+    stop("internal error: no encoding found", call. = FALSE)
   }
-  checkmate::assert_class(picks_obj, "picks")
-  multiple_ok <- isTRUE(attr(picks_obj$variables, "multiple", exact = TRUE))
-  checkmate::assert_false(multiple_ok, .var.name = arg_name)
-  invisible(NULL)
+  arg_list[non_null][[1L]]
+}
+
+#' @keywords internal
+#' @noRd
+.encoding_slot_is_legacy_data_extract <- function(z) {
+  if (is.null(z)) {
+    return(FALSE)
+  }
+  if (inherits(z, "data_extract_spec")) {
+    return(TRUE)
+  }
+  is.list(z) && length(z) > 0L && all(vapply(z, inherits, logical(1L), "data_extract_spec"))
+}
+
+#' @keywords internal
+#' @noRd
+.encoding_slot_is_picks <- function(z) {
+  !is.null(z) && inherits(z, "picks")
+}
+
+#' Classify encoding slots as legacy extract specs or [`teal.picks::picks()`].
+#'
+#' @param slots (`named list`) module encoding arguments (e.g. `x`, `fill`, `x_facet`, `y_facet`).
+#'
+#' @return `character(1)` `"legacy"` or `"picks"`.
+#'
+#' @keywords internal
+#' @noRd
+.tm_encoding_slots_kind <- function(slots) {
+  checkmate::assert_list(slots, names = "unique")
+  legacy_any <- any(vapply(slots, .encoding_slot_is_legacy_data_extract, logical(1L)))
+  picks_any <- any(vapply(slots, .encoding_slot_is_picks, logical(1L)))
+  if (legacy_any && picks_any) {
+    stop(
+      "Mixing `teal.transform::data_extract_spec()` and `teal.picks::picks()` encodings is not supported. ",
+      "Use only data extract specs, or only `teal.picks::picks()`.",
+      call. = FALSE
+    )
+  }
+  if (legacy_any) {
+    return("legacy")
+  }
+  if (picks_any) {
+    return("picks")
+  }
+  stop(
+    "Could not classify encodings: pass `data_extract_spec` / `list` thereof, or `teal.picks::picks()`.",
+    call. = FALSE
+  )
 }
 
 #' Build `columns_source` for [`teal.transform::get_anl_relabel_call()`] from picks merge outputs
