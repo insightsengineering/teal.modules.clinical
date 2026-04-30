@@ -113,7 +113,10 @@ testthat::test_that(
     testthat::expect_equal(exported_values[["paramcd-picks_resolved"]]$values$selected, "OS")
     testthat::expect_equal(exported_values[["aval_var-picks_resolved"]]$variables$selected, "ANALYSIS_VAL")
     testthat::expect_equal(exported_values[["cnsr_var-picks_resolved"]]$variables$selected, "CENSORING")
-    testthat::expect_equal(length(get_teal_picks_slot(app_driver, "facet_var", "variables")), 0L)
+    testthat::expect_equal(
+      get_teal_picks_slot(app_driver, "facet_var", "variables"),
+      "-- no selection --"
+    )
     testthat::expect_equal(exported_values[["arm_var-picks_resolved"]]$variables$selected, "ARM")
     testthat::expect_true(app_driver$get_active_module_input("compare_arms"))
     testthat::expect_equal(exported_values[["strata_var-picks_resolved"]]$variables$selected, "SEX")

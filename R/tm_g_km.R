@@ -254,9 +254,9 @@ template_g_km <- function(dataname = "ANL",
 #' @param arm_var,paramcd,strata_var,aval_var,cnsr_var,time_unit_var ([`teal.picks::variables()`],
 #'   [`teal.picks::picks()`], or legacy `choices_selected` / `value_choices`)\cr encodings; legacy inputs are coerced with a deprecation warning.
 #' @param facet_var (`NULL`, [`teal.picks::variables()`], or legacy `choices_selected`)\cr
-#'   faceting variable(s). The default `NULL` means no faceting (same as legacy `choices_selected` with
-#'   `selected = NULL`). Do not pass [`teal.picks::variables()`] with `selected` of length 0 — [`teal.picks`]
-#'   requires at least one selected level; use `NULL` or legacy [`teal.transform::choices_selected()`] instead.
+#'   faceting variable(s). The default `NULL` is expanded with [`teal.transform::add_no_selected_choices()`]
+#'   (no faceting until the user picks a variable). Do not pass [`teal.picks::variables()`] with
+#'   `selected` of length 0 — \pkg{teal.picks} requires at least one selected level; use `NULL` instead.
 #' @param conf_level,conf_type ([`teal.picks::values()`] or legacy `choices_selected`)\cr confidence UI inputs.
 #'
 #' @inherit module_arguments return seealso
@@ -290,8 +290,9 @@ template_g_km <- function(dataname = "ANL",
 #' @section Faceting:
 #' Never pass [`teal.picks::variables()`] with empty `selected` (for example
 #' `selected = character(0)`): that fails inside \pkg{teal.picks} while arguments are evaluated,
-#' before `tm_g_km()` runs. For no faceting, omit `facet_var` or pass `facet_var = NULL` (the module
-#' default), or pass legacy [`teal.transform::choices_selected()`] with `selected = NULL`.
+#' before `tm_g_km()` runs. For no faceting, omit `facet_var` or pass `facet_var = NULL`; the module
+#' adds the `-- no selection --` choice via [`teal.transform::add_no_selected_choices()`] before
+#' coercion to picks (see `?choices_selected` / `?add_no_selected_choices`).
 #'
 #' @examplesShinylive
 #' library(teal.modules.clinical)
@@ -418,9 +419,14 @@ tm_g_km <- function(label,
   }
 
   if (is.null(facet_var)) {
-    facet_var <- teal.transform::choices_selected(
-      teal.transform::variable_choices(parentname, c("SEX", "BMRKR2")),
-      selected = NULL
+    # choices_selected(..., selected = NULL) with delayed variable_choices coerces to picks with
+    # NULL `choices` unless we add the explicit "no selection" option (see ?choices_selected).
+    facet_var <- teal.transform::add_no_selected_choices(
+      teal.transform::choices_selected(
+        teal.transform::variable_choices(parentname, c("SEX", "BMRKR2")),
+        selected = NULL
+      ),
+      multiple = FALSE
     )
   }
 
@@ -670,6 +676,23 @@ ui_g_km <- function(id,
   )
 }
 
+#' Drop `-- no selection --` facet tokens for the template and validation.
+#' @keywords internal
+#' @noRd
+tm_g_km_resolve_facet_cols <- function(x) {
+  if (is.null(x) || length(x) == 0L) {
+    return(character(0))
+  }
+  out <- character()
+  for (z in x) {
+    nz <- teal.transform::no_selected_as_NULL(z)
+    if (!is.null(nz)) {
+      out <- c(out, nz)
+    }
+  }
+  unique(out)
+}
+
 #' @keywords internal
 srv_g_km <- function(id,
                      data,
@@ -815,7 +838,7 @@ srv_g_km <- function(id,
       vm <- anl_inputs$variables()
       input_arm_var <- vm$arm_var[[1L]]
       input_strata_var <- vm$strata_var[[1L]]
-      input_facet_var <- vm$facet_var[[1L]]
+      input_facet_var <- tm_g_km_resolve_facet_cols(vm$facet_var[[1L]])
       input_aval_var <- vm$aval_var[[1L]]
       input_cnsr_var <- vm$cnsr_var[[1L]]
       input_paramcd_col <- vm$paramcd[[1L]]
@@ -878,7 +901,7 @@ srv_g_km <- function(id,
         strata_var = vm$strata_var[[1L]],
         time_points = NULL,
         time_unit_var = vm$time_unit_var[[1L]],
-        facet_var = vm$facet_var[[1L]],
+        facet_var = tm_g_km_resolve_facet_cols(vm$facet_var[[1L]]),
         annot_surv_med = input$show_km_table,
         annot_coxph = input$compare_arms,
         control_annot_surv_med = control_annot_surv_med,
