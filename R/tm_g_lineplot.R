@@ -321,7 +321,8 @@ tm_g_lineplot <- function(label,
                           conf_level = teal.picks::values(
                             c("0.95", "0.9", "0.8"),
                             selected = "0.95",
-                            keep_order = TRUE
+                            keep_order = TRUE,
+                            multiple = FALSE
                           ),
                           interval = "mean_ci",
                           mid = "mean",
