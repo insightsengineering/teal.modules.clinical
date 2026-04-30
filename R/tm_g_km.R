@@ -251,8 +251,12 @@ template_g_km <- function(dataname = "ANL",
 #'   for the x-axis. If `NULL` (default), users can specify this interactively in the module.
 #'   If provided, the interactive input field is pre-populated with the specified values as a default.
 #'   Users can then modify these values interactively, and their changes will take precedence over the default.
-#' @param arm_var,paramcd,strata_var,facet_var,aval_var,cnsr_var,time_unit_var ([`teal.picks::variables()`],
+#' @param arm_var,paramcd,strata_var,aval_var,cnsr_var,time_unit_var ([`teal.picks::variables()`],
 #'   [`teal.picks::picks()`], or legacy `choices_selected` / `value_choices`)\cr encodings; legacy inputs are coerced with a deprecation warning.
+#' @param facet_var (`NULL`, [`teal.picks::variables()`], or legacy `choices_selected`)\cr
+#'   faceting variable(s). The default `NULL` means no faceting (same as legacy `choices_selected` with
+#'   `selected = NULL`). Do not pass [`teal.picks::variables()`] with `selected` of length 0 — [`teal.picks`]
+#'   requires at least one selected level; use `NULL` or legacy [`teal.transform::choices_selected()`] instead.
 #' @param conf_level,conf_type ([`teal.picks::values()`] or legacy `choices_selected`)\cr confidence UI inputs.
 #'
 #' @inherit module_arguments return seealso
@@ -341,11 +345,6 @@ template_g_km <- function(dataname = "ANL",
 #'         selected = "SEX",
 #'         multiple = TRUE
 #'       ),
-#'       facet_var = variables(
-#'         choices = c("SEX", "BMRKR2"),
-#'         selected = character(0),
-#'         multiple = FALSE
-#'       ),
 #'       xticks = c(0, 30, 60, 90, 120, 150, 180)
 #'     )
 #'   )
@@ -378,11 +377,7 @@ tm_g_km <- function(label,
                       selected = "SEX",
                       multiple = TRUE
                     ),
-                    facet_var = teal.picks::variables(
-                      choices = c("SEX", "BMRKR2"),
-                      selected = character(0),
-                      multiple = FALSE
-                    ),
+                    facet_var = NULL,
                     time_unit_var = teal.picks::variables("AVALU", fixed = TRUE),
                     aval_var = teal.picks::variables("AVAL", fixed = TRUE),
                     cnsr_var = teal.picks::variables("CNSR", fixed = TRUE),
@@ -414,6 +409,14 @@ tm_g_km <- function(label,
 
   if (is.null(parentname)) {
     parentname <- "ADSL"
+  }
+
+  if (is.null(facet_var)) {
+    facet_var <- teal.transform::choices_selected(
+      teal.transform::variable_choices(parentname, c("SEX", "BMRKR2")),
+      selected = NULL,
+      multiple = FALSE
+    )
   }
 
   arm_var <- migrate_choices_selected_to_variables(arm_var, arg_name = "arm_var")
