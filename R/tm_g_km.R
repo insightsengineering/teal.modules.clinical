@@ -420,8 +420,7 @@ tm_g_km <- function(label,
   if (is.null(facet_var)) {
     facet_var <- teal.transform::choices_selected(
       teal.transform::variable_choices(parentname, c("SEX", "BMRKR2")),
-      selected = NULL,
-      multiple = FALSE
+      selected = NULL
     )
   }
 
