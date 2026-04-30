@@ -8,18 +8,10 @@
 \title{teal Module: Simple Bar Chart and Table of Counts per Category}
 \usage{
 tm_g_barchart_simple(
-  x = teal.picks::picks(teal.picks::datasets("ADSL"), teal.picks::variables(choices =
-    c("ARM", "ACTARM", "SEX", "RACE", "ITTFL", "SAFFL", "STRATA2"), selected = "ACTARM",
-    multiple = FALSE)),
-  fill = teal.picks::picks(teal.picks::datasets(choices = c("ADSL", "ADAE")),
-    teal.picks::variables(choices = c("ARM", "ACTARM", "SEX", "RACE", "ITTFL", "SAFFL",
-    "STRATA2", "AETOXGR", "AESEV", "AESER"), selected = "SEX", multiple = FALSE)),
-  x_facet = teal.picks::picks(teal.picks::datasets(choices = c("ADAE", "ADSL")),
-    teal.picks::variables(choices = c("AETOXGR", "AESEV", "AESER", "ARM", "ACTARM",
-    "SEX", "RACE", "ITTFL", "SAFFL", "STRATA2"), selected = "AETOXGR", multiple = FALSE)),
-  y_facet = teal.picks::picks(teal.picks::datasets(choices = c("ADAE", "ADSL")),
-    teal.picks::variables(choices = c("AETOXGR", "AESEV", "AESER", "ARM", "ACTARM",
-    "SEX", "RACE", "ITTFL", "SAFFL", "STRATA2"), selected = "AESEV", multiple = FALSE)),
+  x = NULL,
+  fill = NULL,
+  x_facet = NULL,
+  y_facet = NULL,
   label = "Count Barchart",
   plot_options = NULL,
   plot_height = c(600L, 200L, 2000L),
@@ -48,18 +40,10 @@ tm_g_barchart_simple(
 )
 
 \method{tm_g_barchart_simple}{picks}(
-  x = teal.picks::picks(teal.picks::datasets("ADSL"), teal.picks::variables(choices =
-    c("ARM", "ACTARM", "SEX", "RACE", "ITTFL", "SAFFL", "STRATA2"), selected = "ACTARM",
-    multiple = FALSE)),
-  fill = teal.picks::picks(teal.picks::datasets(choices = c("ADSL", "ADAE")),
-    teal.picks::variables(choices = c("ARM", "ACTARM", "SEX", "RACE", "ITTFL", "SAFFL",
-    "STRATA2", "AETOXGR", "AESEV", "AESER"), selected = "SEX", multiple = FALSE)),
-  x_facet = teal.picks::picks(teal.picks::datasets(choices = c("ADAE", "ADSL")),
-    teal.picks::variables(choices = c("AETOXGR", "AESEV", "AESER", "ARM", "ACTARM",
-    "SEX", "RACE", "ITTFL", "SAFFL", "STRATA2"), selected = "AETOXGR", multiple = FALSE)),
-  y_facet = teal.picks::picks(teal.picks::datasets(choices = c("ADAE", "ADSL")),
-    teal.picks::variables(choices = c("AETOXGR", "AESEV", "AESER", "ARM", "ACTARM",
-    "SEX", "RACE", "ITTFL", "SAFFL", "STRATA2"), selected = "AESEV", multiple = FALSE)),
+  x = NULL,
+  fill = NULL,
+  x_facet = NULL,
+  y_facet = NULL,
   label = "Count Barchart",
   plot_options = NULL,
   plot_height = c(600L, 200L, 2000L),
@@ -70,7 +54,6 @@ tm_g_barchart_simple(
   transformators = list(),
   decorators = list()
 )
-
 }
 \arguments{
 \item{x}{(\code{NULL}, \code{picks}, \code{data_extract_spec}, or \code{list} of \code{data_extract_spec})\cr
@@ -125,8 +108,8 @@ Categories can be defined up to four levels deep and are defined through the \co
 
 S3 dispatch uses the \strong{first non-\code{NULL}} slot among \code{x}, \code{fill}, \code{x_facet}, and \code{y_facet}
 (\code{tm_g_barchart_simple.default()} for \code{teal.transform::data_extract_spec()} vs
-\code{tm_g_barchart_simple.picks()} for \code{\link[teal.picks:picks]{teal.picks::picks()}}). Do not mix
-\code{data_extract_spec} and \code{picks} encodings in one call.
+\code{tm_g_barchart_simple.picks()} for \code{\link[teal.picks:picks]{teal.picks::picks()}}). Do not mix \code{data_extract_spec} and
+\code{picks} encodings in one call.
 }
 \section{Methods (by class)}{
 \itemize{
@@ -292,8 +275,8 @@ apps implementing this module can be found.
 \section{Examples in Shinylive}{
 \describe{
   \item{example-1}{
-    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo67sxsnHDcvALCYhJSMvKl5QyVHMYBMGHkjKJBZRWe+ajUrIFtAIIAIgDKADKROqQwBDFwAB4xUPyi1DoApAB8R21lMILh5OwAkra2AGLLALwmUOoB7ApgAJq-Gync4QMpg9KZLIxahQehwag-MB3FRkAy2Ihoxg1Ug6AAKRFQwjCllBTxhAHNAUMdHNpk4VmsNttdqFdMCLiZaNR+uwAITsdh02wAeQAGgBxLA6V7vACMNgAZDpBU55k4AGrS96-ACyd0Ws0BOiVgqwOq1Ol+00QOlmjEE5J0oqpQQAvkEAFZEXIxADWcFYonyyRsqX4cGMUGEpBiBH4tFEGy9Pv9geA0HgQYKcgAuq4IHMlisCsBgFaFotfjm8wXZnTi8lS+W6VWa0o0KgVrlMj9QToCtL+8lcG0+EIRKJB2OGkGOWsYuSYvQWAQsiwY6JaDBxnBe+DhrD4YPm-TptAJpvRL8R33wVtB6gZL7Z7f9wVRHBSLOwIXK2A5De+5gpoLC0LCE57kBYKrt6BBiIOBCQVBYJWma16Wj+ADCtjTGheAYWqzp4ByyG-Fg0yYS4+G-A8zx-kUvzzNMTwvOhjH2NMOEAEy-CR+4AXx4IfiI6hwPwx5YTheGAchOhXNytA7oOTzTIsaqCTo1LggJr5lMYXKHO8j4EM+SFvskH5fuwMEyPB7yIeWSxsT+dZUXIOnISBjBgfQEEaWUNlwZO9lmaRP7SRhFFSTqzmEde-koWA5GUc5tGsdRYBMSx9EERx3HxbpUFWk4IoSlgzl0mq6oVaqTjlWACUebJwlwKJ4naplThETJyHyRoSnvCpakuIVZRaWCTV3jEkZwTiRlPi+yHvp+QaBXZOgOS5LYZb+VI9fuXk+X5o3QVksHrQ5J3gsVpWSjVVX3XVBWyYluExTt2FvbFXXPS9GHJVRDFIo86VA1loO5eR+UNVdmn7UBLVtRJQpindxGw31ikiMpqnqSd41jfDOisNNnyfg+C2hWCy1WWtwUbYitKA5FFZ7Rph3gWIVPgnTCHc-uN2o-VQOVRqj3CwlZSoe9IufRFjE-ejf3-RRzM0SDOWMcxEPsVD0w8TDL2TVBiPkO1kW1dVSuyZjA06ENePIQTmkctSQRBLQxjKrk-SfBo2jWDYJR9qIOQQKw0zoOwHYACSCLQRSxx+jDaFMECukoYCujmQA}{Open in Shinylive}
-    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo67sxsnHDcvALCYhJSMvKl5QyVHMYBMGHkjKJBZRWe+ajUrIFtAIIAIgDKADKROqQwBDFwAB4xUPyi1DoApAB8R21lMILh5OwAkra2AGLLALwmUOoB7ApgAJq-Gync4QMpg9KZLIxahQehwag-MB3FRkAy2Ihoxg1Ug6AAKRFQwjCllBTxhAHNAUMdHNpk4VmsNttdqFdMCLiZaNR+uwAITsdh02wAeQAGgBxLA6V7vACMNgAZDpBU55k4AGrS96-ACyd0Ws0BOiVgqwOq1Ol+00QOlmjEE5J0oqpQQAvkEAFZEXIxADWcFYonyyRsqX4cGMUGEpBiBH4tFEGy9Pv9geA0HgQYKcgAuq4IHMlisCsBgFaFotfjm8wXZnTi8lS+W6VWa0o0KgVrlMj9QToCtL+8lcG0+EIRKJB2OGkGOWsYuSYvQWAQsiwY6JaDBxnBe+DhrD4YPm-TptAJpvRL8R33wVtB6gZL7Z7f9wVRHBSLOwIXK2A5De+5gpoLC0LCE57kBYKrt6BBiIOBCQVBYJWma16Wj+ADCtjTGheAYWqzp4ByyG-Fg0yYS4+G-A8zx-kUvzzNMTwvOhjH2NMOEAEy-CR+4AXx4IfiI6hwPwx5YTheGAchOhXNytA7oOTzTIsaqCTo1LggJr5lMYXKHO8j4EM+SFvskH5fuwMEyPB7yIeWSxsT+dZUXIOnISBjBgfQEEaWUNlwZO9lmaRP7SRhFFSTqzmEde-koWA5GUc5tGsdRYBMSx9EERx3HxbpUFWk4IoSlgzl0mq6oVaqTjlWACUebJwlwKJ4naplThETJyHyRoSnvCpakuIVZRaWCTV3jEkZwTiRlPi+yHvp+QaBXZOgOS5LYZb+VI9fuXk+X5o3QVksHrQ5J3gsVpWSjVVX3XVBWyYluExTt2FvbFXXPS9GHJVRDFIo86VA1loO5eR+UNVdmn7UBLVtRJQpindxGw31ikiMpqnqSd41jfDOisNNnyfg+C2hWCy1WWtwUbYitKA5FFZ7Rph3gWIVPgnTCHc-uN2o-VQOVRqj3CwlZSoe9IufRFjE-ejf3-RRzM0SDOWMcxEPsVD0w8TDL2TVBiPkO1kW1dVSuyZjA06ENePIQTmkctSQRBLQxjKrk-SfBo2jWDYJR9qIOQQKw0zoOwHYACSCLQRSxx+jDaFMECukoYCujmQA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo67sxsnHDcvALCYhJSMvKl5QyVHMYBMGHkjKJBZRWe+ajUrIFtAIIAIgDKADKROqQwBDFwAB4xUPyi1DoApAB8R21lMILh5OwAkra2AGLLALwmUOoB7ApgAJq-Gync4QMpg9KZLIxahQehwag-MB3FRkAy2Ihoxg1Ug6AAKRFQwjCllBTxhAHNAUMdHNpk4VmsNttdqFdMCLiZaNR+uwAITsdh02wAeQAGgBxLA6V7vACMNgAZDpBU55k4AGrS96-ACyd0Ws0BOiVgqwOq1Ol+00QOlmjEE5J0oqpQQAvkEAFZEXIxADWcFYonyyRsqX4cGMUGEpBiBH4tFEGy9Pv9geA0HgQYKcgAuq4IHMlisCsBgFaFotfjm8wXZnTi8lS+W6VWa0o0KgVrlMj9QToCtL+8lcG0+EIRKJB2OGkGOWsYuSYvQWAQsiwY6JaDBxnBe+DhrD4YPm-TptAJpvRL8R33wVtB6gZL7Z7f9wVRHBSLOwIXK2A5De+5gpoLC0LCE57kBYKrt6BBiIOBCQVBYJWma16Wj+ADCtjTGheAYWqzp4ByyG-Fg0yYS4+G-A8zx-kUvzzNMTwvOhjH2NMOEAEy-CR+4AXx4IfiI6hwPwx5YTheGAchOhXNytA7oOTzTIsaqCTo1LggJr5lMYXKHO8j4EM+SFvskH5fuwMEyPB7yIeWSxsT+dZUXIOnISBjBgfQEEaWUNlwZO9lmaRP7SRhFFSTqzmEde-koWA5GUc5tGsdRYBMSx9EERx3HxbpUFWk4IoSlgzl0mq6oVaqTjlWACUebJwlwKJ4naplThETJyHyRoSnvCpakuIVZRaWCTV3jEkZwTiRlPi+yHvp+QaBXZOgOS5LYZb+VI9fuXk+X5o3QVksHrQ5J3gsVpWSjVVX3XVBWyYluExTt2FvbFXXPS9GHJVRDFIo86VA1loO5eR+UNVdmn7UBLVtRJQpindxGw31ikiMpqnqSd41jfDOisNNnyfg+C2hWCy1WWtwUbYitKA5FFZ7Rph3gWIVPgnTCHc-uN2o-VQOVRqj3CwlZSoe9IufRFjE-ejf3-RRzM0SDOWMcxEPsVD0w8TDL2TVBiPkO1kW1dVSuyZjA06ENePIQTmkctSQRBLQxjKrk-SfBo2jWDYJR9qIOQQKw0zoOwHYACSCLQRSxx+jDaFMECuvmADEOiLHA5KfKwOgAAbRBgpDMBAojdIwMCIIgBSbFs5d+zEoioK11hFzoFDEPGEDkpO+QRlG3I6PMADMcmfmd-ByIgrgKPwJDl2YwcDqk0RxMkiQQOvRgZNkuTBuERTB8MHSjPw4yTNSv4MusjcsgcxxnByVw3LuaVvB8XyMIiAL-hfkcCE2RoSHgRDRFEpA0QYlsFiMIeICREg0CQe2FIqRKHdEoZMEA-QBizCGYsw9oyxnjImGIOC8FpgzFzbMbZoDoC7NIUgkEBzvAKDJacE4pz1GOuCeci5lyMFXOuVuW4dxU3vO8UuzdK7V1rvXZIjdm7qFbu3S6S1kg0ORqza2CN4StTmqsGoPBZFVx6HXU2aiO4JV5tIkxZcK7mJrnXDmvk4CxjOrZb8u18KbS+hlOK-5jb6JEmbZG0kEq22xoNXGI0nZ8XGm7JQQRQ65FYJYsOEco6x3jondAMdk6pzdEoMArocxAA}{Open in Shinylive}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo67sxsnHDcvALCYhJSMvKl5QyVHMYBMGHkjKJBZRWe+ajUrIFtAIIAIgDKADKROqQwBDFwAB4xUPyi1DoApAB8R21lMILh5OwAkra2AGLLALwmUOoB7ApgAJq-Gync4QMpg9KZLIxahQehwag-MB3FRkAy2Ihoxg1Ug6AAKRFQwjCllBTxhAHNAUMdHNpk4VmsNttdqFdMCLiZaNR+uwAITsdh02wAeQAGgBxLA6V7vACMNgAZDpBU55k4AGrS96-ACyd0Ws0BOiVgqwOq1Ol+00QOlmjEE5J0oqpQQAvkEAFZEXIxADWcFYonyyRsqX4cGMUGEpBiBH4tFEGy9Pv9geA0HgQYKcgAuq4IHMlisCsBgFaFotfjm8wXZnTi8lS+W6VWa0o0KgVrlMj9QToCtL+8lcG0+EIRKJB2OGkGOWsYuSYvQWAQsiwY6JaDBxnBe+DhrD4YPm-TptAJpvRL8R33wVtB6gZL7Z7f9wVRHBSLOwIXK2A5De+5gpoLC0LCE57kBYKrt6BBiIOBCQVBYJWma16Wj+ADCtjTGheAYWqzp4ByyG-Fg0yYS4+G-A8zx-kUvzzNMTwvOhjH2NMOEAEy-CR+4AXx4IfiI6hwPwx5YTheGAchOhXNytA7oOTzTIsaqCTo1LggJr5lMYXKHO8j4EM+SFvskH5fuwMEyPB7yIeWSxsT+dZUXIOnISBjBgfQEEaWUNlwZO9lmaRP7SRhFFSTqzmEde-koWA5GUc5tGsdRYBMSx9EERx3HxbpUFWk4IoSlgzl0mq6oVaqTjlWACUebJwlwKJ4naplThETJyHyRoSnvCpakuIVZRaWCTV3jEkZwTiRlPi+yHvp+QaBXZOgOS5LYZb+VI9fuXk+X5o3QVksHrQ5J3gsVpWSjVVX3XVBWyYluExTt2FvbFXXPS9GHJVRDFIo86VA1loO5eR+UNVdmn7UBLVtRJQpindxGw31ikiMpqnqSd41jfDOisNNnyfg+C2hWCy1WWtwUbYitKA5FFZ7Rph3gWIVPgnTCHc-uN2o-VQOVRqj3CwlZSoe9IufRFjE-ejf3-RRzM0SDOWMcxEPsVD0w8TDL2TVBiPkO1kW1dVSuyZjA06ENePIQTmkctSQRBLQxjKrk-SfBo2jWDYJR9qIOQQKw0zoOwHYACSCLQRSxx+jDaFMECuvmADEOiLHA5KfKwOgAAbRBgpDMBAojdIwMCIIgBSbFs5d+zEoioK11hFzoFDEPGEDkpO+QRlG3I6PMADMcmfmd-ByIgrgKPwJDl2YwcDqk0RxMkiQQOvRgZNkuTBuERTB8MHSjPw4yTNSv4MusjcsgcxxnByVw3LuaVvB8XyMIiAL-hfkcCE2RoSHgRDRFEpA0QYlsFiMIeICREg0CQe2FIqRKHdEoZMEA-QBizCGYsw9oyxnjImGIOC8FpgzFzbMbZoDoC7NIUgkEBzvAKDJacE4pz1GOuCeci5lyMFXOuVuW4dxU3vO8UuzdK7V1rvXZIjdm7qFbu3S6S1kg0ORqza2CN4StTmqsGoPBZFVx6HXU2aiO4JV5tIkxZcK7mJrnXDmvk4CxjOrZb8u18KbS+hlOK-5jb6JEmbZG0kEq22xoNXGI0nZ8XGm7JQQRQ65FYJYsOEco6x3jondAMdk6pzdEoMArocxAA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
     \if{html}{\out{<a style='height: 800px; display: block;'></a>}}
   }
 }
