@@ -226,8 +226,8 @@ template_summary <- function(dataname,
 #'   It defines the grouping variable(s) in the results table.
 #'   If there are two elements selected for `arm_var`,
 #'   second variable will be nested under the first variable.
-#' @param summarize_vars ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
-#'   variable(s) to summarize.
+#' @param summarize_vars ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but 
+#'   still accepted)\cr variable(s) to summarize.
 #' @param show_arm_var_labels (`flag`)\cr whether arm variable label(s) should be displayed. Defaults to `TRUE`.
 #'
 #' @inherit module_arguments return seealso
