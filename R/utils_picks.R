@@ -160,3 +160,110 @@ create_picks_helper <- function(datasets = NULL, x) {
     teal.picks::picks(datasets, x)
   }
 }
+<<<<<<< tm_t_abnormality_by_worst_grade@picks_modules_migration@279-interactive_variables@main
+=======
+
+#' Coerce legacy `data_extract_spec` / lists of specs to [`teal.picks::picks()`]
+#'
+#' Single-spec encodings become [`teal.picks::as.picks()`] output. Multiple
+#' `data_extract_spec` objects (legacy list inputs) are combined into one
+#' `picks()` with a [`teal.picks::datasets()`] step when choices are eager;
+#' delayed specs must be replaced with explicit [`teal.picks::picks()`].
+#'
+#' @param x (`NULL`, `picks`, `data_extract_spec`, or `list` of `data_extract_spec`).
+#' @param arg_name (`character(1)`) argument name for messages.
+#' @param allow_null (`logical(1)`).
+#'
+#' @return `NULL` or a [`teal.picks::picks`] object.
+#'
+#' @keywords internal
+#' @noRd
+migrate_list_extract_spec_to_picks <- function(x,
+                                               arg_name = "x",
+                                               allow_null = TRUE) {
+  checkmate::assert_string(arg_name)
+  checkmate::assert_flag(allow_null)
+  if (isTRUE(allow_null) && is.null(x)) {
+    return(x)
+  }
+  if (inherits(x, "picks")) {
+    return(x)
+  }
+
+  des_list <- teal.transform::list_extract_spec(x, allow_null = allow_null)
+  if (is.null(des_list)) {
+    return(NULL)
+  }
+
+  legacy <- vapply(
+    des_list,
+    function(des) inherits(des, "data_extract_spec"),
+    logical(1L)
+  )
+  if (any(legacy)) {
+    lifecycle::deprecate_warn(
+      when = "0.13.0",
+      what = I(paste0("`", arg_name, "`")),
+      details = paste(
+        "Pass `teal.picks::picks()` built with `teal.picks::datasets()` and `teal.picks::variables()`.",
+        "Support for legacy `teal.transform::data_extract_spec()` is deprecated."
+      )
+    )
+  }
+
+  picks_one <- lapply(des_list, teal.picks::as.picks, quiet = FALSE)
+  picks_one <- Filter(Negate(is.null), picks_one)
+  checkmate::assert_list(picks_one, min.len = 1L, .var.name = arg_name)
+
+  if (length(picks_one) == 1L) {
+    return(picks_one[[1L]])
+  }
+
+  datanames <- unique(vapply(des_list, `[[`, character(1L), "dataname"))
+  var_lists <- lapply(des_list, function(des) {
+    ch <- des$select$choices
+    if (checkmate::test_character(ch, min.len = 1L)) {
+      ch
+    } else {
+      NULL
+    }
+  })
+  if (any(vapply(var_lists, is.null, logical(1L)))) {
+    stop(
+      "Combining multiple `data_extract_spec` into picks requires eager character ",
+      "`select_spec(choices = ...)` for `",
+      arg_name,
+      "`. Specify `teal.picks::picks()` explicitly for delayed or mixed specs.",
+      call. = FALSE
+    )
+  }
+  var_union <- sort(unique(unlist(var_lists, use.names = FALSE)))
+  pick_selected <- vapply(
+    des_list,
+    function(des) {
+      s <- des$select$selected
+      if (checkmate::test_character(s, min.len = 1L)) {
+        s[[1L]]
+      } else {
+        NA_character_
+      }
+    },
+    character(1L)
+  )
+  pick_selected <- pick_selected[!is.na(pick_selected) & nzchar(pick_selected)]
+  default_sel <- if (length(pick_selected) > 0L) {
+    pick_selected[[length(pick_selected)]]
+  } else {
+    var_union[[1L]]
+  }
+
+  teal.picks::picks(
+    teal.picks::datasets(choices = datanames),
+    teal.picks::variables(
+      choices = var_union,
+      selected = default_sel,
+      multiple = FALSE
+    )
+  )
+}
+>>>>>>> 279-interactive_variables@main
