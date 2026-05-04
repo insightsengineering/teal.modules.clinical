@@ -58,9 +58,9 @@ the variables for stratified analysis.}
 \item{aval_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
 all available choices and pre-selected option for the analysis variable.}
 
-\item{conf_level}{(\code{\link[teal.picks:picks]{teal.picks::values()}}; legacy \code{teal.transform::choices_selected()} is deprecated but still accepted)\cr
+\item{conf_level}{(\code{\link[teal.picks:values]{teal.picks::values()}}; legacy \code{teal.transform::choices_selected()} is deprecated but still accepted)\cr
 available confidence levels and default selection in (0, 1). Choice order follows the vector passed to
-\code{\link[teal.picks:picks]{teal.picks::values()}} (there is no \code{keep_order} argument).}
+\code{\link[teal.picks:values]{teal.picks::values()}} (there is no \code{keep_order} argument).}
 
 \item{default_responses}{(\code{list} or \code{character})\cr defines
 the default codes for the response variable in the module per value of \code{paramcd}.
@@ -75,11 +75,11 @@ values and \code{levels} of default level choices.}
 \itemize{
 \item \code{global}: a list of settings for overall analysis with 2 named elements \code{method} and \code{conf_level}.
 \item \code{unstrat}: a list of settings for unstratified analysis with 3 named elements \code{method_ci} and \code{method_test}, and
-\code{odds}. See \code{\link[tern:prop_diff]{tern::estimate_proportion_diff()}}, \code{\link[tern:prop_diff_test]{tern::test_proportion_diff()}}, and
-\code{\link[tern:odds_ratio]{tern::estimate_odds_ratio()}}, respectively, for options and details on how these settings are implemented in the
+\code{odds}. See \code{\link[tern:estimate_proportion_diff]{tern::estimate_proportion_diff()}}, \code{\link[tern:test_proportion_diff]{tern::test_proportion_diff()}}, and
+\code{\link[tern:estimate_odds_ratio]{tern::estimate_odds_ratio()}}, respectively, for options and details on how these settings are implemented in the
 analysis.
 \item \code{strat}: a list of settings for stratified analysis with elements \code{method_ci} and \code{method_test}. See
-\code{\link[tern:prop_diff]{tern::estimate_proportion_diff()}} and \code{\link[tern:prop_diff_test]{tern::test_proportion_diff()}}, respectively, for options and details on
+\code{\link[tern:estimate_proportion_diff]{tern::estimate_proportion_diff()}} and \code{\link[tern:test_proportion_diff]{tern::test_proportion_diff()}}, respectively, for options and details on
 how these settings are implemented in the analysis.
 }}
 
