@@ -118,6 +118,16 @@ describe("migrate_value_choices_to_picks", {
     expect_s3_class(output$variables, "variables")
     expect_s3_class(output$values, "values")
   })
+
+  it("supports only variables() without adding values", {
+    output <- migrate_value_choices_to_picks(
+      teal.picks::variables("PARAMCD", "PARAMCD"),
+      add_values = FALSE
+    )
+    expect_s3_class(output, "picks")
+    expect_s3_class(output$variables, "variables")
+    expect_null(output$values)
+  })
 })
 
 describe("migrate_choices_selected_to_values", {
