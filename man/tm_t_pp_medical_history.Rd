@@ -120,9 +120,9 @@ app <- init(
       dataname = "ADMH",
       parentname = "ADSL",
       patient_col = "USUBJID",
-      mhterm = teal.picks::variables("MHTERM", fixed = TRUE),
-      mhbodsys = teal.picks::variables("MHBODSYS", fixed = TRUE),
-      mhdistat = teal.picks::variables("MHDISTAT", fixed = TRUE),
+      mhterm = variables("MHTERM", fixed = TRUE),
+      mhbodsys = variables("MHBODSYS", fixed = TRUE),
+      mhdistat = variables("MHDISTAT", fixed = TRUE),
     )
   )
 )
@@ -134,8 +134,8 @@ if (interactive()) {
 \section{Examples in Shinylive}{
 \describe{
   \item{example-1}{
-    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOyAWQAJIpKyyur+GBilAF9FCAArIni-AGs4VlFE0Jtw-jhjKGFSPwJ+WlEy0fGpmeBoeFmkuQBdVwgcgqKk4GAFMBv8p-PL6+a2xdCHp5zWm8Pko0KgivFouwGkkdABeHRJXANPhCESiOE6FHCMRQiAZDIlPzrdB+eBbWT+OKiUhENi4-H46hQehwagYp5NODk7g6FrbGlsJ5IvEMhGhY66eH-L5ChoM1AsCikCXs555V54OX4hUaJUbIhsqVgBy5BwAIQAUgBJbKykUM3rkRgwDG+DCoGQTUSIRCaFi0ZloqFgVq2JxYJpCky0CpcjH2ZxyYWizExegCUQzV1wbjuz3e33+wM4jktM0AeTyAE1clHjDG4-CE04k1qMr0ttSPNncx6CF6fX7GAH6EHS9krblbJlbHWG-x444W8n8UMMkMhrRjDp2PEnVALNprDY0iLRHEIKxMuh2KCACSCWgpe+iVTaRhDfpKMD9c5AA}{Open in Shinylive}
-    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOyAWQAJIpKyyur+GBilAF9FCAArIni-AGs4VlFE0Jtw-jhjKGFSPwJ+WlEy0fGpmeBoeFmkuQBdVwgcgqKk4GAFMBv8p-PL6+a2xdCHp5zWm8Pko0KgivFouwGkkdABeHRJXANPhCESiOE6FHCMRQiAZDIlPzrdB+eBbWT+OKiUhENi4-H46hQehwagYp5NODk7g6FrbGlsJ5IvEMhGhY66eH-L5ChoM1AsCikCXs555V54OX4hUaJUbIhsqVgBy5BwAIQAUgBJbKykUM3rkRgwDG+DCoGQTUSIRCaFi0ZloqFgVq2JxYJpCky0CpcjH2ZxyYWizExegCUQzV1wbjuz3e33+wM4jktM0AeTyAE1clHjDG4-CE04k1qMr0ttSPNncx6CF6fX7GAH6EHS9krblbJlbHWG-x444W8n8UMMkMhrRjDp2PEnVALNprDY0iLRHEIKxMuh2KCACSCWgpe+iVTaRhDfpKMD9c5AA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOyAWQAJIpKyyur+GBilAF9FCAArIni-AGs4VlFE0Jtw-jhjKGFSPwJ+WlEy0fGpmeBoeFmkuQBdVwgcgqKk4GAFMBv8p-PL6+a2xdCHp5zWm8Pko0KgivFouwGkkdABeHRJXANPhCESiOE6FHCMRQiAZDIlPzrdB+eBbWT+OKiUhENi4-H46hQehwagYp5NODk7g6FrbGlsJ5IvEMhGhY66eH-L5ChoM1AsCikCXs555V54OX4hUaJUbIhsqVgBy5BwAIQAUgBJbKykUM3rkRgwDGaFi0ZloqFgVq2JxYJpCky0CpcjH2ZxyYWizExegCUQzV3uz04jktM0AeTyAE1ckHjCGw-CI04o1qMr0ttSPMnGB76F709krblbJlbAWi-xw44y9H8UMMkMhrRjDp2PEnVALNprDY0iLRHEIKxMuh2KCACSCWgpbeiVTaRhDfpKMD9c5AA}{Open in Shinylive}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOyAWQAJIpKyyur+GBilAF9FCAArIni-AGs4VlFE0Jtw-jhjKGFSPwJ+WlEy0fGpmeBoeFmkuQBdVwgcgqKk4GAFMBv8p-PL6+a2xdCHp5zWm8Pko0KgivFouwGkkdABeHRJXANPhCESiOE6FHCMRQiAZDIlPzrdB+eBbWT+OKiUhENi4-H46hQehwagYp5NODk7g6FrbGlsJ5IvEMhGhY66eH-L5ChoM1AsCikCXs555V54OX4hUaJUbIhsqVgBy5BwAIQAUgBJbKykUM3rkRgwDGaFi0ZloqFgVq2JxYJpCky0CpcjH2ZxyYWizExegCUQzV3uz04jktM0AeTyAE1ckHjCGw-CI04o1qMr0ttSPMnGB76F709krblbJlbAWi-xw44y9H8UMMkMhrRjDp2PEnVALNprDY0iLRHEIKxMuh2KCACSCWgpbeiVTaRhDfpKMD9c5AA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
     \if{html}{\out{<a style='height: 800px; display: block;'></a>}}
   }
 }
