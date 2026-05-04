@@ -361,7 +361,6 @@ tm_t_abnormality_by_worst_grade <- function(label, # nolint: object_length.
 
   arm_var <- create_picks_helper(teal.picks::datasets(parentname, parentname), arm_var)
   paramcd <- create_picks_helper(teal.picks::datasets(dataname, dataname), paramcd)
-  )
   id_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), id_var)
   atoxgr_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), atoxgr_var)
   worst_high_flag_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), worst_high_flag_var)
