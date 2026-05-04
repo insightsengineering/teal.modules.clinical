@@ -179,8 +179,6 @@ tm_t_pp_laboratory <- function(label,
                                post_output = NULL,
                                transformators = list(),
                                decorators = lifecycle::deprecated()) {
-  message("Initializing tm_t_pp_laboratory")
-
   if (lifecycle::is_present(decorators)) {
     lifecycle::deprecate_warn(
       when = "0.11.0",
@@ -188,6 +186,8 @@ tm_t_pp_laboratory <- function(label,
       details = "Decorators functionality was removed from this module. The `decorators` argument will be ignored."
     )
   }
+
+  message("Initializing tm_t_pp_laboratory")
 
   if (lifecycle::is_present(aval)) {
     lifecycle::deprecate_stop(
@@ -205,12 +205,12 @@ tm_t_pp_laboratory <- function(label,
     )
   }
 
-  timepoints <- deprecate_pick_variables_arg(timepoints, "timepoints", null.ok = TRUE)
-  aval_var <- deprecate_pick_variables_arg(aval_var, "aval_var", null.ok = TRUE)
-  avalu_var <- deprecate_pick_variables_arg(avalu_var, "avalu_var", null.ok = TRUE)
-  param <- deprecate_pick_variables_arg(param, "param", null.ok = TRUE)
-  paramcd <- deprecate_pick_variables_arg(paramcd, "paramcd", null.ok = TRUE)
-  anrind <- deprecate_pick_variables_arg(anrind, "anrind", null.ok = TRUE)
+  timepoints <- migrate_choices_selected_to_variables(timepoints, null.ok = TRUE, multiple = FALSE)
+  aval_var <- migrate_choices_selected_to_variables(aval_var, null.ok = TRUE, multiple = FALSE)
+  avalu_var <- migrate_choices_selected_to_variables(avalu_var, null.ok = TRUE, multiple = FALSE)
+  param <- migrate_choices_selected_to_variables(param, null.ok = TRUE, multiple = FALSE)
+  paramcd <- migrate_choices_selected_to_variables(paramcd, null.ok = TRUE, multiple = FALSE)
+  anrind <- migrate_choices_selected_to_variables(anrind, null.ok = TRUE, multiple = FALSE)
 
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
@@ -219,13 +219,12 @@ tm_t_pp_laboratory <- function(label,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
 
-  # Build picks bound to the dataset
-  if (!is.null(timepoints)) timepoints <- teal.picks::picks(datasets(dataname, dataname), timepoints)
-  if (!is.null(aval_var)) aval_var <- teal.picks::picks(datasets(dataname, dataname), aval_var)
-  if (!is.null(avalu_var)) avalu_var <- teal.picks::picks(datasets(dataname, dataname), avalu_var)
-  if (!is.null(param)) param <- teal.picks::picks(datasets(dataname, dataname), param)
-  if (!is.null(paramcd)) paramcd <- teal.picks::picks(datasets(dataname, dataname), paramcd)
-  if (!is.null(anrind)) anrind <- teal.picks::picks(datasets(dataname, dataname), anrind)
+  if (!is.null(timepoints)) timepoints <- create_picks_helper(teal.picks::datasets(dataname, dataname), timepoints)
+  if (!is.null(aval_var)) aval_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), aval_var)
+  if (!is.null(avalu_var)) avalu_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), avalu_var)
+  if (!is.null(param)) param <- create_picks_helper(teal.picks::datasets(dataname, dataname), param)
+  if (!is.null(paramcd)) paramcd <- create_picks_helper(teal.picks::datasets(dataname, dataname), paramcd)
+  if (!is.null(anrind)) anrind <- create_picks_helper(teal.picks::datasets(dataname, dataname), anrind)
 
   args <- as.list(environment())
 
