@@ -30,7 +30,7 @@ tm_t_logistic(
 
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\link[teal.picks:picks]{teal.picks::variables} or \code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{NULL})\cr object
+\item{arm_var}{(\link[teal.picks:variables]{teal.picks::variables} or \code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{NULL})\cr object
 with all available choices and preselected option for variable names that can be used as \code{arm_var}. This defines
 the grouping variable(s) in the results table. If there are two elements selected for \code{arm_var}, the second
 variable will be nested under the first variable. If \code{NULL}, no arm/treatment variable is included in the
@@ -45,16 +45,16 @@ reference and comparison arms when the arm variable is changed.}
 \item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
 available choices and preselected option for the parameter code variable from \code{dataname}.}
 
-\item{paramcd_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}})\cr object with all available choices and
+\item{paramcd_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}})\cr object with all available choices and
 preselected option for the parameter code variable.}
 
-\item{paramcd_values}{(\code{\link[teal.picks:picks]{teal.picks::values()}})\cr object with all available choices and preselected
+\item{paramcd_values}{(\code{\link[teal.picks:values]{teal.picks::values()}})\cr object with all available choices and preselected
 option for the parameter code values.}
 
 \item{cov_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
 available choices and preselected option for the covariates variables.}
 
-\item{avalc_var}{(\link[teal.picks:picks]{teal.picks::variables} or \code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
+\item{avalc_var}{(\link[teal.picks:variables]{teal.picks::variables} or \code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
 available choices and preselected option for the analysis variable (categorical).}
 
 \item{conf_level}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
