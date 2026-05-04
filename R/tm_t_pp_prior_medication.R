@@ -135,10 +135,10 @@ tm_t_pp_prior_medication <- function(label,
 
   message("Initializing tm_t_pp_prior_medication")
 
-  atirel <- deprecate_pick_variables_arg(atirel, "atirel", null.ok = TRUE)
-  cmdecod <- deprecate_pick_variables_arg(cmdecod, "cmdecod", null.ok = TRUE)
-  cmindc <- deprecate_pick_variables_arg(cmindc, "cmindc", null.ok = TRUE)
-  cmstdy <- deprecate_pick_variables_arg(cmstdy, "cmstdy", null.ok = TRUE)
+  atirel <- migrate_choices_selected_to_variables(atirel, null.ok = TRUE, multiple = FALSE)
+  cmdecod <- migrate_choices_selected_to_variables(cmdecod, null.ok = TRUE, multiple = FALSE)
+  cmindc <- migrate_choices_selected_to_variables(cmindc, null.ok = TRUE, multiple = FALSE)
+  cmstdy <- migrate_choices_selected_to_variables(cmstdy, null.ok = TRUE, multiple = FALSE)
 
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
@@ -148,10 +148,10 @@ tm_t_pp_prior_medication <- function(label,
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
 
   # Build picks bound to the dataset
-  if (!is.null(atirel)) atirel <- teal.picks::picks(datasets(dataname, dataname), atirel)
-  if (!is.null(cmdecod)) cmdecod <- teal.picks::picks(datasets(dataname, dataname), cmdecod)
-  if (!is.null(cmindc)) cmindc <- teal.picks::picks(datasets(dataname, dataname), cmindc)
-  if (!is.null(cmstdy)) cmstdy <- teal.picks::picks(datasets(dataname, dataname), cmstdy)
+  if (!is.null(atirel)) atirel <- create_picks_helper(datasets(dataname, dataname), atirel)
+  if (!is.null(cmdecod)) cmdecod <- create_picks_helper(datasets(dataname, dataname), cmdecod)
+  if (!is.null(cmindc)) cmindc <- create_picks_helper(datasets(dataname, dataname), cmindc)
+  if (!is.null(cmstdy)) cmstdy <- create_picks_helper(datasets(dataname, dataname), cmstdy)
 
   args <- as.list(environment())
 
