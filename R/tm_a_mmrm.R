@@ -574,13 +574,13 @@ tm_a_mmrm <- function(label,
                       decorators = list()) {
   message("Initializing tm_a_mmrm")
 
-  aval_var <- migrate_choices_selected_to_variables(aval_var)
-  id_var <- migrate_choices_selected_to_variables(id_var)
-  arm_var <- migrate_choices_selected_to_variables(arm_var)
-  visit_var <- migrate_choices_selected_to_variables(visit_var)
+  aval_var <- migrate_choices_selected_to_variables(aval_var, check_multiple = FALSE)
+  id_var <- migrate_choices_selected_to_variables(id_var, check_multiple = FALSE)
+  arm_var <- migrate_choices_selected_to_variables(arm_var, check_multiple = FALSE)
+  visit_var <- migrate_choices_selected_to_variables(visit_var, check_multiple = FALSE)
   cov_var <- migrate_choices_selected_to_variables(cov_var)
   method <- migrate_choices_selected_to_values(method)
-  paramcd <- migrate_value_choices_to_picks(paramcd)
+  paramcd <- migrate_value_choices_to_picks(paramcd, check_multiple = FALSE)
 
   checkmate::assert_string(label)
   checkmate::assert_string(total_label)
@@ -621,25 +621,6 @@ tm_a_mmrm <- function(label,
       "diagnostic_plot"
     )
   )
-
-  # force multiple = FALSE
-  for (var in c("aval_var", "id_var", "arm_var", "visit_var")) {
-    if (isTRUE(attr(get(var), "multiple", exact = TRUE))) {
-      message(
-        sprintf("Multiple variables are not allowed for %s. Forcing single selection.", var),
-        domain = "force_single_selection"
-      )
-      eval(substitute(attr(var, "multiple") <- FALSE, list(var = as.name(var))))
-    }
-  }
-  if (isTRUE(attr(paramcd$variables, "multiple", exact = TRUE)) || isTRUE(attr(paramcd$values, "multiple", exact = TRUE))) {
-    message(
-      "Multiple variables are not allowed for paramcd variables or values. Forcing single selection.",
-      domain = "force_single_selection"
-    )
-    attr(paramcd$variables, "multiple") <- FALSE
-    attr(paramcd$values, "multiple") <- FALSE
-  }
 
   aval_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), aval_var)
   id_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), id_var)
