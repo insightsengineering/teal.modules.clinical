@@ -27,13 +27,13 @@ tm_t_pp_medical_history(
 
 \item{patient_col}{(\code{character})\cr name of patient ID variable.}
 
-\item{mhterm}{(\link[teal.picks:picks]{teal.picks::variables} or \code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
+\item{mhterm}{(\link[teal.picks:variables]{teal.picks::variables} or \code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
 available choices and preselected option for the \code{MHTERM} variable from \code{dataname}.}
 
-\item{mhbodsys}{(\link[teal.picks:picks]{teal.picks::variables} or \code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
+\item{mhbodsys}{(\link[teal.picks:variables]{teal.picks::variables} or \code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
 available choices and preselected option for the \code{MHBODSYS} variable from \code{dataname}.}
 
-\item{mhdistat}{(\link[teal.picks:picks]{teal.picks::variables} or \code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
+\item{mhdistat}{(\link[teal.picks:variables]{teal.picks::variables} or \code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
 available choices and preselected option for the \code{MHDISTAT} variable from \code{dataname}.}
 
 \item{pre_output}{(\code{shiny.tag}) optional,\cr with text placed before the output to put the output into context.
