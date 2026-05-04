@@ -1,4 +1,16 @@
 app_driver_tm_t_shift_by_arm_by_worst <- function() { # nolint: object_length.
+  paramcd_levels <- unique(as.character(teal.modules.clinical::tmc_ex_adeg$PARAMCD))
+  paramcd_default <- if ("HR" %in% paramcd_levels) "HR" else paramcd_levels[[1]]
+  paramcd <- teal.picks::picks(
+    teal.picks::variables(choices = "PARAMCD", selected = "PARAMCD"),
+    teal.picks::values(
+      choices = paramcd_levels,
+      selected = paramcd_default,
+      multiple = FALSE
+    ),
+    check_dataset = FALSE
+  )
+
   data <- teal.data::teal_data()
   data <- within(data, {
     ADSL <- tmc_ex_adsl
@@ -14,7 +26,7 @@ app_driver_tm_t_shift_by_arm_by_worst <- function() { # nolint: object_length.
         dataname = "ADEG",
         parentname = "ADSL",
         arm_var = teal.picks::variables(choices = c("ARM", "ARMCD"), selected = "ARM"),
-        paramcd = teal.picks::variables(choices = "PARAMCD"),
+        paramcd = paramcd,
         worst_flag_var = teal.picks::variables(
           choices = c("WORS02FL", "WORS01FL"),
           selected = "WORS02FL"
@@ -102,7 +114,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_shift_by_arm_by_worst()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    set_teal_picks_slot(app_driver, "paramcd", "values", "HR")
+    set_teal_picks_slot(app_driver, "paramcd", "values", "QT")
     testthat::expect_false(
       identical(
         table_before,
