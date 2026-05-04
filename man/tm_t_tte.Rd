@@ -72,7 +72,7 @@ pre-selected option for confidence level, each within range of (0, 1).}
 pre-selected option for confidence level, each within range of (0, 1).}
 
 \item{time_points}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all available choices and preselected option
-for time points that can be used in \code{\link[tern:surv_timepoint]{tern::surv_timepoint()}}.}
+for time points that can be used in \code{\link[tern:survival_timepoint]{tern::surv_timepoint()}}.}
 
 \item{time_unit_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object
 with all available choices and pre-selected option for the time unit variable.}
@@ -120,8 +120,8 @@ template for \code{TTET01} available \href{https://insightsengineering.github.io
 }
 \details{
 \itemize{
-\item The core functionality of this module is based on \code{\link[tern:coxph_pairwise]{tern::coxph_pairwise()}}, \code{\link[tern:surv_timepoint]{tern::surv_timepoint()}},
-and \code{\link[tern:surv_time]{tern::surv_time()}} from the \code{tern} package.
+\item The core functionality of this module is based on \code{\link[tern:survival_coxph_pairwise]{tern::coxph_pairwise()}}, \code{\link[tern:survival_timepoint]{tern::surv_timepoint()}},
+and \code{\link[tern:survival_time]{tern::surv_time()}} from the \code{tern} package.
 \item The arm and stratification variables are taken from the \code{parentname} data.
 \item The following variables are used in the module:
 \itemize{

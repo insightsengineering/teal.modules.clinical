@@ -62,7 +62,7 @@ default \code{na_level} to apply in all modules, run \code{set_default_na_str("n
 statistics are \code{n}, \code{mean_sd}, \code{mean_ci}, \code{median}, \code{median_ci}, \code{quantiles}, \code{range}, and \code{geom_mean}.}
 
 \item{numeric_formats}{(named \code{list} or \code{NULL})\cr format patterns for numeric statistics. Names should match the
-statistics in \code{numeric_stats}. If \code{NULL}, defaults from \code{\link[tern:analyze_vars]{tern::analyze_vars()}} are used.}
+statistics in \code{numeric_stats}. If \code{NULL}, defaults from \code{\link[tern:analyze_variables]{tern::analyze_vars()}} are used.}
 
 \item{denominator}{(\code{character})\cr chooses how percentages are calculated. With option \code{N}, the reference
 population from the column total is used as the denominator. With option \code{n}, the number of non-missing

@@ -119,7 +119,7 @@ alphabetically.}
 
 \item{sum_vars}{(\code{character})\cr names of the variables that should be summarized.}
 
-\item{time_points}{(\code{character})\cr time points that can be used in \code{\link[tern:surv_timepoint]{tern::surv_timepoint()}}.}
+\item{time_points}{(\code{character})\cr time points that can be used in \code{\link[tern:survival_timepoint]{tern::surv_timepoint()}}.}
 
 \item{time_unit_var}{(\code{character})\cr name of the variable representing time units.}
 

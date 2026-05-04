@@ -15,7 +15,7 @@ arm_ref_comp_buckets_validator(id_ref = "Ref", id_comp = "Comp")
 A \code{shinyvalidate::InputValidator}.
 }
 \description{
-For modules using \code{\link[teal.picks:picks_ui]{teal.picks::picks_ui()}}, treatment column selection is validated via
-\code{\link[teal.picks:picks_srv]{teal.picks::picks_srv()}} reactives; this validator only enforces \code{input$buckets} arms.
+For modules using \code{\link[teal.picks:picks_module]{teal.picks::picks_ui()}}, treatment column selection is validated via
+\code{\link[teal.picks:picks_module]{teal.picks::picks_srv()}} reactives; this validator only enforces \code{input$buckets} arms.
 }
 \keyword{internal}

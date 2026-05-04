@@ -59,7 +59,7 @@ optimal tick positions on the x-axis.}
 
 \item{strata_var}{(\code{character})\cr names of the variables for stratified analysis.}
 
-\item{time_points}{(\code{character})\cr time points that can be used in \code{\link[tern:surv_timepoint]{tern::surv_timepoint()}}.}
+\item{time_points}{(\code{character})\cr time points that can be used in \code{\link[tern:survival_timepoint]{tern::surv_timepoint()}}.}
 
 \item{facet_var}{(\code{character})\cr name of the variable to use to facet the plot.}
 
