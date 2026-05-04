@@ -137,9 +137,9 @@ template_medical_history <- function(dataname = "ANL",
 #'       dataname = "ADMH",
 #'       parentname = "ADSL",
 #'       patient_col = "USUBJID",
-#'       mhterm = teal.picks::variables("MHTERM", fixed = TRUE),
-#'       mhbodsys = teal.picks::variables("MHBODSYS", fixed = TRUE),
-#'       mhdistat = teal.picks::variables("MHDISTAT", fixed = TRUE),
+#'       mhterm = variables("MHTERM", fixed = TRUE),
+#'       mhbodsys = variables("MHBODSYS", fixed = TRUE),
+#'       mhdistat = variables("MHDISTAT", fixed = TRUE),
 #'     )
 #'   )
 #' )
