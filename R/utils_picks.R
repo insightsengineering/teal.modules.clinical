@@ -202,7 +202,7 @@ create_picks_helper <- function(datasets = NULL, x) {
 #'
 #' @keywords internal
 #' @noRd
-migrate_list_extract_spec_to_picks <- function(x,
+migrate_list_extract_spec_to_picks <- function(x, # nolint: object_length_linter.
                                                arg_name = "x",
                                                allow_null = TRUE) {
   checkmate::assert_string(arg_name)
