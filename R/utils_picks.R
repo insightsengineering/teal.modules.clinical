@@ -58,7 +58,11 @@ migrate_choices_selected_to_variables <- function(x, # nolint: object_length_lin
 
 #' Coerce legacy `choices_selected` to [`teal.picks::values()`] with deprecation
 #'
+<<<<<<< tm_t_shift_by_arm_by_worst@picks_modules_migration@279-interactive_variables@main
 #' @param x (`values`, `choices_selected`, [`teal.picks::picks()`], or [`teal.picks::variables()`]) object.
+=======
+#' @param x (`values`, `choices_selected` or `picks`) object.
+>>>>>>> 279-interactive_variables@main
 #' @param arg_name optional (`character(1)`) argument name.
 #' @param multiple optional (`logical(1)`) whether multiple values are allowed.
 #' If `NULL` (default), it is not validated and inferred from the length of `selected` in the
@@ -75,9 +79,12 @@ migrate_choices_selected_to_values <- function(x, # nolint: object_length_linter
   if (inherits(x, "picks")) {
     return(x)
   }
+<<<<<<< tm_t_shift_by_arm_by_worst@picks_modules_migration@279-interactive_variables@main
   if (inherits(x, "variables")) {
     return(x)
   }
+=======
+>>>>>>> 279-interactive_variables@main
   if (inherits(x, "choices_selected")) {
     lifecycle::deprecate_warn(
       when = "0.13.0",
@@ -108,7 +115,11 @@ migrate_choices_selected_to_values <- function(x, # nolint: object_length_linter
 
 #' Coerce legacy `choices_selected`-based specs to `picks` with deprecation
 #'
+<<<<<<< tm_t_shift_by_arm_by_worst@picks_modules_migration@279-interactive_variables@main
 #' @param x (`values`, `choices_selected`, [`teal.picks::picks()`], or [`teal.picks::variables()`]) object.
+=======
+#' @param x (`values`, `choices_selected` or `picks`) object.
+>>>>>>> 279-interactive_variables@main
 #' @param arg_name optional (`character(1)`) argument name.
 #' @param multiple optional (`logical(1)`) whether multiple values are allowed.
 #' If `NULL` (default), it is not validated and inferred from the length of `selected` in the
@@ -129,10 +140,13 @@ migrate_value_choices_to_picks <- function(x, # nolint: object_length_linter.
     return(x)
   }
 
+<<<<<<< tm_t_shift_by_arm_by_worst@picks_modules_migration@279-interactive_variables@main
   if (inherits(x, "variables")) {
     return(x)
   }
 
+=======
+>>>>>>> 279-interactive_variables@main
   values <- migrate_choices_selected_to_values(x, multiple = multiple, arg_name = arg_name)
   variable_name <- attr(x$choices, "var_choices", exact = TRUE)
   if (inherits(x, "choices_selected") && is.null(variable_name)) {
@@ -167,6 +181,10 @@ create_picks_helper <- function(datasets = NULL, x) {
     teal.picks::picks(datasets, x)
   }
 }
+<<<<<<< tm_t_shift_by_arm_by_worst@picks_modules_migration@279-interactive_variables@main
+=======
+
+>>>>>>> 279-interactive_variables@main
 #' Coerce legacy `data_extract_spec` / lists of specs to [`teal.picks::picks()`]
 #'
 #' Single-spec encodings become [`teal.picks::as.picks()`] output. Multiple
