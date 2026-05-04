@@ -289,7 +289,44 @@ srv_g_barchart_simple_picks <- function(id,
 
     count_q <- reactive({
       merged_vars <- merge_vars()
-      cols_src <- barchart_columns_source_for_relabel(anl_selectors, merged_vars)
+      if (!is.null(x)) {
+        validate(
+          need(
+            length(merged_vars[["x"]]) > 0L,
+            "Please select an x-variable"
+          )
+        )
+      }
+      cols_src <- {
+        slots <- names(merged_vars)
+        out <- list()
+        for (nm in slots) {
+          if (is.null(anl_selectors[[nm]])) {
+            next
+          }
+          st <- anl_selectors[[nm]]()
+          if (!is.list(st) || is.null(st$variables)) {
+            next
+          }
+          src <- st$variables$selected
+          anl_cols <- merged_vars[[nm]]
+          if (length(src) == 0L || length(anl_cols) == 0L) {
+            next
+          }
+          if (length(anl_cols) != length(src)) {
+            next
+          }
+          dn <- st$datasets$selected
+          dn <- unlist(dn, recursive = FALSE, use.names = FALSE)
+          if (length(dn) != 1L) {
+            next
+          }
+          vec <- stats::setNames(anl_cols, src)
+          attr(vec, "dataname") <- dn[[1L]]
+          out[[nm]] <- vec
+        }
+        out
+      }
 
       anl_q_local <- anl_q()
       teal::validate_has_data(anl_q_local[["ANL"]], 2)
