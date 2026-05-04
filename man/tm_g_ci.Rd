@@ -107,11 +107,11 @@ tm_g_ci(
 \arguments{
 \item{label}{(\code{character})\cr menu item label of the module in the teal app.}
 
-\item{x_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}}, \code{\link[teal.picks:picks]{teal.picks::picks()}}, or legacy \code{data_extract_spec})\cr treatment-axis encoding.}
+\item{x_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}, \code{\link[teal.picks:picks]{teal.picks::picks()}}, or legacy \code{data_extract_spec})\cr treatment-axis encoding.}
 
-\item{y_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}}, \code{\link[teal.picks:picks]{teal.picks::picks()}}, or legacy \code{data_extract_spec})\cr analysis-value encoding.}
+\item{y_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}, \code{\link[teal.picks:picks]{teal.picks::picks()}}, or legacy \code{data_extract_spec})\cr analysis-value encoding.}
 
-\item{color}{(\code{NULL}, \code{\link[teal.picks:picks]{teal.picks::variables()}}, \code{\link[teal.picks:picks]{teal.picks::picks()}}, or legacy \code{data_extract_spec})\cr optional grouping variable for colors, shapes, and line types.}
+\item{color}{(\code{NULL}, \code{\link[teal.picks:variables]{teal.picks::variables()}}, \code{\link[teal.picks:picks]{teal.picks::picks()}}, or legacy \code{data_extract_spec})\cr optional grouping variable for colors, shapes, and line types.}
 
 \item{x_dataname}{(\code{character(1)} or \code{NULL})\cr dataset name for the treatment-axis (\code{x_var}) encoding (teal.picks API).}
 
