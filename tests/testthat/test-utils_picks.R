@@ -22,11 +22,111 @@ describe("migrate_value_choices_to_picks", {
     expect_identical(output, input)
   })
 
-  it("returns variables pick unchanged (column only; values come from data later)", {
-    input <- teal.picks::variables("PARAMCD")
-    output <- migrate_value_choices_to_picks(input, multiple = FALSE, arg_name = "paramcd")
-    expect_identical(output, input)
-    expect_s3_class(output, "variables")
+  it("adds values() when ommited", {
+    output <- migrate_value_choices_to_picks(
+      teal.picks::picks(teal.picks::variables("PARAMCD", "PARAMCD"), check_dataset = FALSE)
+    )
+    expect_s3_class(output$values, "values")
+  })
+
+  it("supports picks with dataset, variables and values", {
+    output <- migrate_value_choices_to_picks(
+      teal.picks::picks(
+        teal.picks::datasets("ADSL", "ADSL"),
+        teal.picks::variables("PARAMCD", "PARAMCD"),
+        teal.picks::values(c("AEDECOD", "AESTDTC"), multiple = TRUE)
+      )
+    )
+    expect_s3_class(output, "picks")
+    expect_s3_class(output$datasets, "datasets")
+    expect_s3_class(output$variables, "variables")
+    expect_s3_class(output$values, "values")
+  })
+
+  it("suports picks with datasets and variables but no values", {
+    output <- migrate_value_choices_to_picks(
+      teal.picks::picks(
+        teal.picks::datasets("ADSL", "ADSL"),
+        teal.picks::variables("PARAMCD", "PARAMCD")
+      )
+    )
+    expect_s3_class(output, "picks")
+    expect_s3_class(output$datasets, "datasets")
+    expect_s3_class(output$variables, "variables")
+    expect_s3_class(output$values, "values")
+  })
+
+  it("suports picks with datasets and variables but no values (and without adding values)", {
+    output <- migrate_value_choices_to_picks(
+      teal.picks::picks(
+        teal.picks::datasets("ADSL", "ADSL"),
+        teal.picks::variables("PARAMCD", "PARAMCD")
+      ),
+      add_values = FALSE
+    )
+    expect_s3_class(output, "picks")
+    expect_s3_class(output$datasets, "datasets")
+    expect_s3_class(output$variables, "variables")
+    expect_null(output$values)
+  })
+
+
+  it("supports picks with variables and values, but no datasets", {
+    output <- migrate_value_choices_to_picks(
+      teal.picks::picks(
+        teal.picks::variables("PARAMCD", "PARAMCD"),
+        teal.picks::values(c("AEDECOD", "AESTDTC"), multiple = TRUE),
+        check_dataset = FALSE
+      )
+    )
+    expect_s3_class(output, "picks")
+    expect_null(output$datasets)
+    expect_s3_class(output$variables, "variables")
+    expect_s3_class(output$values, "values")
+  })
+
+  it("supports picks with only variables", {
+    output <- migrate_value_choices_to_picks(
+      teal.picks::picks(
+        teal.picks::variables("PARAMCD", "PARAMCD"),
+        check_dataset = FALSE
+      )
+    )
+    expect_s3_class(output, "picks")
+    expect_s3_class(output$variables, "variables")
+    expect_s3_class(output$values, "values")
+  })
+
+  it("supports picks with only variables (and does not add values)", {
+    output <- migrate_value_choices_to_picks(
+      teal.picks::picks(
+        teal.picks::variables("PARAMCD", "PARAMCD"),
+        check_dataset = FALSE
+      ),
+      add_values = FALSE
+    )
+    expect_s3_class(output, "picks")
+    expect_s3_class(output$variables, "variables")
+    expect_null(output$values)
+  })
+
+  it("supports only variables()", {
+    output <- migrate_value_choices_to_picks(
+      teal.picks::variables("PARAMCD", "PARAMCD")
+    )
+    expect_s3_class(output, "picks")
+    expect_s3_class(output$variables, "variables")
+    expect_s3_class(output$values, "values")
+  })
+
+  it("supports only variables() without adding values", {
+    output <- migrate_value_choices_to_picks(
+      teal.picks::variables("PARAMCD", "PARAMCD"),
+      add_values = FALSE
+    )
+    expect_s3_class(output, "picks")
+    expect_s3_class(output$variables, "variables")
+    expect_null(output$values)
   })
 })
 
