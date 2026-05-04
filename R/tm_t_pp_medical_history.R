@@ -161,9 +161,9 @@ tm_t_pp_medical_history <- function(label,
                                     decorators = list()) {
   message("Initializing tm_t_pp_medical_history")
 
-  mhterm <- deprecate_pick_variables_arg(mhterm, "mhterm", null.ok = TRUE)
-  mhbodsys <- deprecate_pick_variables_arg(mhbodsys, "mhbodsys", null.ok = TRUE)
-  mhdistat <- deprecate_pick_variables_arg(mhdistat, "mhdistat", null.ok = TRUE)
+  mhterm <- migrate_choices_selected_to_variables(mhterm, null.ok = TRUE, multiple = FALSE)
+  mhbodsys <- migrate_choices_selected_to_variables(mhbodsys, null.ok = TRUE, multiple = FALSE)
+  mhdistat <- migrate_choices_selected_to_variables(mhdistat, null.ok = TRUE, multiple = FALSE)
 
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
@@ -173,9 +173,9 @@ tm_t_pp_medical_history <- function(label,
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   assert_decorators(decorators, "table")
 
-  if (!is.null(mhterm)) mhterm <- teal.picks::picks(datasets(dataname, dataname), mhterm)
-  if (!is.null(mhbodsys)) mhbodsys <- teal.picks::picks(datasets(dataname, dataname), mhbodsys)
-  if (!is.null(mhdistat)) mhdistat <- teal.picks::picks(datasets(dataname, dataname), mhdistat)
+  if (!is.null(mhterm)) mhterm <- create_picks_helper(teal.picks::datasets(dataname, dataname), mhterm)
+  if (!is.null(mhbodsys)) mhbodsys <- create_picks_helper(teal.picks::datasets(dataname, dataname), mhbodsys)
+  if (!is.null(mhdistat)) mhdistat <- create_picks_helper(teal.picks::datasets(dataname, dataname), mhdistat)
 
   args <- as.list(environment())
 
