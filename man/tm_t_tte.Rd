@@ -14,19 +14,10 @@ tm_t_tte(
   parentname = "ADSL",
   arm_var = teal.picks::variables(choices = c("ARM", "ARMCD", "ACTARMCD")),
   arm_ref_comp = NULL,
-<<<<<<< HEAD
-  paramcd = variables(c("PARAMCD", "PARAM")),
-  strata_var = variables(choices = c("SEX", "BMRKR2"), selected = "SEX"),
-  aval_var = variables(choices = "AVAL", fixed = TRUE),
-  cnsr_var = variables(choices = "CNSR", fixed = TRUE),
-=======
-  paramcd = teal.picks::picks(teal.picks::datasets(dataname, dataname),
-    teal.picks::variables("PARAMCD", "PARAMCD"), teal.picks::values(c("CRSD", "EFS",
-    "OS", "PFS", "TNE"), selected = "OS", multiple = FALSE)),
+  paramcd = teal.picks::variables(c("PARAMCD", "PARAM")),
   strata_var = teal.picks::variables(choices = c("SEX", "BMRKR2"), selected = "SEX"),
   aval_var = teal.picks::variables(choices = "AVAL", fixed = TRUE),
   cnsr_var = teal.picks::variables(choices = "CNSR", fixed = TRUE),
->>>>>>> 875755743346c30900da7abe449d18c8ae6ffd1d
   conf_level_coxph = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order
     = TRUE),
   conf_level_survfit = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95,
@@ -50,19 +41,10 @@ tm_t_tte(
   parentname = "ADSL",
   arm_var = teal.picks::variables(choices = c("ARM", "ARMCD", "ACTARMCD")),
   arm_ref_comp = NULL,
-<<<<<<< HEAD
-  paramcd = variables(c("PARAMCD", "PARAM")),
-  strata_var = variables(choices = c("SEX", "BMRKR2"), selected = "SEX"),
-  aval_var = variables(choices = "AVAL", fixed = TRUE),
-  cnsr_var = variables(choices = "CNSR", fixed = TRUE),
-=======
-  paramcd = teal.picks::picks(teal.picks::datasets(dataname, dataname),
-    teal.picks::variables("PARAMCD", "PARAMCD"), teal.picks::values(c("CRSD", "EFS",
-    "OS", "PFS", "TNE"), selected = "OS", multiple = FALSE)),
+  paramcd = teal.picks::variables(c("PARAMCD", "PARAM")),
   strata_var = teal.picks::variables(choices = c("SEX", "BMRKR2"), selected = "SEX"),
   aval_var = teal.picks::variables(choices = "AVAL", fixed = TRUE),
   cnsr_var = teal.picks::variables(choices = "CNSR", fixed = TRUE),
->>>>>>> 875755743346c30900da7abe449d18c8ae6ffd1d
   conf_level_coxph = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order
     = TRUE),
   conf_level_survfit = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95,
@@ -86,19 +68,10 @@ tm_t_tte(
   parentname = "ADSL",
   arm_var = teal.picks::variables(choices = c("ARM", "ARMCD", "ACTARMCD")),
   arm_ref_comp = NULL,
-<<<<<<< HEAD
-  paramcd = variables(c("PARAMCD", "PARAM")),
-  strata_var = variables(choices = c("SEX", "BMRKR2"), selected = "SEX"),
-  aval_var = variables(choices = "AVAL", fixed = TRUE),
-  cnsr_var = variables(choices = "CNSR", fixed = TRUE),
-=======
-  paramcd = teal.picks::picks(teal.picks::datasets(dataname, dataname),
-    teal.picks::variables("PARAMCD", "PARAMCD"), teal.picks::values(c("CRSD", "EFS",
-    "OS", "PFS", "TNE"), selected = "OS", multiple = FALSE)),
+  paramcd = teal.picks::variables(c("PARAMCD", "PARAM")),
   strata_var = teal.picks::variables(choices = c("SEX", "BMRKR2"), selected = "SEX"),
   aval_var = teal.picks::variables(choices = "AVAL", fixed = TRUE),
   cnsr_var = teal.picks::variables(choices = "CNSR", fixed = TRUE),
->>>>>>> 875755743346c30900da7abe449d18c8ae6ffd1d
   conf_level_coxph = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order
     = TRUE),
   conf_level_survfit = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95,
@@ -122,19 +95,10 @@ tm_t_tte(
   parentname = "ADSL",
   arm_var = teal.picks::variables(choices = c("ARM", "ARMCD", "ACTARMCD")),
   arm_ref_comp = NULL,
-<<<<<<< HEAD
-  paramcd = variables(c("PARAMCD", "PARAM")),
-  strata_var = variables(choices = c("SEX", "BMRKR2"), selected = "SEX"),
-  aval_var = variables(choices = "AVAL", fixed = TRUE),
-  cnsr_var = variables(choices = "CNSR", fixed = TRUE),
-=======
-  paramcd = teal.picks::picks(teal.picks::datasets(dataname, dataname),
-    teal.picks::variables("PARAMCD", "PARAMCD"), teal.picks::values(c("CRSD", "EFS",
-    "OS", "PFS", "TNE"), selected = "OS", multiple = FALSE)),
+  paramcd = teal.picks::variables(c("PARAMCD", "PARAM")),
   strata_var = teal.picks::variables(choices = c("SEX", "BMRKR2"), selected = "SEX"),
   aval_var = teal.picks::variables(choices = "AVAL", fixed = TRUE),
   cnsr_var = teal.picks::variables(choices = "CNSR", fixed = TRUE),
->>>>>>> 875755743346c30900da7abe449d18c8ae6ffd1d
   conf_level_coxph = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order
     = TRUE),
   conf_level_survfit = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95,
@@ -158,19 +122,10 @@ tm_t_tte(
   parentname = "ADSL",
   arm_var = teal.picks::variables(choices = c("ARM", "ARMCD", "ACTARMCD")),
   arm_ref_comp = NULL,
-<<<<<<< HEAD
-  paramcd = variables(c("PARAMCD", "PARAM")),
-  strata_var = variables(choices = c("SEX", "BMRKR2"), selected = "SEX"),
-  aval_var = variables(choices = "AVAL", fixed = TRUE),
-  cnsr_var = variables(choices = "CNSR", fixed = TRUE),
-=======
-  paramcd = teal.picks::picks(teal.picks::datasets(dataname, dataname),
-    teal.picks::variables("PARAMCD", "PARAMCD"), teal.picks::values(c("CRSD", "EFS",
-    "OS", "PFS", "TNE"), selected = "OS", multiple = FALSE)),
+  paramcd = teal.picks::variables(c("PARAMCD", "PARAM")),
   strata_var = teal.picks::variables(choices = c("SEX", "BMRKR2"), selected = "SEX"),
   aval_var = teal.picks::variables(choices = "AVAL", fixed = TRUE),
   cnsr_var = teal.picks::variables(choices = "CNSR", fixed = TRUE),
->>>>>>> 875755743346c30900da7abe449d18c8ae6ffd1d
   conf_level_coxph = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order
     = TRUE),
   conf_level_survfit = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95,
@@ -203,14 +158,9 @@ with delayed \code{\link[teal.transform:variable_choices]{teal.transform::variab
 with the elements named \code{ref} and \code{comp} that the defined the default
 reference and comparison arms when the arm variable is changed.}
 
-<<<<<<< HEAD
-\item{paramcd}{(\code{\link[teal.picks:picks]{teal.picks::variables()}} for the parameter column, full \code{\link[teal.picks:picks]{teal.picks::picks()}} including \code{\link[teal.picks:picks]{teal.picks::values()}}, or legacy \code{teal.transform} objects; deprecated inputs still accepted)\cr
-endpoint filter (parameter codes such as OS, PFS). \code{teal.picks::variables()} alone is enough; levels come from data.}
-=======
-\item{paramcd}{(\code{\link[teal.picks:picks]{teal.picks::picks()}} with \code{\link[teal.picks:datasets]{teal.picks::datasets()}}, \code{\link[teal.picks:variables]{teal.picks::variables()}} for \code{PARAMCD},
-and \code{\link[teal.picks:values]{teal.picks::values()}} for endpoint codes; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
-endpoint filter (parameter codes such as OS, PFS).}
->>>>>>> 875755743346c30900da7abe449d18c8ae6ffd1d
+\item{paramcd}{(\code{\link[teal.picks:variables]{teal.picks::variables()}} for the parameter column, full \code{\link[teal.picks:picks]{teal.picks::picks()}} including
+\code{\link[teal.picks:values]{teal.picks::values()}}, or legacy \code{teal.transform} objects; deprecated inputs still accepted)\cr
+endpoint filter (parameter codes such as OS, PFS). \code{\link[teal.picks:variables]{teal.picks::variables()}} alone is enough; levels come from data.}
 
 \item{strata_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr variable(s) for stratification.}
 
@@ -385,8 +335,8 @@ apps implementing this module can be found.
 \section{Examples in Shinylive}{
 \describe{
   \item{example-1}{
-    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOzbWycikrLK6v5SciUAX0UIACsieL8AazhWUUTQm3D+OGMoYVI-An5aUTKRscnp4Gh4GaS5AF1XaEYYP0Yl9aIYVCK6UVJ2BsyAYVtMrABZL7ZHQAXh0r3eDQyd2MoJ0CjAf3+OgAQgjcFCdMQnnCCB9EQCsuj4QTkV8EYMMnIMRAMki4RCPrSMjoYXCESjEDoAArUKAEOD0IjozHY55gvEIzJc7KMQQAcx0AA1iQivlyvo96PEPJYIBSGoNBko0M9wvFokyMkk4UkaRk+EIRKI4Y7hGIrSySn41j04J6WeCoPQ4NR2WBbLR4HYiDonNoyHZgyIRczA0kjrowVKmi1U4GMiwbpoWHCS4xaMmPQQYqMBS6JfikarSUCW99fgC22A5NTMYXrrd7mK4UWh8YHk97QXUCxYBs4agZOMZv2WUlRHBSKvEbmXHgSTlmvu+2mC+XK-RnfjuX9MoDsi3b1h793TwWWSXqIJq-ivlhckfA8EScAAxXIWwAeQg4CwG5cCW1sAA5E8UgRaDiRgVZaFQEQ4VAzJ8lyJxKQLd8CzeZhPD8csyxYS9rxrOsxFxfFiJVWCUX+LAAGksAAJgpFJNxEdQ4H4cN2KEtcNHgPxUFGMgG2KOBuAwUhmAgURjCIa5EEQJiZDEPwRLgMT+HYPEAEYAA5+JSfiABYAGZqR0Wz+NIqlDSUQZaFhdh4nINQNG0awbDSZlRDiCBWEydB2FNAASQRaBSZLN0YbRGEGPolDAPoziAA}{Open in Shinylive}
-    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOzbWycikrLK6v5SciUAX0UIACsieL8AazhWUUTQm3D+OGMoYVI-An5aUTKRscnp4Gh4GaS5AF1XaEYYP0Yl9aIYVCK6UVJ2BsyAYVtMrABZL7ZHQAXh0r3eDQyd2MoJ0CjAf3+OgAQgjcFCdMQnnCCB9EQCsuj4QTkV8EYMMnIMRAMki4RCPrSMjoYXCESjEDoAArUKAEOD0IjozHY55gvEIzJc7KMQQAcx0AA1iQivlyvo96PEPJYIBSGoNBko0M9wvFokyMkk4UkaRk+EIRKI4Y7hGIrSySn41j04J6WeCoPQ4NR2WBbLR4HYiDonNoyHZgyIRczA0kjrowVKmi1U4GMiwbpoWHCS4xaMmPQQYqMBS6JfikarSUCW99fgC22A5NTMYXrrd7mK4UWh8YHk97QXUCxYBs4agZOMZv2WUlRHBSKvEbmXHgSTlmvu+2mC+XK-RnfjuX9MoDsi3b1h793TwWWSXqIJq-ivlhckfA8EScAAxXIWwAeQg4CwG5cCW1sAA5E8UgRaDiRgVZaFQEQ4VAzJ8lyJxKQLd8CzeZhPD8csyxYS9rxrOsxFxfFiJVWCUX+LAAGksAAJgpFJNxEdQ4H4cN2KEtcNHgPxUFGMgG2KOBuAwUhmAgURjCIa5EEQJiZDEPwRLgMT+HYPEAEYAA5+JSfiABYAGZqR0Wz+NIqlDSUQZaFhdh4nINQNG0awbDSZlRDiCBWEydB2FNAASQRaBSZLN0YbRGEGPolDAPoziAA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOzbWycikrLK6v5SciUAX0UIACsieL8AazhWUUTQm3D+OGMoYVI-An5aUTKRscnp4Gh4GaS5AF1XaEYYP0Yl9aIYVCK6UVJ2BsyAYVtMrABZL7ZHQAXh0r3eDQyd2MoJ0CjAf3+OgAQgjcFCdMQnnCCB9EQCsuj4QTkV8EYMMnIMRAMki4RCPrSMjoYXCESjEDoAArUKAEOD0IjozHY55gvEIzJc7KMQQAcx0AA1iQivlyvo96PEPJYIBSGoNBko0M9wvFokyMkk4UkaRk+EIRKI4Y7hGIrSySn41j04J6WeCoPQ4NR2WBbLR4HYiDonNoyHZgyIRczA0kjrowVKmi1U4GMiwbpoWHCS4xaMmPQQYqMBS6JfikarSUCW99fgC22A5NTMYXrrd7mK4UWh8YHk97QXUCxYBsyyxK-RnexJWBuX9MoDsi3N1htxS+2mWW9mJ4-OXFxWqzMa3WxLj8bknCq8CSUf8sABpLAAJgpFJRFDOB1DgfhwxfN9jwLYoozgPxUFGMgG2KOBuAwUhmAgURjCIa5EEQe8ZDEPxgJEMD+DXdgAEYAA4-xSP8ABYAGZqR0ei-0pFkeKNJRaFhdh4nINQNG0awbDSZlRDiCBWEydB2FNAASQRaBSVTgMYbRGEGPolDAPoziAA}{Open in Shinylive}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOzbWycikrLK6v5SciUAX0UIACsieL8AazhWUUTQm3D+OGMoYVI-An5aUTKRscnp4Gh4GaS5AF1XaEYYP0Yl9aIYVCK6UVJ2BsyAYVtMrABZL7ZHQAXh0r3eDQyd2MoJ0CjAf3+OgAQgjcFCdMQnnCCB9EQCsuj4QTkV8EYMMnIMRAMki4RCPrSMjoYXCESjEDoAArUKAEOD0IjozHY55gvEIzJc7KMQQAcx0AA1iQivlyvo96PEPJYIBSGoNBko0M9wvFokyMkk4UkaRk+EIRKI4Y7hGIrSySn41j04J6WeCoPQ4NR2WBbLR4HYiDonNoyHZgyIRczA0kjrowVKmi1U4GMiwbpoWHCS4xaMmPQQYqMBS6JfikarSUCW99fgC22A5NTMYXrrd7mK4UWh8YHk97QXUCxYBsyyxK-RnexJWBuX9MoDsi3N1htxS+2mWW9mJ4-OXFxWqzMa3WxLj8bknCq8CSUf8sABpLAAJgpFJRFDOB1DgfhwxfN9jwLYoozgPxUFGMgG2KOBuAwUhmAgURjCIa5EEQe8ZDEPxgJEMD+DXdgAEYAA4-xSP8ABYAGZqR0ei-0pFkeKNJRaFhdh4nINQNG0awbDSZlRDiCBWEydB2FNAASQRaBSVTgMYbRGEGPolDAPoziAA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
     \if{html}{\out{<a style='height: 800px; display: block;'></a>}}
   }
 }
