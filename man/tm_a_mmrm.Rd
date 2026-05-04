@@ -64,13 +64,13 @@ reference and comparison arms when the arm variable is changed.}
 \item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
 available choices and preselected option for the parameter code variable from \code{dataname}.}
 
-\item{paramcd_var}{(\code{NULL} or \code{\link[teal.picks:picks]{teal.picks::variables()}})\cr used only by the \code{teal.picks} method;
+\item{paramcd_var}{(\code{NULL} or \code{\link[teal.picks:variables]{teal.picks::variables()}})\cr used only by the \code{teal.picks} method;
 ignored when \code{aval_var} is \code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}}.}
 
-\item{paramcd_values}{(\code{NULL} or \code{\link[teal.picks:picks]{teal.picks::values()}})\cr used only by the \code{teal.picks} method;
+\item{paramcd_values}{(\code{NULL} or \code{\link[teal.picks:values]{teal.picks::values()}})\cr used only by the \code{teal.picks} method;
 ignored when \code{aval_var} is \code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}}.}
 
-\item{method}{(\link[teal.picks:picks]{teal.picks::values} or \code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
+\item{method}{(\link[teal.picks:values]{teal.picks::values} or \code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
 all available choices and pre-selected option for the adjustment method.}
 
 \item{conf_level}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
