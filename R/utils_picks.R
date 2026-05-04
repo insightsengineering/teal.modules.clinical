@@ -43,7 +43,8 @@ migrate_choices_selected_to_variables <- function(x, # nolint: object_length_lin
     if (!is.null(multiple) && !identical(attr(x, "multiple", exact = TRUE), multiple)) {
       stop(
         sprintf("`multiple` metadata does not match the requirement for %s.", arg_name),
-        sprintf(" Please set multiple = %s in the picks object.", multiple)
+        sprintf(" Please set multiple = %s in the picks object.", multiple),
+        call. = FALSE
       )
     }
   }
