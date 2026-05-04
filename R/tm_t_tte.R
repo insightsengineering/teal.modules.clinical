@@ -382,8 +382,9 @@ template_tte <- function(dataname = "ANL",
 #' @inheritParams teal::module
 #' @inheritParams template_tte
 #' @param arm_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr variable for treatment arm.
-#' @param paramcd ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr variable for parameter code.
-#'   A `values()` selector is added internally to allow filtering parameter values.
+#' @param paramcd ([teal.picks::picks()] with [`teal.picks::datasets()`], [`teal.picks::variables()`] for `PARAMCD`,
+#'   and [`teal.picks::values()`] for endpoint codes; legacy `teal.transform` objects are deprecated but still accepted)\cr
+#'   endpoint filter (parameter codes such as OS, PFS).
 #' @param strata_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr variable(s) for stratification.
 #' @param aval_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr variable for analysis value (time-to-event).
 #' @param cnsr_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr variable for censoring indicator.
@@ -468,7 +469,11 @@ template_tte <- function(dataname = "ANL",
 #'       dataname = "ADTTE",
 #'       arm_var = variables(choices = c("ARM", "ARMCD", "ACTARMCD")),
 #'       arm_ref_comp = arm_ref_comp,
-#'       paramcd = variables(choices = "PARAMCD"),
+#'       paramcd = picks(
+#'         datasets("ADTTE", "ADTTE"),
+#'         variables("PARAMCD", "PARAMCD"),
+#'         values(c("CRSD", "EFS", "OS", "PFS", "TNE"), "OS", multiple = FALSE)
+#'       ),
 #'       strata_var = variables(choices = c("SEX", "BMRKR2"), selected = "SEX"),
 #'       time_points = teal.transform::choices_selected(c(182, 243), 182)
 #'     )
@@ -484,7 +489,15 @@ tm_t_tte <- function(label,
                      parentname = "ADSL",
                      arm_var = teal.picks::variables(choices = c("ARM", "ARMCD", "ACTARMCD")),
                      arm_ref_comp = NULL,
-                     paramcd = teal.picks::variables(choices = "PARAMCD"),
+                     paramcd = teal.picks::picks(
+                       teal.picks::datasets(dataname, dataname),
+                       teal.picks::variables("PARAMCD", "PARAMCD"),
+                       teal.picks::values(
+                         c("CRSD", "EFS", "OS", "PFS", "TNE"),
+                         selected = "OS",
+                         multiple = FALSE
+                       )
+                     ),
                      strata_var = teal.picks::variables(
                        choices = c("SEX", "BMRKR2"),
                        selected = "SEX"

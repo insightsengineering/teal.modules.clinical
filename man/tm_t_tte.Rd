@@ -14,7 +14,15 @@ tm_t_tte(
   parentname = "ADSL",
   arm_var = variables(choices = c("ARM", "ARMCD", "ACTARMCD")),
   arm_ref_comp = NULL,
-  paramcd = variables(choices = "PARAMCD"),
+  paramcd = picks(
+    datasets(dataname, dataname),
+    variables("PARAMCD", "PARAMCD"),
+    values(
+      c("CRSD", "EFS", "OS", "PFS", "TNE"),
+      selected = "OS",
+      multiple = FALSE
+    )
+  ),
   strata_var = variables(choices = c("SEX", "BMRKR2"), selected = "SEX"),
   aval_var = variables(choices = "AVAL", fixed = TRUE),
   cnsr_var = variables(choices = "CNSR", fixed = TRUE),
@@ -41,7 +49,15 @@ tm_t_tte(
   parentname = "ADSL",
   arm_var = variables(choices = c("ARM", "ARMCD", "ACTARMCD")),
   arm_ref_comp = NULL,
-  paramcd = variables(choices = "PARAMCD"),
+  paramcd = picks(
+    datasets(dataname, dataname),
+    variables("PARAMCD", "PARAMCD"),
+    values(
+      c("CRSD", "EFS", "OS", "PFS", "TNE"),
+      selected = "OS",
+      multiple = FALSE
+    )
+  ),
   strata_var = variables(choices = c("SEX", "BMRKR2"), selected = "SEX"),
   aval_var = variables(choices = "AVAL", fixed = TRUE),
   cnsr_var = variables(choices = "CNSR", fixed = TRUE),
@@ -68,7 +84,15 @@ tm_t_tte(
   parentname = "ADSL",
   arm_var = variables(choices = c("ARM", "ARMCD", "ACTARMCD")),
   arm_ref_comp = NULL,
-  paramcd = variables(choices = "PARAMCD"),
+  paramcd = picks(
+    datasets(dataname, dataname),
+    variables("PARAMCD", "PARAMCD"),
+    values(
+      c("CRSD", "EFS", "OS", "PFS", "TNE"),
+      selected = "OS",
+      multiple = FALSE
+    )
+  ),
   strata_var = variables(choices = c("SEX", "BMRKR2"), selected = "SEX"),
   aval_var = variables(choices = "AVAL", fixed = TRUE),
   cnsr_var = variables(choices = "CNSR", fixed = TRUE),
@@ -95,7 +119,15 @@ tm_t_tte(
   parentname = "ADSL",
   arm_var = variables(choices = c("ARM", "ARMCD", "ACTARMCD")),
   arm_ref_comp = NULL,
-  paramcd = variables(choices = "PARAMCD"),
+  paramcd = picks(
+    datasets(dataname, dataname),
+    variables("PARAMCD", "PARAMCD"),
+    values(
+      c("CRSD", "EFS", "OS", "PFS", "TNE"),
+      selected = "OS",
+      multiple = FALSE
+    )
+  ),
   strata_var = variables(choices = c("SEX", "BMRKR2"), selected = "SEX"),
   aval_var = variables(choices = "AVAL", fixed = TRUE),
   cnsr_var = variables(choices = "CNSR", fixed = TRUE),
@@ -122,7 +154,15 @@ tm_t_tte(
   parentname = "ADSL",
   arm_var = variables(choices = c("ARM", "ARMCD", "ACTARMCD")),
   arm_ref_comp = NULL,
-  paramcd = variables(choices = "PARAMCD"),
+  paramcd = picks(
+    datasets(dataname, dataname),
+    variables("PARAMCD", "PARAMCD"),
+    values(
+      c("CRSD", "EFS", "OS", "PFS", "TNE"),
+      selected = "OS",
+      multiple = FALSE
+    )
+  ),
   strata_var = variables(choices = c("SEX", "BMRKR2"), selected = "SEX"),
   aval_var = variables(choices = "AVAL", fixed = TRUE),
   cnsr_var = variables(choices = "CNSR", fixed = TRUE),
@@ -158,8 +198,9 @@ with delayed \code{\link[teal.transform:variable_choices]{teal.transform::variab
 with the elements named \code{ref} and \code{comp} that the defined the default
 reference and comparison arms when the arm variable is changed.}
 
-\item{paramcd}{(\code{\link[teal.picks:picks]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr variable for parameter code.
-A \code{values()} selector is added internally to allow filtering parameter values.}
+\item{paramcd}{(\code{\link[teal.picks:picks]{teal.picks::picks()}} with \code{\link[teal.picks:picks]{teal.picks::datasets()}}, \code{\link[teal.picks:picks]{teal.picks::variables()}} for \code{PARAMCD},
+and \code{\link[teal.picks:picks]{teal.picks::values()}} for endpoint codes; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+endpoint filter (parameter codes such as OS, PFS).}
 
 \item{strata_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr variable(s) for stratification.}
 
@@ -316,7 +357,11 @@ app <- init(
       dataname = "ADTTE",
       arm_var = variables(choices = c("ARM", "ARMCD", "ACTARMCD")),
       arm_ref_comp = arm_ref_comp,
-      paramcd = variables(choices = "PARAMCD"),
+      paramcd = picks(
+        datasets("ADTTE", "ADTTE"),
+        variables("PARAMCD", "PARAMCD"),
+        values(c("CRSD", "EFS", "OS", "PFS", "TNE"), "OS", multiple = FALSE)
+      ),
       strata_var = variables(choices = c("SEX", "BMRKR2"), selected = "SEX"),
       time_points = teal.transform::choices_selected(c(182, 243), 182)
     )
