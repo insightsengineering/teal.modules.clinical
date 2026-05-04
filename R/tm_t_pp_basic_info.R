@@ -105,7 +105,7 @@ tm_t_pp_basic_info <- function(label,
                                post_output = NULL,
                                transformators = list()) {
   message("Initializing tm_t_pp_basic_info")
-  vars <- deprecate_pick_variables_arg(vars, "vars", null.ok = TRUE)
+  vars <- migrate_choices_selected_to_variables(vars, "vars", null.ok = TRUE)
 
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
@@ -113,7 +113,7 @@ tm_t_pp_basic_info <- function(label,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
 
-  vars <- teal.picks::picks(datasets(dataname, dataname), vars)
+  vars <- create_picks_helper(datasets(dataname, dataname), vars)
 
   args <- as.list(environment())
 
