@@ -36,24 +36,24 @@ tm_t_abnormality(
 
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr object with all available choices and preselected
+\item{arm_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr object with all available choices and preselected
 option for the treatment variable.}
 
-\item{by_vars}{(\code{\link[teal.picks:picks]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr object with all available choices and preselected
+\item{by_vars}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr object with all available choices and preselected
 option(s) for row-by variables (\code{multiple = TRUE}, \code{ordered = TRUE} recommended).}
 
-\item{grade}{(\code{\link[teal.picks:picks]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr object with all available choices and preselected
+\item{grade}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr object with all available choices and preselected
 option for the abnormality grade variable. Variable must be factor.}
 
 \item{abnormal}{(\verb{named list})\cr defined by user to indicate what abnormalities are to be displayed.}
 
-\item{id_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr subject identifier variable.}
+\item{id_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr subject identifier variable.}
 
-\item{baseline_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr variable for baseline abnormality grade.}
+\item{baseline_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr variable for baseline abnormality grade.}
 
-\item{treatment_flag_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr on-treatment flag variable.}
+\item{treatment_flag_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr on-treatment flag variable.}
 
-\item{treatment_flag}{(\code{\link[teal.picks:picks]{teal.picks::values()}}; legacy \code{teal.transform::choices_selected()} is deprecated but still accepted)\cr
+\item{treatment_flag}{(\code{\link[teal.picks:values]{teal.picks::values()}}; legacy \code{teal.transform::choices_selected()} is deprecated but still accepted)\cr
 value(s) indicating on-treatment records in \code{treatment_flag_var} (e.g. \code{"Y"}).}
 
 \item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
