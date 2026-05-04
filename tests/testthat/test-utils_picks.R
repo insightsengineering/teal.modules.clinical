@@ -21,6 +21,13 @@ describe("migrate_value_choices_to_picks", {
     output <- migrate_value_choices_to_picks(input)
     expect_identical(output, input)
   })
+
+  it("returns variables pick unchanged (column only; values come from data later)", {
+    input <- teal.picks::variables("PARAMCD")
+    output <- migrate_value_choices_to_picks(input, multiple = FALSE, arg_name = "paramcd")
+    expect_identical(output, input)
+    expect_s3_class(output, "variables")
+  })
 })
 
 describe("migrate_choices_selected_to_values", {
@@ -40,6 +47,13 @@ describe("migrate_choices_selected_to_values", {
     )
     output <- migrate_choices_selected_to_values(input)
     expect_identical(output, input)
+  })
+
+  it("returns variables() unchanged (column pick only; not coerced to values)", {
+    input <- teal.picks::variables("PARAMCD")
+    output <- migrate_choices_selected_to_values(input, arg_name = "paramcd")
+    expect_identical(output, input)
+    expect_s3_class(output, "variables")
   })
 
   it("respects the multiple argument", {

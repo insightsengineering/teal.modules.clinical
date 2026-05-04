@@ -58,7 +58,7 @@ migrate_choices_selected_to_variables <- function(x, # nolint: object_length_lin
 
 #' Coerce legacy `choices_selected` to [`teal.picks::values()`] with deprecation
 #'
-#' @param x (`values`, `choices_selected` or `picks`) object.
+#' @param x (`values`, `choices_selected`, [`teal.picks::picks()`], or [`teal.picks::variables()`]) object.
 #' @param arg_name optional (`character(1)`) argument name.
 #' @param multiple optional (`logical(1)`) whether multiple values are allowed.
 #' If `NULL` (default), it is not validated and inferred from the length of `selected` in the
@@ -73,6 +73,9 @@ migrate_choices_selected_to_values <- function(x, # nolint: object_length_linter
   checkmate::assert_flag(multiple, null.ok = TRUE)
 
   if (inherits(x, "picks")) {
+    return(x)
+  }
+  if (inherits(x, "variables")) {
     return(x)
   }
   if (inherits(x, "choices_selected")) {
@@ -105,7 +108,7 @@ migrate_choices_selected_to_values <- function(x, # nolint: object_length_linter
 
 #' Coerce legacy `choices_selected`-based specs to `picks` with deprecation
 #'
-#' @param x (`values`, `choices_selected` or `picks`) object.
+#' @param x (`values`, `choices_selected`, [`teal.picks::picks()`], or [`teal.picks::variables()`]) object.
 #' @param arg_name optional (`character(1)`) argument name.
 #' @param multiple optional (`logical(1)`) whether multiple values are allowed.
 #' If `NULL` (default), it is not validated and inferred from the length of `selected` in the
@@ -123,6 +126,10 @@ migrate_value_choices_to_picks <- function(x, # nolint: object_length_linter.
         sprintf(" Please set multiple = %s in the picks object.", multiple)
       )
     }
+    return(x)
+  }
+
+  if (inherits(x, "variables")) {
     return(x)
   }
 
@@ -160,8 +167,6 @@ create_picks_helper <- function(datasets = NULL, x) {
     teal.picks::picks(datasets, x)
   }
 }
-<<<<<<< tm_t_abnormality_by_worst_grade@picks_modules_migration@279-interactive_variables@main
-=======
 
 #' Coerce legacy `data_extract_spec` / lists of specs to [`teal.picks::picks()`]
 #'
@@ -266,4 +271,3 @@ migrate_list_extract_spec_to_picks <- function(x,
     )
   )
 }
->>>>>>> 279-interactive_variables@main
