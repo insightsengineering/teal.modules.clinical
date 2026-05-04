@@ -213,11 +213,6 @@ template_logistic <- function(dataname,
 #'   logistic model.
 #' @param avalc_var ([teal.picks::variables] or [teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the analysis variable (categorical).
-#' @param paramcd_var ([teal.picks::variables()])\cr object with all available choices and
-#' preselected option for the parameter code variable.
-#' @param paramcd_values ([teal.picks::values()])\cr object with all available choices and preselected
-#' option for the parameter code values.
-#'
 #' @inherit module_arguments return seealso
 #'
 #' @section Decorating Module:
@@ -282,8 +277,7 @@ template_logistic <- function(dataname,
 #'     tm_t_logistic(
 #'       label = "Logistic Regression",
 #'       dataname = "ADRS",
-#'       paramcd_var = variables("PARAMCD", "PARAMCD"),
-#'       paramcd_values = values(multiple = FALSE),
+#'       paramcd = picks(variables("PARAMCD", "PARAMCD"), values(multiple = FALSE), check_dataset = FALSE),
 #'       cov_var = variables(selected = NULL),
 #'       avalc_var = variables("AVALC", fixed = TRUE),
 #'       conf_level = values(c("0.95", "0.9", "0.8"), "0.95", keep_order = TRUE)
@@ -300,9 +294,7 @@ tm_t_logistic <- function(label,
                           parentname = "ADSL",
                           arm_var = NULL,
                           arm_ref_comp = NULL,
-                          paramcd = lifecycle::deprecated(),
-                          paramcd_var,
-                          paramcd_values,
+                          paramcd,
                           cov_var = NULL,
                           avalc_var = teal.picks::variables("AVALC", fixed = TRUE),
                           conf_level = teal.picks::values(c("0.95", "0.9", "0.8"), "0.95", keep_order = TRUE),
@@ -313,48 +305,25 @@ tm_t_logistic <- function(label,
                           decorators = list()) {
   message("Initializing tm_t_logistic")
 
-  arm_var <- migrate_choices_selected_to_variables(arm_var, arg_name = "arm_var", null.ok = TRUE)
-  cov_var <- migrate_choices_selected_to_variables(cov_var, arg_name = "cov_var", null.ok = TRUE)
-  avalc_var <- migrate_choices_selected_to_variables(avalc_var, arg_name = "avalc_var")
-  conf_level <- migrate_choices_selected_to_values(conf_level, arg_name = "conf_level")
-
-  if (!missing(paramcd)) {
-    lifecycle::deprecate_warn(
-      when = "0.13.0",
-      what = "tm_t_logistic(paramcd)",
-      details = "Use of paramcd was removed in `tm_t_logistic` module usage with teal.picks"
-    )
-    if (!missing(paramcd_var) || !missing(paramcd_values)) {
-      stop("Please provide either `paramcd` or `paramcd_var` with `paramcd_values`, not both.")
-    }
-    paramcd_values <- migrate_choices_selected_to_values(paramcd, arg_name = "paramcd")
-  }
+  arm_var <- migrate_choices_selected_to_variables(arm_var, null.ok = TRUE, multiple = FALSE)
+  cov_var <- migrate_choices_selected_to_variables(cov_var, null.ok = TRUE)
+  avalc_var <- migrate_choices_selected_to_variables(avalc_var)
+  conf_level <- migrate_choices_selected_to_values(conf_level)
+  paramcd <- migrate_value_choices_to_picks(paramcd, multiple = FALSE)
 
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_list(arm_ref_comp, names = "named", null.ok = TRUE)
-  checkmate::assert_class(paramcd_var, "variables")
-  checkmate::assert_class(paramcd_values, "values")
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
   teal::assert_decorators(decorators, "table")
 
-  for (var in c("arm_var", "paramcd_var", "paramcd_values")) {
-    if (isTRUE(attr(get(var), "multiple", exact = TRUE))) {
-      message(
-        sprintf("Multiple variables are not allowed for %s. Forcing single selection.", var),
-        domain = "force_single_selection"
-      )
-      eval(substitute(attr(var, "multiple") <- FALSE, list(var = as.name(var))))
-    }
-  }
-
-  arm_var <- if (!is.null(arm_var)) teal.picks::picks(teal.picks::datasets(parentname, parentname), arm_var)
-  cov_var <- if (!is.null(cov_var)) teal.picks::picks(teal.picks::datasets(parentname, parentname), cov_var)
-  avalc_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), avalc_var)
-  paramcd <- teal.picks::picks(teal.picks::datasets(dataname, dataname), variables = paramcd_var, values = paramcd_values)
+  arm_var <- if (!is.null(arm_var)) create_picks_helper(teal.picks::datasets(parentname, parentname), arm_var)
+  cov_var <- if (!is.null(cov_var)) create_picks_helper(teal.picks::datasets(parentname, parentname), cov_var)
+  avalc_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), avalc_var)
+  paramcd <- create_picks_helper(teal.picks::datasets(dataname, dataname), paramcd)
 
   args <- as.list(environment())
 
