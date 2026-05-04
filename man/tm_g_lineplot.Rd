@@ -9,21 +9,17 @@ tm_g_lineplot(
   dataname,
   parentname = NULL,
   strata = lifecycle::deprecated(),
-  group_var =
-    teal.transform::choices_selected(teal.transform::variable_choices(parentname,
-    c("ARM", "ARMCD", "ACTARMCD")), "ARM"),
-  x = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
-    "AVISIT"), "AVISIT", fixed = TRUE),
-  y = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
-    c("AVAL", "BASE", "CHG", "PCHG")), "AVAL"),
-  y_unit = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
-    "AVALU"), "AVALU", fixed = TRUE),
-  paramcd = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
-    "PARAMCD"), "PARAMCD", fixed = TRUE),
-  param = teal.transform::choices_selected(teal.transform::value_choices(dataname,
-    "PARAMCD", "PARAM"), "ALT"),
-  conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order =
-    TRUE),
+  group_var = teal.picks::variables(choices = c("ARM", "ARMCD", "ACTARMCD"), selected =
+    "ARM", multiple = FALSE),
+  x = teal.picks::variables("AVISIT", fixed = TRUE),
+  y = teal.picks::variables(choices = c("AVAL", "BASE", "CHG", "PCHG"), selected =
+    "AVAL", multiple = FALSE),
+  y_unit = teal.picks::variables("AVALU", fixed = TRUE),
+  paramcd = teal.picks::picks(teal.picks::variables("PARAMCD", fixed = TRUE),
+    teal.picks::values(choices = c("ALT", "CRP", "IGA"), selected = "ALT", multiple =
+    FALSE), check_dataset = FALSE),
+  conf_level = teal.picks::values(c("0.95", "0.9", "0.8"), selected = "0.95", keep_order
+    = TRUE, multiple = FALSE),
   interval = "mean_ci",
   mid = "mean",
   whiskers = c("mean_ci_lwr", "mean_ci_upr"),
@@ -49,21 +45,14 @@ tm_g_lineplot(
 
 \item{strata}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use the \code{group_var} argument instead.}
 
-\item{group_var}{(\code{string} or \code{NA})\cr group variable name.}
+\item{group_var, x, y, y_unit}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}, \code{\link[teal.picks:picks]{teal.picks::picks()}}, or legacy \code{choices_selected})\cr
+encodings; legacy inputs are coerced with a deprecation warning.}
 
-\item{x}{(\code{teal_module} or \code{teal_modules}) Object to format/print.}
+\item{paramcd}{(\code{\link[teal.picks:picks]{teal.picks::picks()}} or legacy \code{choices_selected} from \code{value_choices()})\cr
+parameter code filter: a \code{picks()} chain with the \code{PARAMCD} variable and biomarker \code{values()};
+defaults to \code{ALT} / \code{CRP} / \code{IGA} with \code{ALT} selected.}
 
-\item{y}{(\code{string})\cr y-variable name.}
-
-\item{y_unit}{(\code{string} or \code{NA})\cr y-axis unit variable name.}
-
-\item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
-available choices and preselected option for the parameter code variable from \code{dataname}.}
-
-\item{param}{(\code{character})\cr parameter to filter the data by.}
-
-\item{conf_level}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
-all available choices and pre-selected option for the confidence level, each within range of (0, 1).}
+\item{conf_level}{(\code{\link[teal.picks:values]{teal.picks::values()}} or legacy \code{choices_selected})\cr confidence levels shown in the UI.}
 
 \item{interval}{(\code{character} or \code{NULL})\cr names of the statistics that will be plotted as intervals.
 All the statistics indicated in \code{interval} variable must be present in the object returned by \code{sfun},
@@ -191,17 +180,25 @@ app <- init(
     tm_g_lineplot(
       label = "Line Plot",
       dataname = "ADLB",
-      group_var = choices_selected(
-        variable_choices(ADSL, c("ARM", "ARMCD", "ACTARMCD")),
-        "ARM"
+      parentname = "ADSL",
+      group_var = variables(
+        choices = c("ARM", "ARMCD", "ACTARMCD"),
+        selected = "ARM",
+        multiple = FALSE
       ),
-      y = choices_selected(
-        variable_choices(ADLB, c("AVAL", "BASE", "CHG", "PCHG")),
-        "AVAL"
+      y = variables(
+        choices = c("AVAL", "BASE", "CHG", "PCHG"),
+        selected = "AVAL",
+        multiple = FALSE
       ),
-      param = choices_selected(
-        value_choices(ADLB, "PARAMCD", "PARAM"),
-        "ALT"
+      paramcd = picks(
+        datasets("ADLB"),
+        variables("PARAMCD", fixed = TRUE),
+        values(
+          choices = levels(data[["ADLB"]]$PARAMCD),
+          selected = "ALT",
+          multiple = FALSE
+        )
       )
     )
   )
@@ -218,8 +215,8 @@ apps implementing this module can be found.
 \section{Examples in Shinylive}{
 \describe{
   \item{example-1}{
-    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo67sxsnHDcvALCYhJSMvKl5QyVHPyo1KyBbRWe7MYBsqSiQWUAggAiAMoAMpE6pDAEMXAAHjFQ-KLUbbMLAELLq+tbO-zU9DoApAB8d21lMILh5OxTAGoAknO-Ww6AC8wJM6hijDgAX4qi+fwBtiKP3+gIAckUYLk5EEAL5BABWRFyMQA1nBWKJ8skbKlYcYoMJSDECPxaKJ1kSSeTKcBoPAqQU5ABdVwQWaLZYFYDABRgCULOXC0XimYnKXJGVyo7HJUqpRoVDLXKZdhtAognQFXBtPhCESiS12hpUl4rGAxADmMSkcB6RFIZogZRD5Sg9Dg1EtcoWuV0AAV-KQ5Tbg6Grcl+bowdq1bq8G6yp7GERBKgYpoWJaCFliQQxDFRJG4Oo4Pwg+mQ5XGLRwyIWbWZGIvvMFkUCGb5VgALIpnTamcAYRmc+1i9sUyXK7AONTnbKC9nYELOjke-TrGrg-rokbzdb7ZPZW7vfo-ZrdeHOvHk5+U0VeDzmAxxTHMLiAXKi4ABIAOKrmA8bQXBO5nk+QF-gBJ6oWmoaoCwsBXp+t5NiID4dvulbUIIcADkRI4nEUcrxpuUzTsu8HMVgrFyth+7oQsthylhbqTKeShBLQxg6OwuTkGoGjaNYNglGmog5BArBTOg7CGgAJIItBFHpTaMNo-QQLiShgLiwpAA}{Open in Shinylive}
-    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo67sxsnHDcvALCYhJSMvKl5QyVHPyo1KyBbRWe7MYBsqSiQWUAggAiAMoAMpE6pDAEMXAAHjFQ-KLUbbMLAELLq+tbO-zU9DoApAB8d21lMILh5OxTAGoAknO-Ww6AC8wJM6hijDgAX4qi+fwBtiKP3+gIAckUYLk5EEAL5BABWRFyMQA1nBWKJ8skbKlYcYoMJSDECPxaKJ1kSSeTKcBoPAqQU5ABdVwQWaLZYFYDABRgCULOXC0XimYnKXJGVyo7HJUqpRoVDLXKZdhtAognQFXBtPhCESiS12hpUl4rGAxADmMSkcB6RFIZogZRD5Sg9Dg1EtcoWuV0AAV-KQ5Tbg6Grcl+bowdq1bq8G6yp7GERBKgYpoWJaCFliQQxDFRJG4Oo4Pwg+mQ5XGLRwyIWbWZGIvvMFkUCGb5VgALIpnTamcAYRmc+1i9sUyXK7AONTnbKC9nYELOjke-TrGrg-rokbzdb7ZPZW7vfo-ZrdeHOvHk5+U0VeDzmAxxTHMLiAXKi4ABIAOKrmA8bQXBO5nk+QF-gBJ6oWmoaoCwsBXp+t5NiID4dvulbUIIcADkRI4nEUcrxpuUzTsu8HMVgrFyth+7oQsthylhbqTKeShBLQxg6OwuTkGoGjaNYNglGmog5BArBTOg7CGgAJIItBFHpTaMNo-QQLiShgLiwpAA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo67sxsnHDcvALCYhJSMvKl5QyVHPyo1KyBbRWe7MYBsqSiQWUAggAiAMoAMpE6pDAEMXAAHjFQ-KLUbbMLAELLq+tbO-zU9DoApAB8d21lMILh5OxTAGoAknO-Ww6AC8wJM6hijDgAX4qi+fwBtiKP3+gIAckUYLk5EEAL5BABWRFyMQA1nBWKJ8skbKlYcYoMJSDECPxaKJ1kSSeTKcBoPAqQU5ABdVwQWaLZYFYDABRgCULOXC0XimYnKXJGVyo7HJUqpRoVDLXKZdhtAognQFXBtPhCESiS12hpUl4rGAxADmMSkcB6RFIZogZRD5Sg9Dg1EtcoWuV0AAV-KQ5Tbg6Grcl+bowdq1bq8G6yqgWBRSFno-L5oqC2nQ57GERBKgYpoWJbW4xaOGHUH0yGCFliQQxJaCGb5VgALIpnTaqcAYRmM+189sUwXS7AclTfbKokjcHUcH4FfX05ru50b2oGh62Z0ADEpgs5i5ayHt4WdKx2ywu-Qey-MoByHEcwTHbVvmfZcwGOKZXxg+cAAkAHEYPjZC0K3Hdd33EQjxPHN5Sg6scL7a9bxES0nxfN8+0-d8ixYWBWUtVAZFJV1GJDAp93GccdTlBjLw7f9ALAeN1ymSdFxnYxaE2Y9LXsZxhN3VtqEEMRe0vHQQJkMDyjgbRqEFTVZUrE49QAEkkrBpMXNTLzww9yEI2d5QWWwUyAkMKNoO9qOfBDuLKSZ03CsK2iCIJaGMHR2Fycg1A0bRrBsEo01EHIIFYKZ0HYQ1rMEWgiiK-dGG0foIFxJQwFxYUgA}{Open in Shinylive}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo67sxsnHDcvALCYhJSMvKl5QyVHPyo1KyBbRWe7MYBsqSiQWUAggAiAMoAMpE6pDAEMXAAHjFQ-KLUbbMLAELLq+tbO-zU9DoApAB8d21lMILh5OxTAGoAknO-Ww6AC8wJM6hijDgAX4qi+fwBtiKP3+gIAckUYLk5EEAL5BABWRFyMQA1nBWKJ8skbKlYcYoMJSDECPxaKJ1kSSeTKcBoPAqQU5ABdVwQWaLZYFYDABRgCULOXC0XimYnKXJGVyo7HJUqpRoVDLXKZdhtAognQFXBtPhCESiS12hpUl4rGAxADmMSkcB6RFIZogZRD5Sg9Dg1EtcoWuV0AAV-KQ5Tbg6Grcl+bowdq1bq8G6yqgWBRSFno-L5oqC2nQ57GERBKgYpoWJbW4xaOGHUH0yGCFliQQxJaCGb5VgALIpnTaqcAYRmM+189sUwXS7AclTfbKokjcHUcH4FfX05ru50b2oGh62Z0ADEpgs5i5ayHt4WdKx2ywu-Qey-MoByHEcwTHbVvmfZcwGOKZXxg+cAAkAHEYPjZC0K3Hdd33EQjxPHN5Sg6scL7a9bxES0nxfN8+0-d8ixYWBWUtVAZFJV1GJDAp93GccdTlBjLw7f9ALAeN1ymSdFxnYxaE2Y9LXsZxhN3VtqEEMRe0vHQQJkMDyjgbRqEFTVZUrE49QAEkkrBpMXNTLzww9yEI2d5QWWwUyAkMKNoO9qOfBDuLKSZ03CsK2iCIJaGMHR2Fycg1A0bRrBsEo01EHIIFYKZ0HYQ1rMEWgiiK-dGG0foIFxJQwFxYUgA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
     \if{html}{\out{<a style='height: 800px; display: block;'></a>}}
   }
 }
