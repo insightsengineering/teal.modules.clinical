@@ -450,10 +450,6 @@ template_mmrm_plots <- function(fit_name,
 #'   List names should match the following: `c("default", "lsmeans", "diagnostic")`. The argument is merged
 #'   with option `teal.ggplot2_args` and with default module arguments (hard coded in the module body).
 #'   For more details, see the help vignette: `vignette("custom-ggplot2-arguments", package = "teal.widgets")`.
-#' @param paramcd_var (`NULL` or [`teal.picks::variables()`])\cr used only by the `teal.picks` method;
-#'   ignored when `aval_var` is [`teal.transform::choices_selected()`].
-#' @param paramcd_values (`NULL` or [`teal.picks::values()`])\cr used only by the `teal.picks` method;
-#'   ignored when `aval_var` is [`teal.transform::choices_selected()`].
 #'
 #' @note
 #' The ordering of the input data sets can lead to slightly different numerical results or
@@ -542,8 +538,7 @@ template_mmrm_plots <- function(fit_name,
 #'       arm_var = teal.picks::variables(c("ARM", "ARMCD")),
 #'       visit_var = teal.picks::variables(c("AVISIT", "AVISITN")),
 #'       arm_ref_comp = arm_ref_comp,
-#'       paramcd_var = variables("PARAMCD"),
-#'       paramcd_values = values(selected = "FKSI-FWB"),
+#'       paramcd = picks(variables("PARAMCD"), values(selected = "FKSI-FWB"), check_dataset = FALSE),
 #'       cov_var = variables(c("BASE", "AGE", "SEX", interaction_vars("BASE", "AVISIT")), NULL)
 #'     )
 #'   )
@@ -562,9 +557,7 @@ tm_a_mmrm <- function(label,
                       visit_var,
                       cov_var,
                       arm_ref_comp = NULL,
-                      paramcd = lifecycle::deprecated(),
-                      paramcd_var,
-                      paramcd_values,
+                      paramcd,
                       method = teal.picks::values(
                         c("Satterthwaite", "Kenward-Roger", "Kenward-Roger-Linear"),
                         "Satterthwaite"
@@ -581,29 +574,17 @@ tm_a_mmrm <- function(label,
                       decorators = list()) {
   message("Initializing tm_a_mmrm")
 
-  aval_var <- deprecate_pick_variables_arg(aval_var, "aval_var")
-  id_var <- deprecate_pick_variables_arg(id_var, "id_var")
-  arm_var <- deprecate_pick_variables_arg(arm_var, "arm_var")
-  visit_var <- deprecate_pick_variables_arg(visit_var, "visit_var")
-  cov_var <- deprecate_pick_variables_arg(cov_var, "cov_var")
-  method <- deprecate_pick_values_arg(method, "method")
+  aval_var <- migrate_choices_selected_to_variables(aval_var)
+  id_var <- migrate_choices_selected_to_variables(id_var)
+  arm_var <- migrate_choices_selected_to_variables(arm_var)
+  visit_var <- migrate_choices_selected_to_variables(visit_var)
+  cov_var <- migrate_choices_selected_to_variables(cov_var)
+  method <- migrate_choices_selected_to_values(method)
+  paramcd <- migrate_value_choices_to_picks(paramcd)
 
   checkmate::assert_string(label)
   checkmate::assert_string(total_label)
   checkmate::assert_string(dataname)
-  if (!missing(paramcd)) {
-    if (!missing(paramcd_var) || !missing(paramcd_values)) {
-      stop("Please provide either `paramcd` or `paramcd_var` with `paramcd_values`, not both.")
-    }
-    lifecycle::deprecate_warn(
-      when = "0.13.0",
-      what = "tm_a_mmrm(paramcd)",
-      details = "Use of paramcd was removed in `tm_a_mmrm` module usage with teal.picks"
-    )
-    paramcd_values <- deprecate_pick_values_arg(paramcd, "paramcd")
-  }
-  checkmate::assert_class(paramcd_var, "variables")
-  checkmate::assert_class(paramcd_values, "values")
   checkmate::assert_class(method, "values")
   checkmate::assert_class(conf_level, "values")
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
@@ -642,7 +623,7 @@ tm_a_mmrm <- function(label,
   )
 
   # force multiple = FALSE
-  for (var in c("aval_var", "id_var", "arm_var", "visit_var", "paramcd_var", "paramcd_values")) {
+  for (var in c("aval_var", "id_var", "arm_var", "visit_var")) {
     if (isTRUE(attr(get(var), "multiple", exact = TRUE))) {
       message(
         sprintf("Multiple variables are not allowed for %s. Forcing single selection.", var),
@@ -651,21 +632,25 @@ tm_a_mmrm <- function(label,
       eval(substitute(attr(var, "multiple") <- FALSE, list(var = as.name(var))))
     }
   }
+  if (isTRUE(attr(paramcd$variables, "multiple", exact = TRUE)) || isTRUE(attr(paramcd$values, "multiple", exact = TRUE))) {
+    message(
+      "Multiple variables are not allowed for paramcd variables or values. Forcing single selection.",
+      domain = "force_single_selection"
+    )
+    attr(paramcd$variables, "multiple") <- FALSE
+    attr(paramcd$values, "multiple") <- FALSE
+  }
 
-  aval_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), aval_var)
-  id_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), id_var)
-  arm_var <- teal.picks::picks(teal.picks::datasets(parentname, parentname), arm_var)
-  paramcd <- teal.picks::picks(
-    teal.picks::datasets(dataname, dataname),
-    paramcd_var,
-    paramcd_values
-  )
-  visit_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), visit_var)
-  split_covariates <- teal.picks::picks(
+  aval_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), aval_var)
+  id_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), id_var)
+  arm_var <- create_picks_helper(teal.picks::datasets(parentname, parentname), arm_var)
+  paramcd <- create_picks_helper(teal.picks::datasets(dataname, dataname), paramcd)
+  visit_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), visit_var)
+  split_covariates <- create_picks_helper(
     teal.picks::datasets(dataname, dataname),
     split_choices_variables(cov_var)
   )
-  cov_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), cov_var)
+  cov_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), cov_var)
 
   args <- as.list(environment())
   module(
