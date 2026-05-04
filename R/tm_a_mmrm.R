@@ -574,13 +574,13 @@ tm_a_mmrm <- function(label,
                       decorators = list()) {
   message("Initializing tm_a_mmrm")
 
-  aval_var <- migrate_choices_selected_to_variables(aval_var, check_multiple = FALSE)
-  id_var <- migrate_choices_selected_to_variables(id_var, check_multiple = FALSE)
-  arm_var <- migrate_choices_selected_to_variables(arm_var, check_multiple = FALSE)
-  visit_var <- migrate_choices_selected_to_variables(visit_var, check_multiple = FALSE)
+  aval_var <- migrate_choices_selected_to_variables(aval_var, multiple = FALSE)
+  id_var <- migrate_choices_selected_to_variables(id_var, multiple = FALSE)
+  arm_var <- migrate_choices_selected_to_variables(arm_var, multiple = FALSE)
+  visit_var <- migrate_choices_selected_to_variables(visit_var, multiple = FALSE)
   cov_var <- migrate_choices_selected_to_variables(cov_var)
   method <- migrate_choices_selected_to_values(method)
-  paramcd <- migrate_value_choices_to_picks(paramcd, check_multiple = FALSE)
+  paramcd <- migrate_value_choices_to_picks(paramcd, multiple = FALSE)
 
   checkmate::assert_string(label)
   checkmate::assert_string(total_label)
