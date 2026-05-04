@@ -43,7 +43,8 @@ migrate_choices_selected_to_variables <- function(x, # nolint: object_length_lin
     if (!is.null(multiple) && !identical(attr(x, "multiple", exact = TRUE), multiple)) {
       stop(
         sprintf("`multiple` metadata does not match the requirement for %s.", arg_name),
-        sprintf(" Please set multiple = %s in the picks object.", multiple)
+        sprintf(" Please set multiple = %s in the picks object.", multiple),
+        call. = FALSE
       )
     }
   }
@@ -115,32 +116,57 @@ migrate_choices_selected_to_values <- function(x, # nolint: object_length_linter
 #' @noRd
 migrate_value_choices_to_picks <- function(x, # nolint: object_length_linter.
                                            multiple = NULL,
-                                           arg_name = checkmate::vname(x)) {
+                                           arg_name = checkmate::vname(x),
+                                           add_values = TRUE) {
   if (inherits(x, "picks")) {
     if (!is.null(multiple) && !identical(attr(x$values, "multiple", exact = TRUE), multiple)) {
       stop(
         sprintf("`multiple` metadata does not match the requirement for %s.", arg_name),
-        sprintf(" Please set multiple = %s in the picks object.", multiple)
+        sprintf(" Please set multiple = %s in the picks object.", multiple),
+        .call. = FALSE
       )
+    }
+
+    if (add_values && is.null(x$values)) {
+      x$values <- do.call(teal.picks::values, list(multiple = multiple)[!is.null(multiple)])
     }
     return(x)
   }
 
-  values <- migrate_choices_selected_to_values(x, multiple = multiple, arg_name = arg_name)
-  variable_name <- attr(x$choices, "var_choices", exact = TRUE)
-  if (inherits(x, "choices_selected") && is.null(variable_name)) {
+  if (inherits(x, "choices_selected")) {
+    values <- migrate_choices_selected_to_values(x, multiple = multiple, arg_name = arg_name)
+    variable_name <- attr(x$choices, "var_choices", exact = TRUE)
+    if (inherits(x, "choices_selected") && is.null(variable_name)) {
+      stop(
+        sprintf("When using choices_selected for %s", arg_name),
+        " it should have 'var_choices' attribute specifying variable choices.",
+        " Cannot convert to picks object without this information.",
+        call. = FALSE
+      )
+    }
+    teal.picks::picks(
+      teal.picks::variables(variable_name, variable_name),
+      values,
+      check_dataset = FALSE
+    )
+  }
+  if (inherits(x, "variables")) {
+    if (add_values) {
+      return(
+        teal.picks::picks(
+          x,
+          do.call(teal.picks::values, list(multiple = multiple)[!is.null(multiple)]),
+          check_dataset = FALSE
+        )
+      )
+    }
+    teal.picks::picks(x, check_dataset = FALSE)
+  } else {
     stop(
-      sprintf("When using choices_selected for %s", arg_name),
-      " it should have 'var_choices' attribute specifying variable choices.",
-      " Cannot convert to picks object without this information.",
+      sprintf("Cannot convert object of class %s to picks for %s.", class(x)[1], arg_name),
       call. = FALSE
     )
   }
-  teal.picks::picks(
-    teal.picks::variables(variable_name, variable_name),
-    values,
-    check_dataset = FALSE
-  )
 }
 
 create_picks_helper <- function(datasets = NULL, x) {
@@ -176,7 +202,7 @@ create_picks_helper <- function(datasets = NULL, x) {
 #'
 #' @keywords internal
 #' @noRd
-migrate_list_extract_spec_to_picks <- function(x,
+migrate_list_extract_spec_to_picks <- function(x, # nolint: object_length_linter.
                                                arg_name = "x",
                                                allow_null = TRUE) {
   checkmate::assert_string(arg_name)
