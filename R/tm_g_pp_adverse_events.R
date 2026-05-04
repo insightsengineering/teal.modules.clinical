@@ -267,15 +267,15 @@ tm_g_pp_adverse_events <- function(label,
                                    ggplot2_args = teal.widgets::ggplot2_args(),
                                    transformators = list(),
                                    decorators = list()) {
-  message("Initializing tm_g_pp_adverse_events.picks")
+  message("Initializing tm_g_pp_adverse_events")
 
-  aeterm <- deprecate_pick_variables_arg(aeterm, "aeterm", null.ok = TRUE)
-  tox_grade <- deprecate_pick_variables_arg(tox_grade, "tox_grade", null.ok = TRUE)
-  causality <- deprecate_pick_variables_arg(causality, "causality", null.ok = TRUE)
-  outcome <- deprecate_pick_variables_arg(outcome, "outcome", null.ok = TRUE)
-  action <- deprecate_pick_variables_arg(action, "action", null.ok = TRUE)
-  time <- deprecate_pick_variables_arg(time, "time", null.ok = TRUE)
-  decod <- deprecate_pick_variables_arg(decod, "decod", null.ok = TRUE)
+  aeterm <- migrate_choices_selected_to_variables(aeterm, null.ok = TRUE, multiple = FALSE)
+  tox_grade <- migrate_choices_selected_to_variables(tox_grade, null.ok = TRUE, multiple = FALSE)
+  causality <- migrate_choices_selected_to_variables(causality, null.ok = TRUE, multiple = FALSE)
+  outcome <- migrate_choices_selected_to_variables(outcome, null.ok = TRUE, multiple = FALSE)
+  action <- migrate_choices_selected_to_variables(action, null.ok = TRUE, multiple = FALSE)
+  time <- migrate_choices_selected_to_variables(time, null.ok = TRUE, multiple = FALSE)
+  decod <- migrate_choices_selected_to_variables(decod, null.ok = TRUE, multiple = FALSE)
 
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
@@ -295,14 +295,13 @@ tm_g_pp_adverse_events <- function(label,
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
   assert_decorators(decorators, names = "plot")
 
-  # Build picks — all vars bound to dataname
-  aeterm <- if (!is.null(aeterm)) teal.picks::picks(teal.picks::datasets(dataname, dataname), aeterm)
-  tox_grade <- if (!is.null(tox_grade)) teal.picks::picks(teal.picks::datasets(dataname, dataname), tox_grade)
-  causality <- if (!is.null(causality)) teal.picks::picks(teal.picks::datasets(dataname, dataname), causality)
-  outcome <- if (!is.null(outcome)) teal.picks::picks(teal.picks::datasets(dataname, dataname), outcome)
-  action <- if (!is.null(action)) teal.picks::picks(teal.picks::datasets(dataname, dataname), action)
-  time <- if (!is.null(time)) teal.picks::picks(teal.picks::datasets(dataname, dataname), time)
-  decod <- if (!is.null(decod)) teal.picks::picks(teal.picks::datasets(dataname, dataname), decod)
+  aeterm <- if (!is.null(aeterm)) create_picks_helper(teal.picks::datasets(dataname, dataname), aeterm)
+  tox_grade <- if (!is.null(tox_grade)) create_picks_helper(teal.picks::datasets(dataname, dataname), tox_grade)
+  causality <- if (!is.null(causality)) create_picks_helper(teal.picks::datasets(dataname, dataname), causality)
+  outcome <- if (!is.null(outcome)) create_picks_helper(teal.picks::datasets(dataname, dataname), outcome)
+  action <- if (!is.null(action)) create_picks_helper(teal.picks::datasets(dataname, dataname), action)
+  time <- if (!is.null(time)) create_picks_helper(teal.picks::datasets(dataname, dataname), time)
+  decod <- if (!is.null(decod)) create_picks_helper(teal.picks::datasets(dataname, dataname), decod)
 
   args <- as.list(environment())
 
