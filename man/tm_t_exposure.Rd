@@ -35,25 +35,25 @@ tm_t_exposure(
 
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{row_by_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+\item{row_by_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
 variable names that can be used to split rows (\code{dataname}).}
 
-\item{col_by_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+\item{col_by_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
 variable names that can be used to split columns (\code{parentname}).}
 
-\item{paramcd}{(\code{\link[teal.picks:picks]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr variable used to filter by parameter (\code{dataname});
+\item{paramcd}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr variable used to filter by parameter (\code{dataname});
 \code{values()} is added internally.}
 
 \item{paramcd_label}{(\code{character})\cr the column from the dataset where the value will be used to
 label the argument \code{paramcd}.}
 
-\item{id_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr subject identifier (\code{dataname}).}
+\item{id_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr subject identifier (\code{dataname}).}
 
-\item{parcat}{(\code{\link[teal.picks:picks]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr parameter category column on \code{dataname}; \code{values()} is added internally.}
+\item{parcat}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr parameter category column on \code{dataname}; \code{values()} is added internally.}
 
-\item{aval_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr analysis value variable (\code{dataname}).}
+\item{aval_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr analysis value variable (\code{dataname}).}
 
-\item{avalu_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr analysis value unit variable (\code{dataname}).}
+\item{avalu_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr analysis value unit variable (\code{dataname}).}
 
 \item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
 
