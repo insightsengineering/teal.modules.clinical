@@ -35,13 +35,13 @@ tm_t_events_by_grade(
 
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr treatment arm variable on \code{parentname}.}
+\item{arm_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr treatment arm variable on \code{parentname}.}
 
-\item{hlt}{(\code{\link[teal.picks:picks]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr high-level term variable on \code{dataname} (optional).}
+\item{hlt}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr high-level term variable on \code{dataname} (optional).}
 
-\item{llt}{(\code{\link[teal.picks:picks]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr low-level term variable on \code{dataname} (optional).}
+\item{llt}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr low-level term variable on \code{dataname} (optional).}
 
-\item{grade}{(\code{\link[teal.picks:picks]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr grade variable on \code{dataname}.}
+\item{grade}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr grade variable on \code{dataname}.}
 
 \item{grading_groups}{(\code{list})\cr named list of grading groups used when \code{col_by_grade = TRUE}.}
 
