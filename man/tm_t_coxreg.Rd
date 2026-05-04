@@ -64,9 +64,9 @@ multi-variable model.}
 in character or factor variables in the data. Defaults to \code{"<Missing>"}. To set a
 default \code{na_level} to apply in all modules, run \code{set_default_na_str("new_default")}.}
 
-\item{conf_level}{(\code{\link[teal.picks:picks]{teal.picks::values()}}; legacy \code{teal.transform::choices_selected()} is deprecated but still accepted)\cr
+\item{conf_level}{(\code{\link[teal.picks:values]{teal.picks::values()}}; legacy \code{teal.transform::choices_selected()} is deprecated but still accepted)\cr
 available confidence levels and default selection, each in the range (0, 1). Choice order follows
-the vector passed to \code{\link[teal.picks:picks]{teal.picks::values()}} (there is no \code{keep_order} argument).}
+the vector passed to \code{\link[teal.picks:values]{teal.picks::values()}} (there is no \code{keep_order} argument).}
 
 \item{pre_output}{(\code{shiny.tag}) optional,\cr with text placed before the output to put the output into context.
 For example a title.}
