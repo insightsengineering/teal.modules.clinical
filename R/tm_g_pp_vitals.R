@@ -291,9 +291,9 @@ tm_g_pp_vitals <- function(label,
 
   message("Initializing tm_g_pp_vitals")
 
-  paramcd <- migrate_choices_selected_to_variables(paramcd, null.ok = TRUE)
-  aval_var <- migrate_choices_selected_to_variables(aval_var, null.ok = TRUE)
-  xaxis <- migrate_choices_selected_to_variables(xaxis, null.ok = TRUE)
+  paramcd <- migrate_choices_selected_to_variables(paramcd, null.ok = TRUE, multiple = FALSE)
+  aval_var <- migrate_choices_selected_to_variables(aval_var, null.ok = TRUE, multiple = FALSE)
+  xaxis <- migrate_choices_selected_to_variables(xaxis, null.ok = TRUE, multiple = FALSE)
 
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
