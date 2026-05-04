@@ -20,10 +20,7 @@ app_driver_tm_t_shift_by_grade <- function() {
           choices = c("WGRLOVFL", "WGRLOFL", "WGRHIVFL", "WGRHIFL"),
           selected = "WGRLOVFL"
         ),
-        worst_flag_indicator = teal.transform::choices_selected(
-          c("Y", "N"),
-          selected = "Y", fixed = TRUE
-        ),
+        worst_flag_indicator = teal.picks::values(c("Y", "N"), "Y", fixed = TRUE),
         anl_toxgrade_var = teal.picks::variables(choices = "ATOXGR"),
         base_toxgrade_var = teal.picks::variables(choices = "BTOXGR"),
         id_var = teal.picks::variables(choices = "USUBJID"),
@@ -190,10 +187,7 @@ app_driver_tm_t_shift_by_grade_invalid_data <- function() { # nolint: object_len
             choices = c("WGRLOVFL", "WGRLOFL", "WGRHIVFL", "WGRHIFL"),
             selected = "WGRLOFL"
           ),
-          worst_flag_indicator = teal.transform::choices_selected(
-            c("Y", "N"),
-            selected = "Y", fixed = TRUE
-          ),
+          worst_flag_indicator = teal.picks::values(c("Y", "N"), "Y", fixed = TRUE),
           anl_toxgrade_var = teal.picks::variables(choices = "ATOXGR"),
           base_toxgrade_var = teal.picks::variables(choices = "BTOXGR"),
           add_total = FALSE

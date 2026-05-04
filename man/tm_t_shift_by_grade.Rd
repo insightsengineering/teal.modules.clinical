@@ -13,8 +13,7 @@ tm_t_shift_by_grade(
   paramcd = variables(choices = "PARAMCD"),
   worst_flag_var = variables(choices = c("WGRLOVFL", "WGRLOFL", "WGRHIVFL", "WGRHIFL"),
     selected = "WGRLOVFL"),
-  worst_flag_indicator = teal.transform::choices_selected(c("Y", "N"), selected = "Y",
-    fixed = TRUE),
+  worst_flag_indicator = teal.picks::values(c("Y", "N"), "Y", fixed = TRUE),
   anl_toxgrade_var = variables(choices = "ATOXGR", fixed = TRUE),
   base_toxgrade_var = variables(choices = "BTOXGR", fixed = TRUE),
   id_var = variables(choices = "USUBJID", fixed = TRUE),
@@ -50,7 +49,7 @@ users to filter the parameter values interactively.}
 \item{worst_flag_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
 variable for worst grade flag.}
 
-\item{worst_flag_indicator}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr
+\item{worst_flag_indicator}{(\code{\link[teal.picks:values]{teal.picks::values()}}; legacy \code{teal.transform::choices_selected()} is deprecated but still accepted)\cr
 value(s) indicating worst grade records.}
 
 \item{anl_toxgrade_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr

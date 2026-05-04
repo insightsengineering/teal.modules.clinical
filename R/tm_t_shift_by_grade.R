@@ -474,7 +474,7 @@ template_shift_by_grade <- function(parentname,
 #'   users to filter the parameter values interactively.
 #' @param worst_flag_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
 #'   variable for worst grade flag.
-#' @param worst_flag_indicator ([teal.transform::choices_selected()])\cr
+#' @param worst_flag_indicator ([teal.picks::values()]; legacy `teal.transform::choices_selected()` is deprecated but still accepted)\cr
 #'   value(s) indicating worst grade records.
 #' @param anl_toxgrade_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
 #'   variable for analysis toxicity grade.
@@ -556,10 +556,7 @@ tm_t_shift_by_grade <- function(label,
                                   choices = c("WGRLOVFL", "WGRLOFL", "WGRHIVFL", "WGRHIFL"),
                                   selected = "WGRLOVFL"
                                 ),
-                                worst_flag_indicator = teal.transform::choices_selected(
-                                  c("Y", "N"),
-                                  selected = "Y", fixed = TRUE
-                                ),
+                                worst_flag_indicator = teal.picks::values(c("Y", "N"), "Y", fixed = TRUE),
                                 anl_toxgrade_var = variables(choices = "ATOXGR", fixed = TRUE),
                                 base_toxgrade_var = variables(choices = "BTOXGR", fixed = TRUE),
                                 id_var = variables(choices = "USUBJID", fixed = TRUE),
@@ -574,18 +571,22 @@ tm_t_shift_by_grade <- function(label,
                                 transformators = list(),
                                 decorators = list()) {
   message("Initializing tm_t_shift_by_grade")
-  arm_var <- deprecate_pick_variables_arg(arm_var, "arm_var")
-  visit_var <- deprecate_pick_variables_arg(visit_var, "visit_var")
-  paramcd <- deprecate_pick_variables_arg(paramcd, "paramcd")
-  worst_flag_var <- deprecate_pick_variables_arg(worst_flag_var, "worst_flag_var")
-  anl_toxgrade_var <- deprecate_pick_variables_arg(anl_toxgrade_var, "anl_toxgrade_var")
-  base_toxgrade_var <- deprecate_pick_variables_arg(base_toxgrade_var, "base_toxgrade_var")
-  id_var <- deprecate_pick_variables_arg(id_var, "id_var")
+  arm_var <- migrate_choices_selected_to_variables(arm_var, arg_name = "arm_var")
+  visit_var <- migrate_choices_selected_to_variables(visit_var, arg_name = "visit_var")
+  paramcd <- migrate_choices_selected_to_variables(paramcd, arg_name = "paramcd")
+  worst_flag_var <- migrate_choices_selected_to_variables(worst_flag_var, arg_name = "worst_flag_var")
+  anl_toxgrade_var <- migrate_choices_selected_to_variables(anl_toxgrade_var, arg_name = "anl_toxgrade_var")
+  base_toxgrade_var <- migrate_choices_selected_to_variables(base_toxgrade_var, arg_name = "base_toxgrade_var")
+  id_var <- migrate_choices_selected_to_variables(id_var, arg_name = "id_var")
+  worst_flag_indicator <- migrate_choices_selected_to_values(
+    worst_flag_indicator,
+    arg_name = "worst_flag_indicator",
+    multiple = FALSE
+  )
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_string(na_level)
-  checkmate::assert_class(worst_flag_indicator, "choices_selected")
   checkmate::assert_flag(add_total)
   checkmate::assert_string(total_label)
   checkmate::assert_flag(drop_arm_levels)
@@ -691,7 +692,7 @@ ui_t_shift_by_grade <- function(id,
             choices = worst_flag_indicator$choices,
             selected = worst_flag_indicator$selected,
             multiple = FALSE,
-            fixed = worst_flag_indicator$fixed
+            fixed = attr(worst_flag_indicator, "fixed", exact = TRUE)
           )
         )
       )
