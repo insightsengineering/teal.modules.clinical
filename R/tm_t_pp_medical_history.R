@@ -173,7 +173,6 @@ tm_t_pp_medical_history <- function(label,
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   assert_decorators(decorators, "table")
 
-  # Build picks bound to the dataset
   if (!is.null(mhterm)) mhterm <- teal.picks::picks(datasets(dataname, dataname), mhterm)
   if (!is.null(mhbodsys)) mhbodsys <- teal.picks::picks(datasets(dataname, dataname), mhbodsys)
   if (!is.null(mhdistat)) mhdistat <- teal.picks::picks(datasets(dataname, dataname), mhdistat)
