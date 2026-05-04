@@ -692,7 +692,7 @@ ui_t_shift_by_grade <- function(id,
             choices = worst_flag_indicator$choices,
             selected = worst_flag_indicator$selected,
             multiple = FALSE,
-            fixed = attr(worst_flag_indicator, "fixed", exact = TRUE)
+            fixed = teal.picks::is_pick_fixed(worst_flag_indicator)
           )
         )
       )
