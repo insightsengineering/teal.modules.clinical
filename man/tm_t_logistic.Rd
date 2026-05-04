@@ -7,16 +7,13 @@
 tm_t_logistic(
   label,
   dataname,
-  parentname = ifelse(inherits(arm_var, "data_extract_spec"),
-    teal.transform::datanames_input(arm_var), "ADSL"),
+  parentname = "ADSL",
   arm_var = NULL,
   arm_ref_comp = NULL,
   paramcd,
   cov_var = NULL,
-  avalc_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
-    "AVALC"), "AVALC", fixed = TRUE),
-  conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order =
-    TRUE),
+  avalc_var = teal.picks::variables("AVALC", fixed = TRUE),
+  conf_level = teal.picks::values(c("0.95", "0.9", "0.8"), "0.95", keep_order = TRUE),
   pre_output = NULL,
   post_output = NULL,
   basic_table_args = teal.widgets::basic_table_args(),
@@ -31,7 +28,7 @@ tm_t_logistic(
 
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{NULL})\cr object
+\item{arm_var}{(\link[teal.picks:variables]{teal.picks::variables} or \code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{NULL})\cr object
 with all available choices and preselected option for variable names that can be used as \code{arm_var}. This defines
 the grouping variable(s) in the results table. If there are two elements selected for \code{arm_var}, the second
 variable will be nested under the first variable. If \code{NULL}, no arm/treatment variable is included in the
@@ -49,7 +46,7 @@ available choices and preselected option for the parameter code variable from \c
 \item{cov_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
 available choices and preselected option for the covariates variables.}
 
-\item{avalc_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
+\item{avalc_var}{(\link[teal.picks:variables]{teal.picks::variables} or \code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
 available choices and preselected option for the analysis variable (categorical).}
 
 \item{conf_level}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
@@ -157,19 +154,10 @@ app <- init(
     tm_t_logistic(
       label = "Logistic Regression",
       dataname = "ADRS",
-      arm_var = choices_selected(
-        choices = variable_choices(ADRS, c("ARM", "ARMCD")),
-        selected = "ARM"
-      ),
-      arm_ref_comp = arm_ref_comp,
-      paramcd = choices_selected(
-        choices = value_choices(ADRS, "PARAMCD", "PARAM"),
-        selected = "BESRSPI"
-      ),
-      cov_var = choices_selected(
-        choices = c("SEX", "AGE", "BMRKR1", "BMRKR2"),
-        selected = "SEX"
-      )
+      paramcd = picks(variables("PARAMCD", "PARAMCD"), values(multiple = FALSE), check_dataset = FALSE),
+      cov_var = variables(selected = NULL),
+      avalc_var = variables("AVALC", fixed = TRUE),
+      conf_level = values(c("0.95", "0.9", "0.8"), "0.95", keep_order = TRUE)
     )
   )
 )
@@ -185,8 +173,8 @@ apps implementing this module can be found.
 \section{Examples in Shinylive}{
 \describe{
   \item{example-1}{
-    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsO-VNVaNFEEr8UKRQ+kZc1AD6waHWQSFhhjoA7rSkABa0EOyxULg6IEo6OgCCACIAygAy4TqkMARRcAAeUVD8otTFZeVYlXUNTa3t-IyiOgCkAHyTPSXGtNTkjOwACqVYpQCyAMLlU9mTOgTsCmAAQk6V-WsAkucF53cAcgBqTrbncgEAvgEAKyI2SiAGs4KxRLlEjZkvw4MYoMJSFECPxaKImkCQeDIcBoPAoXk5ABdVwQCo1Op5YDAc6U6rnElkil9AZwxK0+lspkspQsGBRRgI1FEGCoOp0USkM4QEqlXa2TZ7A4AXh0Upl8x0wuMOnV9Kw2x0F0e2uI4v1JzOYGVZUeOkNxt23x6clwPTt6s1spKJV1VvOF0QOjW1CgBDg9CIZrlfotEvVp3pIfKjEEAHMdAANB3nXYh3Zi+jZEKWQJgAIlAIBfnoOrZdK+nR5K15D1xvhCEQTdVd4RiZslBpRFHUIgZjEaZNxv0aqD0ODUQNgaoTqcyHRYOAZ4WiUTl2Nzkp5Am6A22nl4bUlAVRTQsK0EDLAyOiKKiJdwdRwfhD4-Pq+YhWg+jC0AuIioi+MiDhU-QFMmtpGnmSEqt87o3n6n4iD+-Arsq5yYRhs5+neuqipa6pkSKCYdseOioCwsBok+0Fvh+X64f+c6ATBvY6A+1CCHAUFAVCcGVE8YAbFsaF4I60mbDs3x0fROjYd+5B4ReVw3JU9yESR1aqTxRCaPej5JmxYgcThWncfG1n8YhlROLm8n0gA4i4HmXNsWAANJYAAjChFz+UFABMKmYSUGm4SurnuUR2pVjoNZKLQersNkKwRho2jWDYRRxqIWQQKwpToOwaCoAAJIItAFLVdWfow2j+EovxKGAvwkkAA}{Open in Shinylive}
-    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsO-VNVaNFEEr8UKRQ+kZc1AD6waHWQSFhhjoA7rSkABa0EOyxULg6IEo6OgCCACIAygAy4TqkMARRcAAeUVD8otTFZeVYlXUNTa3t-IyiOgCkAHyTPSXGtNTkjOwACqVYpQCyAMLlU9mTOgTsCmAAQk6V-WsAkucF53cAcgBqTrbncgEAvgEAKyI2SiAGs4KxRLlEjZkvw4MYoMJSFECPxaKImkCQeDIcBoPAoXk5ABdVwQCo1Op5YDAc6U6rnElkil9AZwxK0+lspkspQsGBRRgI1FEGCoOp0USkM4QEqlXa2TZ7A4AXh0Upl8x0wuMOnV9Kw2x0F0e2uI4v1JzOYGVZUeOkNxt23x6clwPTt6s1spKJV1VvOF0QOjW1CgBDg9CIZrlfotEvVp3pIfKjEEAHMdAANB3nXYh3Zi+jZEKWQJgAIlAIBfnoOrZdK+nR5K15D1xvhCEQTdVd4RiZslBpRFHUIgZjEaZNxv0aqD0ODUQNgaoTqcyHRYOAZ4WiUTl2Nzkp5Am6A22nl4bUlAVRTQsK0EDLAyOiKKiJdwdRwfhD4-Pq+YhWg+jC0AuIioi+MiDhU-QFMmtpGnmSEqt87o3n6n4iD+-Arsq5yYRhs5+neuqipa6pkSKCYdseOioCwsBok+0Fvh+X64f+c6ATBvY6A+1CCHAUFAVCcGVE8YAbFsaF4I60mbDs3x0fROjYd+5B4ReVw3JU9yESR1aqTxRCaPej5JmxYgcThWncfG1n8YhlROLm8n0gA4i4HmXNsWAANJYAAjChFz+UFABMKmYSUGm4SurnuUR2pVjoNZKLQersNkKwRho2jWDYRRxqIWQQKwpToOwaCoAAJIItAFLVdWfow2j+EovxKGAvwkkAA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsO-VNVaNFEEr8UKRQ+kZc1AD6waHWQSFhhjoA7rSkABa0EOyxULg6IEo6OgCCACIAygAy4TqkMARRcAAeUVD8otTFZeVYlXUNTa3t-IyiOgCkAHyTPSXGtNTkjOwACqVYpQCyAMLlU9mTOgTsCmAAQk6V-WsAkucF53cAcgBqTrbncgEAvgEAKyI2SiAGs4KxRLlEjZkvw4MYoMJSFECPxaKImkCQeDIcBoPAoXk5ABdVwQCo1Op5YDAc6U6rnElkil9AZwxK0+lspkspQsGBRRgI1FEGCoOp0USkM4QEqlXa2TZ7A4AXh0Upl8x0wuMOnV9Kw2x0F0e2uI4v1JzOYGVZUeOkNxt23x6clwPTt6s1spKJV1VvOF0QOjW1CgBDg9CIZrlfotEvVp3pIfKjEEAHMdAANB3nXYh3Zi+jZEKWQJgAIlAIBfnoOrZdK+nR5K15D1xvhCEQTdVd4RiZslBpRFHUIgZjEaZNxv0aqD0ODUQNgaoTqcyHRYOAZ4WiUTl2Nzkp5Am6A22nl4bUlVAsWBoq2oGSgqGaFi0Bc9m0bLYqvNgL+Oz7N8BTvtQgiDjAyK0D4546AAYqU1SVE47onBkcAEKCMSJKIcCkFaSEoWhHbHicRCaFE76MFaNGfvQ374SI6hwPwVovA41TVO6N46FA4FNDRdEfl+g70m8yEungJi0C0bFWvYzi8bO8YkMYUQiNoy7quBkFQsmYAAAwYAAnAArABJmmVZGAABygY6xlmZZMngnAqBREQjDwrR6pKWh2pVjoNZKLQersNkKwRho2jWDYRRxqIWQQKwpToOwaCoAAJIItAFFl2X4Yw2j+EovxKGAvwkkAA}{Open in Shinylive}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsO-VNVaNFEEr8UKRQ+kZc1AD6waHWQSFhhjoA7rSkABa0EOyxULg6IEo6OgCCACIAygAy4TqkMARRcAAeUVD8otTFZeVYlXUNTa3t-IyiOgCkAHyTPSXGtNTkjOwACqVYpQCyAMLlU9mTOgTsCmAAQk6V-WsAkucF53cAcgBqTrbncgEAvgEAKyI2SiAGs4KxRLlEjZkvw4MYoMJSFECPxaKImkCQeDIcBoPAoXk5ABdVwQCo1Op5YDAc6U6rnElkil9AZwxK0+lspkspQsGBRRgI1FEGCoOp0USkM4QEqlXa2TZ7A4AXh0Upl8x0wuMOnV9Kw2x0F0e2uI4v1JzOYGVZUeOkNxt23x6clwPTt6s1spKJV1VvOF0QOjW1CgBDg9CIZrlfotEvVp3pIfKjEEAHMdAANB3nXYh3Zi+jZEKWQJgAIlAIBfnoOrZdK+nR5K15D1xvhCEQTdVd4RiZslBpRFHUIgZjEaZNxv0aqD0ODUQNgaoTqcyHRYOAZ4WiUTl2Nzkp5Am6A22nl4bUlVAsWBoq2oGSgqGaFi0Bc9m0bLYqvNgL+Oz7N8BTvtQgiDjAyK0D4546AAYqU1SVE47onBkcAEKCMSJKIcCkFaSEoWhHbHicRCaFE76MFaNGfvQ374SI6hwPwVovA41TVO6N46FA4FNDRdEfl+g70m8yEungJi0C0bFWvYzi8bO8YkMYUQiNoy7quBkFQsmYAAAwYAAnAArABJmmVZGAABygY6xlmZZMngnAqBREQjDwrR6pKWh2pVjoNZKLQersNkKwRho2jWDYRRxqIWQQKwpToOwaCoAAJIItAFFl2X4Yw2j+EovxKGAvwkkAA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
     \if{html}{\out{<a style='height: 800px; display: block;'></a>}}
   }
 }
