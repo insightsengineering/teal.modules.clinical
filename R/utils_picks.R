@@ -105,7 +105,9 @@ migrate_choices_selected_to_values <- function(x, # nolint: object_length_linter
 
 #' Coerce legacy `choices_selected`-based specs to `picks` with deprecation
 #'
-#' @param x (`values`, `choices_selected` or `picks`) object.
+#' @param x (`variables`, `values`, `choices_selected` or `picks`) object.
+#'   A bare [`teal.picks::variables()`] pick is returned unchanged (column selector only; value
+#'   levels follow from data when the pick chain is completed with [`create_picks_helper()`]).
 #' @param arg_name optional (`character(1)`) argument name.
 #' @param multiple optional (`logical(1)`) whether multiple values are allowed.
 #' If `NULL` (default), it is not validated and inferred from the length of `selected` in the
@@ -123,6 +125,10 @@ migrate_value_choices_to_picks <- function(x, # nolint: object_length_linter.
         sprintf(" Please set multiple = %s in the picks object.", multiple)
       )
     }
+    return(x)
+  }
+
+  if (inherits(x, "variables")) {
     return(x)
   }
 
@@ -262,5 +268,70 @@ migrate_list_extract_spec_to_picks <- function(x,
       selected = default_sel,
       multiple = FALSE
     )
+  )
+}
+
+#' First non-`NULL` element of a named encoding list (S3 dispatch helper).
+#'
+#' @param arg_list (`named list`) typically `x`, `fill`, `x_facet`, `y_facet` slots; at least one
+#'   non-`NULL` when used from module generics.
+#'
+#' @keywords internal
+#' @noRd
+.module_arg_first_encoding <- function(arg_list) {
+  checkmate::assert_list(arg_list, all.missing = FALSE)
+  non_null <- vapply(arg_list, Negate(is.null), logical(1L))
+  if (!any(non_null)) {
+    stop("internal error: no encoding found", call. = FALSE)
+  }
+  arg_list[non_null][[1L]]
+}
+
+#' @keywords internal
+#' @noRd
+.encoding_slot_is_legacy_data_extract <- function(z) {
+  if (is.null(z)) {
+    return(FALSE)
+  }
+  if (inherits(z, "data_extract_spec")) {
+    return(TRUE)
+  }
+  is.list(z) && length(z) > 0L && all(vapply(z, inherits, logical(1L), "data_extract_spec"))
+}
+
+#' @keywords internal
+#' @noRd
+.encoding_slot_is_picks <- function(z) {
+  !is.null(z) && inherits(z, "picks")
+}
+
+#' Classify encoding slots as legacy extract specs or [`teal.picks::picks()`].
+#'
+#' @param slots (`named list`) module encoding arguments (e.g. `x`, `fill`, `x_facet`, `y_facet`).
+#'
+#' @return `character(1)` `"legacy"` or `"picks"`.
+#'
+#' @keywords internal
+#' @noRd
+.tm_encoding_slots_kind <- function(slots) {
+  checkmate::assert_list(slots, names = "unique")
+  legacy_any <- any(vapply(slots, .encoding_slot_is_legacy_data_extract, logical(1L)))
+  picks_any <- any(vapply(slots, .encoding_slot_is_picks, logical(1L)))
+  if (legacy_any && picks_any) {
+    stop(
+      "Mixing `teal.transform::data_extract_spec()` and `teal.picks::picks()` encodings is not supported. ",
+      "Use only data extract specs, or only `teal.picks::picks()`.",
+      call. = FALSE
+    )
+  }
+  if (legacy_any) {
+    return("legacy")
+  }
+  if (picks_any) {
+    return("picks")
+  }
+  stop(
+    "Could not classify encodings: pass `data_extract_spec` / `list` thereof, or `teal.picks::picks()`.",
+    call. = FALSE
   )
 }
