@@ -5,15 +5,7 @@ tm_t_tte.picks <- function(label,
                            parentname = "ADSL",
                            arm_var = teal.picks::variables(choices = c("ARM", "ARMCD", "ACTARMCD")),
                            arm_ref_comp = NULL,
-                           paramcd = teal.picks::picks(
-                             teal.picks::datasets(dataname, dataname),
-                             teal.picks::variables("PARAMCD", "PARAMCD"),
-                             teal.picks::values(
-                               c("CRSD", "EFS", "OS", "PFS", "TNE"),
-                               selected = "OS",
-                               multiple = FALSE
-                             )
-                           ),
+                           paramcd = teal.picks::variables(c("PARAMCD", "PARAM")),
                            strata_var = teal.picks::variables(
                              choices = c("SEX", "BMRKR2"),
                              selected = "SEX"
@@ -86,15 +78,7 @@ tm_t_tte_legacy_event_desc <- function(label,
                                        parentname = "ADSL",
                                        arm_var = teal.picks::variables(choices = c("ARM", "ARMCD", "ACTARMCD")),
                                        arm_ref_comp = NULL,
-                                       paramcd = teal.picks::picks(
-                                         teal.picks::datasets(dataname, dataname),
-                                         teal.picks::variables("PARAMCD", "PARAMCD"),
-                                         teal.picks::values(
-                                           c("CRSD", "EFS", "OS", "PFS", "TNE"),
-                                           selected = "OS",
-                                           multiple = FALSE
-                                         )
-                                       ),
+                                       paramcd = teal.picks::variables(c("PARAMCD", "PARAM")),
                                        strata_var = teal.picks::variables(
                                          choices = c("SEX", "BMRKR2"),
                                          selected = "SEX"

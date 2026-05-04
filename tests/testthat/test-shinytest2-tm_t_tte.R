@@ -26,15 +26,7 @@ app_driver_tm_t_tte <- function() {
         parentname = "ADSL",
         arm_var = teal.picks::variables(choices = c("ARM", "ARMCD", "ACTARMCD"), selected = "ARM"),
         arm_ref_comp = arm_ref_comp,
-        paramcd = teal.picks::picks(
-          teal.picks::datasets("ADTTE", "ADTTE"),
-          teal.picks::variables("PARAMCD", "PARAMCD"),
-          teal.picks::values(
-            c("CRSD", "EFS", "OS", "PFS", "TNE"),
-            selected = "OS",
-            multiple = FALSE
-          )
-        ),
+        paramcd = teal.picks::variables(c("PARAMCD", "PARAM")),
         strata_var = teal.picks::variables(choices = c("SEX", "BMRKR2"), selected = "SEX"),
         time_points = teal.transform::choices_selected(c(182, 243), 182),
         event_desc_var = teal.picks::variables(choices = "EVNTDESC"),
