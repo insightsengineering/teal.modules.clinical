@@ -281,11 +281,19 @@ tm_g_pp_vitals <- function(label,
                            ggplot2_args = teal.widgets::ggplot2_args(),
                            transformators = list(),
                            decorators = list()) {
+  if (lifecycle::is_present(aval)) {
+    lifecycle::deprecate_stop(
+      when = "0.8.16",
+      what = "tm_g_pp_vitals(aval)",
+      with = "tm_g_pp_vitals(aval_var)"
+    )
+  }
+
   message("Initializing tm_g_pp_vitals")
 
-  paramcd <- deprecate_pick_variables_arg(paramcd, "paramcd", null.ok = TRUE)
-  aval_var <- deprecate_pick_variables_arg(aval_var, "aval_var", null.ok = TRUE)
-  xaxis <- deprecate_pick_variables_arg(xaxis, "xaxis", null.ok = TRUE)
+  paramcd <- migrate_choices_selected_to_variables(paramcd, null.ok = TRUE)
+  aval_var <- migrate_choices_selected_to_variables(aval_var, null.ok = TRUE)
+  xaxis <- migrate_choices_selected_to_variables(xaxis, null.ok = TRUE)
 
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
@@ -305,9 +313,9 @@ tm_g_pp_vitals <- function(label,
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
   assert_decorators(decorators, "plot")
 
-  paramcd <- teal.picks::picks(teal.picks::datasets(dataname, dataname), paramcd)
-  aval_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), aval_var)
-  xaxis <- teal.picks::picks(teal.picks::datasets(dataname, dataname), xaxis)
+  paramcd <- create_picks_helper(teal.picks::datasets(dataname, dataname), paramcd)
+  aval_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), aval_var)
+  xaxis <- create_picks_helper(teal.picks::datasets(dataname, dataname), xaxis)
 
   args <- as.list(environment())
 
