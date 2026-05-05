@@ -39,11 +39,10 @@ app_driver_tm_g_forest_rsp <- function() {
           arm_ref_comp = arm_ref_comp,
           paramcd = teal.picks::picks(teal.picks::variables("PARAMCD"), paramcd_value, check_dataset = FALSE),
           aval_var = teal.picks::variables("AVALC", fixed = TRUE),
-          subgroup_var = teal.picks::variables(
-            c("BMRKR2", "SEX", "AGEU"),
+          subgroup_var = suppressWarnings(teal.picks::variables(
             selected = c("BMRKR2", "SEX"),
             multiple = TRUE
-          ),
+          )),
           strata_var = teal.picks::variables(
             c("STRATA1", "STRATA2"),
             selected = "STRATA2",
@@ -308,12 +307,12 @@ testthat::test_that("e2e - tm_g_forest_rsp: Selecting conf_level outside range 0
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_forest_rsp()
   withr::defer(app_driver$stop())
-  app_driver$set_active_module_input("conf_level", "2")
+  app_driver$set_active_module_input("conf_level", 2)
   testthat::expect_identical(app_driver$get_active_module_plot_output("myplot"), character(0))
   app_driver$expect_validation_error()
   testthat::expect_match(
     app_driver$get_text(app_driver$namespaces(TRUE)$module("myplot-plot_out_main")),
-    "Confidence level must be between 0 and 1.",
+    "Please choose a confidence level.",
     fixed = TRUE
   )
 })
