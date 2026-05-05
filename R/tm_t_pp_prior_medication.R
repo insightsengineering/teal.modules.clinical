@@ -101,10 +101,10 @@ template_prior_medication <- function(dataname = "ANL",
 #'       dataname = "ADCM",
 #'       parentname = "ADSL",
 #'       patient_col = "USUBJID",
-#'       atirel = teal.picks::variables("ATIREL", fixed = TRUE),
-#'       cmdecod = teal.picks::variables("CMDECOD", fixed = TRUE),
-#'       cmindc = teal.picks::variables("CMINDC", fixed = TRUE),
-#'       cmstdy = teal.picks::variables("ASTDY", fixed = TRUE),
+#'       atirel = variables("ATIREL", fixed = TRUE),
+#'       cmdecod = variables("CMDECOD", fixed = TRUE),
+#'       cmindc = variables("CMINDC", fixed = TRUE),
+#'       cmstdy = variables("ASTDY", fixed = TRUE),
 #'     )
 #'   )
 #' )
