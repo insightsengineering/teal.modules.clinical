@@ -147,10 +147,12 @@ migrate_value_choices_to_picks <- function(x, # nolint: object_length_linter.
         call. = FALSE
       )
     }
-    teal.picks::picks(
-      teal.picks::variables(variable_name, variable_name),
-      values,
-      check_dataset = FALSE
+    return(
+      teal.picks::picks(
+        teal.picks::variables(variable_name, variable_name),
+        values,
+        check_dataset = FALSE
+      )
     )
   }
   if (inherits(x, "variables")) {
