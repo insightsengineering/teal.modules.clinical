@@ -16,16 +16,32 @@ tm_g_barchart_simple.picks <- function(
     decorators = list()) {
   checkmate::assert_list(plot_options, null.ok = TRUE)
 
-  encoding_slots <- list(x = x, fill = fill, x_facet = x_facet, y_facet = y_facet)
-  for (arg_name in names(encoding_slots)) {
-    p <- encoding_slots[[arg_name]]
-    if (is.null(p)) {
-      next
-    }
-    checkmate::assert_class(p, "picks", .var.name = arg_name)
+  checkmate::assert_class(x, "picks", null.ok = TRUE, .var.name = "x")
+  if (!is.null(x)) {
     checkmate::assert_false(
-      teal.picks::is_pick_multiple(p$variables),
-      .var.name = sprintf("`%s` must use variables(..., multiple = FALSE)", arg_name)
+      teal.picks::is_pick_multiple(x$variables),
+      .var.name = "`x` must use variables(..., multiple = FALSE)"
+    )
+  }
+  checkmate::assert_class(fill, "picks", null.ok = TRUE, .var.name = "fill")
+  if (!is.null(fill)) {
+    checkmate::assert_false(
+      teal.picks::is_pick_multiple(fill$variables),
+      .var.name = "`fill` must use variables(..., multiple = FALSE)"
+    )
+  }
+  checkmate::assert_class(x_facet, "picks", null.ok = TRUE, .var.name = "x_facet")
+  if (!is.null(x_facet)) {
+    checkmate::assert_false(
+      teal.picks::is_pick_multiple(x_facet$variables),
+      .var.name = "`x_facet` must use variables(..., multiple = FALSE)"
+    )
+  }
+  checkmate::assert_class(y_facet, "picks", null.ok = TRUE, .var.name = "y_facet")
+  if (!is.null(y_facet)) {
+    checkmate::assert_false(
+      teal.picks::is_pick_multiple(y_facet$variables),
+      .var.name = "`y_facet` must use variables(..., multiple = FALSE)"
     )
   }
 
@@ -98,6 +114,79 @@ tm_g_barchart_simple.picks <- function(
     transformators = transformators,
     datanames = all_datanames
   )
+}
+
+#' First merged analysis column per encoding slot (internal).
+#'
+#' @param analysis_selectors (`named list`)\cr reactive selectors from [teal.picks::picks_srv()].
+#' @param merged_variables (`named list` of `character`)\cr merged column names per slot from merge.
+#'
+#' @keywords internal
+#' @noRd
+.barchart_picks_groupby_column_names <- function(analysis_selectors, merged_variables) {
+  first_merged_column <- function(slot_name) {
+    if (is.null(analysis_selectors[[slot_name]])) {
+      return(NULL)
+    }
+    columns <- merged_variables[[slot_name]]
+    if (length(columns) == 0L) {
+      return(NULL)
+    }
+    columns[[1L]]
+  }
+
+  c(
+    x_name = first_merged_column("x"),
+    fill_name = first_merged_column("fill"),
+    x_facet_name = first_merged_column("x_facet"),
+    y_facet_name = first_merged_column("y_facet")
+  )
+}
+
+#' Column source map for relabeling from picks selector state (internal).
+#'
+#' @param analysis_selectors (`named list`)\cr reactive selectors from [teal.picks::picks_srv()].
+#' @param merged_variables (`named list`)\cr merged variables from merge server.
+#'
+#' @keywords internal
+#' @noRd
+.barchart_picks_slot_columns_source <- function(slot_name, analysis_selectors, merged_variables) {
+  if (is.null(analysis_selectors[[slot_name]])) {
+    return(NULL)
+  }
+  selector_state <- analysis_selectors[[slot_name]]()
+  if (!is.list(selector_state) || is.null(selector_state$variables)) {
+    return(NULL)
+  }
+  selected_variables <- selector_state$variables$selected
+  analysis_columns <- merged_variables[[slot_name]]
+  if (length(selected_variables) == 0L || length(analysis_columns) == 0L) {
+    return(NULL)
+  }
+  if (length(analysis_columns) != length(selected_variables)) {
+    return(NULL)
+  }
+  dataset_selected <- selector_state$datasets$selected
+  dataset_selected <- unlist(dataset_selected, recursive = FALSE, use.names = FALSE)
+  if (length(dataset_selected) != 1L) {
+    return(NULL)
+  }
+  mapped_columns <- stats::setNames(analysis_columns, selected_variables)
+  attr(mapped_columns, "dataname") <- dataset_selected[[1L]]
+  mapped_columns
+}
+
+#' List column sources for all slots (internal).
+#'
+#' @keywords internal
+#' @noRd
+.barchart_picks_columns_source <- function(analysis_selectors, merged_variables) {
+  slot_names <- names(merged_variables)
+  per_slot <- lapply(slot_names, function(slot_name) {
+    .barchart_picks_slot_columns_source(slot_name, analysis_selectors, merged_variables)
+  })
+  names(per_slot) <- slot_names
+  Filter(Negate(is.null), per_slot)
 }
 
 #' @keywords internal
@@ -264,29 +353,6 @@ srv_g_barchart_simple_picks <- function(id,
 
     merge_vars <- merged_anl$variables
 
-    r_groupby_vars <- function(mv) {
-      slot_col <- function(nm) {
-        if (is.null(anl_selectors[[nm]])) {
-          return(NULL)
-        }
-        cols <- mv[[nm]]
-        if (length(cols) == 0L) {
-          return(NULL)
-        }
-        cols[[1L]]
-      }
-
-      x_name <- slot_col("x")
-      fill_name <- slot_col("fill")
-      x_facet_name <- slot_col("x_facet")
-      y_facet_name <- slot_col("y_facet")
-
-      c(
-        x_name = x_name, fill_name = fill_name,
-        x_facet_name = x_facet_name, y_facet_name = y_facet_name
-      )
-    }
-
     count_q <- reactive({
       merged_vars <- merge_vars()
       if (!is.null(x)) {
@@ -297,41 +363,12 @@ srv_g_barchart_simple_picks <- function(id,
           )
         )
       }
-      cols_src <- {
-        slots <- names(merged_vars)
-        out <- list()
-        for (nm in slots) {
-          if (is.null(anl_selectors[[nm]])) {
-            next
-          }
-          st <- anl_selectors[[nm]]()
-          if (!is.list(st) || is.null(st$variables)) {
-            next
-          }
-          src <- st$variables$selected
-          anl_cols <- merged_vars[[nm]]
-          if (length(src) == 0L || length(anl_cols) == 0L) {
-            next
-          }
-          if (length(anl_cols) != length(src)) {
-            next
-          }
-          dn <- st$datasets$selected
-          dn <- unlist(dn, recursive = FALSE, use.names = FALSE)
-          if (length(dn) != 1L) {
-            next
-          }
-          vec <- stats::setNames(anl_cols, src)
-          attr(vec, "dataname") <- dn[[1L]]
-          out[[nm]] <- vec
-        }
-        out
-      }
+      cols_src <- .barchart_picks_columns_source(anl_selectors, merged_vars)
 
       anl_q_local <- anl_q()
       teal::validate_has_data(anl_q_local[["ANL"]], 2)
 
-      gb <- r_groupby_vars(merged_vars)
+      gb <- .barchart_picks_groupby_column_names(anl_selectors, merged_vars)
       gb_vals <- stats::na.omit(unlist(gb, use.names = FALSE))
       validate(
         need(
@@ -381,7 +418,7 @@ srv_g_barchart_simple_picks <- function(id,
         )
 
       relabel_call <- if (length(cols_src) > 0L && sum(lengths(cols_src)) > 0L) {
-        teal.transform::get_anl_relabel_call(
+        .picks_get_anl_relabel_call(
           columns_source = cols_src,
           datasets = data_list,
           anl_name = "counts"
@@ -399,7 +436,7 @@ srv_g_barchart_simple_picks <- function(id,
     all_q <- reactive({
       teal::validate_inputs(iv_r())
       merged_vars <- merge_vars()
-      groupby_vars_chr <- r_groupby_vars(merged_vars)
+      groupby_vars_chr <- .barchart_picks_groupby_column_names(anl_selectors, merged_vars)
       groupby_vars <- as.list(groupby_vars_chr)
 
       y_lab <- substitute(
