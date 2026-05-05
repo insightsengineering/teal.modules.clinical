@@ -453,7 +453,6 @@ tm_t_summary_by <- function(label,
   checkmate::assert_string(parentname)
   useNA <- match.arg(useNA) # nolint: object_name.
   checkmate::assert_string(na_level)
-  checkmate::assert_class(denominator, "values")
   checkmate::assert_flag(add_total)
   checkmate::assert_string(total_label)
   checkmate::assert_flag(drop_zero_levels)
