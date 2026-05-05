@@ -103,7 +103,9 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_tte()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    set_teal_picks_slot(app_driver, "paramcd", "values", "CRSD")
+    initial_param <- as.character(unlist(get_teal_picks_slot(app_driver, "paramcd", "values")))
+    other_param <- setdiff(c("OS", "PFS", "CRSD", "EFS", "TNE"), initial_param)[[1]]
+    set_teal_picks_slot(app_driver, "paramcd", "values", other_param)
     testthat::expect_false(
       identical(
         table_before,
