@@ -538,7 +538,11 @@ template_mmrm_plots <- function(fit_name,
 #'       arm_var = variables(c("ARM", "ARMCD")),
 #'       visit_var = variables(c("AVISIT", "AVISITN")),
 #'       arm_ref_comp = arm_ref_comp,
-#'       paramcd = picks(variables("PARAMCD"), values(selected = "FKSI-FWB"), check_dataset = FALSE),
+#'       paramcd = picks(
+#'         variables("PARAMCD", "PARAMCD"),
+#'         values(selected = "FKSI-FWB", multiple = FALSE),
+#'         check_dataset = FALSE
+#'       ),
 #'       cov_var = variables(c("BASE", "AGE", "SEX", interaction_vars("BASE", "AVISIT")), NULL)
 #'     )
 #'   )
