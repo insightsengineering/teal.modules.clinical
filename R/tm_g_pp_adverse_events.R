@@ -214,10 +214,8 @@ template_adverse_events <- function(dataname = "ANL",
 #'
 #' data <- teal_data()
 #' data <- within(data, {
-#'   library(teal.modules.clinical)
-#'   library(dplyr)
-#'   ADAE <- tmc_ex_adae
-#'   ADSL <- filter(tmc_ex_adsl, USUBJID %in% ADAE$USUBJID)
+#'   ADAE <- teal.modules.clinical::tmc_ex_adae
+#'   ADSL <- filter(teal.modules.clinical::tmc_ex_adsl, USUBJID %in% ADAE$USUBJID)
 #' })
 #' join_keys(data) <- default_cdisc_join_keys[names(data)]
 #'
@@ -457,6 +455,7 @@ srv_g_adverse_events <- function(id,
 
     validated_q <- reactive({
       obj <- req(data())
+      obj <- teal.code::eval_code(obj, "library(dplyr)")
 
       validate_input(
         inputId = "patient_id",
