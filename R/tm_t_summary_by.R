@@ -420,15 +420,9 @@ template_summary_by <- function(parentname,
 tm_t_summary_by <- function(label,
                             dataname,
                             parentname = "ADSL",
-                            arm_var = variables(choices = c("ARM", "ARMCD")),
-                            by_vars = variables(
-                              choices = c("PARAM", "AVISIT"),
-                              selected = "AVISIT"
-                            ),
-                            summarize_vars = variables(
-                              choices = c("AVAL", "CHG"),
-                              selected = "AVAL"
-                            ),
+                            arm_var,
+                            by_vars,
+                            summarize_vars,
                             id_var = variables(choices = "USUBJID", fixed = TRUE),
                             paramcd = NULL,
                             add_total = TRUE,
@@ -439,7 +433,7 @@ tm_t_summary_by <- function(label,
                             na_level = tern::default_na_str(),
                             numeric_stats = c("n", "mean_sd", "median", "range"),
                             categorical_stats = c("n", "count"),
-                            denominator = teal.transform::choices_selected(c("n", "N", "omit"), "omit", fixed = TRUE),
+                            denominator = values(c("n", "N", "omit"), "omit", fixed = TRUE),
                             drop_arm_levels = TRUE,
                             drop_zero_levels = TRUE,
                             pre_output = NULL,
@@ -452,13 +446,14 @@ tm_t_summary_by <- function(label,
   by_vars <- migrate_choices_selected_to_variables(by_vars, arg_name = "by_vars")
   summarize_vars <- migrate_choices_selected_to_variables(summarize_vars, arg_name = "summarize_vars")
   id_var <- migrate_choices_selected_to_variables(id_var, arg_name = "id_var")
+  denominator <- migrate_choices_selected_to_values(denominator, arg_name = "denominator")
   if (!is.null(paramcd)) paramcd <- migrate_value_choices_to_picks(paramcd, multiple = FALSE, arg_name = "paramcd")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   useNA <- match.arg(useNA) # nolint: object_name.
   checkmate::assert_string(na_level)
-  checkmate::assert_class(denominator, "choices_selected")
+  checkmate::assert_class(denominator, "values")
   checkmate::assert_flag(add_total)
   checkmate::assert_string(total_label)
   checkmate::assert_flag(drop_zero_levels)
