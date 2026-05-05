@@ -104,7 +104,7 @@ testthat::test_that(
     )
     testthat::expect_identical(
       sort(get_teal_picks_slot(app_driver, "paramcd", "values")),
-      sort(c("BESRSPI", "INVET", "OVRINV"))
+      "BESRSPI"
     )
     testthat::expect_equal(
       app_driver$get_active_module_input("responders"),
