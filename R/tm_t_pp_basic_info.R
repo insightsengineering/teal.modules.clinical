@@ -85,8 +85,8 @@ template_basic_info <- function(dataname = "ANL",
 #'       label = "Basic Info",
 #'       dataname = "ADSL",
 #'       patient_col = "USUBJID",
-#'       vars = teal.picks::variables(
-#'         selected = c("ARM", "AGE", "SEX", "COUNTRY", "RACE", "EOSSTT"),
+#'       vars = variables(
+#'         c("ARM", "AGE", "SEX", "COUNTRY", "RACE", "EOSSTT"),
 #'         multiple = TRUE
 #'       )
 #'     )
@@ -103,9 +103,19 @@ tm_t_pp_basic_info <- function(label,
                                vars = NULL,
                                pre_output = NULL,
                                post_output = NULL,
-                               transformators = list()) {
+                               transformators = list(),
+                               decorators = lifecycle::deprecated()) {
   message("Initializing tm_t_pp_basic_info")
-  vars <- migrate_choices_selected_to_variables(vars, "vars", null.ok = TRUE)
+
+  if (lifecycle::is_present(decorators)) {
+    lifecycle::deprecate_warn(
+      when = "0.11.0",
+      what = "tm_t_pp_laboratory(decorators)",
+      details = "Decorators functionality was removed from this module. The `decorators` argument will be ignored."
+    )
+  }
+
+  vars <- migrate_choices_selected_to_variables(vars, null.ok = TRUE, multiple = TRUE)
 
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
