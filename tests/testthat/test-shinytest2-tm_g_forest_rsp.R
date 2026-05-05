@@ -40,7 +40,7 @@ app_driver_tm_g_forest_rsp <- function() {
           paramcd = teal.picks::picks(teal.picks::variables("PARAMCD"), paramcd_value, check_dataset = FALSE),
           aval_var = teal.picks::variables("AVALC", fixed = TRUE),
           subgroup_var = teal.picks::variables(
-            c("BMRKR2", "SEX"),
+            c("BMRKR2", "SEX", "AGEU"),
             selected = c("BMRKR2", "SEX"),
             multiple = TRUE
           ),
