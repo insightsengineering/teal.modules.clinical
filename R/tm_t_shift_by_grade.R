@@ -549,9 +549,9 @@ template_shift_by_grade <- function(parentname,
 tm_t_shift_by_grade <- function(label,
                                 dataname,
                                 parentname = "ADSL",
-                                arm_var = variables(choices = c("ARM", "ARMCD")),
+                                arm_var,
                                 visit_var = variables(choices = "AVISIT", fixed = TRUE),
-                                paramcd = variables(choices = "PARAMCD"),
+                                paramcd,
                                 worst_flag_var = variables(
                                   choices = c("WGRLOVFL", "WGRLOFL", "WGRHIVFL", "WGRHIFL"),
                                   selected = "WGRLOVFL"
