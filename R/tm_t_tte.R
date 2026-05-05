@@ -482,21 +482,31 @@ template_tte <- function(dataname = "ANL",
 #' @export
 tm_t_tte <- function(label,
                      dataname,
-                     parentname = "ADSL",
-                     arm_var = teal.picks::variables(choices = c("ARM", "ARMCD", "ACTARMCD")),
-                     arm_ref_comp = NULL,
-                     paramcd = teal.picks::variables(c("PARAMCD", "PARAM")),
-                     strata_var = teal.picks::variables(
-                       choices = c("SEX", "BMRKR2"),
-                       selected = "SEX"
+                     parentname = ifelse(
+                       inherits(arm_var, "data_extract_spec"),
+                       teal.transform::datanames_input(arm_var),
+                       "ADSL"
                      ),
-                     aval_var = teal.picks::variables(choices = "AVAL", fixed = TRUE),
-                     cnsr_var = teal.picks::variables(choices = "CNSR", fixed = TRUE),
+                     arm_var,
+                     arm_ref_comp = NULL,
+                     paramcd,
+                     strata_var,
+                     aval_var = teal.transform::choices_selected(
+                       teal.transform::variable_choices(dataname, "AVAL"), "AVAL",
+                       fixed = TRUE
+                     ),
+                     cnsr_var = teal.transform::choices_selected(
+                       teal.transform::variable_choices(dataname, "CNSR"), "CNSR",
+                       fixed = TRUE
+                     ),
                      conf_level_coxph = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                      conf_level_survfit = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
-                     time_points = teal.transform::choices_selected(c(182, 243), 182),
-                     time_unit_var = teal.picks::variables(choices = "AVALU", fixed = TRUE),
-                     event_desc_var = teal.picks::variables(choices = "EVNTDESC", fixed = TRUE),
+                     time_points,
+                     time_unit_var = teal.transform::choices_selected(
+                       teal.transform::variable_choices(dataname, "AVALU"), "AVALU",
+                       fixed = TRUE
+                     ),
+                     event_desc_var = teal.transform::choices_selected("EVNTDESC", "EVNTDESC", fixed = TRUE),
                      add_total = FALSE,
                      total_label = default_total_label(),
                      na_level = tern::default_na_str(),

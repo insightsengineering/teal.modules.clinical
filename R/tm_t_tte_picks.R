@@ -3,18 +3,15 @@
 tm_t_tte.picks <- function(label,
                            dataname,
                            parentname = "ADSL",
-                           arm_var = teal.picks::variables(choices = c("ARM", "ARMCD", "ACTARMCD")),
+                           arm_var,
                            arm_ref_comp = NULL,
-                           paramcd = teal.picks::variables(c("PARAMCD", "PARAM")),
-                           strata_var = teal.picks::variables(
-                             choices = c("SEX", "BMRKR2"),
-                             selected = "SEX"
-                           ),
+                           paramcd,
+                           strata_var,
                            aval_var = teal.picks::variables(choices = "AVAL", fixed = TRUE),
                            cnsr_var = teal.picks::variables(choices = "CNSR", fixed = TRUE),
-                           conf_level_coxph = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
-                           conf_level_survfit = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
-                           time_points = teal.transform::choices_selected(c(182, 243), 182),
+                           conf_level_coxph = teal.picks::values(c("0.95", "0.9", "0.8"), "0.95"),
+                           conf_level_survfit = teal.picks::values(c("0.95", "0.9", "0.8"), "0.95"),
+                           time_points,
                            time_unit_var = teal.picks::variables(choices = "AVALU", fixed = TRUE),
                            event_desc_var = teal.picks::variables(choices = "EVNTDESC", fixed = TRUE),
                            add_total = FALSE,
@@ -32,11 +29,13 @@ tm_t_tte.picks <- function(label,
   cnsr_var <- migrate_choices_selected_to_variables(cnsr_var, arg_name = "cnsr_var")
   time_unit_var <- migrate_choices_selected_to_variables(time_unit_var, arg_name = "time_unit_var")
   event_desc_var <- migrate_choices_selected_to_variables(event_desc_var, arg_name = "event_desc_var")
+  conf_level_coxph <- migrate_choices_selected_to_values(conf_level_coxph, arg_name = "conf_level_coxph")
+  conf_level_survfit <- migrate_choices_selected_to_values(conf_level_survfit, arg_name = "conf_level_survfit")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
-  checkmate::assert_class(conf_level_coxph, "choices_selected")
-  checkmate::assert_class(conf_level_survfit, "choices_selected")
+  checkmate::assert_class(conf_level_coxph, "values")
+  checkmate::assert_class(conf_level_survfit, "values")
   checkmate::assert_class(time_points, "choices_selected")
   checkmate::assert_flag(add_total)
   checkmate::assert_string(total_label)
@@ -76,18 +75,15 @@ tm_t_tte.variables <- tm_t_tte.picks
 tm_t_tte_legacy_event_desc <- function(label,
                                        dataname,
                                        parentname = "ADSL",
-                                       arm_var = teal.picks::variables(choices = c("ARM", "ARMCD", "ACTARMCD")),
+                                       arm_var,
                                        arm_ref_comp = NULL,
-                                       paramcd = teal.picks::variables(c("PARAMCD", "PARAM")),
-                                       strata_var = teal.picks::variables(
-                                         choices = c("SEX", "BMRKR2"),
-                                         selected = "SEX"
-                                       ),
+                                       paramcd,
+                                       strata_var,
                                        aval_var = teal.picks::variables(choices = "AVAL", fixed = TRUE),
                                        cnsr_var = teal.picks::variables(choices = "CNSR", fixed = TRUE),
-                                       conf_level_coxph = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
-                                       conf_level_survfit = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
-                                       time_points = teal.transform::choices_selected(c(182, 243), 182),
+                                       conf_level_coxph = teal.picks::values(c("0.95", "0.9", "0.8"), "0.95"),
+                                       conf_level_survfit = teal.picks::values(c("0.95", "0.9", "0.8"), "0.95"),
+                                       time_points,
                                        time_unit_var = teal.picks::variables(choices = "AVALU", fixed = TRUE),
                                        event_desc_var,
                                        add_total = FALSE,
@@ -254,7 +250,7 @@ ui_t_tte <- function(id,
             conf_level_coxph$choices,
             conf_level_coxph$selected,
             multiple = FALSE,
-            fixed = conf_level_coxph$fixed
+            fixed = teal.picks::is_pick_fixed(conf_level_coxph)
           )
         )
       ),
@@ -274,7 +270,7 @@ ui_t_tte <- function(id,
           conf_level_survfit$choices,
           conf_level_survfit$selected,
           multiple = FALSE,
-          fixed = conf_level_survfit$fixed
+          fixed = teal.picks::is_pick_fixed(conf_level_survfit)
         ),
         radioButtons(
           ns("conf_type_survfit"),
