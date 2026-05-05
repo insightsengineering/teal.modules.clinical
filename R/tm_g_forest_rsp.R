@@ -352,17 +352,12 @@ template_forest_rsp <- function(dataname = "ANL",
 tm_g_forest_rsp <- function(label,
                             dataname,
                             parentname = "ADSL",
-                            arm_var = teal.picks::variables(
-                              choices = c("ARM", "ARMCD"),
-                              selected = "ARM",
-                              multiple = FALSE
-                            ),
+                            arm_var,
                             arm_ref_comp = NULL,
-                            paramcd_var = teal.picks::variables("PARAMCD"),
-                            paramcd_value = teal.picks::values(multiple = FALSE),
+                            paramcd,
                             aval_var = teal.picks::variables("AVALC", fixed = TRUE),
-                            subgroup_var = teal.picks::variables(selected = NULL, multiple = TRUE),
-                            strata_var = teal.picks::variables(selected = NULL, multiple = TRUE),
+                            subgroup_var,
+                            strata_var,
                             stats = c("n_tot", "n", "n_rsp", "prop", "or", "ci"),
                             riskdiff = NULL,
                             fixed_symbol_size = TRUE,
@@ -386,16 +381,16 @@ tm_g_forest_rsp <- function(label,
                             decorators = list()) {
   message("Initializing tm_g_forest_rsp")
 
+  arm_var <- migrate_choices_selected_to_variables(arm_var, null.ok = TRUE)
+  paramcd <- migrate_value_choices_to_picks(paramcd, multiple = FALSE)
+  aval_var <- migrate_choices_selected_to_variables(aval_var)
+  subgroup_var <- migrate_choices_selected_to_variables(subgroup_var, multiple = TRUE)
+  strata_var <- migrate_choices_selected_to_variables(strata_var, multiple = TRUE)
+
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_flag(fixed_symbol_size)
-  checkmate::assert_class(arm_var, "variables", null.ok = TRUE)
-  checkmate::assert_class(paramcd_var, "variables")
-  checkmate::assert_class(paramcd_value, "values")
-  checkmate::assert_class(aval_var, "variables")
-  checkmate::assert_class(subgroup_var, "variables")
-  checkmate::assert_class(strata_var, "variables")
   checkmate::assert_class(conf_level, "values")
   checkmate::assert_character(stats, min.len = 3)
   checkmate::assert_true(all(c("n_tot", "or", "ci") %in% stats))
@@ -414,29 +409,11 @@ tm_g_forest_rsp <- function(label,
   assert_decorators(decorators, "plot")
 
   # Build picks from specs -------------------------------------------------------
-
-  # arm_var: treatment variable from parentname (ADSL)
-  arm_var <- if (!is.null(arm_var)) {
-    teal.picks::picks(teal.picks::datasets(parentname), arm_var)
-  } else {
-    NULL
-  }
-
-  # paramcd: filter picks on dataname by PARAMCD value
-  paramcd <- teal.picks::picks(
-    teal.picks::datasets(dataname),
-    variables = paramcd_var,
-    values    = paramcd_value
-  )
-
-  # aval_var: analysis variable from dataname
-  aval_var <- teal.picks::picks(teal.picks::datasets(dataname), aval_var)
-
-  # subgroup_var: subgroup variables from parentname
-  subgroup_var <- teal.picks::picks(teal.picks::datasets(parentname), subgroup_var)
-
-  # strata_var: stratification variables from parentname
-  strata_var <- teal.picks::picks(teal.picks::datasets(parentname), strata_var)
+  arm_var <- if (!is.null(arm_var)) create_picks_helper(teal.picks::datasets(parentname, parentname), arm_var)
+  paramcd <- create_picks_helper(teal.picks::datasets(dataname, dataname), paramcd)
+  aval_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), aval_var)
+  subgroup_var <- create_picks_helper(teal.picks::datasets(parentname, parentname), subgroup_var)
+  strata_var <- create_picks_helper(teal.picks::datasets(parentname, parentname), strata_var)
 
   args <- as.list(environment())
 
@@ -568,16 +545,18 @@ srv_g_forest_rsp <- function(id,
   moduleServer(id, function(input, output, session) {
     teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
 
+    arm_var_r <- reactive(selectors$arm_var()$variables$selected)
     # Setup arm ref/comp buckets UI and validator
     if (!is.null(arm_var)) {
-      iv_arm_ref <- arm_ref_comp_observer(
+      iv_arm_ref <- arm_ref_comp_observer_picks(
         session,
         input,
         output,
         id_arm_var = "arm_var-variables-selected",
         data = reactive(data()[[parentname]]),
         arm_ref_comp = arm_ref_comp,
-        module = "tm_g_forest_rsp"
+        module = "tm_g_forest_rsp",
+        arm_var_r = arm_var_r
       )
     }
 
@@ -645,7 +624,7 @@ srv_g_forest_rsp <- function(id,
     anl_inputs <- teal.picks::merge_srv(
       "anl_inputs",
       data = validated_q,
-      selectors = selectors[c("paramcd", "aval_var")],
+      selectors = selectors,
       join_fun = "dplyr::inner_join",
       output_name = "ANL"
     )

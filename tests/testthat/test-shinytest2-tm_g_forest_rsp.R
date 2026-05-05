@@ -37,8 +37,7 @@ app_driver_tm_g_forest_rsp <- function() {
           parentname = "ADSL",
           arm_var = teal.picks::variables(c("ARM", "ARMCD"), selected = "ARMCD", multiple = FALSE),
           arm_ref_comp = arm_ref_comp,
-          paramcd_var = teal.picks::variables("PARAMCD"),
-          paramcd_value = paramcd_value,
+          paramcd = teal.picks::picks(teal.picks::variables("PARAMCD"), paramcd_value, check_dataset = FALSE),
           aval_var = teal.picks::variables("AVALC", fixed = TRUE),
           subgroup_var = teal.picks::variables(
             c("BMRKR2", "SEX"),
