@@ -1006,7 +1006,7 @@ srv_mmrm <- function(id, # nolint: object_name.
         condition = !is.null(selectors$visit_var()$variables$selected),
         message = "A visit variable must be selected."
       )
-      # arm_var-variables-selected is handled in arm_ref_comp_observer()
+      # arm_var-variables-selected is handled in arm_ref_comp_observer_picks()
       validate_input(
         inputId = "arm_var-variables-selected",
         condition = !is.null(selectors$arm_var()$variables$selected),
