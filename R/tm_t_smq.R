@@ -382,11 +382,7 @@ template_smq <- function(dataname,
 #' @export
 tm_t_smq <- function(label,
                      dataname,
-                     parentname = ifelse(
-                       inherits(arm_var, "data_extract_spec"),
-                       teal.transform::datanames_input(arm_var),
-                       "ADSL"
-                     ),
+                     parentname = "ADSL",
                      arm_var,
                      id_var = variables(choices = "USUBJID", fixed = TRUE),
                      llt,
