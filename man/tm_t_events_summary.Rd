@@ -8,7 +8,7 @@ tm_t_events_summary(
   label,
   dataname,
   parentname = "ADSL",
-  arm_var = variables(choices = c("ARM", "ARMCD")),
+  arm_var,
   flag_var_anl = NULL,
   flag_var_aesi = NULL,
   dthfl_var = variables(choices = "DTHFL", fixed = TRUE),
