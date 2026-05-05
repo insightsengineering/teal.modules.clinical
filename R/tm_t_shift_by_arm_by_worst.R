@@ -269,19 +269,13 @@ template_shift_by_arm_by_worst <- function(dataname,
 tm_t_shift_by_arm_by_worst <- function(label,
                                        dataname,
                                        parentname = "ADSL",
-                                       arm_var = variables(choices = c("ARM", "ARMCD")),
-                                       paramcd = variables(choices = "PARAMCD"),
-                                       aval_var = variables(choices = c("AVALC", "ANRIND"), selected = "ANRIND"),
+                                       arm_var,
+                                       paramcd,
+                                       aval_var,
                                        base_var = lifecycle::deprecated(),
-                                       baseline_var = variables(choices = c("BASEC", "BNRIND"), selected = "BNRIND"),
-                                       worst_flag_var = variables(
-                                         choices = c("WORS01FL", "WORS02FL"),
-                                         selected = "WORS02FL"
-                                       ),
-                                       worst_flag = teal.transform::choices_selected(
-                                         c("Y", "N"),
-                                         selected = "Y", fixed = TRUE
-                                       ),
+                                       baseline_var,
+                                       worst_flag_var,
+                                       worst_flag,
                                        treatment_flag_var = variables(choices = "ONTRTFL"),
                                        treatment_flag = teal.picks::values(c("Y", "N", ""), "Y", multiple = FALSE),
                                        useNA = c("ifany", "no"), # nolint: object_name.
@@ -309,14 +303,15 @@ tm_t_shift_by_arm_by_worst <- function(label,
   worst_flag_var <- migrate_choices_selected_to_variables(worst_flag_var, arg_name = "worst_flag_var")
   treatment_flag_var <- migrate_choices_selected_to_variables(treatment_flag_var, arg_name = "treatment_flag_var")
   treatment_flag <- migrate_choices_selected_to_values(treatment_flag, arg_name = "treatment_flag")
+  worst_flag <- migrate_choices_selected_to_values(worst_flag, arg_name = "worst_flag", multiple = FALSE)
   checkmate::assert_false(teal.picks::is_pick_multiple(treatment_flag))
+  checkmate::assert_false(teal.picks::is_pick_multiple(worst_flag))
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   useNA <- match.arg(useNA) # nolint: object_name.
   checkmate::assert_string(na_level)
   checkmate::assert_string(total_label)
-  checkmate::assert_class(worst_flag, "choices_selected")
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
@@ -381,7 +376,7 @@ ui_shift_by_arm_by_worst <- function(id,
         choices = worst_flag$choices,
         selected = worst_flag$selected,
         multiple = FALSE,
-        fixed = isTRUE(worst_flag$fixed)
+        fixed = teal.picks::is_pick_fixed(worst_flag)
       ),
       tags$div(
         tags$label("Select Analysis Value"),
