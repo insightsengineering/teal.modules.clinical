@@ -63,7 +63,7 @@ migrate_choices_selected_to_variables <- function(x, # nolint: object_length_lin
 #' @param arg_name optional (`character(1)`) argument name.
 #' @param multiple optional (`logical(1)`) whether multiple values are allowed.
 #' If `NULL` (default), it is not validated and inferred from the length of `selected` in the
-#' `choices_selected` object.
+#' `choices_selected` object. If `FALSE`, the result is checked with [teal.picks::is_pick_multiple()].
 #'
 #' @keywords internal
 #' @noRd
