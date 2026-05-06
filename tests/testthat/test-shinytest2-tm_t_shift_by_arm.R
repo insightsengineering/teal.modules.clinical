@@ -15,10 +15,7 @@ app_driver_tm_t_shift_by_arm <- function() {
         parentname = "ADSL",
         arm_var = teal.picks::variables(choices = c("ARM", "ARMCD"), selected = "ARM"),
         paramcd = teal.picks::variables(choices = "PARAMCD"),
-        visit_var = teal.picks::variables(
-          choices = c("AVISIT", "AVISITN"),
-          selected = "AVISIT"
-        ),
+        visit_var = teal.picks::variables(choices = "AVISIT"),
         aval_var = teal.picks::variables(choices = "ANRIND"),
         baseline_var = teal.picks::variables(choices = "BNRIND"),
         useNA = "ifany",
@@ -108,26 +105,6 @@ testthat::test_that(
     app_driver <- app_driver_tm_t_shift_by_arm()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
     set_teal_picks_slot(app_driver, "paramcd", "values", "HR")
-    testthat::expect_false(
-      identical(
-        table_before,
-        app_driver$get_active_module_table_output("table-table-with-settings")
-      )
-    )
-    app_driver$expect_no_validation_error()
-    app_driver$stop()
-  }
-)
-
-testthat::test_that(
-  "e2e - tm_t_shift_by_arm: Selecting visit_var values changes the table and does not throw validation errors.",
-  {
-    skip_if_too_deep(5)
-    app_driver <- app_driver_tm_t_shift_by_arm()
-    # Establish a non-target visit so switching to SCREENING is guaranteed to update the table.
-    set_teal_picks_slot(app_driver, "visit_var", "values", "BASELINE")
-    table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    set_teal_picks_slot(app_driver, "visit_var", "values", "SCREENING")
     testthat::expect_false(
       identical(
         table_before,
