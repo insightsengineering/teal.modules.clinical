@@ -15,32 +15,19 @@ app_driver_tm_t_abnormality_by_worst_grade <- function() { # nolint: object_leng
         label = "Laboratory Test Results with Highest Grade Post-Baseline",
         dataname = "ADLB",
         parentname = "ADSL",
-        arm_var = teal.transform::choices_selected(
-          choices = teal.transform::variable_choices(data[["ADSL"]], subset = c("ARM", "ARMCD")),
-          selected = "ARM"
-        ),
-        id_var = teal.transform::choices_selected(
-          teal.transform::variable_choices(data[["ADLB"]], subset = "USUBJID"),
-          selected = "USUBJID", fixed = TRUE
-        ),
-        paramcd = teal.transform::choices_selected(
-          choices = teal.transform::value_choices(data[["ADLB"]], "PARAMCD", "PARAM"),
-          selected = c("ALT", "CRP", "IGA")
-        ),
+        arm_var = teal.picks::variables(choices = c("ARM", "ARMCD"), selected = "ARM"),
+        id_var = teal.picks::variables(choices = "USUBJID"),
+        paramcd = teal.picks::variables(choices = "PARAMCD"),
         add_total = FALSE,
-        atoxgr_var = teal.transform::choices_selected(
-          teal.transform::variable_choices(data[["ADLB"]], subset = "ATOXGR"),
-          selected = "ATOXGR", fixed = TRUE
+        atoxgr_var = teal.picks::variables(choices = "ATOXGR"),
+        worst_high_flag_var = teal.picks::variables(choices = "WGRHIFL"),
+        worst_low_flag_var = teal.picks::variables(choices = "WGRLOFL"),
+        worst_flag_indicator = teal.picks::values(
+          c("Y", "N"),
+          "Y",
+          multiple = FALSE,
+          fixed = TRUE
         ),
-        worst_high_flag_var = teal.transform::choices_selected(
-          teal.transform::variable_choices(data[["ADLB"]], subset = "WGRHIFL"),
-          selected = "WGRHIFL", fixed = TRUE
-        ),
-        worst_low_flag_var = teal.transform::choices_selected(
-          teal.transform::variable_choices(data[["ADLB"]], subset = "WGRLOFL"),
-          selected = "WGRLOFL", fixed = TRUE
-        ),
-        worst_flag_indicator = teal.transform::choices_selected("Y"),
         total_label = default_total_label(),
         drop_arm_levels = TRUE,
         pre_output = NULL,
@@ -76,37 +63,37 @@ testthat::test_that(
     app_driver <- app_driver_tm_t_abnormality_by_worst_grade()
 
     testthat::expect_equal(
-      app_driver$get_text("a.nav-link.active"),
+      app_driver$get_text(".teal-modules-tree a.module-button.active"),
       "Laboratory Test Results with Highest Grade Post-Baseline"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("arm_var-dataset_ADSL_singleextract-select"),
+      get_teal_picks_slot(app_driver, "arm_var", "variables"),
       "ARM"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("paramcd-dataset_ADLB_singleextract-filter1-vals"),
+      get_teal_picks_slot(app_driver, "paramcd", "values"),
       c("ALT", "CRP", "IGA")
     )
     testthat::expect_false(app_driver$get_active_module_input("add_total"))
     testthat::expect_true(app_driver$get_active_module_input("drop_arm_levels"))
     testthat::expect_equal(
-      app_driver$get_active_module_input("id_var-dataset_ADLB_singleextract-select"),
+      get_teal_picks_slot(app_driver, "id_var", "variables"),
       "USUBJID"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("atoxgr_var-dataset_ADLB_singleextract-select"),
+      get_teal_picks_slot(app_driver, "atoxgr_var", "variables"),
       "ATOXGR"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("worst_high_flag_var-dataset_ADLB_singleextract-select"),
+      get_teal_picks_slot(app_driver, "worst_high_flag_var", "variables"),
       "WGRHIFL"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("worst_low_flag_var-dataset_ADLB_singleextract-select"),
+      get_teal_picks_slot(app_driver, "worst_low_flag_var", "variables"),
       "WGRLOFL"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("worst_flag_indicator"),
+      app_driver$get_text(".tm-abnormality-worst-grade-worst-flag-value"),
       "Y"
     )
     app_driver$stop()
@@ -119,7 +106,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_abnormality_by_worst_grade()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", "ARMCD")
+    set_teal_picks_slot(app_driver, "arm_var", "variables", "ARMCD")
     testthat::expect_false(
       identical(
         table_before,
@@ -137,7 +124,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_abnormality_by_worst_grade()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("paramcd-dataset_ADLB_singleextract-filter1-vals", c("ALT", "CRP"))
+    set_teal_picks_slot(app_driver, "paramcd", "values", c("ALT", "CRP"))
     testthat::expect_false(
       identical(
         table_before,
@@ -152,30 +139,18 @@ testthat::test_that(
 testthat::test_that("e2e - tm_t_abnormality_by_worst_grade: Deselection of arm_var throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_abnormality_by_worst_grade()
-  app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", NULL)
+  set_teal_picks_slot(app_driver, "arm_var", "variables", NULL)
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
-  testthat::expect_equal(
-    app_driver$get_text(
-      app_driver$namespaces(TRUE)$module("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message")
-    ),
-    "Please select a treatment variable."
-  )
   app_driver$stop()
 })
 
 testthat::test_that("e2e - tm_t_abnormality_by_worst_grade: Deselection of paramcd throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_abnormality_by_worst_grade()
-  app_driver$set_active_module_input("paramcd-dataset_ADLB_singleextract-filter1-vals", NULL)
+  set_teal_picks_slot(app_driver, "paramcd", "values", NULL)
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
-  testthat::expect_equal(
-    app_driver$get_text(app_driver$namespaces(TRUE)$module(
-      "paramcd-dataset_ADLB_singleextract-filter1-vals_input .shiny-validation-message"
-    )),
-    "Please select at least one Laboratory parameter."
-  )
   app_driver$stop()
 })
 

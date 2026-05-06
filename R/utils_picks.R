@@ -59,7 +59,7 @@ migrate_choices_selected_to_variables <- function(x, # nolint: object_length_lin
 
 #' Coerce legacy `choices_selected` to [`teal.picks::values()`] with deprecation
 #'
-#' @param x (`values`, `choices_selected` or `picks`) object.
+#' @param x (`values`, `choices_selected`, [`teal.picks::picks()`], or [`teal.picks::variables()`]) object.
 #' @param arg_name optional (`character(1)`) argument name.
 #' @param multiple optional (`logical(1)`) whether multiple values are allowed.
 #' If `NULL` (default), it is not validated and inferred from the length of `selected` in the
@@ -74,6 +74,9 @@ migrate_choices_selected_to_values <- function(x, # nolint: object_length_linter
   checkmate::assert_flag(multiple, null.ok = TRUE)
 
   if (inherits(x, "picks")) {
+    return(x)
+  }
+  if (inherits(x, "variables")) {
     return(x)
   }
   if (inherits(x, "choices_selected")) {
@@ -106,7 +109,7 @@ migrate_choices_selected_to_values <- function(x, # nolint: object_length_linter
 
 #' Coerce legacy `choices_selected`-based specs to `picks` with deprecation
 #'
-#' @param x (`values`, `choices_selected` or `picks`) object.
+#' @param x (`values`, `choices_selected`, [`teal.picks::picks()`], or [`teal.picks::variables()`]) object.
 #' @param arg_name optional (`character(1)`) argument name.
 #' @param multiple optional (`logical(1)`) whether multiple values are allowed.
 #' If `NULL` (default), it is not validated and inferred from the length of `selected` in the
