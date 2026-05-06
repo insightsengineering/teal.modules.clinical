@@ -11,6 +11,8 @@ app_driver_tm_g_ci <- function() {
       data = data,
       modules = tm_g_ci(
         label = "Confidence Interval Plot",
+        x_dataname = "ADSL",
+        y_dataname = "ADLB",
         x_var = teal.picks::variables(
           choices = c("ARMCD", "BMRKR2"),
           selected = "ARMCD",
@@ -21,13 +23,6 @@ app_driver_tm_g_ci <- function() {
           selected = "AVAL",
           multiple = FALSE
         ),
-        color = teal.picks::variables(
-          choices = c("SEX", "STRATA1", "STRATA2"),
-          selected = "STRATA1",
-          multiple = FALSE
-        ),
-        x_dataname = "ADSL",
-        y_dataname = "ADLB",
         paramcd_value = teal.picks::values(
           choices = c("ALT", "CRP", "IGA"),
           selected = "ALT",
@@ -39,6 +34,11 @@ app_driver_tm_g_ci <- function() {
             "WEEK 3 DAY 22", "WEEK 4 DAY 29", "WEEK 5 DAY 36"
           ),
           selected = "SCREENING",
+          multiple = FALSE
+        ),
+        color = teal.picks::variables(
+          choices = c("SEX", "STRATA1", "STRATA2"),
+          selected = "STRATA1",
           multiple = FALSE
         ),
         stat = c("mean", "median"),
@@ -53,7 +53,7 @@ app_driver_tm_g_ci <- function() {
   )
 }
 
-testthat::test_that("e2e - tm_g_ci: Module initializes and produces plot output.", {
+testthat::test_that("e2e - tm_g_ci: Module initializes in teal without errors and produces plot output.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ci()
   withr::defer(app_driver$stop())
@@ -63,7 +63,7 @@ testthat::test_that("e2e - tm_g_ci: Module initializes and produces plot output.
 })
 
 testthat::test_that(
-  "e2e - tm_g_ci: Module matches label, picks exports, conf_level and stat.",
+  "e2e - tm_g_ci: Module initializes with specified label, x_var, y_var, ADLB filters, color, conf_level and stat.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_ci()
@@ -111,7 +111,7 @@ testthat::test_that(
   }
 )
 
-testthat::test_that("e2e - tm_g_ci: Selecting x_var column updates plot.", {
+testthat::test_that("e2e - tm_g_ci: Selecting x_var column changes plot and doesn't throw validation errors.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ci()
   withr::defer(app_driver$stop())
@@ -126,7 +126,7 @@ testthat::test_that("e2e - tm_g_ci: Selecting x_var column updates plot.", {
   app_driver$expect_no_validation_error()
 })
 
-testthat::test_that("e2e - tm_g_ci: Deselecting x_var column shows validation error.", {
+testthat::test_that("e2e - tm_g_ci: Deselecting x_var column throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ci()
   withr::defer(app_driver$stop())
@@ -139,7 +139,7 @@ testthat::test_that("e2e - tm_g_ci: Deselecting x_var column shows validation er
   )
 })
 
-testthat::test_that("e2e - tm_g_ci: Selecting y_var column updates plot.", {
+testthat::test_that("e2e - tm_g_ci: Selecting y_var column changes plot and doesn't throw validation errors.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ci()
   withr::defer(app_driver$stop())
@@ -154,7 +154,7 @@ testthat::test_that("e2e - tm_g_ci: Selecting y_var column updates plot.", {
   app_driver$expect_no_validation_error()
 })
 
-testthat::test_that("e2e - tm_g_ci: Deselecting y_var column shows validation error.", {
+testthat::test_that("e2e - tm_g_ci: Deselecting y_var column throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ci()
   withr::defer(app_driver$stop())
@@ -168,7 +168,7 @@ testthat::test_that("e2e - tm_g_ci: Deselecting y_var column shows validation er
 })
 
 testthat::test_that(
-  "e2e - tm_g_ci: Selecting PARAMCD filter value updates plot.",
+  "e2e - tm_g_ci: Selecting PARAMCD filter value changes plot and doesn't throw validation errors.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_ci()
@@ -185,7 +185,7 @@ testthat::test_that(
   }
 )
 
-testthat::test_that("e2e - tm_g_ci: Deselecting PARAMCD filter shows validation error.", {
+testthat::test_that("e2e - tm_g_ci: Deselecting PARAMCD filter value throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ci()
   withr::defer(app_driver$stop())
@@ -198,7 +198,7 @@ testthat::test_that("e2e - tm_g_ci: Deselecting PARAMCD filter shows validation 
   )
 })
 
-testthat::test_that("e2e - tm_g_ci: Selecting AVISIT filter value updates plot.", {
+testthat::test_that("e2e - tm_g_ci: Selecting AVISIT filter value doesn't throw validation errors.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ci()
   withr::defer(app_driver$stop())
@@ -208,7 +208,7 @@ testthat::test_that("e2e - tm_g_ci: Selecting AVISIT filter value updates plot."
   app_driver$expect_no_validation_error()
 })
 
-testthat::test_that("e2e - tm_g_ci: Deselecting AVISIT filter shows validation error.", {
+testthat::test_that("e2e - tm_g_ci: Deselecting AVISIT filter value throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ci()
   withr::defer(app_driver$stop())
@@ -221,7 +221,7 @@ testthat::test_that("e2e - tm_g_ci: Deselecting AVISIT filter shows validation e
   )
 })
 
-testthat::test_that("e2e - tm_g_ci: Selecting color column updates plot.", {
+testthat::test_that("e2e - tm_g_ci: Selecting color column changes plot output and doesn't throw validation errors.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ci()
   withr::defer(app_driver$stop())
@@ -231,7 +231,7 @@ testthat::test_that("e2e - tm_g_ci: Selecting color column updates plot.", {
   app_driver$expect_no_validation_error()
 })
 
-testthat::test_that("e2e - tm_g_ci: Deselecting color column updates plot without validation error.", {
+testthat::test_that("e2e - tm_g_ci: Deselecting color column changes plot output and doesn't throw validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ci()
   withr::defer(app_driver$stop())
@@ -241,7 +241,7 @@ testthat::test_that("e2e - tm_g_ci: Deselecting color column updates plot withou
   app_driver$expect_no_validation_error()
 })
 
-testthat::test_that("e2e - tm_g_ci: Changing confidence level updates plot.", {
+testthat::test_that("e2e - tm_g_ci: Selecting confidence interval value changes plot and doesn't throw any errors.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ci()
   withr::defer(app_driver$stop())
@@ -251,7 +251,7 @@ testthat::test_that("e2e - tm_g_ci: Changing confidence level updates plot.", {
   app_driver$expect_no_validation_error()
 })
 
-testthat::test_that("e2e - tm_g_ci: Changing statistic updates plot.", {
+testthat::test_that("e2e - tm_g_ci: Selecting statistic to use changes a plot and doesn't throw any errors.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ci()
   withr::defer(app_driver$stop())
