@@ -556,7 +556,7 @@ tm_t_coxreg <- function(label,
                         decorators = list()) {
   message("Initializing tm_t_coxreg")
   arm_var <- migrate_choices_selected_to_variables(arm_var, arg_name = "arm_var")
-  paramcd <- migrate_value_choices_to_picks(paramcd, multiple = FALSE, arg_name = "paramcd")
+  paramcd <- migrate_value_choices_to_picks(paramcd, multiple = TRUE, arg_name = "paramcd")
   cov_var <- migrate_choices_selected_to_variables(cov_var, arg_name = "cov_var")
   strata_var <- migrate_choices_selected_to_variables(strata_var, arg_name = "strata_var")
   aval_var <- migrate_choices_selected_to_variables(aval_var, arg_name = "aval_var")
