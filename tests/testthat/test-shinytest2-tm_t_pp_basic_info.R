@@ -12,8 +12,8 @@ app_driver_tm_t_pp_basic_info <- function() {
         label = "Basic Info",
         dataname = "ADSL",
         patient_col = "USUBJID",
-        vars = teal.transform::choices_selected(
-          choices = teal.transform::variable_choices(data[["ADSL"]]),
+        vars = teal.picks::variables(
+          choices = colnames(data[["ADSL"]]),
           selected = c("ARM", "AGE", "SEX", "COUNTRY", "RACE", "EOSSTT")
         ),
         pre_output = NULL,
@@ -26,15 +26,16 @@ app_driver_tm_t_pp_basic_info <- function() {
 testthat::test_that("e2e - tm_t_pp_basic_info: Module initializes in teal without errors and produces table output.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_pp_basic_info()
+  withr::defer(app_driver$stop())
   app_driver$expect_no_shiny_error()
   app_driver$expect_no_validation_error()
   app_driver$expect_visible(app_driver$namespaces(TRUE)$module("basic_info_table"))
-  app_driver$stop()
 })
 
 testthat::test_that("e2e - tm_t_pp_basic_info: Starts with specified label, patient_id, vars.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_pp_basic_info()
+  withr::defer(app_driver$stop())
   testthat::expect_equal(
     app_driver$get_text("a.nav-link.active"),
     "Basic Info"
@@ -43,11 +44,17 @@ testthat::test_that("e2e - tm_t_pp_basic_info: Starts with specified label, pati
     app_driver$get_active_module_input("patient_id"),
     "AB12345-CHN-3-id-128"
   )
-  testthat::expect_equal(
-    app_driver$get_active_module_input("vars-dataset_ADSL_singleextract-select"),
-    c("AGE", "SEX", "RACE", "COUNTRY", "ARM", "EOSSTT")
+
+  exported_values <- app_driver$get_values()$export
+  names(exported_values) <- gsub(
+    sprintf("%s-", app_driver$namespaces()$module(NULL)), "", names(exported_values),
+    fixed = TRUE
   )
-  app_driver$stop()
+
+  testthat::expect_equal(
+    exported_values[["vars-picks_resolved"]]$variables$selected,
+    c("ARM", "AGE", "SEX", "COUNTRY", "RACE", "EOSSTT")
+  )
 })
 
 testthat::test_that(
@@ -55,6 +62,7 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_pp_basic_info()
+    withr::defer(app_driver$stop())
     table_before <- app_driver$get_active_module_table_output("basic_info_table")
     app_driver$set_active_module_input("patient_id", "AB12345-USA-1-id-261")
     testthat::expect_false(
@@ -64,7 +72,6 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
   }
 )
 
@@ -73,6 +80,7 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_pp_basic_info()
+    withr::defer(app_driver$stop())
     app_driver$set_active_module_input("patient_id", NULL)
     app_driver$expect_hidden(
       app_driver$namespaces(TRUE)$module("basic_info_table"),
@@ -80,10 +88,9 @@ testthat::test_that(
     )
     app_driver$expect_validation_error()
     testthat::expect_equal(
-      app_driver$get_text(app_driver$namespaces(TRUE)$module("patient_id_input .shiny-validation-message")),
+      app_driver$get_text(app_driver$namespaces(TRUE)$module("title")),
       "Please select a patient"
     )
-    app_driver$stop()
   }
 )
 
@@ -92,11 +99,9 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_pp_basic_info()
+    withr::defer(app_driver$stop())
     table_before <- app_driver$get_active_module_table_output("basic_info_table")
-    app_driver$set_active_module_input(
-      "vars-dataset_ADSL_singleextract-select",
-      c("AGE", "BMRKR1")
-    )
+    set_teal_picks_slot(app_driver, "vars", "variables", c("AGE", "BMRKR1"))
     testthat::expect_false(
       identical(
         table_before,
@@ -104,24 +109,22 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
   }
 )
 
 testthat::test_that("e2e - tm_t_pp_basic_info: Deselection of cov_var throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_pp_basic_info()
-  app_driver$set_active_module_input("vars-dataset_ADSL_singleextract-select", NULL)
+  withr::defer(app_driver$stop())
+  set_teal_picks_slot(app_driver, "vars", "variables", character(0L))
   app_driver$expect_hidden(
     app_driver$namespaces(TRUE)$module("basic_info_table"),
     visibility_property = TRUE
   )
   app_driver$expect_validation_error()
-  testthat::expect_equal(
-    app_driver$get_text(
-      app_driver$namespaces(TRUE)$module("vars-dataset_ADSL_singleextract-select_input .shiny-validation-message")
-    ),
-    "Please select basic info variables"
+  testthat::expect_match(
+    app_driver$get_text(app_driver$namespaces(TRUE)$module("title")),
+    "Please select basic info variables",
+    fixed = TRUE
   )
-  app_driver$stop()
 })

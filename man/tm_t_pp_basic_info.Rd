@@ -22,8 +22,10 @@ tm_t_pp_basic_info(
 
 \item{patient_col}{(\code{character})\cr name of patient ID variable.}
 
-\item{vars}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr  object with all
-available choices and preselected option for variables from \code{dataname} to show in the table.}
+\item{vars}{(\code{teal.picks::variables} or \code{teal.transform::choices_selected})
+
+object specifying available choices and preselected variables from
+\code{dataname} to show in the table.}
 
 \item{pre_output}{(\code{shiny.tag}) optional,\cr with text placed before the output to put the output into context.
 For example a title.}
@@ -70,8 +72,6 @@ data <- within(data, {
 })
 join_keys(data) <- default_cdisc_join_keys[names(data)]
 
-ADSL <- data[["ADSL"]]
-
 app <- init(
   data = data,
   modules = modules(
@@ -79,9 +79,9 @@ app <- init(
       label = "Basic Info",
       dataname = "ADSL",
       patient_col = "USUBJID",
-      vars = choices_selected(
-        choices = variable_choices(ADSL),
-        selected = c("ARM", "AGE", "SEX", "COUNTRY", "RACE", "EOSSTT")
+      vars = variables(
+        c("ARM", "AGE", "SEX", "COUNTRY", "RACE", "EOSSTT"),
+        multiple = TRUE
       )
     )
   )
@@ -94,8 +94,8 @@ if (interactive()) {
 \section{Examples in Shinylive}{
 \describe{
   \item{example-1}{
-    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWolAF9FCAArIni-AGs4VlFE0Jtw-jhjKGFSPwJ+WlEyto7u3uBoeD6kuQBdVwgcgqKk4GAFMF38442tiCU0VCL46PZ0nSSdAF5n0NwnviERUTedD9hGJHhAMhkSn4Jug-PQoKIZH54sYiKDweDqFB6HBqADjgAheEyHQASQgKOOXzB6I+nhWunex1OlKe6NQHloFAmxFxjLADlyDnxACkSdkWdT0ZoWP93gQYu0CGI-KIcXB1HB+GiaRl5YqxADpYxaFiRJMFTIQac5FSdRlVSINfwAQRHicsABZSk6JkAcRceB9YFyTgAGt7jgBhADyDgAcvYAJoRsBYTKRgMpY5OaO5XK2WzHZo64vg0vNZq0Yw6djxchqDTaaw2NLU0RxCCsTLodg3AAkgloKX7qsY2kYzQaSjADQ2QA}{Open in Shinylive}
-    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWolAF9FCAArIni-AGs4VlFE0Jtw-jhjKGFSPwJ+WlEyto7u3uBoeD6kuQBdVwgcgqKk4GAFMF38442tiCU0VCL46PZ0nSSdAF5n0NwnviERUTedD9hGJHhAMhkSn4Jug-PQoKIZH54sYiKDweDqFB6HBqADjgAheEyHQASQgKOOXzB6I+nhWunex1OlKe6NQHloFAmxFxjLADlyDnxACkSdkWdT0ZoWP93gQYu0CGI-KIcXB1HB+GiaRl5YqxADpYxaFiRJMFTIQac5FSdRlVSINfwAQRHicsABZSk6JkAcRceB9YFyTgAGt7jgBhADyDgAcvYAJoRsBYTKRgMpY5OaO5XK2WzHZo64vg0vNZq0Yw6djxchqDTaaw2NLU0RxCCsTLodg3AAkgloKX7qsY2kYzQaSjADQ2QA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWolAF9FCAArIni-AGs4VlFE0Jtw-jhjKGFSPwJ+WlEyto7u3uBoeD6kuQBdV2h0Ivjo9nSdJJ0AXmPQ3CO+IRFRM50b4TFDiAyMkr8J9D96KFEZH54sYiK93u9qFB6HBqA8FGAAEL-GQ6ACSEBB8Kub3BF08K1053hOQKWKO4NQHloFAmxFhRLADlyDgRAClUdkyTjwZoWPdzrzGLQoXcwbiMgRDmBMlgALJYnTEgDiLjwirAuScAA0FfCAMIAeQcADl7ABNXVgLCZPWqlLwpwG3K5Wy2eFybHijIwca0VAiB72Zzk97NcFhnTNZq0Yw6djxchqDTaaw2NI40RxCCsTLodhoVAAEkEtBSBcLolU2kYzQaSjADQ2QA}{Open in Shinylive}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWolAF9FCAArIni-AGs4VlFE0Jtw-jhjKGFSPwJ+WlEyto7u3uBoeD6kuQBdV2h0Ivjo9nSdJJ0AXmPQ3CO+IRFRM50b4TFDiAyMkr8J9D96KFEZH54sYiK93u9qFB6HBqA8FGAAEL-GQ6ACSEBB8Kub3BF08K1053hOQKWKO4NQHloFAmxFhRLADlyDgRAClUdkyTjwZoWPdzrzGLQoXcwbiMgRDmBMlgALJYnTEgDiLjwirAuScAA0FfCAMIAeQcADl7ABNXVgLCZPWqlLwpwG3K5Wy2eFybHijIwca0VAiB72Zzk97NcFhnTNZq0Yw6djxchqDTaaw2NI40RxCCsTLodhoVAAEkEtBSBcLolU2kYzQaSjADQ2QA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
     \if{html}{\out{<a style='height: 800px; display: block;'></a>}}
   }
 }
