@@ -67,7 +67,7 @@ output_functions <- c(
 )
 
 testthat::test_that(
-  "e2e - tm_a_mmrm: Module initializes in teal without errors and displays a message to click 'Fit Model'.",
+  "e2e - tm_a_mmrm: Module initializes in teal without errors and displays a message to click 'Fit Model'",
   {
     skip_if_too_deep(5)
 
@@ -131,7 +131,7 @@ testthat::test_that(
   }
 )
 
-testthat::test_that("e2e - tm_a_mmrm: Click on fit model shows table for default selection.", {
+testthat::test_that("e2e - tm_a_mmrm: Click on fit model shows table for default selection", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_a_mmrm()
   withr::defer(app_driver$stop())
@@ -145,7 +145,7 @@ testthat::test_that("e2e - tm_a_mmrm: Click on fit model shows table for default
 
 testthat::test_that(
   "e2e - tm_a_mmrm: Function t_mmrm_lsmeans selection shows output settings; changing
-  settings throws no validation errors and verify visibility of generated tables.",
+  settings throws no validation errors and verify visibility of generated tables",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_a_mmrm()
@@ -166,7 +166,7 @@ testthat::test_that(
 
 testthat::test_that(
   "e2e - tm_a_mmrm: Function g_mmrm_lsmeans selection shows output settings; changing
-  settings throws no validation errors and verify visibility of generated plots.",
+  settings throws no validation errors and verify visibility of generated plots",
   {
     skip_if_too_deep(5)
 
@@ -213,7 +213,7 @@ testthat::test_that(
 
 testthat::test_that(
   "e2e - tm_a_mmrm: Function g_mmrm_diagnostic selection shows output settings; changing
-  settings throws no validation errors and verify visibility of generated plots.",
+  settings throws no validation errors and verify visibility of generated plots",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_a_mmrm()
@@ -243,19 +243,25 @@ testthat::test_that(
   }
 )
 
-for (func in output_functions) {
-  id_selector <- if (grepl("^g_", func)) {
-    "mmrm_plot-plot_out_main"
-  } else {
-    "mmrm_table-table_out_main"
-  }
-  testthat::test_that(
-    sprintf(
-      "e2e - tm_a_mmrm: Deselection of aval_var throws validation error in method %s.",
-      func
-    ),
-    {
-      skip_if_too_deep(5)
+testthat::describe("e2e - tm_a_mmrm: Deselection", {
+  skip_if_too_deep(5)
+  for (func in output_functions) {
+
+    expect_empty_helper <- if (grepl("^g_", func)) {
+      function(app_driver)
+        testthat::expect_identical(app_driver$get_active_module_plot_output("mmrm_plot"), character(0L))
+    } else {
+      function(app_driver) testthat::expect_identical(
+        app_driver$get_active_module_table_output("mmrm_table-table-with-settings"), data.frame()
+      )
+    }
+
+    id_selector <- if (grepl("^g_", func)) {
+      "mmrm_plot-plot_out_main"
+    } else {
+      "mmrm_table-table_out_main"
+    }
+    it(sprintf("aval_var throws validation error in method %s.", func), {
       app_driver <- app_driver_tm_a_mmrm()
       withr::defer(app_driver$stop())
       # Set initial output function
@@ -263,14 +269,7 @@ for (func in output_functions) {
       app_driver$expect_no_validation_error()
 
       set_teal_picks_slot(app_driver, "aval_var", "variables", character(0L))
-
-      if (grepl("^g_", func)) {
-        testthat::expect_identical(app_driver$get_active_module_plot_output("mmrm_plot"), character(0))
-      } else {
-        testthat::expect_identical(
-          app_driver$get_active_module_table_output("mmrm_table-table-with-settings"), data.frame()
-        )
-      }
+      expect_empty_helper(app_driver)
 
       testthat::expect_match(
         app_driver$get_text(app_driver$namespaces(TRUE)$module(id_selector)),
@@ -278,16 +277,9 @@ for (func in output_functions) {
         fixed = TRUE
       )
       app_driver$expect_validation_error()
-    }
-  )
+    })
 
-  testthat::test_that(
-    sprintf(
-      "e2e - tm_a_mmrm: Deselection paramcd throws validation error in method %s.",
-      func
-    ),
-    {
-      skip_if_too_deep(5)
+    it(sprintf("paramcd throws validation error in method %s.", func), {
       app_driver <- app_driver_tm_a_mmrm()
       withr::defer(app_driver$stop())
       # Set initial output function
@@ -295,29 +287,16 @@ for (func in output_functions) {
       app_driver$expect_no_validation_error()
 
       set_teal_picks_slot(app_driver, "paramcd", "values", character(0L))
-      if (grepl("^g_", func)) {
-        testthat::expect_identical(app_driver$get_active_module_plot_output("mmrm_plot"), character(0))
-      } else {
-        testthat::expect_identical(
-          app_driver$get_active_module_table_output("mmrm_table-table-with-settings"), data.frame()
-        )
-      }
+      expect_empty_helper(app_driver)
 
       testthat::expect_match(
         app_driver$get_text(app_driver$namespaces(TRUE)$module(id_selector)),
         "A select endpoint must be selected"
       )
       app_driver$expect_validation_error()
-    }
-  )
+    })
 
-  testthat::test_that(
-    sprintf(
-      "e2e - tm_a_mmrm: Deselection of visit_var throws validation error in method %s.",
-      func
-    ),
-    {
-      skip_if_too_deep(5)
+    it(sprintf("visit_var throws validation error in method %s.", func), {
       app_driver <- app_driver_tm_a_mmrm()
       withr::defer(app_driver$stop())
       # Set initial output function
@@ -325,29 +304,16 @@ for (func in output_functions) {
       app_driver$expect_no_validation_error()
 
       set_teal_picks_slot(app_driver, "visit_var", "variables", character(0L))
-      if (grepl("^g_", func)) {
-        testthat::expect_identical(app_driver$get_active_module_plot_output("mmrm_plot"), character(0))
-      } else {
-        testthat::expect_identical(
-          app_driver$get_active_module_table_output("mmrm_table-table-with-settings"), data.frame()
-        )
-      }
+      expect_empty_helper(app_driver)
 
       testthat::expect_match(
         app_driver$get_text(app_driver$namespaces(TRUE)$module(id_selector)),
         "A visit variable must be selected"
       )
       app_driver$expect_validation_error()
-    }
-  )
+    })
 
-  testthat::test_that(
-    sprintf(
-      "e2e - tm_a_mmrm: Deselection of arm_var throws validation error in method %s.",
-      func
-    ),
-    {
-      skip_if_too_deep(5)
+    it(sprintf("arm_var throws validation error in method %s.", func), {
       app_driver <- app_driver_tm_a_mmrm()
       withr::defer(app_driver$stop())
       # Set initial output function
@@ -355,29 +321,16 @@ for (func in output_functions) {
       app_driver$expect_no_validation_error()
 
       set_teal_picks_slot(app_driver, "arm_var", "variables", character(0L))
-      if (grepl("^g_", func)) {
-        testthat::expect_identical(app_driver$get_active_module_plot_output("mmrm_plot"), character(0))
-      } else {
-        testthat::expect_identical(
-          app_driver$get_active_module_table_output("mmrm_table-table-with-settings"), data.frame()
-        )
-      }
+      expect_empty_helper(app_driver)
 
       testthat::expect_match(
         app_driver$get_text(app_driver$namespaces(TRUE)$module(id_selector)),
         "A treatment variable must be selected"
       )
       app_driver$expect_validation_error()
-    }
-  )
+    })
 
-  testthat::test_that(
-    sprintf(
-      "e2e - tm_a_mmrm: Deselection of id_var throws validation error in method %s.",
-      func
-    ),
-    {
-      skip_if_too_deep(5)
+    it(sprintf("id_var throws validation error in method %s.", func), {
       app_driver <- app_driver_tm_a_mmrm()
       withr::defer(app_driver$stop())
       # Set initial output function
@@ -385,29 +338,16 @@ for (func in output_functions) {
       app_driver$expect_no_validation_error()
 
       set_teal_picks_slot(app_driver, "id_var", "variables", character(0L))
-      if (grepl("^g_", func)) {
-        testthat::expect_identical(app_driver$get_active_module_plot_output("mmrm_plot"), character(0))
-      } else {
-        testthat::expect_identical(
-          app_driver$get_active_module_table_output("mmrm_table-table-with-settings"), data.frame()
-        )
-      }
+      expect_empty_helper(app_driver)
 
       testthat::expect_match(
         app_driver$get_text(app_driver$namespaces(TRUE)$module(id_selector)),
         "A subject identifier must be selected"
       )
       app_driver$expect_validation_error()
-    }
-  )
+    })
 
-  testthat::test_that(
-    sprintf(
-      "e2e - tm_a_mmrm: Deselection of conf_level throws validation error in method %s.",
-      func
-    ),
-    {
-      skip_if_too_deep(5)
+    it(sprintf("of conf_level throws validation error in method %s.", func), {
       app_driver <- app_driver_tm_a_mmrm()
       withr::defer(app_driver$stop())
       # Set initial output function
@@ -415,61 +355,52 @@ for (func in output_functions) {
       app_driver$expect_no_validation_error()
 
       app_driver$set_active_module_input("conf_level", numeric(0L))
-      if (grepl("^g_", func)) {
-        testthat::expect_identical(app_driver$get_active_module_plot_output("mmrm_plot"), character(0))
-      } else {
-        testthat::expect_identical(
-          app_driver$get_active_module_table_output("mmrm_table-table-with-settings"), data.frame()
-        )
-      }
+      expect_empty_helper(app_driver)
 
       testthat::expect_match(
         app_driver$get_text(app_driver$namespaces(TRUE)$module(id_selector)),
         "A confidence level must be selected"
       )
       app_driver$expect_validation_error()
-    }
+    })
+  }
+})
+
+testthat::describe("e2e - tm_a_mmrm: Validate output on different selection on method", {
+  skip_if_too_deep(5)
+
+  input_list <- list(
+    "aval_var" = quote(set_teal_picks_slot(app_driver, "aval_var", "variables", "CHG")),
+    "paramcd" = quote(set_teal_picks_slot(app_driver, "paramcd", "values", "BFIALL")),
+    "visit_var" = quote(set_teal_picks_slot(app_driver, "visit_var", "variables", "AVISITN")),
+    "cov_var" = quote(set_teal_picks_slot(app_driver, "cov_var", "variables", "AGE")),
+    "arm_var" = quote(set_teal_picks_slot(app_driver, "arm_var", "variables", "ARMCD")),
+    "combine_comp_arms" = TRUE,
+    "id_var" = quote(set_teal_picks_slot(app_driver, "id_var", "variables", "SUBJID")),
+    "weights_emmeans" = "equal",
+    "cor_struct" = "ante-dependence",
+    "conf_level" = "0.8",
+    "method" = "Kenward-Roger"
   )
-}
 
-input_list <- list(
-  "aval_var" = quote(set_teal_picks_slot(app_driver, "aval_var", "variables", "CHG")),
-  "paramcd" = quote(set_teal_picks_slot(app_driver, "paramcd", "values", "BFIALL")),
-  "visit_var" = quote(set_teal_picks_slot(app_driver, "visit_var", "variables", "AVISITN")),
-  "cov_var" = quote(set_teal_picks_slot(app_driver, "cov_var", "variables", "AGE")),
-  "arm_var" = quote(set_teal_picks_slot(app_driver, "arm_var", "variables", "ARMCD")),
-  "combine_comp_arms" = TRUE,
-  "id_var" = quote(set_teal_picks_slot(app_driver, "id_var", "variables", "SUBJID")),
-  "weights_emmeans" = "equal",
-  "cor_struct" = "ante-dependence",
-  "conf_level" = "0.8",
-  "method" = "Kenward-Roger"
-)
-
-non_responsive_conditions <- list(
-  "g_mmrm_lsmeans" = c("id_var"),
-  "g_mmrm_diagnostic" = c(
-    "arm_var",
-    "id_var",
-    "weights_emmeans",
-    "cor_struct",
-    "conf_level",
-    "method"
+  non_responsive_conditions <- list(
+    "g_mmrm_lsmeans" = c("id_var"),
+    "g_mmrm_diagnostic" = c(
+      "arm_var",
+      "id_var",
+      "weights_emmeans",
+      "cor_struct",
+      "conf_level",
+      "method"
+    )
   )
-)
-# TODO: Remove the conditional skipping logic once the following issues are resolved:
-# Issue 1153: https://github.com/insightsengineering/teal.modules.clinical/issues/1153
-# Issue 1151: https://github.com/insightsengineering/teal.modules.clinical/issues/1151
+  # TODO: Remove the conditional skipping logic once the following issues are resolved:
+  # Issue 1153: https://github.com/insightsengineering/teal.modules.clinical/issues/1153
+  # Issue 1151: https://github.com/insightsengineering/teal.modules.clinical/issues/1151
 
-# Iterate over each output function
-for (func in output_functions) {
-  testthat::test_that(
-    sprintf(
-      "e2e - tm_a_mmrm: Validate output on different selection on method %s.",
-      func
-    ),
-    {
-      skip_if_too_deep(5)
+  # Iterate over each output function
+  for (func in output_functions) {
+    it(func, {
       app_driver <- app_driver_tm_a_mmrm()
       withr::defer(app_driver$stop())
       # Set initial output function
@@ -516,6 +447,6 @@ for (func in output_functions) {
           )
         }
       }
-    }
-  )
-}
+    })
+  }
+})
