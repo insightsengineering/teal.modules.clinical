@@ -34,6 +34,7 @@ BugReports:
 Depends:
     R (>= 4.4),
     teal (>= 1.1.0.9029),
+    teal.picks (>= 0.1.0.9212),
     teal.transform (>= 0.7.0),
     tern (>= 0.9.9)
 Imports:
@@ -64,6 +65,7 @@ Imports:
     teal.widgets (>= 0.5.0),
     tern.gee (>= 0.1.5),
     tern.mmrm (>= 0.3.3),
+    tidyselect (>= 1.2.0),
     utils,
     vistime (>= 1.2.3)
 Suggests:
@@ -83,8 +85,9 @@ VignetteBuilder:
     knitr,
     rmarkdown
 Remotes:
-    insightsengineering/teal,
-    insightsengineering/teal.reporter
+    insightsengineering/teal@redesign_extraction@main,
+    insightsengineering/teal.transform,
+    insightsengineering/teal.picks
 Config/Needs/verdepcheck: insightsengineering/teal,
     insightsengineering/teal.slice, insightsengineering/teal.transform,
     insightsengineering/tern, tidymodels/broom, mllg/checkmate,
@@ -100,11 +103,12 @@ Config/Needs/verdepcheck: insightsengineering/teal,
     shosaco/vistime, tidyverse/forcats, yihui/knitr, tidyverse/lubridate,
     insightsengineering/nestcolor, r-lib/pkgload,
     insightsengineering/roxy.shinylive, tidyverse/rvest,
-    rstudio/shinytest2, r-lib/styler, r-lib/testthat, r-lib/withr
+    rstudio/shinytest2, r-lib/styler, r-lib/testthat, r-lib/tidyselect,
+    r-lib/withr
 Config/Needs/website: insightsengineering/nesttemplate
 Config/testthat/edition: 3
 Encoding: UTF-8
 Language: en-US
 LazyData: true
 Roxygen: list(markdown = TRUE, packages = c("roxy.shinylive"))
-RoxygenNote: 7.3.3
+Config/roxygen2/version: 8.0.0

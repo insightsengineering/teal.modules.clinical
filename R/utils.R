@@ -464,6 +464,20 @@ split_choices <- function(x) {
   split_x
 }
 
+split_choices_variables <- function(x) {
+  checkmate::assert_class(x, "variables")
+  if (!checkmate::test_character(x$choices, min.len = 1) ||
+    !checkmate::test_character(x$selected, min.len = 1)) {
+    return(x)
+  }
+
+  split_x <- x
+  split_x$choices <- split_interactions(x$choices)
+  split_x$selected <- split_interactions(x$selected)
+
+  split_x
+}
+
 #' Extracts html id for `data_extract_ui`
 #'
 #' The `data_extract_ui` is located under extended html id. We could not use `ns("original id")`
@@ -512,8 +526,6 @@ extract_input <- function(varname, dataname, filter = FALSE) {
 split_interactions <- function(x, by = "\\*|:") {
   if (length(x) >= 1) {
     unique(unlist(strsplit(x, split = by)))
-  } else {
-    NULL
   }
 }
 
@@ -893,6 +905,30 @@ get_paramcd_label <- function(anl, paramcd) {
     }
     label_paramcd
   })
+}
+
+#' Title label for parameter code(s) from analysis data (picks-based modules)
+#'
+#' @param anl (`data.frame`)\cr analysis dataset after filtering.
+#' @param paramcd_name (`character(1)`)\cr column name for parameter code (e.g. `PARAMCD`).
+#' @param paramcd_vals (`character`)\cr selected parameter code value(s).
+#'
+#' @return A single string suitable for table titles.
+#' @keywords internal
+paramcd_title_from_anl <- function(anl, paramcd_name, paramcd_vals) {
+  if (!length(paramcd_vals)) {
+    return("")
+  }
+  paramcd_vals <- unique(as.character(paramcd_vals))
+  if ("PARAM" %in% names(anl)) {
+    lbl <- vapply(paramcd_vals, function(v) {
+      idx <- which(anl[[paramcd_name]] == v)
+      if (length(idx)) as.character(anl[["PARAM"]][idx[1]]) else v
+    }, character(1))
+    paste(lbl, collapse = ", ")
+  } else {
+    paste(paramcd_vals, collapse = ", ")
+  }
 }
 
 as_numeric_from_comma_sep_str <- function(input_string, sep = ",") {

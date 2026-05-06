@@ -111,7 +111,7 @@ the variables that should be summarized.}
 all available choices and preselected option for variable names that can be used as the default subgroups.}
 
 \item{time_points}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all available choices and preselected option
-for time points that can be used in \code{\link[tern:survival_timepoint]{tern::surv_timepoint()}}.}
+for time points that can be used in \code{\link[tern:surv_timepoint]{tern::surv_timepoint()}}.}
 
 \item{time_unit_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object
 with all available choices and pre-selected option for the time unit variable.}
@@ -128,7 +128,7 @@ treatment flag variable.}
 all available choices and preselected option for variable names that can be used as \code{visit} variable.
 Must be a factor in \code{dataname}.}
 
-\item{worst_flag_indicator}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr
+\item{worst_flag_indicator}{(\code{\link[teal.picks:values]{teal.picks::values()}})\cr
 value indicating worst grade.}
 
 \item{worst_flag_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object

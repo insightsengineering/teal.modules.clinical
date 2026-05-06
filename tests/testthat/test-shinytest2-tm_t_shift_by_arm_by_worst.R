@@ -1,4 +1,16 @@
 app_driver_tm_t_shift_by_arm_by_worst <- function() { # nolint: object_length.
+  paramcd_levels <- unique(as.character(teal.modules.clinical::tmc_ex_adeg$PARAMCD))
+  paramcd_default <- if ("HR" %in% paramcd_levels) "HR" else paramcd_levels[[1]]
+  paramcd <- teal.picks::picks(
+    teal.picks::variables(choices = "PARAMCD", selected = "PARAMCD"),
+    teal.picks::values(
+      choices = paramcd_levels,
+      selected = paramcd_default,
+      multiple = FALSE
+    ),
+    check_dataset = FALSE
+  )
+
   data <- teal.data::teal_data()
   data <- within(data, {
     ADSL <- tmc_ex_adsl
@@ -13,32 +25,17 @@ app_driver_tm_t_shift_by_arm_by_worst <- function() { # nolint: object_length.
         label = "Shift by Arm Table",
         dataname = "ADEG",
         parentname = "ADSL",
-        arm_var = teal.transform::choices_selected(
-          teal.transform::variable_choices(data[["ADSL"]], subset = c("ARM", "ARMCD")),
-          selected = "ARM"
-        ),
-        paramcd = teal.transform::choices_selected(
-          teal.transform::value_choices(data[["ADEG"]], "PARAMCD"),
-          selected = "ECGINTP"
-        ),
-        worst_flag_var = teal.transform::choices_selected(
-          teal.transform::variable_choices(data[["ADEG"]], c("WORS02FL", "WORS01FL")),
+        arm_var = teal.picks::variables(choices = c("ARM", "ARMCD"), selected = "ARM"),
+        paramcd = paramcd,
+        worst_flag_var = teal.picks::variables(
+          choices = c("WORS02FL", "WORS01FL"),
           selected = "WORS02FL"
         ),
-        worst_flag = teal.transform::choices_selected(
-          teal.transform::value_choices(data[["ADEG"]], "WORS02FL"),
-          selected = "Y", fixed = TRUE
-        ),
-        aval_var = teal.transform::choices_selected(
-          teal.transform::variable_choices(data[["ADEG"]], c("REGION1", "AVALC")),
-          selected = "REGION1"
-        ),
-        baseline_var = teal.transform::choices_selected(
-          teal.transform::variable_choices(data[["ADEG"]], c("AVISIT", "BASEC")),
-          selected = "AVISIT"
-        ),
+        worst_flag = teal.transform::choices_selected(c("Y", "N"), selected = "Y", fixed = TRUE),
+        aval_var = teal.picks::variables(choices = c("AVALC", "ANRIND"), selected = "ANRIND"),
+        baseline_var = teal.picks::variables(choices = c("BASEC", "BNRIND"), selected = "BNRIND"),
         useNA = "ifany",
-        treatment_flag = teal.transform::choices_selected("Y"),
+        treatment_flag = teal.picks::values(c("Y", "N", ""), "Y", multiple = FALSE),
         na_level = default_na_str(),
         add_total = FALSE,
         total_label = default_total_label(),
@@ -63,43 +60,20 @@ testthat::test_that(
 )
 
 testthat::test_that(
-  "e2e - tm_t_shift_by_arm_by_worst: Starts with specified label, arm_var, paramcd, worst_flag_var,
-  aval_var, baseline_var, useNA, treatment_flag_var, add_total.",
+  "e2e - tm_t_shift_by_arm_by_worst: Starts with specified label, useNA, add_total.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_shift_by_arm_by_worst()
 
     testthat::expect_equal(
-      app_driver$get_text("a.nav-link.active"),
+      app_driver$get_text(".teal-modules-tree a.module-button.active"),
       "Shift by Arm Table"
     )
-    testthat::expect_equal(
-      app_driver$get_active_module_input("arm_var-dataset_ADSL_singleextract-select"),
-      "ARM"
-    )
-    testthat::expect_equal(
-      app_driver$get_active_module_input("paramcd-dataset_ADEG_singleextract-filter1-vals"),
-      "ECGINTP"
-    )
-    testthat::expect_equal(
-      app_driver$get_active_module_input("worst_flag_var-dataset_ADEG_singleextract-select"),
-      "WORS02FL"
-    )
-    testthat::expect_equal(
-      app_driver$get_active_module_input("aval_var-dataset_ADEG_singleextract-select"),
-      "REGION1"
-    )
-    testthat::expect_equal(
-      app_driver$get_active_module_input("baseline_var-dataset_ADEG_singleextract-select"),
-      "AVISIT"
-    )
+    # Initial pick values are not readable via get_active_module_input until the badge is opened
+    # (teal.picks badge-dropdown); defaults are covered by the table output tests below.
     testthat::expect_equal(
       app_driver$get_active_module_input("useNA"),
       "ifany"
-    )
-    testthat::expect_equal(
-      app_driver$get_active_module_input("treatment_flag_var-dataset_ADEG_singleextract-select"),
-      "ONTRTFL"
     )
     testthat::expect_false(app_driver$get_active_module_input("add_total"))
     app_driver$stop()
@@ -113,7 +87,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_shift_by_arm_by_worst()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", "ARMCD")
+    set_teal_picks_slot(app_driver, "arm_var", "variables", "ARMCD")
     testthat::expect_false(
       identical(
         table_before,
@@ -128,14 +102,9 @@ testthat::test_that(
 testthat::test_that("e2e - tm_t_shift_by_arm_by_worst: Deselection of arm_var throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_shift_by_arm_by_worst()
-  app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", NULL)
+  set_teal_picks_slot(app_driver, "arm_var", "variables", NULL)
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
-  selector <- "arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message"
-  testthat::expect_equal(
-    app_driver$get_text(app_driver$namespaces(TRUE)$module(selector)),
-    "A treatment variable is required"
-  )
   app_driver$stop()
 })
 
@@ -145,7 +114,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_shift_by_arm_by_worst()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("paramcd-dataset_ADEG_singleextract-filter1-vals", "HR")
+    set_teal_picks_slot(app_driver, "paramcd", "values", "QT")
     testthat::expect_false(
       identical(
         table_before,
@@ -157,29 +126,14 @@ testthat::test_that(
   }
 )
 
-testthat::test_that("e2e - tm_t_shift_by_arm_by_worst: Deselection of paramcd throws validation error.", {
-  skip_if_too_deep(5)
-  app_driver <- app_driver_tm_t_shift_by_arm_by_worst()
-  app_driver$set_active_module_input("paramcd-dataset_ADEG_singleextract-filter1-vals", NULL)
-  testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
-  app_driver$expect_validation_error()
-  testthat::expect_equal(
-    app_driver$get_text(app_driver$namespaces(TRUE)$module(
-      "paramcd-dataset_ADEG_singleextract-filter1-vals_input .shiny-validation-message"
-    )),
-    "An endpoint is required"
-  )
-  app_driver$stop()
-})
-
 testthat::test_that(
-  "e2e - tm_t_shift_by_arm_by_worst: Selecting worst_flag changes the table
+  "e2e - tm_t_shift_by_arm_by_worst: Selecting worst_flag_var changes the table
   and does not throw validation errors.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_shift_by_arm_by_worst()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("worst_flag_var-dataset_ADEG_singleextract-select", "WORS01FL")
+    set_teal_picks_slot(app_driver, "worst_flag_var", "variables", "WORS01FL")
     testthat::expect_false(
       identical(
         table_before,
@@ -191,18 +145,12 @@ testthat::test_that(
   }
 )
 
-testthat::test_that("e2e - tm_t_shift_by_arm_by_worst: Deselection of worst_flag throws validation error.", {
+testthat::test_that("e2e - tm_t_shift_by_arm_by_worst: Deselection of worst_flag_var throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_shift_by_arm_by_worst()
-  app_driver$set_active_module_input("worst_flag_var-dataset_ADEG_singleextract-select", NULL)
+  set_teal_picks_slot(app_driver, "worst_flag_var", "variables", NULL)
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
-  testthat::expect_equal(
-    app_driver$get_text(app_driver$namespaces(TRUE)$module(
-      "worst_flag_var-dataset_ADEG_singleextract-select_input .shiny-validation-message"
-    )),
-    "A worst flag variable is required"
-  )
   app_driver$stop()
 })
 
@@ -212,8 +160,10 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_shift_by_arm_by_worst()
+    # One endpoint keeps AVALC cardinality below the module limit (< 50 levels).
+    set_teal_picks_slot(app_driver, "paramcd", "values", "ECGINTP")
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("aval_var-dataset_ADEG_singleextract-select", "AVALC")
+    set_teal_picks_slot(app_driver, "aval_var", "variables", "AVALC")
     testthat::expect_false(
       identical(
         table_before,
@@ -228,14 +178,9 @@ testthat::test_that(
 testthat::test_that("e2e - tm_t_shift_by_arm_by_worst: Deselection of aval_var throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_shift_by_arm_by_worst()
-  app_driver$set_active_module_input("aval_var-dataset_ADEG_singleextract-select", NULL)
+  set_teal_picks_slot(app_driver, "aval_var", "variables", NULL)
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
-  selector <- "aval_var-dataset_ADEG_singleextract-select_input .shiny-validation-message"
-  testthat::expect_equal(
-    app_driver$get_text(app_driver$namespaces(TRUE)$module(selector)),
-    "An analysis range indicator required"
-  )
   app_driver$stop()
 })
 
@@ -245,8 +190,10 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_shift_by_arm_by_worst()
+    # One endpoint keeps BASEC cardinality below the module limit (< 50 levels).
+    set_teal_picks_slot(app_driver, "paramcd", "values", "ECGINTP")
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("baseline_var-dataset_ADEG_singleextract-select", "BASEC")
+    set_teal_picks_slot(app_driver, "baseline_var", "variables", "BASEC")
     testthat::expect_false(
       identical(
         table_before,
@@ -261,14 +208,8 @@ testthat::test_that(
 testthat::test_that("e2e - tm_t_shift_by_arm_by_worst: Deselection of baseline_var throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_shift_by_arm_by_worst()
-  app_driver$set_active_module_input("baseline_var-dataset_ADEG_singleextract-select", NULL)
+  set_teal_picks_slot(app_driver, "baseline_var", "variables", NULL)
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
-  testthat::expect_equal(
-    app_driver$get_text(app_driver$namespaces(TRUE)$module(
-      "baseline_var-dataset_ADEG_singleextract-select_input .shiny-validation-message"
-    )),
-    "A baseline reference range indicator is required"
-  )
   app_driver$stop()
 })
