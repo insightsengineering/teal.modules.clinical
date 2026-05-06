@@ -20,14 +20,18 @@ app_driver_tm_t_exposure <- function() {
   })
   teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
 
-  app_driver <- init_teal_app_driver(
+  app_driver <- suppressWarnings(init_teal_app_driver(
     teal::init(
       data = data,
       modules = tm_t_exposure(
         label = "Duration of Exposure Table",
         dataname = "ADEX",
         parentname = "ADSL",
-        paramcd = teal.picks::variables(choices = "PARAMCD"),
+        paramcd = teal.picks::picks(
+          teal.picks::variables(choices = "PARAMCD"),
+          teal.picks::values(selected = "TDURD", multiple = FALSE),
+          check_dataset = FALSE
+        ),
         col_by_var = teal.picks::variables(
           choices = c("SEX", "ARM"),
           selected = "SEX"
@@ -36,7 +40,11 @@ app_driver_tm_t_exposure <- function() {
           choices = c("RACE", "REGION1", "STRATA1", "SEX"),
           selected = "RACE"
         ),
-        parcat = teal.picks::variables(choices = "PARCAT2"),
+        parcat = teal.picks::picks(
+          teal.picks::variables(choices = "PARCAT2"),
+          teal.picks::values(selected = "Drug A", multiple = FALSE),
+          check_dataset = FALSE
+        ),
         add_total = FALSE,
         paramcd_label = "PARAM",
         id_var = teal.picks::variables(choices = "USUBJID"),
@@ -52,11 +60,7 @@ app_driver_tm_t_exposure <- function() {
       ),
       filter = teal::teal_slices(teal_slice("ADSL", "SAFFL", selected = "Y")),
     )
-  )
-  # Default picks select all param / parcat values; merged ADEX then has multiple AVALU
-  # (Days vs mg) and the module requires exactly one unit. Match a single endpoint + category.
-  set_teal_picks_slot(app_driver, "paramcd", "values", "TDURD")
-  set_teal_picks_slot(app_driver, "parcat", "values", "Drug A")
+  ))
   app_driver
 }
 
