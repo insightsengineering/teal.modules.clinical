@@ -448,11 +448,14 @@ template_events <- function(dataname,
 #' @inheritParams module_arguments
 #' @inheritParams teal::module
 #' @inheritParams template_events
-#' @param arm_var ([teal.transform::choices_selected()])\cr object with all
-#'   available choices and preselected option for variable names that can be used as `arm_var`.
-#'   It defines the grouping variable(s) in the results table.
+#' @param arm_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr specification of variable names that can be used as
+#'   `arm_var`. It defines the grouping variable(s) in the results table.
 #'   If there are two elements selected for `arm_var`,
 #'   second variable will be nested under the first variable.
+#' @param hlt ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr specification of the analysis variable used as the
+#'   high level term for event grouping.
+#' @param llt ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr specification of the analysis variable used as the
+#'   low level term for event grouping.
 #'
 #' @inherit module_arguments return seealso
 #'
@@ -504,13 +507,16 @@ template_events <- function(dataname,
 #'     tm_t_events(
 #'       label = "Adverse Event Table",
 #'       dataname = "ADAE",
-#'       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-#'       llt = choices_selected(
-#'         choices = variable_choices(ADAE, c("AETERM", "AEDECOD")),
-#'         selected = c("AEDECOD")
+#'       arm_var = variables(
+#'         choices = c("ARM", "ARMCD"),
+#'         selected = "ARM"
 #'       ),
-#'       hlt = choices_selected(
-#'         choices = variable_choices(ADAE, c("AEBODSYS", "AESOC")),
+#'       llt = variables(
+#'         choices = c("AETERM", "AEDECOD"),
+#'         selected = "AEDECOD"
+#'       ),
+#'       hlt = variables(
+#'         choices = c("AEBODSYS", "AESOC"),
 #'         selected = "AEBODSYS"
 #'       ),
 #'       add_total = TRUE,
@@ -525,11 +531,7 @@ template_events <- function(dataname,
 #' @export
 tm_t_events <- function(label,
                         dataname,
-                        parentname = ifelse(
-                          inherits(arm_var, "data_extract_spec"),
-                          teal.transform::datanames_input(arm_var),
-                          "ADSL"
-                        ),
+                        parentname = "ADSL",
                         arm_var,
                         hlt,
                         llt,
@@ -549,12 +551,12 @@ tm_t_events <- function(label,
                         transformators = list(),
                         decorators = list()) {
   message("Initializing tm_t_events")
+  arm_var <- migrate_choices_selected_to_variables(arm_var, arg_name = "arm_var")
+  hlt <- migrate_choices_selected_to_variables(hlt, arg_name = "hlt")
+  llt <- migrate_choices_selected_to_variables(llt, arg_name = "llt")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
-  checkmate::assert_class(arm_var, "choices_selected")
-  checkmate::assert_class(hlt, "choices_selected")
-  checkmate::assert_class(llt, "choices_selected")
   checkmate::assert_string(event_type)
   checkmate::assert_flag(add_total)
   checkmate::assert_string(total_label)
@@ -570,44 +572,38 @@ tm_t_events <- function(label,
   checkmate::assert_class(basic_table_args, "basic_table_args")
   teal::assert_decorators(decorators, "table")
 
-  args <- as.list(environment())
 
-  data_extract_list <- list(
-    arm_var = cs_to_des_select(arm_var, dataname = parentname, multiple = TRUE, ordered = TRUE),
-    hlt = cs_to_des_select(hlt, dataname = dataname),
-    llt = cs_to_des_select(llt, dataname = dataname)
-  )
+  arm_var <- create_picks_helper(teal.picks::datasets(parentname, parentname), arm_var)
+  hlt <- create_picks_helper(teal.picks::datasets(dataname, dataname), hlt)
+  llt <- create_picks_helper(teal.picks::datasets(dataname, dataname), llt)
+
+  args <- as.list(environment())
 
   module(
     label = label,
     ui = ui_t_events_byterm,
     server = srv_t_events_byterm,
-    ui_args = c(data_extract_list, args),
-    server_args = c(
-      data_extract_list,
-      list(
-        dataname = dataname,
-        parentname = parentname,
-        event_type = event_type,
-        label = label,
-        total_label = total_label,
-        na_level = na_level,
-        sort_freq_col = sort_freq_col,
-        incl_overall_sum = incl_overall_sum,
-        basic_table_args = basic_table_args,
-        decorators = decorators
-      )
-    ),
+    ui_args = args[names(args) %in% names(formals(ui_t_events_byterm))],
+    server_args = args[names(args) %in% names(formals(srv_t_events_byterm))],
     transformators = transformators,
-    datanames = teal.transform::get_extract_datanames(data_extract_list)
+    datanames = union(parentname, dataname)
   )
 }
 
 #' @keywords internal
-ui_t_events_byterm <- function(id, ...) {
+ui_t_events_byterm <- function(id,
+                               arm_var,
+                               hlt,
+                               llt,
+                               add_total,
+                               drop_arm_levels,
+                               sort_criteria,
+                               prune_freq,
+                               prune_diff,
+                               pre_output,
+                               post_output,
+                               decorators) {
   ns <- NS(id)
-  a <- list(...)
-  is_single_dataset_value <- teal.transform::is_single_dataset(a$arm_var, a$hlt, a$llt)
 
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(
@@ -615,70 +611,61 @@ ui_t_events_byterm <- function(id, ...) {
     ),
     encoding = tags$div(
       tags$label("Encodings", class = "text-primary"), tags$br(),
-      teal.transform::datanames_input(a[c("arm_var", "hlt", "llt")]),
-      teal.transform::data_extract_ui(
-        id = ns("arm_var"),
-        label = "Select Treatment Variable",
-        data_extract_spec = a$arm_var,
-        is_single_dataset = is_single_dataset_value
+      tags$div(
+        tags$label("Select Treatment Variable"),
+        teal.picks::picks_ui(ns("arm_var"), arm_var)
       ),
-      teal.transform::data_extract_ui(
-        id = ns("hlt"),
-        label = "Event High Level Term",
-        data_extract_spec = a$hlt,
-        is_single_dataset = is_single_dataset_value
+      tags$div(
+        tags$label("Event High Level Term"),
+        teal.picks::picks_ui(ns("hlt"), hlt)
       ),
-      teal.transform::data_extract_ui(
-        id = ns("llt"),
-        label = "Event Low Level Term",
-        data_extract_spec = a$llt,
-        is_single_dataset = is_single_dataset_value
+      tags$div(
+        tags$label("Event Low Level Term"),
+        teal.picks::picks_ui(ns("llt"), llt)
       ),
-      checkboxInput(ns("add_total"), "Add All Patients columns", value = a$add_total),
-      teal::ui_transform_teal_data(ns("decorator"), transformators = select_decorators(a$decorators, "table")),
-      bslib::accordion(
+      checkboxInput(ns("add_total"), "Add All Patients columns", value = add_total),
+      teal::ui_transform_teal_data(ns("decorator"), transformators = select_decorators(decorators, "table")),
+      bslib::accordion_panel(
+        "Additional table settings",
         open = TRUE,
-        bslib::accordion_panel(
-          "Additional table settings",
-          checkboxInput(
-            ns("drop_arm_levels"),
-            label = "Drop columns not in filtered analysis dataset",
-            value = a$drop_arm_levels
+        checkboxInput(
+          ns("drop_arm_levels"),
+          label = "Drop columns not in filtered analysis dataset",
+          value = drop_arm_levels
+        ),
+        selectInput(
+          inputId = ns("sort_criteria"),
+          label = "Sort Criteria",
+          choices = c(
+            "Decreasing frequency" = "freq_desc",
+            "Alphabetically" = "alpha"
           ),
-          selectInput(
-            inputId = ns("sort_criteria"),
-            label = "Sort Criteria",
-            choices = c(
-              "Decreasing frequency" = "freq_desc",
-              "Alphabetically" = "alpha"
-            ),
-            selected = a$sort_criteria,
-            multiple = FALSE
-          ),
-          helpText(tags$strong("Pruning Options:")),
-          numericInput(
-            inputId = ns("prune_freq"),
-            label = "Minimum Incidence Rate(%) in any of the treatment groups",
-            value = a$prune_freq,
-            min = 0,
-            max = 100,
-            step = 1,
-            width = "100%"
-          ),
-          numericInput(
-            inputId = ns("prune_diff"),
-            label = "Minimum Difference Rate(%) between any of the treatment groups",
-            value = a$prune_diff,
-            min = 0,
-            max = 100,
-            step = 1,
-            width = "100%"
-          )
+          selected = sort_criteria,
+          multiple = FALSE
+        ),
+        helpText(tags$strong("Pruning Options:")),
+        numericInput(
+          inputId = ns("prune_freq"),
+          label = "Minimum Incidence Rate(%) in any of the treatment groups",
+          value = prune_freq,
+          min = 0,
+          max = 100,
+          step = 1,
+          width = "100%"
+        ),
+        numericInput(
+          inputId = ns("prune_diff"),
+          label = "Minimum Difference Rate(%) between any of the treatment groups",
+          value = prune_diff,
+          min = 0,
+          max = 100,
+          step = 1,
+          width = "100%"
         )
       )
     ),
-    pre_output = a$pre_output,
-    post_output = a$post_output
+    pre_output = pre_output,
+    post_output = post_output
   )
 }
 
@@ -704,78 +691,49 @@ srv_t_events_byterm <- function(id,
 
   moduleServer(id, function(input, output, session) {
     teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
-    selector_list <- teal.transform::data_extract_multiple_srv(
-      data_extract = list(arm_var = arm_var, hlt = hlt, llt = llt),
-      datasets = data,
-      select_validation_rule = list(
-        arm_var = ~ if (length(.) != 1 && length(.) != 2) {
-          "Please select 1 or 2 treatment variable values"
-        },
-        hlt = ~ if (length(selector_list()$llt()$select) + length(.) == 0) {
-          "Please select at least one of \"LOW LEVEL TERM\" or \"HIGH LEVEL TERM\" variables."
-        },
-        llt = ~ if (length(selector_list()$hlt()$select) + length(.) == 0) {
-          "Please select at least one of \"LOW LEVEL TERM\" or \"HIGH LEVEL TERM\" variables."
-        }
-      )
+
+    selectors <- teal.picks::picks_srv(
+      id = "",
+      picks = list(arm_var = arm_var, hlt = hlt, llt = llt),
+      data = data
     )
 
-    iv_r <- reactive({
-      iv <- shinyvalidate::InputValidator$new()
-      iv$add_rule("prune_freq", shinyvalidate::sv_required("Please provide an Incidence Rate between 0 and 100 (%)."))
-      iv$add_rule(
-        "prune_freq",
-        shinyvalidate::sv_between(0, 100, message_fmt = "Please provide an Incidence Rate between 0 and 100 (%).")
-      )
-      iv$add_rule("prune_diff", shinyvalidate::sv_required("Please provide a Difference Rate between 0 and 100 (%)."))
-      iv$add_rule(
-        "prune_diff",
-        shinyvalidate::sv_between(0, 100, message_fmt = "Please provide a Difference Rate between 0 and 100 (%).")
-      )
-      teal.transform::compose_and_enable_validators(iv, selector_list)
-    })
+    anl_selectors <- selectors
+    adsl_selectors <- selectors["arm_var"]
 
-    anl_inputs <- teal.transform::merge_expression_srv(
-      datasets = data,
-      selector_list = selector_list,
-      merge_function = "dplyr::inner_join"
-    )
-
-    adsl_inputs <- teal.transform::merge_expression_module(
-      datasets = data,
-      data_extract = list(arm_var = arm_var),
-      anl_name = "ANL_ADSL"
-    )
-
-    anl_q <- reactive({
+    data_with_card <- reactive({
       obj <- data()
       teal.reporter::teal_card(obj) <-
         c(
           teal.reporter::teal_card(obj),
           teal.reporter::teal_card("## Module's output(s)")
         )
-      obj %>%
-        teal.code::eval_code(as.expression(anl_inputs()$expr)) %>%
-        teal.code::eval_code(as.expression(adsl_inputs()$expr))
+      obj
     })
-
-    merged <- list(
-      anl_input_r = anl_inputs,
-      adsl_input_r = adsl_inputs,
-      anl_q = anl_q
+    merged_anl <- merge_srv(
+      "merge_anl",
+      data = data_with_card, selectors = anl_selectors, output_name = "ANL"
     )
+    merged_adsl_anl <- merge_srv(
+      "merge_adsl_anl",
+      data = merged_anl$data, selectors = adsl_selectors, output_name = "ANL_ADSL"
+    )
+    anl_q <- merged_adsl_anl$data
 
     validate_checks <- reactive({
-      teal::validate_inputs(iv_r())
+      adsl_filtered <- anl_q()[[parentname]]
+      anl_filtered <- anl_q()[[dataname]]
 
-      adsl_filtered <- merged$anl_q()[[parentname]]
-      anl_filtered <- merged$anl_q()[[dataname]]
-
-      input_arm_var <- as.vector(merged$anl_input_r()$columns_source$arm_var)
+      input_arm_var <- anl_selectors$arm_var()$variables$selected
       input_level_term <- c(
-        as.vector(merged$anl_input_r()$columns_source$hlt),
-        as.vector(merged$anl_input_r()$columns_source$llt)
+        anl_selectors$hlt()$variables$selected,
+        anl_selectors$llt()$variables$selected
       )
+
+      validate(shiny::need(
+        length(input_arm_var) >= 1L,
+        "Please select a treatment variable."
+      ))
 
       validate(
         if (length(input_arm_var) >= 1) {
@@ -804,17 +762,17 @@ srv_t_events_byterm <- function(id,
     # The R-code corresponding to the analysis.
     table_q <- reactive({
       validate_checks()
-      ANL <- merged$anl_q()[["ANL"]]
+      ANL <- anl_q()[["ANL"]]
 
-      input_hlt <- as.vector(merged$anl_input_r()$columns_source$hlt)
-      input_llt <- as.vector(merged$anl_input_r()$columns_source$llt)
+      input_hlt <- anl_selectors$hlt()$variables$selected
+      input_llt <- anl_selectors$llt()$variables$selected
       label_hlt <- if (length(input_hlt) != 0) attributes(ANL[[input_hlt]])$label else NULL
       label_llt <- if (length(input_llt) != 0) attributes(ANL[[input_llt]])$label else NULL
 
       my_calls <- template_events(
         dataname = "ANL",
         parentname = "ANL_ADSL",
-        arm_var = as.vector(merged$anl_input_r()$columns_source$arm_var),
+        arm_var = anl_selectors$arm_var()$variables$selected,
         hlt = if (length(input_hlt) != 0) input_hlt else NULL,
         llt = if (length(input_llt) != 0) input_llt else NULL,
         label_hlt = label_hlt,
@@ -832,7 +790,7 @@ srv_t_events_byterm <- function(id,
         basic_table_args = basic_table_args
       )
 
-      obj <- merged$anl_q()
+      obj <- anl_q()
       teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "### Table")
       teal.code::eval_code(obj, as.expression(unlist(my_calls)))
     })
