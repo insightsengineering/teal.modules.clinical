@@ -246,14 +246,16 @@ testthat::test_that(
 testthat::describe("e2e - tm_a_mmrm: Deselection", {
   skip_if_too_deep(5)
   for (func in output_functions) {
-
     expect_empty_helper <- if (grepl("^g_", func)) {
-      function(app_driver)
+      function(app_driver) {
         testthat::expect_identical(app_driver$get_active_module_plot_output("mmrm_plot"), character(0L))
+      }
     } else {
-      function(app_driver) testthat::expect_identical(
-        app_driver$get_active_module_table_output("mmrm_table-table-with-settings"), data.frame()
-      )
+      function(app_driver) {
+        testthat::expect_identical(
+          app_driver$get_active_module_table_output("mmrm_table-table-with-settings"), data.frame()
+        )
+      }
     }
 
     id_selector <- if (grepl("^g_", func)) {
