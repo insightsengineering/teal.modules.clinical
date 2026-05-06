@@ -8,15 +8,15 @@ tm_a_gee(
   label,
   dataname,
   parentname = "ADSL",
-  aval_var = teal.picks::variables(choices = "AVALBIN"),
-  id_var = teal.picks::variables(choices = c("USUBJID", "SUBJID")),
-  arm_var = teal.picks::variables(choices = c("ARM", "ARMCD")),
-  visit_var = teal.picks::variables(choices = c("AVISIT", "AVISITN")),
-  cov_var = teal.picks::variables(choices = c("BASE", "AGE", "SEX", "BASE:AVISIT")),
+  aval_var,
+  id_var,
+  arm_var,
+  visit_var,
+  cov_var,
   arm_ref_comp = NULL,
-  paramcd = teal.picks::picks(variables = variables(choices = c("PARAMCD", "PARAM")),
-    values = values(), check_dataset = FALSE),
-  conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95, multiple = FALSE),
+  paramcd,
+  conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order =
+    TRUE),
   pre_output = NULL,
   post_output = NULL,
   basic_table_args = teal.widgets::basic_table_args(),
@@ -160,16 +160,16 @@ app <- init(
     tm_a_gee(
       label = "GEE",
       dataname = "ADQS",
-      aval_var = teal.picks::variables(choices = "AVALBIN"),
-      id_var = teal.picks::variables(choices = c("USUBJID", "SUBJID"), selected = "USUBJID"),
-      arm_var = teal.picks::variables(choices = c("ARM", "ARMCD"), selected = "ARM"),
-      visit_var = teal.picks::variables(choices = c("AVISIT", "AVISITN"), selected = "AVISIT"),
-      paramcd = teal.picks::picks(
+      aval_var = variables(choices = "AVALBIN"),
+      id_var = variables(choices = c("USUBJID", "SUBJID"), selected = "USUBJID"),
+      arm_var = variables(choices = c("ARM", "ARMCD"), selected = "ARM"),
+      visit_var = variables(choices = c("AVISIT", "AVISITN"), selected = "AVISIT"),
+      paramcd = picks(
         variables(choices = c("PARAMCD", "PARAM")),
         values(all_values, "FKSI-FWB"),
         check_dataset = FALSE
       ),
-      cov_var = teal.picks::variables(
+      cov_var = variables(
         choices = c("BASE", "AGE", "SEX", "BASE:AVISIT"),
         selected = NULL
       )
@@ -188,8 +188,8 @@ apps implementing this module can be found.
 \section{Examples in Shinylive}{
 \describe{
   \item{example-1}{
-    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiS1xH5RSUfUa7UA+h5e1kpB3oY6AO60pAAWtBDsYbg6IEo6OnRMLBx+vALCYhJSMvLpmQzMbEmo1KyMihAZAIIAIgDKADI+OqQwBP5wAB7+UPyi1OVtAIrtPX0Dw6P8AI6iOgCkAHwb5RnGtNTkjOzNAEKdAGLdAIQAvDoKYACaTzoAZDrnV50ATDr3R4vJ42ba7JoZHQwQRecjsPaQ5oANQAku0UbYdA8oOJjFB1EQTsi0Ri5LgES1UejbAA5LE6ZgQADWpypGJpoJ2FMhOIweIJJ054MhIp0vIggngjBk1k2XIhorFuPxpEJ1nJCsRSOanTOKLpD2ROv0OgArAAGHQAYh0AClBKJSEqxU1hrBarpVToAOZwJ3eegJHI6Cj8VBEBKkDAIoUI-iMIge7TUUQhCAAX0aACsIxB-Ey4KxU2EbBF+HA8cJSP4CPxaKIBjmEvnC6JgNB4MXPFA5ABdNzcAKabiCMQ9UzmDRWIY2My0Faj9gzpSSHGpwf+YfUUeiUtGNCoUPsVeidfUIcjsRkoHl0QGcvUKCsOD8EED9A9BIxeEQsL05LlHwQgiOsDxAYUqYIn0oz+L6cA-oqj70HA1D0k8ADiTguHg3JhB2ugPE8MztE8GqKlAW6biw9J5KgMhMqIiCIMO0pQPQIHHrEEYEGOhFgEaur6iCZGirQ-BUYwNFwNwGB0QQDFMSxtBsRxBBcTIvE6AQ8JgA47QOGctooq0pFAvphnGcJOiiChcDqC+aG6eZRkmWAZLciwMASVJMlyQpzEsMp7FiJx3GadpRFYAAsqZkVRQAwq5142SI9n8I5zTRcJ3KaPWMTeQ8tH0YxAWscFqZqWFoFaTpxLUrF-FsrSVkpXZ5DpXxdUYtlmoZKgLCwLWPk8H5JWjQhio6EpKkhZVGnVRFYAAAqZc0CWuSkTwrVga0gu5vWQluO7sBuR1iJtYCXAA0uiBiXAA6mcPWTVpsR2UygTdjZToPJcOrtC4B37YqxCaAVvTSSNxWKYFM2QQdGRzTxC06WczQAw1zSYQ1AMABoNWjAOIF1tjPZNrVpfSNIOJ0nTco0IoMzojSNLQxg6OwkaqCqWjwXINhpBCojxBArDNOgJ3oAAJIItApAeUs2Yw2gNEo6ZKGA6a9kAA}{Open in Shinylive}
-    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiS1xH5RSUfUa7UA+h5e1kpB3oY6AO60pAAWtBDsYbg6IEo6OnRMLBx+vALCYhJSMvLpmQzMbEmo1KyMihAZAIIAIgDKADI+OqQwBP5wAB7+UPyi1OVtAIrtPX0Dw6P8AI6iOgCkAHwb5RnGtNTkjOzNAEKdAGLdAIQAvDoKYACaTzoAZDrnV50ATDr3R4vJ42ba7JoZHQwQRecjsPaQ5oANQAku0UbYdA8oOJjFB1EQTsi0Ri5LgES1UejbAA5LE6ZgQADWpypGJpoJ2FMhOIweIJJ054MhIp0vIggngjBk1k2XIhorFuPxpEJ1nJCsRSOanTOKLpD2ROv0OgArAAGHQAYh0AClBKJSEqxU1hrBarpVToAOZwJ3eegJHI6Cj8VBEBKkDAIoUI-iMIge7TUUQhCAAX0aACsIxB-Ey4KxU2EbBF+HA8cJSP4CPxaKIBjmEvnC6JgNB4MXPFA5ABdNzcAKabiCMQ9UzmDRWIY2My0Faj9gzpSSHGpwf+YfUUeiUtGNCoUPsVeidfUIcjsRkoHl0QGcvUKCsOD8EED9A9BIxeEQsL05LlHwQgiOsDxAYUqYIn0oz+L6cA-oqj70HA1D0k8ADiTguHg3JhB2ugPE8MztE8GqKlAW6biw9J5KgMhMqIiCIMO0pQPQIHHrEEYEGOhFgEaur6iCZGirQ-BUYwNFwNwGB0QQDFMSxtBsRxBBcTIvE6AQ8JgA47QOGctooq0pFAvphnGcJOiiChcDqC+aG6eZRkmWAZLciwMASVJMlyQpzEsMp7FiJx3GadpRFYAAsqZkVRQAwq5142SI9n8I5zTRcJ3KaPWMTeQ8tH0YxAWscFqZqWFoFaTpxLUrF-FsrSVkpXZ5DpXxdUYtlmoZKgLCwLWPk8H5JWjQhio6EpKkhZVGnVRFYAAAqZc0CWuSkTwrVga0gu5vWQluO7sBuR1iJtYCXAA0uiBiXAA6mcPWTVpsR2UygTdjZToPJcOrtC4B37YqxCaAVvTSSNxWKYFM2QQdGRzTxC06WczQAw1zSYQ1AMABoNWjAOIF1tjPZNrVpfSNIOJ0nTco0IoMzojSNLQxg6OwkaqCqWjwXINhpBCojxBArDNOgJ3oAAJIItApAeUs2Yw2gNEo6ZKGA6a9kAA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiS1xH5RSUfUa7UA+h5e1kpB3oY6AO60pAAWtBDsYbg6IEo6OnRMLBx+vALCYhJSMvLpmQzMbEmo1KyMihAZAIIAIgDKADI+OqQwBP5wAB7+UPyi1OVtAIrtPX0Dw6P8AI6iOgCkAHwb5RnGtNTkjOzNAEKdAGLdAIQAvDoKYACaTzoAZDrnV50ATDr3R4vJ42ba7JoZHQwQRecjsPaQ5oANQAku0UbYdA8oOJjFB1EQTsi0Ri5LgES1UejbAA5LE6ZgQADWpypGJpoJ2FMhOIweIJJ054MhIp0vIggngjBk1k2XIhorFuPxpEJ1nJCsRSOanTOKLpD2ROv0OgArAAGHQAYh0AClBKJSEqxU1hrBarpVToAOZwJ3eegJHI6Cj8VBEBKkDAIoUI-iMIge7TUUQhCAAX0aACsIxB-Ey4KxU2EbBF+HA8cJSP4CPxaKIBjmEvnC6JgNB4MXPFA5ABdNzcAKabiCMQ9UzmDRWIY2My0Faj9gzpSSHGpwf+YfUUeiUtGNCoUPsVeidfUIcjsRkoHl0QGcvUKCsOD8EED9A9BIxeEQsL05LlHwQgiOsDxAYUqYIn0oz+L6cA-oqj70HA1D0k8ADiTguHg3JhB2ugPE8MztE8GqKlAW6biw9LDtKUD0CBx6xBGBBjoRYBGrq+ogmRoq0PwVGMDRLC0PRjEEMxMhsToBDwmADjtA4Zy2iirSkUCinKapPE6KIKFwOoL5ofJmkqWpYBktyLAwIJwl0QxYhMSx0myURWAALLqW57kAMLmdeekiIZ-DGc0Hk8dymj1jEtkPLRokOamEnOaBMlycS1JeRxbK0jpgUGeQIXsRlGIRZqGSoCwsC1vSqAyEykHlZC8ViY5yVSalrlgAACmFzS+eZKRPL1WD9SCllNRkW47uwG7TWIQ1gJcADS6IGJcADqZxlYqGQSQZTKBN2elOg8lw6u0LhNRNirEJosU6C1iUIbt7WsZ1clnM0l1Zc0mFZZdAAaWVfZdiAlbYO27flwX0jSDidJ03KNCKKM6I0jS0MYOjsJGqgqlo8FyDYaQQqI8QQKwzToLN6AACSCLQKQHnTemMNoDRKOmShgOmvZAA}{Open in Shinylive}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiS1xH5RSUfUa7UA+h5e1kpB3oY6AO60pAAWtBDsYbg6IEo6OnRMLBx+vALCYhJSMvLpmQzMbEmo1KyMihAZAIIAIgDKADI+OqQwBP5wAB7+UPyi1OVtAIrtPX0Dw6P8AI6iOgCkAHwb5RnGtNTkjOzNAEKdAGLdAIQAvDoKYACaTzoAZDrnV50ATDr3R4vJ42ba7JoZHQwQRecjsPaQ5oANQAku0UbYdA8oOJjFB1EQTsi0Ri5LgES1UejbAA5LE6ZgQADWpypGJpoJ2FMhOIweIJJ054MhIp0vIggngjBk1k2XIhorFuPxpEJ1nJCsRSOanTOKLpD2ROv0OgArAAGHQAYh0AClBKJSEqxU1hrBarpVToAOZwJ3eegJHI6Cj8VBEBKkDAIoUI-iMIge7TUUQhCAAX0aACsIxB-Ey4KxU2EbBF+HA8cJSP4CPxaKIBjmEvnC6JgNB4MXPFA5ABdNzcAKabiCMQ9UzmDRWIY2My0Faj9gzpSSHGpwf+YfUUeiUtGNCoUPsVeidfUIcjsRkoHl0QGcvUKCsOD8EED9A9BIxeEQsL05LlHwQgiOsDxAYUqYIn0oz+L6cA-oqj70HA1D0k8ADiTguHg3JhB2ugPE8MztE8GqKlAW6biw9LDtKUD0CBx6xBGBBjoRYBGrq+ogmRoq0PwVGMDRLC0PRjEEMxMhsToBDwmADjtA4Zy2iirSkUCinKapPE6KIKFwOoL5ofJmkqWpYBktyLAwIJwl0QxYhMSx0myURWAALLqW57kAMLmdeekiIZ-DGc0Hk8dymj1jEtkPLRokOamEnOaBMlycS1JeRxbK0jpgUGeQIXsRlGIRZqGSoCwsC1vSqAyEykHlZC8ViY5yVSalrlgAACmFzS+eZKRPL1WD9SCllNRkW47uwG7TWIQ1gJcADS6IGJcADqZxlYqGQSQZTKBN2elOg8lw6u0LhNRNirEJosU6C1iUIbt7WsZ1clnM0l1Zc0mFZZdAAaWVfZdiAlbYO27flwX0jSDidJ03KNCKKM6I0jS0MYOjsJGqgqlo8FyDYaQQqI8QQKwzToLN6AACSCLQKQHnTemMNoDRKOmShgOmvZAA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
     \if{html}{\out{<a style='height: 800px; display: block;'></a>}}
   }
 }
