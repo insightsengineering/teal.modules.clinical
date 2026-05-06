@@ -7,21 +7,15 @@
 tm_t_abnormality(
   label,
   dataname,
-  parentname = ifelse(inherits(arm_var, "data_extract_spec"),
-    teal.transform::datanames_input(arm_var), "ADSL"),
+  parentname = "ADSL",
   arm_var,
   by_vars,
   grade,
   abnormal = list(low = c("LOW", "LOW LOW"), high = c("HIGH", "HIGH HIGH")),
-  id_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
-    subset = "USUBJID"), selected = "USUBJID", fixed = TRUE),
-  baseline_var =
-    teal.transform::choices_selected(teal.transform::variable_choices(dataname, subset =
-    "BNRIND"), selected = "BNRIND", fixed = TRUE),
-  treatment_flag_var =
-    teal.transform::choices_selected(teal.transform::variable_choices(dataname, subset =
-    "ONTRTFL"), selected = "ONTRTFL", fixed = TRUE),
-  treatment_flag = teal.transform::choices_selected("Y"),
+  id_var = teal.picks::variables(choices = "USUBJID", fixed = TRUE),
+  baseline_var = teal.picks::variables(choices = "BNRIND", fixed = TRUE),
+  treatment_flag_var = teal.picks::variables(choices = "ONTRTFL", fixed = TRUE),
+  treatment_flag = teal.picks::values("Y", "Y", multiple = TRUE),
   add_total = TRUE,
   total_label = default_total_label(),
   exclude_base_abn = FALSE,
@@ -41,30 +35,25 @@ tm_t_abnormality(
 
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
-available choices and preselected option for variable names that can be used as \code{arm_var}.
-It defines the grouping variable in the results table.}
+\item{arm_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr object with all available choices and preselected
+option for the treatment variable.}
 
-\item{by_vars}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
-available choices and preselected option for variable names used to split the summary by rows.}
+\item{by_vars}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr object with all available choices and preselected
+option(s) for row-by variables (\code{multiple = TRUE}, \code{ordered = TRUE} recommended).}
 
-\item{grade}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr
-object with all available choices and preselected option for variable names that can be used to
-specify the abnormality grade. Variable must be factor.}
+\item{grade}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr object with all available choices and preselected
+option for the abnormality grade variable. Variable must be factor.}
 
 \item{abnormal}{(\verb{named list})\cr defined by user to indicate what abnormalities are to be displayed.}
 
-\item{id_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object specifying
-the variable name for subject id.}
+\item{id_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr subject identifier variable.}
 
-\item{baseline_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr
-variable for baseline abnormality grade.}
+\item{baseline_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr variable for baseline abnormality grade.}
 
-\item{treatment_flag_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr on
-treatment flag variable.}
+\item{treatment_flag_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr on-treatment flag variable.}
 
-\item{treatment_flag}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr value
-indicating on treatment records in \code{treatment_flag_var}.}
+\item{treatment_flag}{(\code{\link[teal.picks:values]{teal.picks::values()}}; legacy \code{teal.transform::choices_selected()} is deprecated but still accepted)\cr
+value(s) indicating on-treatment records in \code{treatment_flag_var} (e.g. \code{"Y"}).}
 
 \item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
 
@@ -182,25 +171,16 @@ app <- init(
     tm_t_abnormality(
       label = "Abnormality Table",
       dataname = "ADLB",
-      arm_var = choices_selected(
-        choices = variable_choices(ADSL, subset = c("ARM", "ARMCD")),
-        selected = "ARM"
-      ),
+      arm_var = variables(choices = c("ARM", "ARMCD"), selected = "ARM"),
       add_total = FALSE,
-      by_vars = choices_selected(
-        choices = variable_choices(ADLB, subset = c("LBCAT", "PARAM", "AVISIT")),
+      by_vars = variables(
+        choices = c("LBCAT", "PARAM", "AVISIT"),
         selected = c("LBCAT", "PARAM"),
-        keep_order = TRUE
+        multiple = TRUE,
+        ordered = TRUE
       ),
-      baseline_var = choices_selected(
-        variable_choices(ADLB, subset = "BNRIND"),
-        selected = "BNRIND", fixed = TRUE
-      ),
-      grade = choices_selected(
-        choices = variable_choices(ADLB, subset = "ANRIND"),
-        selected = "ANRIND",
-        fixed = TRUE
-      ),
+      baseline_var = variables(choices = "BNRIND", fixed = TRUE),
+      grade = variables(choices = "ANRIND", fixed = TRUE),
       abnormal = list(low = "LOW", high = "HIGH"),
       exclude_base_abn = FALSE
     )
@@ -218,8 +198,8 @@ apps implementing this module can be found.
 \section{Examples in Shinylive}{
 \describe{
   \item{example-1}{
-    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiS1xH5RSUfUa7UA+h5e1kpB3oY6AO60pAAWtBDsYbg6IEo6OnRMLBx+vALCYhJSMvLpmQzMbOzGRIwwnuSMoooQGVlVHPyo1KyMrRkAggAiAMoAMj46pDAE-nAAHv5Q-KLU5SPjAEJTM3OLy-zU9DoApAB8p+UZMIJe5OzXGToA8gBy9rYAYpMAvDqyURwfyRWIUR5tZ5QwYANQAkqM4bYzglTgDHmBRgBhLBOJxvOFvADiCjwOlJW0Goyc40JLjANgAfuSwKTcE8ofZnDpmaSAJqkjk6GwXNHROL+ahQehwagYl5tWyMOCeeBkHRYODERj8HRfKUAc1JA2erQAvq0AFZEBL+ADWcFYoiSnigNgi-DgxigwlI-gI-Foojm1ttDqdwGg8GdYTkAF03CMJlMwsBgKSk+NSXGExBNjsPa60xnhtts7mlGhUFMEjEIRkwjp-slynwhCJRE2dG3Cs6njN-H7pRA6g06KQOEKpTLqF2M-QR-VuDFWHZpSI2UKwlHdP8S2W8EKWDB-JoWF2CLEbQQxP4gSJ1HB+PWoc9L9exF2z4xaOvge+ZDEdhMxSURBHoIFSAvDFBiwABZNkWVguCsWGY05HZSFXx0e8tXIXU9zAZDBSw01MOwlZ+EHIgvFnf4vkGcZqXI196FYU8WE7f4AJvUQ71lPCnxfbCeM-f5v1-egRH9K9AOdfNQPAyDoNJbYsUGWxENJAAFWDBgQskM3hRFNIZDChQyXDHwI9FVK2dTTJSHS9IM8zSKhB04FQfw6k9Rguy5Fx3OFFioXoKB7wSYFvwvWTeP4h98OE18JL-GSP3k0stkUiC4CgwitjeLBCTQhlQtfKz8LnMBCuKt5SpSYxaAWJ8AscILsLc7CDWYT1YoyhLBOfCyATisSdFSqT-zGzLthy5TCMGIqSuNcqoUq1rFuW+rN2CjImpamzAqFLrX2HUduC7OhRFIdhqCISJqvGF4AHVEPiA1YmqgAJOEiW+1ahUWSRBE9fxwqBZYFy7BimI601ylaVpaGMHR2ASJooAsbRrBsNJIVEeIIFYQZ0HYKsABJBFoFJKaBRhtH6JQzSUMAzTjIA}{Open in Shinylive}
-    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiS1xH5RSUfUa7UA+h5e1kpB3oY6AO60pAAWtBDsYbg6IEo6OnRMLBx+vALCYhJSMvLpmQzMbOzGRIwwnuSMoooQGVlVHPyo1KyMrRkAggAiAMoAMj46pDAE-nAAHv5Q-KLU5SPjAEJTM3OLy-zU9DoApAB8p+UZMIJe5OzXGToA8gBy9rYAYpMAvDqyURwfyRWIUR5tZ5QwYANQAkqM4bYzglTgDHmBRgBhLBOJxvOFvADiCjwOlJW0Goyc40JLjANgAfuSwKTcE8ofZnDpmaSAJqkjk6GwXNHROL+ahQehwagYl5tWyMOCeeBkHRYODERj8HRfKUAc1JA2erQAvq0AFZEBL+ADWcFYoiSnigNgi-DgxigwlI-gI-Foojm1ttDqdwGg8GdYTkAF03CMJlMwsBgKSk+NSXGExBNjsPa60xnhtts7mlGhUFMEjEIRkwjp-slynwhCJRE2dG3Cs6njN-H7pRA6g06KQOEKpTLqF2M-QR-VuDFWHZpSI2UKwlHdP8S2W8EKWDB-JoWF2CLEbQQxP4gSJ1HB+PWoc9L9exF2z4xaOvge+ZDEdhMxSURBHoIFSAvDFBiwABZNkWVguCsWGY05HZSFXx0e8tXIXU9zAZDBSw01MOwlZ+EHIgvFnf4vkGcZqXI196FYU8WE7f4AJvUQ71lPCnxfbCeM-f5v1-egRH9K9AOdfNQPAyDoNJbYsUGWxENJAAFWDBgQskM3hRFNIZDChQyXDHwI9FVK2dTTJSHS9IM8zSKhB04FQfw6k9Rguy5Fx3OFFioXoKB7wSYFvwvWTeP4h98OE18JL-GSP3k0stkUiC4CgwitjeLBCTQhlQtfKz8LnMBCuKt5SpSYxaAWJ8AscILsLc7CDWYT1YoyhLBOfCyATisSdFSqT-zGzLthy5TCMGIqSuNcqoUq1rFuW+rN2CjImpamzAqFLrX2HUduC7OhRFIdhqCISJqvGF4AHVEPiA1YmqgAJOEiW+1ahUWSRBE9fxwqBZYFy7BimI601ylaVpaGMHR2ASJooAsbRrBsNJIVEeIIFYQZ0HYKsABJBFoFJKaBRhtH6JQzSUMAzTjIA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiS1xH5RSUfUa7UA+h5e1kpB3oY6AO60pAAWtBDsYbg6IEo6OnRMLBx+vALCYhJSMvLpmQzMbOzGRIwwnuSMoooQGVlVHPyo1KyMrRkAggAiAMoAMj46pDAE-nAAHv5Q-KLU5SPjAEJTM3OLy-zU9DoApAB8p+UZMIJe5OzXGToA8gBy9rYAYpMAvDqyURwfyRWIUR5tZ5QwYANQAkqM4bYzglTgDHmBRgBhLBOJxvOFvADiCjwOlJW0Goyc40JLjANgAfuSwKTcE8ofZnDpmaSAJqkjk6GwXNHROL+ahQehwagYl5tWyMOCeeBkHRYODERj8HRfKUAc1JA2erQAvq0AFZEBL+ADWcFYoiSnigNgi-DgxigwlI-gI-Foojm1ttDqdwGg8GdYTkAF03CMJlMwsBgKSk+NSXGExBNjsPa60xnhtts7mlGhUFMEjEIRkwjp-slynwhCJRE2dG3Cs6njN-H7pRA6g06KQOEKpTLqF2M-QR-VuDFWHZpSI2UKwlHdP8S2W8EKWDB-JoWF2z4xaOuxOwCLEbQQxF2CBjBlgALJslnvj9Y4bGikQIiOocC6nuYC-oBR78Pwg5EF4s7-F8gzjNS7KQlC9CsKeLCdv8l7XvQHb1lCzz3o+z7-K+pLbFigy2N+pIAArvoMX5khm8KIoxDIYWRzzAVq5DgeitFbPRvEpCxbEcXI-ECd2vq0D0u52I4TgKQJdSesqolci4mGmlpzz0FAwEJMCl4XiwREkRRMhUSyWxvFghIAWSxi0AsYFdgZ8lCgazCejZV43s6DlPvhP6ue535eT5+kaQFRkZMOo7cF2dCiKQ7DUEQkRzmA4wvAA6t+8QGrERUABJwkSNXQalOiLJIgiev4ZlAssC5dihaGGVCJqtK0tDGDo7AJE0UAWNo1g2GkkKiPEECsIM6DsFWAAkgi0Ck21Aow2j9EoZpKGAZpxkAA}{Open in Shinylive}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiS1xH5RSUfUa7UA+h5e1kpB3oY6AO60pAAWtBDsYbg6IEo6OnRMLBx+vALCYhJSMvLpmQzMbOzGRIwwnuSMoooQGVlVHPyo1KyMrRkAggAiAMoAMj46pDAE-nAAHv5Q-KLU5SPjAEJTM3OLy-zU9DoApAB8p+UZMIJe5OzXGToA8gBy9rYAYpMAvDqyURwfyRWIUR5tZ5QwYANQAkqM4bYzglTgDHmBRgBhLBOJxvOFvADiCjwOlJW0Goyc40JLjANgAfuSwKTcE8ofZnDpmaSAJqkjk6GwXNHROL+ahQehwagYl5tWyMOCeeBkHRYODERj8HRfKUAc1JA2erQAvq0AFZEBL+ADWcFYoiSnigNgi-DgxigwlI-gI-Foojm1ttDqdwGg8GdYTkAF03CMJlMwsBgKSk+NSXGExBNjsPa60xnhtts7mlGhUFMEjEIRkwjp-slynwhCJRE2dG3Cs6njN-H7pRA6g06KQOEKpTLqF2M-QR-VuDFWHZpSI2UKwlHdP8S2W8EKWDB-JoWF2z4xaOuxOwCLEbQQxF2CBjBlgALJslnvj9Y4bGikQIiOocC6nuYC-oBR78Pwg5EF4s7-F8gzjNS7KQlC9CsKeLCdv8l7XvQHb1lCzz3o+z7-K+pLbFigy2N+pIAArvoMX5khm8KIoxDIYWRzzAVq5DgeitFbPRvEpCxbEcXI-ECd2vq0D0u52I4TgKQJdSesqolci4mGmlpzz0FAwEJMCl4XiwREkRRMhUSyWxvFghIAWSxi0AsYFdgZ8lCgazCejZV43s6DlPvhP6ue535eT5+kaQFRkZMOo7cF2dCiKQ7DUEQkRzmA4wvAA6t+8QGrERUABJwkSNXQalOiLJIgiev4ZlAssC5dihaGGVCJqtK0tDGDo7AJE0UAWNo1g2GkkKiPEECsIM6DsFWAAkgi0Ck21Aow2j9EoZpKGAZpxkAA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
     \if{html}{\out{<a style='height: 800px; display: block;'></a>}}
   }
 }
