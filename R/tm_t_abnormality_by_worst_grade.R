@@ -324,12 +324,12 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint: object_len
 tm_t_abnormality_by_worst_grade <- function(label, # nolint: object_length.
                                             dataname,
                                             parentname = "ADSL",
-                                            arm_var = variables(choices = c("ARM", "ARMCD")),
-                                            id_var = variables(choices = "USUBJID"),
-                                            paramcd = variables(choices = "PARAMCD"),
-                                            atoxgr_var = variables(choices = "ATOXGR"),
-                                            worst_high_flag_var = variables(choices = "WGRHIFL"),
-                                            worst_low_flag_var = variables(choices = "WGRLOFL"),
+                                            arm_var,
+                                            id_var = variables(choices = "USUBJID", fixed = TRUE),
+                                            paramcd,
+                                            atoxgr_var = variables(choices = "ATOXGR", fixed = TRUE),
+                                            worst_high_flag_var = variables(choices = "WGRHIFL", fixed = TRUE),
+                                            worst_low_flag_var = variables(choices = "WGRLOFL", fixed = TRUE),
                                             worst_flag_indicator = teal.picks::values(c("Y", "N", ""), "Y", multiple = FALSE),
                                             add_total = TRUE,
                                             total_label = default_total_label(),
@@ -342,7 +342,7 @@ tm_t_abnormality_by_worst_grade <- function(label, # nolint: object_length.
   message("Initializing tm_t_abnormality_by_worst_grade")
   arm_var <- migrate_choices_selected_to_variables(arm_var, arg_name = "arm_var")
   id_var <- migrate_choices_selected_to_variables(id_var, arg_name = "id_var")
-  paramcd <- migrate_value_choices_to_picks(paramcd, multiple = FALSE, arg_name = "paramcd")
+  paramcd <- migrate_value_choices_to_picks(paramcd, multiple = TRUE, arg_name = "paramcd")
   atoxgr_var <- migrate_choices_selected_to_variables(atoxgr_var, arg_name = "atoxgr_var")
   worst_high_flag_var <- migrate_choices_selected_to_variables(worst_high_flag_var, arg_name = "worst_high_flag_var")
   worst_low_flag_var <- migrate_choices_selected_to_variables(worst_low_flag_var, arg_name = "worst_low_flag_var")
