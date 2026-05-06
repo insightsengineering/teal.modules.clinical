@@ -15,7 +15,10 @@ app_driver_tm_t_shift_by_arm <- function() {
         parentname = "ADSL",
         arm_var = teal.picks::variables(choices = c("ARM", "ARMCD"), selected = "ARM"),
         paramcd = teal.picks::variables(choices = "PARAMCD"),
-        visit_var = teal.picks::variables(choices = "AVISIT"),
+        visit_var = teal.picks::variables(
+          choices = c("AVISIT", "AVISITN"),
+          selected = "AVISIT"
+        ),
         aval_var = teal.picks::variables(choices = "ANRIND"),
         baseline_var = teal.picks::variables(choices = "BNRIND"),
         useNA = "ifany",
