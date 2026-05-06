@@ -10,7 +10,7 @@ app_driver_tm_t_events_patyear <- function() {
   })
   teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
 
-  init_teal_app_driver(
+  app_driver <- init_teal_app_driver(
     teal::init(
       data = data,
       modules = tm_t_events_patyear(
@@ -24,10 +24,7 @@ app_driver_tm_t_events_patyear <- function() {
         add_total = TRUE,
         events_var = teal.picks::variables(choices = "n_events"),
         paramcd = teal.picks::variables(choices = "PARAMCD"),
-        conf_level = teal.transform::choices_selected(
-          c(0.95, 0.9, 0.8), 0.95,
-          keep_order = TRUE
-        ),
+        conf_level = teal.picks::values(c("0.95", "0.9", "0.8"), "0.95", fixed = FALSE),
         aval_var = teal.picks::variables(choices = "AVAL"),
         avalu_var = teal.picks::variables(choices = "AVALU"),
         total_label = default_total_label(),
@@ -39,6 +36,8 @@ app_driver_tm_t_events_patyear <- function() {
       )
     )
   )
+  set_teal_picks_slot(app_driver, "paramcd", "values", "AETTE1")
+  app_driver
 }
 
 testthat::test_that("e2e - tm_t_events_patyear: Module initializes in teal without errors and produces table output.", {
@@ -56,6 +55,7 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events_patyear()
+    wait_until_nonempty_active_module_input(app_driver, "input_time_unit")
     testthat::expect_equal(
       app_driver$get_text(".teal-modules-tree a.module-button.active"),
       "AE Rate Adjusted for Patient-Years At Risk Table"
@@ -68,9 +68,9 @@ testthat::test_that(
       get_teal_picks_slot(app_driver, "paramcd", "variables"),
       "PARAMCD"
     )
-    testthat::expect_identical(
-      sort(get_teal_picks_slot(app_driver, "paramcd", "values")),
-      sort(unique(as.character(tmc_ex_adaette[["PARAMCD"]])))
+    testthat::expect_equal(
+      as.character(get_teal_picks_slot(app_driver, "paramcd", "values")),
+      "AETTE1"
     )
     testthat::expect_equal(
       app_driver$get_active_module_input("conf_level"),
@@ -130,7 +130,8 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events_patyear()
     table_before <- app_driver$get_active_module_table_output("patyear_table-table-with-settings")
-    set_teal_picks_slot(app_driver, "arm_var", "variables", "ARM")
+    set_teal_picks_slot(app_driver, "arm_var", "variables", "SEX")
+    app_driver$wait_for_idle()
     testthat::expect_false(
       identical(
         table_before,
@@ -161,6 +162,7 @@ testthat::test_that(
     app_driver <- app_driver_tm_t_events_patyear()
     table_before <- app_driver$get_active_module_table_output("patyear_table-table-with-settings")
     set_teal_picks_slot(app_driver, "arm_var", "variables", c("ARM", "SEX"))
+    app_driver$wait_for_idle()
     testthat::expect_false(
       identical(
         table_before,
