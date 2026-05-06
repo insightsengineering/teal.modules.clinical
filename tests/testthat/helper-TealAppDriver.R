@@ -159,12 +159,19 @@ init_teal_app_driver <- function(...) {
   checkmate::assert_string(pick_id)
   badge_ns <- app_driver$namespaces()$module(paste0(pick_id, "-inputs-summary_badge"))
   id_lit <- .teal_picks_js_id_literal(badge_ns)
-  app_driver$wait_for_js(sprintf("document.getElementById(%s) !== null", id_lit))
-  app_driver$run_js(sprintf(
-    "(() => { const el = document.getElementById(%s); el.click(); })()",
+  # Some pick widgets do not render a summary badge (or render it lazily).
+  # Treat badge click as best-effort and continue with direct input updates.
+  badge_exists <- isTRUE(app_driver$run_js(sprintf(
+    "(() => document.getElementById(%s) !== null)()",
     id_lit
-  ))
-  app_driver$wait_for_idle()
+  )))
+  if (badge_exists) {
+    app_driver$run_js(sprintf(
+      "(() => { const el = document.getElementById(%s); if (el) el.click(); })()",
+      id_lit
+    ))
+    app_driver$wait_for_idle()
+  }
   invisible(app_driver)
 }
 
