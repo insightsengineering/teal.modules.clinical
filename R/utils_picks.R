@@ -292,3 +292,141 @@ migrate_list_extract_spec_to_picks <- function(x, # nolint: object_length_linter
     )
   )
 }
+
+#' First non-`NULL` element of a named encoding list (S3 dispatch helper).
+#'
+#' @param arg_list (`named list`) typically `x`, `fill`, `x_facet`, `y_facet` slots; at least one
+#'   non-`NULL` when used from module generics.
+#'
+#' @keywords internal
+#' @noRd
+.module_arg_first_encoding <- function(arg_list) {
+  checkmate::assert_list(arg_list, all.missing = FALSE)
+  non_null <- vapply(arg_list, Negate(is.null), logical(1L))
+  if (!any(non_null)) {
+    stop("internal error: no encoding found", call. = FALSE)
+  }
+  arg_list[non_null][[1L]]
+}
+
+#' @keywords internal
+#' @noRd
+.encoding_slot_is_legacy_data_extract <- function(z) {
+  if (is.null(z)) {
+    return(FALSE)
+  }
+  if (inherits(z, "data_extract_spec")) {
+    return(TRUE)
+  }
+  is.list(z) && length(z) > 0L && all(vapply(z, inherits, logical(1L), "data_extract_spec"))
+}
+
+#' @keywords internal
+#' @noRd
+.encoding_slot_is_picks <- function(z) {
+  !is.null(z) && inherits(z, "picks")
+}
+
+#' Classify encoding slots as legacy extract specs or [`teal.picks::picks()`].
+#'
+#' @param slots (`named list`) module encoding arguments (e.g. `x`, `fill`, `x_facet`, `y_facet`).
+#'
+#' @return `character(1)` `"legacy"` or `"picks"`.
+#'
+#' @keywords internal
+#' @noRd
+.tm_encoding_slots_kind <- function(slots) {
+  checkmate::assert_list(slots, names = "unique")
+  legacy_any <- any(vapply(slots, .encoding_slot_is_legacy_data_extract, logical(1L)))
+  picks_any <- any(vapply(slots, .encoding_slot_is_picks, logical(1L)))
+  if (legacy_any && picks_any) {
+    stop(
+      "Mixing `teal.transform::data_extract_spec()` and `teal.picks::picks()` encodings is not supported. ",
+      "Use only data extract specs, or only `teal.picks::picks()`.",
+      call. = FALSE
+    )
+  }
+  switch(
+    as.character(legacy_any + 2L * picks_any),
+    "0" = stop(
+      "Could not classify encodings: pass `data_extract_spec` / `list` thereof, or `teal.picks::picks()`.",
+      call. = FALSE
+    ),
+    "1" = "legacy",
+    "2" = "picks",
+    stop("internal error: unexpected encoding classification state.", call. = FALSE)
+  )
+}
+
+#' Build eval-time relabel call for merged analysis data (picks modules).
+#'
+#' Mirrors [teal.transform::get_anl_relabel_call()] using only `teal.data`, so picks-only
+#' module code does not need `teal.transform` for column relabeling.
+#'
+#' @param columns_source (`named list`) slot-wise column maps with `"dataname"` attribute per element.
+#' @param datasets (`named list` of `reactive` data) source datasets keyed by dataname.
+#' @param anl_name (`character(1)`) symbol name of the analysis object to relabel.
+#'
+#' @return `call` or `NULL`.
+#'
+#' @keywords internal
+#' @noRd
+.picks_get_anl_relabel_call <- function(columns_source, datasets, anl_name = "ANL") {
+  checkmate::assert_string(anl_name)
+  stopifnot(attr(regexec("[A-Za-z0-9\\_]*", anl_name)[[1]], "match.length") == nchar(anl_name))
+
+  labels_vector <- Reduce(
+    function(x, y) append(x, y),
+    lapply(
+      columns_source,
+      function(selector) {
+        column_names <- names(selector)
+        if (length(column_names) == 0L) {
+          return(NULL)
+        }
+
+        data_used <- datasets[[attr(selector, "dataname")]]
+        labels <- teal.data::col_labels(data_used(), fill = FALSE)
+        column_labels <- labels[intersect(colnames(data_used()), column_names)]
+
+        if (length(column_labels) == 0L) {
+          column_labels
+        } else {
+          stats::setNames(
+            column_labels,
+            selector[names(column_labels)]
+          )
+        }
+      }
+    )
+  )
+
+  if (length(labels_vector) == 0L || all(is.na(labels_vector))) {
+    return(NULL)
+  }
+
+  relabel_pipe <- .picks_get_relabel_call(labels_vector)
+  if (is.null(relabel_pipe)) {
+    return(NULL)
+  }
+
+  relabel_call <- call("%>%", as.name(anl_name), relabel_pipe)
+  call("<-", as.name(anl_name), relabel_call)
+}
+
+#' @keywords internal
+#' @noRd
+.picks_get_relabel_call <- function(labels) {
+  if (length(stats::na.omit(labels)) == 0L || is.null(names(labels))) {
+    return(NULL)
+  }
+  labels <- labels[!duplicated(names(labels))]
+  labels <- labels[!is.na(labels)]
+
+  as.call(
+    append(
+      quote(teal.data::col_relabel),
+      labels
+    )
+  )
+}

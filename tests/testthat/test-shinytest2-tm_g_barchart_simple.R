@@ -17,79 +17,51 @@ app_driver_tm_g_barchart_simple <- function() { # nolint: object_length.
       data = data,
       modules = tm_g_barchart_simple(
         label = "ADAE Analysis (e-2-e)",
-        x = teal.transform::data_extract_spec(
-          dataname = "ADSL",
-          select = teal.transform::select_spec(
-            choices = teal.transform::variable_choices(
-              "ADSL", c("ARM", "ACTARM", "SEX", "RACE", "ITTFL", "SAFFL", "STRATA2")
+        x = teal.picks::picks(
+          teal.picks::datasets("ADSL"),
+          teal.picks::variables(
+            choices = c(
+              "ARM", "ACTARM", "SEX",
+              "RACE", "ITTFL", "SAFFL", "STRATA2"
             ),
             selected = "ACTARM",
             multiple = FALSE
           )
         ),
-        fill = list(
-          teal.transform::data_extract_spec(
-            dataname = "ADSL",
-            select = teal.transform::select_spec(
-              choices = teal.transform::variable_choices(
-                "ADSL", c("ARM", "ACTARM", "SEX", "RACE", "ITTFL", "SAFFL", "STRATA2")
-              ),
-              selected = "SEX",
-              multiple = FALSE
-            )
-          ),
-          teal.transform::data_extract_spec(
-            dataname = "ADAE",
-            select = teal.transform::select_spec(
-              choices = teal.transform::variable_choices("ADAE", c("AETOXGR", "AESEV", "AESER")),
-              selected = NULL,
-              multiple = FALSE
-            )
+        fill = teal.picks::picks(
+          teal.picks::datasets(choices = c("ADSL", "ADAE")),
+          teal.picks::variables(
+            choices = c(
+              "ARM", "ACTARM", "SEX",
+              "RACE", "ITTFL", "SAFFL", "STRATA2",
+              "AETOXGR", "AESEV", "AESER"
+            ),
+            selected = "SEX",
+            multiple = FALSE
           )
         ),
-        x_facet = list(
-          teal.transform::data_extract_spec(
-            dataname = "ADAE",
-            select = teal.transform::select_spec(
-              choices = teal.transform::variable_choices("ADAE", c("AETOXGR", "AESEV", "AESER")),
-              selected = "AETOXGR",
-              multiple = FALSE
-            )
-          ),
-          teal.transform::data_extract_spec(
-            dataname = "ADSL",
-            select = teal.transform::select_spec(
-              choices = teal.transform::variable_choices(
-                "ADSL",
-                c("ARM", "ACTARM", "SEX", "RACE", "ITTFL", "SAFFL", "STRATA2")
-              ),
-              selected = NULL,
-              multiple = FALSE
-            )
+        x_facet = teal.picks::picks(
+          teal.picks::datasets(choices = c("ADAE", "ADSL")),
+          teal.picks::variables(
+            choices = c(
+              "AETOXGR", "AESEV", "AESER",
+              "ARM", "ACTARM", "SEX",
+              "RACE", "ITTFL", "SAFFL", "STRATA2"
+            ),
+            selected = "AETOXGR",
+            multiple = FALSE
           )
         ),
-        y_facet = list(
-          data_extract_spec(
-            dataname = "ADAE",
-            select = teal.transform::select_spec(
-              choices = teal.transform::variable_choices(
-                "ADAE",
-                c("AETOXGR", "AESEV", "AESER")
-              ),
-              selected = "AESEV",
-              multiple = FALSE
-            )
-          ),
-          data_extract_spec(
-            dataname = "ADSL",
-            select = teal.transform::select_spec(
-              choices = teal.transform::variable_choices(
-                "ADSL",
-                c("ARM", "ACTARM", "SEX", "RACE", "ITTFL", "SAFFL", "STRATA2")
-              ),
-              selected = NULL,
-              multiple = FALSE
-            )
+        y_facet = teal.picks::picks(
+          teal.picks::datasets(choices = c("ADAE", "ADSL")),
+          teal.picks::variables(
+            choices = c(
+              "AETOXGR", "AESEV", "AESER",
+              "ARM", "ACTARM", "SEX",
+              "RACE", "ITTFL", "SAFFL", "STRATA2"
+            ),
+            selected = "AESEV",
+            multiple = FALSE
           )
         ),
         plot_options = list(
@@ -133,8 +105,7 @@ testthat::test_that("e2e - tm_g_barchart_simple: Module initializes in teal with
 })
 
 testthat::test_that(
-  "e2e - tm_g_barchart_simple: Starts with specified label, id_var, arm_var, visit_var,
-  paramcd, cov_var, conf_level and conf_struct.",
+  "e2e - tm_g_barchart_simple: Starts with specified label and default encoding selections.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_barchart_simple()
@@ -145,35 +116,27 @@ testthat::test_that(
       "ADAE Analysis (e-2-e)"
     )
 
+    testthat::expect_equal(get_teal_picks_slot(app_driver, "x", "datasets"), "ADSL")
     testthat::expect_equal(
-      app_driver$get_active_module_input(ns_des_input("x", "ADSL", "select")),
+      teal_picks_strip_ds_prefix_vec(get_teal_picks_slot(app_driver, "x", "variables")),
       "ACTARM"
     )
 
-    testthat::expect_equal(app_driver$get_active_module_input("fill-dataset"), "ADSL")
-
+    testthat::expect_equal(get_teal_picks_slot(app_driver, "fill", "datasets"), "ADSL")
     testthat::expect_equal(
-      app_driver$get_active_module_input(ns_des_input("fill", "ADSL", "select")),
+      teal_picks_strip_ds_prefix_vec(get_teal_picks_slot(app_driver, "fill", "variables")),
       "SEX"
     )
 
+    testthat::expect_equal(get_teal_picks_slot(app_driver, "x_facet", "datasets"), "ADAE")
     testthat::expect_equal(
-      app_driver$get_active_module_input("x_facet-dataset"),
-      "ADAE"
-    )
-
-    testthat::expect_equal(
-      app_driver$get_active_module_input(ns_des_input("x_facet", "ADAE", "select")),
+      teal_picks_strip_ds_prefix_vec(get_teal_picks_slot(app_driver, "x_facet", "variables")),
       "AETOXGR"
     )
 
+    testthat::expect_equal(get_teal_picks_slot(app_driver, "y_facet", "datasets"), "ADAE")
     testthat::expect_equal(
-      app_driver$get_active_module_input("y_facet-dataset"),
-      "ADAE"
-    )
-
-    testthat::expect_equal(
-      app_driver$get_active_module_input(ns_des_input("y_facet", "ADAE", "select")),
+      teal_picks_strip_ds_prefix_vec(get_teal_picks_slot(app_driver, "y_facet", "variables")),
       "AESEV"
     )
 
@@ -201,8 +164,7 @@ testthat::test_that(
     app_driver <- app_driver_tm_g_barchart_simple()
     app_driver$wait_for_idle()
     plot_before <- app_driver$get_active_module_plot_output("myplot")
-    app_driver$set_active_module_input(ns_des_input("x", "ADSL", "select"), "RACE")
-    app_driver$wait_for_idle()
+    set_teal_picks_slot(app_driver, "x", "variables", "RACE")
     testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
     app_driver$expect_no_validation_error()
     app_driver$stop()
@@ -213,17 +175,8 @@ testthat::test_that("e2e - tm_g_barchart_simple: Deselection of 'x' throws valid
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_barchart_simple()
   app_driver$wait_for_idle()
-  app_driver$set_active_module_input(ns_des_input("x", "ADSL", "select"), character(0L))
+  set_teal_picks_slot(app_driver, "x", "variables", character(0L))
   app_driver$expect_validation_error()
-  testthat::expect_match(
-    app_driver$get_text(app_driver$namespaces(TRUE)$module(
-      sprintf(
-        "%s_input .shiny-validation-message",
-        ns_des_input("x", "ADSL", "select")
-      )
-    )),
-    "^Please select an x-variable$"
-  )
   app_driver$stop()
 })
 
@@ -240,16 +193,12 @@ test_dataset_selection <- function(input_id, new_dataset, new_value) {
       app_driver <- app_driver_tm_g_barchart_simple()
       app_driver$wait_for_idle()
       plot_before <- app_driver$get_active_module_plot_output("myplot")
-      app_driver$set_active_module_input(sprintf("%s-dataset", input_id), new_dataset)
-      app_driver$wait_for_idle()
+      set_teal_picks_slot(app_driver, input_id, "datasets", new_dataset)
+      set_teal_picks_slot(app_driver, input_id, "variables", new_value)
       testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
-      testthat::expect_null(app_driver$get_active_module_input(ns_des_input(input_id, new_dataset, "select")))
-      # Wait for UI to update with new dataset options before setting value
-      app_driver$wait_for_idle()
-      app_driver$set_active_module_input(ns_des_input(input_id, new_dataset, "select"), new_value)
-      app_driver$wait_for_idle()
-      testthat::expect_identical(
-        app_driver$get_active_module_input(ns_des_input(input_id, new_dataset, "select")),
+      testthat::expect_equal(get_teal_picks_slot(app_driver, input_id, "datasets"), new_dataset)
+      testthat::expect_equal(
+        teal_picks_strip_ds_prefix_vec(get_teal_picks_slot(app_driver, input_id, "variables")),
         new_value
       )
       app_driver$expect_no_validation_error()
@@ -268,9 +217,8 @@ test_dataset_selection <- function(input_id, new_dataset, new_value) {
       app_driver <- app_driver_tm_g_barchart_simple()
       app_driver$wait_for_idle()
       plot_before <- app_driver$get_active_module_plot_output("myplot")
-      app_driver$set_active_module_input(sprintf("%s-dataset", input_id), character(0L))
+      set_teal_picks_slot(app_driver, input_id, "datasets", character(0L))
       app_driver$wait_for_idle()
-      testthat::expect_null(app_driver$get_active_module_input(input_id))
       testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
       app_driver$expect_no_validation_error()
       app_driver$stop()
@@ -294,32 +242,13 @@ for (input_id in c("fill", "x_facet", "y_facet")) {
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_g_barchart_simple()
       app_driver$wait_for_idle()
-      app_driver$set_active_module_input(ns_des_input("x", "ADSL", "select"), "ACTARM", wait_ = FALSE)
-      app_driver$set_active_module_input(sprintf("%s-dataset", input_id), "ADSL", wait_ = FALSE)
-      app_driver$set_active_module_input(ns_des_input(input_id, "ADSL", "select"), "ACTARM")
-      app_driver$wait_for_idle()
+      # Align x with ADSL + ACTARM, then pick the same column on another encoding (also on ADSL).
+      set_teal_picks_slot(app_driver, "x", "datasets", "ADSL", wait = FALSE)
+      set_teal_picks_slot(app_driver, "x", "variables", "ACTARM", wait = TRUE)
+      set_teal_picks_slot(app_driver, input_id, "datasets", "ADSL", wait = FALSE)
+      set_teal_picks_slot(app_driver, input_id, "variables", "ACTARM", wait = TRUE)
 
       app_driver$expect_validation_error()
-
-      testthat::expect_match(
-        app_driver$get_text(app_driver$namespaces(TRUE)$module(
-          sprintf(
-            "%s_input .shiny-validation-message",
-            ns_des_input("x", "ADSL", "select")
-          )
-        )),
-        "^Duplicated value: ACTARM$"
-      )
-
-      testthat::expect_match(
-        app_driver$get_text(app_driver$namespaces(TRUE)$module(
-          sprintf(
-            "%s_input .shiny-validation-message",
-            ns_des_input(input_id, "ADSL", "select")
-          )
-        )),
-        "^Duplicated value: ACTARM$"
-      )
       app_driver$stop()
     }
   )

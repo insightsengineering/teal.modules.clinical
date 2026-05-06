@@ -169,7 +169,7 @@ init_teal_app_driver <- function(...) {
 }
 
 # Badge label may prefix variables with dataset (e.g. "ADLB BNRIND").
-.teal_picks_strip_ds_prefix_vec <- function(x) { # nolint: object_length_linter.
+teal_picks_strip_ds_prefix_vec <- function(x) { # nolint: object_length_linter.
   vapply(
     as.character(x),
     function(s) sub("^\\S+\\s+", "", s),
