@@ -532,18 +532,9 @@ template_events <- function(dataname,
 tm_t_events <- function(label,
                         dataname,
                         parentname = "ADSL",
-                        arm_var = variables(
-                          choices = c("ARM", "ARMCD"),
-                          selected = "ARM"
-                        ),
-                        hlt = variables(
-                          choices = c("AEBODSYS", "AESOC"),
-                          selected = "AEBODSYS"
-                        ),
-                        llt = variables(
-                          choices = c("AETERM", "AEDECOD"),
-                          selected = "AEDECOD"
-                        ),
+                        arm_var,
+                        hlt,
+                        llt,
                         add_total = TRUE,
                         total_label = default_total_label(),
                         na_level = tern::default_na_str(),
@@ -560,9 +551,9 @@ tm_t_events <- function(label,
                         transformators = list(),
                         decorators = list()) {
   message("Initializing tm_t_events")
-  arm_var <- deprecate_pick_variables_arg(arm_var, "arm_var")
-  hlt <- deprecate_pick_variables_arg(hlt, "hlt")
-  llt <- deprecate_pick_variables_arg(llt, "llt")
+  arm_var <- migrate_choices_selected_to_variables(arm_var, arg_name = "arm_var")
+  hlt <- migrate_choices_selected_to_variables(hlt, arg_name = "hlt")
+  llt <- migrate_choices_selected_to_variables(llt, arg_name = "llt")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
@@ -582,9 +573,9 @@ tm_t_events <- function(label,
   teal::assert_decorators(decorators, "table")
 
 
-  arm_var <- teal.picks::picks(teal.picks::datasets(parentname, parentname), arm_var)
-  hlt <- teal.picks::picks(teal.picks::datasets(dataname, dataname), hlt)
-  llt <- teal.picks::picks(teal.picks::datasets(dataname, dataname), llt)
+  arm_var <- create_picks_helper(teal.picks::datasets(parentname, parentname), arm_var)
+  hlt <- create_picks_helper(teal.picks::datasets(dataname, dataname), hlt)
+  llt <- create_picks_helper(teal.picks::datasets(dataname, dataname), llt)
 
   args <- as.list(environment())
 
