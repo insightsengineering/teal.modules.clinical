@@ -168,6 +168,24 @@ init_teal_app_driver <- function(...) {
   invisible(app_driver)
 }
 
+# Wait until a Shiny input in the active module has a non-empty DOM value (e.g. after
+# `updateSelectInput`). Uses one [`AppDriver$wait_for_js()`] instead of polling `wait_for_idle()`.
+wait_until_nonempty_active_module_input <- function(app_driver, input_id) {
+  checkmate::assert_string(input_id)
+  full_id <- app_driver$namespaces(TRUE)$module(input_id)
+  id_lit <- .teal_picks_js_id_literal(full_id)
+  app_driver$wait_for_js(sprintf(
+    paste0(
+      "(() => {\n",
+      "  const el = document.getElementById(%s);\n",
+      "  return el !== null && typeof el.value === \"string\" && el.value.length > 0;\n",
+      "})()"
+    ),
+    id_lit
+  ))
+  invisible(app_driver)
+}
+
 # Badge label may prefix variables with dataset (e.g. "ADLB BNRIND").
 .teal_picks_strip_ds_prefix_vec <- function(x) { # nolint: object_length_linter.
   vapply(
