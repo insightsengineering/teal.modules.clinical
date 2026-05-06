@@ -304,18 +304,15 @@ template_events_patyear <- function(dataname,
 tm_t_events_patyear <- function(label,
                                 dataname,
                                 parentname = "ADSL",
-                                arm_var = variables(choices = c("ARM", "ARMCD")),
-                                events_var = variables(choices = "n_events"),
-                                paramcd = variables(choices = "PARAMCD"),
+                                arm_var,
+                                events_var,
+                                paramcd,
                                 aval_var = variables(choices = "AVAL", fixed = TRUE),
                                 avalu_var = variables(choices = "AVALU", fixed = TRUE),
                                 add_total = TRUE,
                                 total_label = default_total_label(),
                                 na_level = tern::default_na_str(),
-                                conf_level = teal.transform::choices_selected(
-                                  c(0.95, 0.9, 0.8), 0.95,
-                                  keep_order = TRUE
-                                ),
+                                conf_level = teal.picks::values(c("0.95", "0.9", "0.8"), "0.95", fixed = FALSE),
                                 drop_arm_levels = TRUE,
                                 pre_output = NULL,
                                 post_output = NULL,
@@ -328,10 +325,10 @@ tm_t_events_patyear <- function(label,
   paramcd <- migrate_value_choices_to_picks(paramcd, multiple = FALSE, arg_name = "paramcd")
   aval_var <- migrate_choices_selected_to_variables(aval_var, arg_name = "aval_var")
   avalu_var <- migrate_choices_selected_to_variables(avalu_var, arg_name = "avalu_var")
+  conf_level <- migrate_choices_selected_to_values(conf_level, arg_name = "conf_level")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
-  checkmate::assert_class(conf_level, "choices_selected")
   checkmate::assert_flag(add_total)
   checkmate::assert_string(total_label)
   checkmate::assert_string(na_level)
@@ -406,7 +403,7 @@ ui_events_patyear <- function(id,
         conf_level$choices,
         conf_level$selected,
         multiple = FALSE,
-        fixed = conf_level$fixed
+        fixed = teal.picks::is_pick_fixed(conf_level)
       ),
       teal.widgets::optionalSelectInput(
         ns("conf_method"),
