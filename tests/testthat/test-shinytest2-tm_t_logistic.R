@@ -19,6 +19,8 @@ app_driver_tm_t_logistic <- function() {
     )
   )
 
+  paramcd_values <- suppressWarnings(teal.picks::values(selected = "BESRSPI", multiple = FALSE), classes = "picks_delayed")
+
   init_teal_app_driver(
     teal::init(
       data = data,
@@ -28,8 +30,7 @@ app_driver_tm_t_logistic <- function() {
         dataname = "ADRS",
         arm_var = teal.picks::variables(c("ARM", "ARMCD")),
         arm_ref_comp = arm_ref_comp,
-        paramcd_var = teal.picks::variables("PARAMCD", "PARAMCD"),
-        paramcd_values = suppressWarnings(teal.picks::values(selected = "BESRSPI", multiple = FALSE)),
+        paramcd = teal.picks::picks(teal.picks::variables("PARAMCD", "PARAMCD"), paramcd_values, check_dataset = FALSE),
         cov_var = teal.picks::variables(c("SEX", "AGE", "BMRKR1", "BMRKR2"), selected = "SEX"),
         conf_level = teal.picks::values(c("0.95", "0.9", "0.8"), "0.95", keep_order = TRUE),
         avalc_var = teal.picks::variables("AVALC", fixed = TRUE),
