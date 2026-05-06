@@ -124,6 +124,8 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_shift_by_arm()
+    # Establish a non-target visit so switching to SCREENING is guaranteed to update the table.
+    set_teal_picks_slot(app_driver, "visit_var", "values", "BASELINE")
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
     set_teal_picks_slot(app_driver, "visit_var", "values", "SCREENING")
     testthat::expect_false(
