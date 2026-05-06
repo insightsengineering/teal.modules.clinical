@@ -868,19 +868,10 @@ template_events_col_by_grade <- function(dataname,
 tm_t_events_by_grade <- function(label,
                                  dataname,
                                  parentname = "ADSL",
-                                 arm_var = variables(choices = c("ARM", "ARMCD"), selected = "ARM"),
-                                 hlt = variables(
-                                   choices = c("AEBODSYS", "AESOC"),
-                                   selected = "AEBODSYS"
-                                 ),
-                                 llt = variables(
-                                   choices = c("AETERM", "AEDECOD"),
-                                   selected = "AEDECOD"
-                                 ),
-                                 grade = variables(
-                                   choices = c("AETOXGR", "AESEV"),
-                                   selected = "AETOXGR"
-                                 ),
+                                 arm_var,
+                                 hlt,
+                                 llt,
+                                 grade,
                                  grading_groups = list(
                                    "Any Grade (%)" = c("1", "2", "3", "4", "5"),
                                    "Grade 1-2 (%)" = c("1", "2"),
