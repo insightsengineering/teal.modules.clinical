@@ -15,7 +15,11 @@ app_driver_tm_a_gee <- function() {
       ) |>
       droplevels()
   })
+
   teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
+
+  all_values <- function(x) unique(x)
+  class(all_values) <- append(class(all_values), "des-delayed")
 
   init_teal_app_driver(
     teal::init(
@@ -28,8 +32,10 @@ app_driver_tm_a_gee <- function() {
         id_var = teal.picks::variables(choices = c("USUBJID", "SUBJID"), selected = "USUBJID"),
         arm_var = teal.picks::variables(choices = c("ARM", "ARMCD"), selected = "ARM"),
         visit_var = teal.picks::variables(choices = c("AVISIT", "AVISITN"), selected = "AVISIT"),
-        paramcd = teal.picks::variables(
-          choices = c("PARAMCD", "PARAM")
+        paramcd = picks(
+           variables(choices = c("PARAMCD", "PARAM")),
+           values(all_values, "FKSI-FWB"),
+           check_dataset = FALSE
         ),
         cov_var = teal.picks::variables(choices = c("BASE", "AGE", "SEX", "BASE:AVISIT"), selected = NULL),
         conf_level = teal.picks::values(c(0.95, 0.9, 0.8, -1), 0.95, multiple = FALSE),

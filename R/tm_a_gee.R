@@ -196,16 +196,16 @@ template_a_gee <- function(output_table,
 #'     tm_a_gee(
 #'       label = "GEE",
 #'       dataname = "ADQS",
-#'       aval_var = teal.picks::variables(choices = "AVALBIN"),
-#'       id_var = teal.picks::variables(choices = c("USUBJID", "SUBJID"), selected = "USUBJID"),
-#'       arm_var = teal.picks::variables(choices = c("ARM", "ARMCD"), selected = "ARM"),
-#'       visit_var = teal.picks::variables(choices = c("AVISIT", "AVISITN"), selected = "AVISIT"),
-#'       paramcd = teal.picks::picks(
+#'       aval_var = variables(choices = "AVALBIN"),
+#'       id_var = variables(choices = c("USUBJID", "SUBJID"), selected = "USUBJID"),
+#'       arm_var = variables(choices = c("ARM", "ARMCD"), selected = "ARM"),
+#'       visit_var = variables(choices = c("AVISIT", "AVISITN"), selected = "AVISIT"),
+#'       paramcd = picks(
 #'         variables(choices = c("PARAMCD", "PARAM")),
 #'         values(all_values, "FKSI-FWB"),
 #'         check_dataset = FALSE
 #'       ),
-#'       cov_var = teal.picks::variables(
+#'       cov_var = variables(
 #'         choices = c("BASE", "AGE", "SEX", "BASE:AVISIT"),
 #'         selected = NULL
 #'       )
@@ -220,18 +220,14 @@ template_a_gee <- function(output_table,
 tm_a_gee <- function(label,
                      dataname,
                      parentname = "ADSL",
-                     aval_var = teal.picks::variables(choices = "AVALBIN"),
-                     id_var = teal.picks::variables(choices = c("USUBJID", "SUBJID")),
-                     arm_var = teal.picks::variables(choices = c("ARM", "ARMCD")),
-                     visit_var = teal.picks::variables(choices = c("AVISIT", "AVISITN")),
-                     cov_var = teal.picks::variables(choices = c("BASE", "AGE", "SEX", "BASE:AVISIT")),
+                     aval_var,
+                     id_var,
+                     arm_var,
+                     visit_var,
+                     cov_var,
                      arm_ref_comp = NULL,
-                     paramcd = teal.picks::picks(
-                       variables = variables(choices = c("PARAMCD", "PARAM")),
-                       values = values(),
-                       check_dataset = FALSE
-                     ),
-                     conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95, multiple = FALSE),
+                     paramcd,
+                     conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                      pre_output = NULL,
                      post_output = NULL,
                      basic_table_args = teal.widgets::basic_table_args(),
