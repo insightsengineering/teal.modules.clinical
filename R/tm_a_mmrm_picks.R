@@ -81,20 +81,19 @@ tm_a_mmrm.default <- function(label,
     )
   )
 
-  aval_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), aval_var)
-  id_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), id_var)
-  arm_var <- teal.picks::picks(teal.picks::datasets(parentname, parentname), arm_var)
-  paramcd <- teal.picks::picks(
+  aval_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), aval_var)
+  id_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), id_var)
+  arm_var <- create_picks_helper(teal.picks::datasets(parentname, parentname), arm_var)
+  paramcd <- create_picks_helper(
     teal.picks::datasets(dataname, dataname),
-    paramcd_var,
-    paramcd_values
+    teal.picks::picks(paramcd_var, paramcd_values, check_dataset = FALSE)
   )
-  visit_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), visit_var)
-  split_covariates <- teal.picks::picks(
+  visit_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), visit_var)
+  split_covariates <- create_picks_helper(
     teal.picks::datasets(dataname, dataname),
     split_choices_variables(cov_var)
   )
-  cov_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), cov_var)
+  cov_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), cov_var)
 
   args <- as.list(environment())
   module(
