@@ -195,8 +195,8 @@ template_shift_by_arm_by_worst <- function(dataname,
 #'   variable for baseline reference range indicator.
 #' @param worst_flag_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
 #'   variable for the worst post-baseline flag.
-#' @param worst_flag ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
-#'   value(s) indicating worst post-baseline records.
+#' @param worst_flag ([teal.picks::values()]; legacy `teal.transform::choices_selected()` is deprecated but still accepted)\cr
+#'   value matching `worst_flag_var` for worst post-baseline records (commonly `"Y"`).
 #' @param treatment_flag_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
 #'   variable for on-treatment flag.
 #' @param treatment_flag ([teal.picks::values()]; legacy `teal.transform::choices_selected()` is deprecated but still accepted)\cr
@@ -255,6 +255,7 @@ template_shift_by_arm_by_worst <- function(dataname,
 #'         choices = c("WORS01FL", "WORS02FL"),
 #'         selected = "WORS02FL"
 #'       ),
+#'       worst_flag = teal.picks::values(c("Y", "N", ""), "Y", multiple = FALSE),
 #'       aval_var = variables(choices = c("AVALC", "ANRIND"), selected = "ANRIND"),
 #'       baseline_var = variables(choices = c("BASEC", "BNRIND"), selected = "BNRIND"),
 #'       useNA = "ifany"

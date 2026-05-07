@@ -53,8 +53,8 @@ variable for baseline reference range indicator.}
 \item{worst_flag_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
 variable for the worst post-baseline flag.}
 
-\item{worst_flag}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
-value(s) indicating worst post-baseline records.}
+\item{worst_flag}{(\code{\link[teal.picks:values]{teal.picks::values()}}; legacy \code{teal.transform::choices_selected()} is deprecated but still accepted)\cr
+value matching \code{worst_flag_var} for worst post-baseline records (commonly \code{"Y"}).}
 
 \item{treatment_flag_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
 variable for on-treatment flag.}
@@ -164,6 +164,7 @@ app <- init(
         choices = c("WORS01FL", "WORS02FL"),
         selected = "WORS02FL"
       ),
+      worst_flag = teal.picks::values(c("Y", "N", ""), "Y", multiple = FALSE),
       aval_var = variables(choices = c("AVALC", "ANRIND"), selected = "ANRIND"),
       baseline_var = variables(choices = c("BASEC", "BNRIND"), selected = "BNRIND"),
       useNA = "ifany"
