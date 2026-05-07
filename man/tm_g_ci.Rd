@@ -12,10 +12,6 @@ tm_g_ci(
   x_var,
   y_var,
   color,
-  x_dataname = NULL,
-  y_dataname = NULL,
-  paramcd_value = NULL,
-  avisit_value = NULL,
   stat = c("mean", "median"),
   conf_level = NULL,
   plot_height = c(700L, 200L, 2000L),
@@ -32,10 +28,6 @@ tm_g_ci(
   x_var,
   y_var,
   color,
-  x_dataname = NULL,
-  y_dataname = NULL,
-  paramcd_value = NULL,
-  avisit_value = NULL,
   stat = c("mean", "median"),
   conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
   plot_height = c(700L, 200L, 2000L),
@@ -55,13 +47,6 @@ tm_g_ci(
     c("AVAL", "CHG", "CHG2"), selected = "AVAL", multiple = FALSE)),
   color = teal.picks::picks(teal.picks::datasets("ADSL"), teal.picks::variables(choices =
     c("SEX", "STRATA1", "STRATA2"), selected = "STRATA1", multiple = FALSE)),
-  x_dataname = NULL,
-  y_dataname = NULL,
-  paramcd_value = teal.picks::values(choices = c("ALT", "CRP", "IGA"), selected = "ALT",
-    multiple = FALSE),
-  avisit_value = teal.picks::values(choices = c("SCREENING", "BASELINE", "WEEK 1 DAY 8",
-    "WEEK 2 DAY 15", "WEEK 3 DAY 22", "WEEK 4 DAY 29", "WEEK 5 DAY 36"), selected =
-    "SCREENING", multiple = FALSE),
   stat = c("mean", "median"),
   conf_level = teal.picks::values(c("0.95", "0.9", "0.8"), selected = "0.95", keep_order
     = TRUE),
@@ -82,13 +67,6 @@ tm_g_ci(
     multiple = FALSE),
   color = teal.picks::variables(choices = c("SEX", "STRATA1", "STRATA2"), selected =
     "STRATA1", multiple = FALSE),
-  x_dataname = NULL,
-  y_dataname = NULL,
-  paramcd_value = teal.picks::values(choices = c("ALT", "CRP", "IGA"), selected = "ALT",
-    multiple = FALSE),
-  avisit_value = teal.picks::values(choices = c("SCREENING", "BASELINE", "WEEK 1 DAY 8",
-    "WEEK 2 DAY 15", "WEEK 3 DAY 22", "WEEK 4 DAY 29", "WEEK 5 DAY 36"), selected =
-    "SCREENING", multiple = FALSE),
   stat = c("mean", "median"),
   conf_level = teal.picks::values(c("0.95", "0.9", "0.8"), selected = "0.95", keep_order
     = TRUE),
@@ -109,14 +87,6 @@ tm_g_ci(
 \item{y_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}, \code{\link[teal.picks:picks]{teal.picks::picks()}}, or legacy \code{data_extract_spec})\cr analysis-value encoding.}
 
 \item{color}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}, \code{\link[teal.picks:picks]{teal.picks::picks()}}, or legacy \code{data_extract_spec})\cr grouping variable for colors, shapes, and line types.}
-
-\item{x_dataname}{(\code{character(1)} or \code{NULL})\cr dataset name for the treatment-axis (\code{x_var}) encoding (teal.picks API).}
-
-\item{y_dataname}{(\code{character(1)} or \code{NULL})\cr dataset name for the analysis-value (\code{y_var}) encoding (teal.picks API).}
-
-\item{paramcd_value}{(\code{values} or \code{NULL})\cr filter selection for \code{PARAMCD} on \code{y_dataname} (teal.picks API).}
-
-\item{avisit_value}{(\code{values} or \code{NULL})\cr filter selection for \code{AVISIT} on \code{y_dataname} (teal.picks API).}
 
 \item{stat}{(\code{character})\cr statistic to plot. Options are \code{"mean"} and \code{"median"}.}
 

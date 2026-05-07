@@ -26,21 +26,6 @@ tm_g_ci.picks <- function(label,
                               multiple = FALSE
                             )
                           ),
-                          x_dataname = NULL,
-                          y_dataname = NULL,
-                          paramcd_value = teal.picks::values(
-                            choices = c("ALT", "CRP", "IGA"),
-                            selected = "ALT",
-                            multiple = FALSE
-                          ),
-                          avisit_value = teal.picks::values(
-                            choices = c(
-                              "SCREENING", "BASELINE", "WEEK 1 DAY 8", "WEEK 2 DAY 15",
-                              "WEEK 3 DAY 22", "WEEK 4 DAY 29", "WEEK 5 DAY 36"
-                            ),
-                            selected = "SCREENING",
-                            multiple = FALSE
-                          ),
                           stat = c("mean", "median"),
                           conf_level = teal.picks::values(
                             c("0.95", "0.9", "0.8"),
@@ -57,14 +42,21 @@ tm_g_ci.picks <- function(label,
   stat <- match.arg(stat)
 
   checkmate::assert_string(label)
-  if (is.null(x_dataname)) {
-    x_dataname <- "ADSL"
-  }
-  if (is.null(y_dataname)) {
-    y_dataname <- "ADLB"
-  }
-  checkmate::assert_string(x_dataname)
-  checkmate::assert_string(y_dataname)
+  x_dataname <- "ADSL"
+  y_dataname <- "ADLB"
+  paramcd_value <- teal.picks::values(
+    choices = c("ALT", "CRP", "IGA"),
+    selected = "ALT",
+    multiple = FALSE
+  )
+  avisit_value <- teal.picks::values(
+    choices = c(
+      "SCREENING", "BASELINE", "WEEK 1 DAY 8", "WEEK 2 DAY 15",
+      "WEEK 3 DAY 22", "WEEK 4 DAY 29", "WEEK 5 DAY 36"
+    ),
+    selected = "SCREENING",
+    multiple = FALSE
+  )
 
   checkmate::assert_class(x_var, "picks")
   checkmate::assert_class(y_var, "picks")
@@ -132,21 +124,6 @@ tm_g_ci.variables <- function(label,
                                 selected = "STRATA1",
                                 multiple = FALSE
                               ),
-                              x_dataname = NULL,
-                              y_dataname = NULL,
-                              paramcd_value = teal.picks::values(
-                                choices = c("ALT", "CRP", "IGA"),
-                                selected = "ALT",
-                                multiple = FALSE
-                              ),
-                              avisit_value = teal.picks::values(
-                                choices = c(
-                                  "SCREENING", "BASELINE", "WEEK 1 DAY 8", "WEEK 2 DAY 15",
-                                  "WEEK 3 DAY 22", "WEEK 4 DAY 29", "WEEK 5 DAY 36"
-                                ),
-                                selected = "SCREENING",
-                                multiple = FALSE
-                              ),
                               stat = c("mean", "median"),
                               conf_level = teal.picks::values(
                                 c("0.95", "0.9", "0.8"),
@@ -160,25 +137,11 @@ tm_g_ci.variables <- function(label,
                               ggplot2_args = teal.widgets::ggplot2_args(),
                               transformators = list(),
                               decorators = list()) {
-  xd <- if (is.null(x_dataname)) {
-    "ADSL"
-  } else {
-    x_dataname
-  }
-  yd <- if (is.null(y_dataname)) {
-    "ADLB"
-  } else {
-    y_dataname
-  }
   tm_g_ci.picks(
     label = label,
-    x_var = teal.picks::picks(teal.picks::datasets(xd), x_var),
-    y_var = teal.picks::picks(teal.picks::datasets(yd), y_var),
-    color = teal.picks::picks(teal.picks::datasets(xd), color),
-    x_dataname = x_dataname,
-    y_dataname = y_dataname,
-    paramcd_value = paramcd_value,
-    avisit_value = avisit_value,
+    x_var = teal.picks::picks(teal.picks::datasets("ADSL"), x_var),
+    y_var = teal.picks::picks(teal.picks::datasets("ADLB"), y_var),
+    color = teal.picks::picks(teal.picks::datasets("ADSL"), color),
     stat = stat,
     conf_level = conf_level,
     plot_height = plot_height,

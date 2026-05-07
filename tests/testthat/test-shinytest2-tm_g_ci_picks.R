@@ -11,8 +11,6 @@ app_driver_tm_g_ci <- function() {
       data = data,
       modules = tm_g_ci(
         label = "Confidence Interval Plot",
-        x_dataname = "ADSL",
-        y_dataname = "ADLB",
         x_var = teal.picks::variables(
           choices = c("ARMCD", "BMRKR2"),
           selected = "ARMCD",
@@ -21,19 +19,6 @@ app_driver_tm_g_ci <- function() {
         y_var = teal.picks::variables(
           choices = c("AVAL", "CHG", "CHG2"),
           selected = "AVAL",
-          multiple = FALSE
-        ),
-        paramcd_value = teal.picks::values(
-          choices = c("ALT", "CRP", "IGA"),
-          selected = "ALT",
-          multiple = FALSE
-        ),
-        avisit_value = teal.picks::values(
-          choices = c(
-            "SCREENING", "BASELINE", "WEEK 1 DAY 8", "WEEK 2 DAY 15",
-            "WEEK 3 DAY 22", "WEEK 4 DAY 29", "WEEK 5 DAY 36"
-          ),
-          selected = "SCREENING",
           multiple = FALSE
         ),
         color = teal.picks::variables(

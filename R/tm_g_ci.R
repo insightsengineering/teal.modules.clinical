@@ -188,10 +188,6 @@ template_g_ci <- function(dataname,
 #' @param x_var ([`teal.picks::variables()`], [`teal.picks::picks()`], or legacy `data_extract_spec`)\cr treatment-axis encoding.
 #' @param y_var ([`teal.picks::variables()`], [`teal.picks::picks()`], or legacy `data_extract_spec`)\cr analysis-value encoding.
 #' @param color ([`teal.picks::variables()`], [`teal.picks::picks()`], or legacy `data_extract_spec`)\cr grouping variable for colors, shapes, and line types.
-#' @param x_dataname (`character(1)` or `NULL`)\cr dataset name for the treatment-axis (`x_var`) encoding (teal.picks API).
-#' @param y_dataname (`character(1)` or `NULL`)\cr dataset name for the analysis-value (`y_var`) encoding (teal.picks API).
-#' @param paramcd_value (`values` or `NULL`)\cr filter selection for `PARAMCD` on `y_dataname` (teal.picks API).
-#' @param avisit_value (`values` or `NULL`)\cr filter selection for `AVISIT` on `y_dataname` (teal.picks API).
 #' @param conf_level (`choices_selected` or `values`, depending on the dispatched method)\cr confidence level control.
 #'
 #' @inherit module_arguments return seealso
@@ -257,18 +253,6 @@ template_g_ci <- function(dataname,
 #'         choices = c("SEX", "STRATA1", "STRATA2"),
 #'         selected = "STRATA1",
 #'         multiple = FALSE
-#'       ),
-#'       x_dataname = "ADSL",
-#'       y_dataname = "ADLB",
-#'       paramcd_value = values(
-#'         choices = levels(data[["ADLB"]]$PARAMCD),
-#'         selected = levels(data[["ADLB"]]$PARAMCD)[[1]],
-#'         multiple = FALSE
-#'       ),
-#'       avisit_value = values(
-#'         choices = levels(data[["ADLB"]]$AVISIT),
-#'         selected = levels(data[["ADLB"]]$AVISIT)[[1]],
-#'         multiple = FALSE
 #'       )
 #'     )
 #'   )
@@ -282,10 +266,6 @@ tm_g_ci <- function(label,
                     x_var,
                     y_var,
                     color,
-                    x_dataname = NULL,
-                    y_dataname = NULL,
-                    paramcd_value = NULL,
-                    avisit_value = NULL,
                     stat = c("mean", "median"),
                     conf_level = NULL,
                     plot_height = c(700L, 200L, 2000L),
@@ -309,10 +289,6 @@ tm_g_ci.default <- function(label,
                             x_var,
                             y_var,
                             color,
-                            x_dataname = NULL,
-                            y_dataname = NULL,
-                            paramcd_value = NULL,
-                            avisit_value = NULL,
                             stat = c("mean", "median"),
                             conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                             plot_height = c(700L, 200L, 2000L),
@@ -322,8 +298,6 @@ tm_g_ci.default <- function(label,
                             ggplot2_args = teal.widgets::ggplot2_args(),
                             transformators = list(),
                             decorators = list()) {
-  checkmate::assert_null(paramcd_value, .var.name = "paramcd_value")
-  checkmate::assert_null(avisit_value, .var.name = "avisit_value")
   stat <- match.arg(stat)
   checkmate::assert_class(x_var, classes = "data_extract_spec")
   checkmate::assert_class(y_var, classes = "data_extract_spec")

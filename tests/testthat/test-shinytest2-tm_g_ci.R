@@ -26,21 +26,6 @@ app_driver_tm_g_ci <- function() {
           selected = "STRATA1",
           multiple = FALSE
         ),
-        x_dataname = "ADSL",
-        y_dataname = "ADLB",
-        paramcd_value = teal.picks::values(
-          choices = c("ALT", "CRP", "IGA"),
-          selected = "ALT",
-          multiple = FALSE
-        ),
-        avisit_value = teal.picks::values(
-          choices = c(
-            "SCREENING", "BASELINE", "WEEK 1 DAY 8", "WEEK 2 DAY 15",
-            "WEEK 3 DAY 22", "WEEK 4 DAY 29", "WEEK 5 DAY 36"
-          ),
-          selected = "SCREENING",
-          multiple = FALSE
-        ),
         stat = c("mean", "median"),
         conf_level = teal.picks::values(c("0.95", "0.9", "0.8"), selected = "0.95", keep_order = TRUE),
         plot_height = c(700L, 200L, 2000L),
