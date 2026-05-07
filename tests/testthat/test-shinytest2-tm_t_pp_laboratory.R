@@ -1,5 +1,3 @@
-testthat::skip("Slow CI machine prevents this test from succeding")
-
 # Setup timeout options for shinytest2 if none are set in options nor on environment variables
 withr::local_options(
   list(
@@ -142,9 +140,10 @@ testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of patient_id throws 
     visibility_property = TRUE
   )
   app_driver$expect_validation_error()
-  testthat::expect_equal(
-    app_driver$get_text(app_driver$namespaces(TRUE)$module("patient_id_input .shiny-validation-message")),
-    "Please select a patient"
+  testthat::expect_match(
+    app_driver$get_text(".standard-layout-output .shiny-output-error"),
+    "Please select a patient",
+    fixed = TRUE
   )
 })
 
@@ -179,7 +178,7 @@ testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of paramcd throws val
   )
   app_driver$expect_validation_error()
   testthat::expect_match(
-    app_driver$get_text(app_driver$namespaces(TRUE)$module("lab_values_table")),
+    app_driver$get_text(".standard-layout-output .shiny-output-error"),
     "Please select PARAMCD variable.",
     fixed = TRUE
   )
@@ -218,7 +217,7 @@ testthat::test_that(
     )
     app_driver$expect_validation_error()
     testthat::expect_match(
-      app_driver$get_text(app_driver$namespaces(TRUE)$module("lab_values_table")),
+      app_driver$get_text(".standard-layout-output .shiny-output-error"),
       "Please select PARAM variable.",
       fixed = TRUE
     )
@@ -256,7 +255,7 @@ testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of timepoints throws 
   )
   app_driver$expect_validation_error()
   testthat::expect_match(
-    app_driver$get_text(app_driver$namespaces(TRUE)$module("lab_values_table")),
+    app_driver$get_text(".standard-layout-output .shiny-output-error"),
     "Please select timepoints variable.",
     fixed = TRUE
   )
@@ -293,7 +292,7 @@ testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of avalu_var throws v
   )
   app_driver$expect_validation_error()
   testthat::expect_match(
-    app_driver$get_text(app_driver$namespaces(TRUE)$module("lab_values_table")),
+    app_driver$get_text(".standard-layout-output .shiny-output-error"),
     "Please select AVALU variable.",
     fixed = TRUE
   )
@@ -330,7 +329,7 @@ testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of aval_var throws va
   )
   app_driver$expect_validation_error()
   testthat::expect_match(
-    app_driver$get_text(app_driver$namespaces(TRUE)$module("lab_values_table")),
+    app_driver$get_text(".standard-layout-output .shiny-output-error"),
     "Please select AVAL variable.",
     fixed = TRUE
   )
@@ -367,7 +366,7 @@ testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of anrind throws vali
   )
   app_driver$expect_validation_error()
   testthat::expect_match(
-    app_driver$get_text(app_driver$namespaces(TRUE)$module("lab_values_table")),
+    app_driver$get_text(".standard-layout-output .shiny-output-error"),
     "Please select ANRIND variable.",
     fixed = TRUE
   )
