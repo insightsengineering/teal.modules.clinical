@@ -128,7 +128,7 @@ treatment flag variable.}
 all available choices and preselected option for variable names that can be used as \code{visit} variable.
 Must be a factor in \code{dataname}.}
 
-\item{worst_flag_indicator}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr
+\item{worst_flag_indicator}{(\code{\link[teal.picks:values]{teal.picks::values()}})\cr
 value indicating worst grade.}
 
 \item{worst_flag_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object

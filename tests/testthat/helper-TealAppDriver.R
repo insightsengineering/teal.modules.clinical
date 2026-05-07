@@ -185,14 +185,23 @@ init_teal_app_driver <- function(...) {
 get_teal_picks_slot <- function(app_driver, pick_id, slot = "variables") {
   checkmate::assert_string(pick_id)
   checkmate::assert_string(slot)
-  sel_id <- app_driver$namespaces()$module(NS(pick_id, "picks_resolved"))
-  selected_pick <- app_driver$get_value(export = sel_id)
+  selected_pick <- teal_picks_exports(app_driver, pick_id)[["picks_resolved"]]
   selected_pick[[slot]]$selected
+}
+
+# Read all exported values for a teal.picks module, filtered to those with the module's namespace prefix.
+teal_picks_exports <- function(app_driver, pick_id) {
+  checkmate::assert_string(pick_id)
+  sel_id <- app_driver$namespaces()$module(pick_id)
+  exports <- app_driver$get_values(export = TRUE)$export
+  exports_filtered <- exports[grepl(sprintf("^%s", sel_id), names(exports))]
+  names(exports_filtered) <- sub(sprintf("^%s-", sel_id), "", names(exports_filtered))
+  exports_filtered
 }
 
 # Set a categorical teal.picks slot. `set_input` alone often does not refresh bootstrap-select
 # or trigger teal.picks' commit observer reliably; sync the DOM widget then pulse
-# `*_selected_open` via [`AppDriver$set_inputs()`] (see [.teal_picks_shiny_set_picker_and_commit()]).
+# `*_selected_open` via Shiny.setInputValue.
 # Use value = NULL for an empty multi-select (character(0) is sent to Shiny).
 # @param wait (`logical(1)`) if `TRUE` (default), call `wait_for_idle()` after committing the picker.
 set_teal_picks_slot <- function(app_driver, pick_id, slot, value, wait = TRUE) {
@@ -200,9 +209,10 @@ set_teal_picks_slot <- function(app_driver, pick_id, slot, value, wait = TRUE) {
   checkmate::assert_string(slot)
   checkmate::assert_flag(wait)
   .teal_picks_click_summary_badge(app_driver, pick_id)
-  sel_id <- app_driver$namespaces()$module(paste0(pick_id, "-", slot, "-selected"))
-  open_id <- app_driver$namespaces()$module(paste0(pick_id, "-", slot, "-selected_open"))
-  val <- if (is.null(value)) character(0) else as.character(value)
+  exports <- teal_picks_exports(app_driver, pick_id)
+  sel_id <- sprintf(exports$selected_id_fmt, slot)
+  open_id <- sprintf(exports$open_id_fmt, slot)
+  val <- if (is.null(value)) character(0L) else as.character(value)
   .teal_picks_apply_select_value_in_browser(app_driver, sel_id, val)
   .teal_picks_shiny_set_picker_and_commit(app_driver, sel_id, open_id, val)
   if (isTRUE(wait)) {

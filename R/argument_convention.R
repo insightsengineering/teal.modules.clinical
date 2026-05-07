@@ -199,7 +199,7 @@ NULL
 #' @param visit_var ([teal.transform::choices_selected()])\cr object with
 #'   all available choices and preselected option for variable names that can be used as `visit` variable.
 #'   Must be a factor in `dataname`.
-#' @param worst_flag_indicator ([teal.transform::choices_selected()])\cr
+#' @param worst_flag_indicator ([teal.picks::values()])\cr
 #'   value indicating worst grade.
 #' @param worst_flag_var ([teal.transform::choices_selected()])\cr object
 #'   with all available choices and preselected option for variable names that can be used as worst flag variable.
