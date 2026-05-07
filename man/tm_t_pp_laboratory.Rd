@@ -32,7 +32,7 @@ tm_t_pp_laboratory(
 
 \item{patient_col}{(\code{character})\cr name of patient ID variable.}
 
-\item{timepoints}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
+\item{timepoints}{(\link[teal.picks:variables]{teal.picks::variables} or \code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
 available choices and preselected option for the time variable from \code{dataname}.}
 
 \item{aval}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use the \code{aval_var} argument instead.}
@@ -45,13 +45,13 @@ all available choices and pre-selected option for the analysis variable.}
 \item{avalu_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
 all available choices and preselected option for the analysis unit variable.}
 
-\item{param}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
+\item{param}{(\link[teal.picks:variables]{teal.picks::variables} or \code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
 available choices and preselected option for the \code{PARAM} variable from \code{dataname}.}
 
 \item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
 available choices and preselected option for the parameter code variable from \code{dataname}.}
 
-\item{anrind}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
+\item{anrind}{(\link[teal.picks:variables]{teal.picks::variables} or \code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
 available choices and preselected option for the \code{ANRIND} variable from \code{dataname}. Variable should have the
 following 3 levels: \code{"HIGH"}, \code{"LOW"}, and \code{"NORMAL"}.}
 
@@ -111,30 +111,12 @@ app <- init(
       label = "Vitals",
       dataname = "ADLB",
       patient_col = "USUBJID",
-      paramcd = choices_selected(
-        choices = variable_choices(ADLB, "PARAMCD"),
-        selected = "PARAMCD"
-      ),
-      param = choices_selected(
-        choices = variable_choices(ADLB, "PARAM"),
-        selected = "PARAM"
-      ),
-      timepoints = choices_selected(
-        choices = variable_choices(ADLB, "ADY"),
-        selected = "ADY"
-      ),
-      anrind = choices_selected(
-        choices = variable_choices(ADLB, "ANRIND"),
-        selected = "ANRIND"
-      ),
-      aval_var = choices_selected(
-        choices = variable_choices(ADLB, "AVAL"),
-        selected = "AVAL"
-      ),
-      avalu_var = choices_selected(
-        choices = variable_choices(ADLB, "AVALU"),
-        selected = "AVALU"
-      )
+      timepoints = variables("ADY", fixed = TRUE),
+      aval_var = variables("AVAL", fixed = TRUE),
+      avalu_var = variables("AVALU", fixed = TRUE),
+      param = variables("PARAM", fixed = TRUE),
+      paramcd = variables("PARAMCD", fixed = TRUE),
+      anrind = variables("ANRIND", fixed = TRUE),
     )
   )
 )
@@ -146,8 +128,8 @@ if (interactive()) {
 \section{Examples in Shinylive}{
 \describe{
   \item{example-1}{
-    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOz8gCEikrLK6v5qeiUAX0UIACsieL8AazhWUUTQm3D+OGMoYVI-An5aUTKRscnp4Gh4GaS5AF1XCByCoqTgYAUwa-zHs4urptaF0PvHnJbXu8lGhUEV4tF2A0kjoALw6JK4Bp8IQiUSwnTI4RiSEQDIZEp+NboPzUKD0IjMUgUjgNPE6Un0ODUdGPABq0W4okeiNxdPhoSOujhf0+3NpeNQHloFDWxGZwrADlyDmaACkAJLZMW8umS5ilfjoggxUYEMR+URMuDqOD8HF8vHG01idGaFi0MkidYmmTY-7NFKPAAKmSwmQAsgBhLVgOQ8h0ZS0iG2GhUhsNRmPijJx7M6PWwI0+s2iC1WlP2hNO31ouFuxge+he6sl9j+wNgdMRx65nV8pPW8ipnTB0PdsB53sOjTwVCjMi1nQt80Dit5jLLxf1xvN4t+z4dnIATR78YTq6HLKe2RPE77ObPdKgEAbEGHm7LyaHlYdm9d7s9OBvWdGZ2xHJ4ADksHVCCYync9y0vBVMigmCs3vHR4KfN1-HrIsQM-QdbR-Pk-zrACmyAzc2wPcDMlZTIXljR9+0Q20r3oxjHknFiMigHDBD8PC4Q-C9iPXJc9y3CjdxAmiWkPBj8gcU8JLE4c-iUlS7wdQY6T0zClEGWhjB0dh4nINQNG0awbDSXlRDiCBWEydB2BBAASQRaBSTzLUYbRGEGPolDAPoziAA}{Open in Shinylive}
-    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOz8gCEikrLK6v5qeiUAX0UIACsieL8AazhWUUTQm3D+OGMoYVI-An5aUTKRscnp4Gh4GaS5AF1XCByCoqTgYAUwa-zHs4urptaF0PvHnJbXu8lGhUEV4tF2A0kjoALw6JK4Bp8IQiUSwnTI4RiSEQDIZEp+NboPzUKD0IjMUgUjgNPE6Un0ODUdGPABq0W4okeiNxdPhoSOujhf0+3NpeNQHloFDWxGZwrADlyDmaACkAJLZMW8umS5ilfjoggxUYEMR+URMuDqOD8HF8vHG01idGaFi0MkidYmmTY-7NFKPAAKmSwmQAsgBhLVgOQ8h0ZS0iG2GhUhsNRmPijJx7M6PWwI0+s2iC1WlP2hNO31ouFuxge+he6sl9j+wNgdMRx65nV8pPW8ipnTB0PdsB53sOjTwVCjMi1nQt80Dit5jLLxf1xvN4t+z4dnIATR78YTq6HLKe2RPE77ObPdKgEAbEGHm7LyaHlYdm9d7s9OBvWdGZ2xHJ4ADksHVCCYync9y0vBVMigmCs3vHR4KfN1-HrIsQM-QdbR-Pk-zrACmyAzc2wPcDMlZTIXljR9+0Q20r3oxjHknFiMigHDBD8PC4Q-C9iPXJc9y3CjdxAmiWkPBj8gcU8JLE4c-iUlS7wdQY6T0zClEGWhjB0dh4nINQNG0awbDSXlRDiCBWEydB2BBAASQRaBSTzLUYbRGEGPolDAPoziAA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOz8gCEikrLK6v5qeiUAX0UIACsieL8AazhWUUTQm3D+OGMoYVI-An5aUTKRscnp4Gh4GaS5AF1XCByCoqTgYAUwa-zHs4urptaF0PvHnJbXu8lGhUEV4tF2A0kjoALw6JK4Bp8IQiUSwnTI4RiSEQDIZEp+NboPzUKD0IjMUgUjgNPE6Un0ODUdGPABq0W4okeiNxdPhoSOujhf0+3NpeNQHloFDWxGZwrADlyDmaACkAJLZMW8ukaeCoUZkNFwzQsWhk1GQp7ZACa3JMtAqcH46PszjkPL5Oigpv8psY6P95volr+rMyLzwDqdLrhbqcHvFGR93EEfn9gbNFuxYYjDntxkdztdjgTnr5kuYMEzjGDobAAAVMlhMgBZAtF2N2UuJnUSliwDY1us5xvNtsAYS1UcLMZL7vLdKgEFrEC7QezMz+ADksOrt9OUrPi3Ge4udIMMoNBrRjDp2PFyGoNNprDY0rzRHEIKxMuh2CCAAkgi0CkQGiKo2iMIMfRKGAfRnEAA}{Open in Shinylive}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOz8gCEikrLK6v5qeiUAX0UIACsieL8AazhWUUTQm3D+OGMoYVI-An5aUTKRscnp4Gh4GaS5AF1XCByCoqTgYAUwa-zHs4urptaF0PvHnJbXu8lGhUEV4tF2A0kjoALw6JK4Bp8IQiUSwnTI4RiSEQDIZEp+NboPzUKD0IjMUgUjgNPE6Un0ODUdGPABq0W4okeiNxdPhoSOujhf0+3NpeNQHloFDWxGZwrADlyDmaACkAJLZMW8ukaeCoUZkNFwzQsWhk1GQp7ZACa3JMtAqcH46PszjkPL5Oigpv8psY6P95volr+rMyLzwDqdLrhbqcHvFGR93EEfn9gbNFuxYYjDntxkdztdjgTnr5kuYMEzjGDobAAAVMlhMgBZAtF2N2UuJnUSliwDY1us5xvNtsAYS1UcLMZL7vLdKgEFrEC7QezMz+ADksOrt9OUrPi3Ge4udIMMoNBrRjDp2PFyGoNNprDY0rzRHEIKxMuh2CCAAkgi0CkQGiKo2iMIMfRKGAfRnEAA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
     \if{html}{\out{<a style='height: 800px; display: block;'></a>}}
   }
 }
