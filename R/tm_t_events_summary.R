@@ -508,7 +508,7 @@ template_events_summary <- function(anl_name,
 #' death flag variable.
 #'   Records with `"Y"`` are summarized in the table row for "Total number of deaths".
 #' @param dcsreas_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
-#'   object with all available choices and preselectedwith all available choices
+#'   object with all available choices and preselected with all available choices
 #'   and preselected option for variable names that can be used as study discontinuation
 #'   reason variable. Records with `"ADVERSE EVENTS"` are summarized in the table row for
 #'   "Total number of patients withdrawn from study due to an AE".

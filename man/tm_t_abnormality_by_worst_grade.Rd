@@ -59,7 +59,7 @@ object with all available choices and preselected option for the worst low grade
 \item{worst_flag_indicator}{(\code{\link[teal.picks:values]{teal.picks::values()}}; legacy \code{teal.transform::choices_selected()} is deprecated but
 still accepted)\cr
 Value(s) matching the worst high/low flag variables (default \code{"Y"}).
-Uses explicit candidate levels including anempty string where needed.
+Uses explicit candidate levels including an empty string where needed.
 The UI shows the selected value as static text (not an interactive control).}
 
 \item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
