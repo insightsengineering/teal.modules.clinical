@@ -20,7 +20,8 @@ app_driver_tm_t_logistic <- function() {
   )
 
   paramcd_values <- suppressWarnings(
-    teal.picks::values(selected = "BESRSPI", multiple = FALSE), classes = "picks_delayed"
+    teal.picks::values(selected = "BESRSPI", multiple = FALSE),
+    classes = "picks_delayed"
   )
 
   init_teal_app_driver(
