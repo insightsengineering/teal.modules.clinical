@@ -187,12 +187,12 @@ template_g_ci <- function(dataname,
 #' @inheritParams template_g_ci
 #' @param x_var ([`teal.picks::variables()`], [`teal.picks::picks()`], or legacy `data_extract_spec`)\cr treatment-axis encoding.
 #' @param y_var ([`teal.picks::variables()`], [`teal.picks::picks()`], or legacy `data_extract_spec`)\cr analysis-value encoding.
-#' @param color (`NULL`, [`teal.picks::variables()`], [`teal.picks::picks()`], or legacy `data_extract_spec`)\cr optional grouping variable for colors, shapes, and line types.
+#' @param color ([`teal.picks::variables()`], [`teal.picks::picks()`], or legacy `data_extract_spec`)\cr grouping variable for colors, shapes, and line types.
 #' @param x_dataname (`character(1)` or `NULL`)\cr dataset name for the treatment-axis (`x_var`) encoding (teal.picks API).
 #' @param y_dataname (`character(1)` or `NULL`)\cr dataset name for the analysis-value (`y_var`) encoding (teal.picks API).
 #' @param paramcd_value (`values` or `NULL`)\cr filter selection for `PARAMCD` on `y_dataname` (teal.picks API).
 #' @param avisit_value (`values` or `NULL`)\cr filter selection for `AVISIT` on `y_dataname` (teal.picks API).
-#' @param conf_level (`choices_selected`, `values`, or `NULL`)\cr confidence level control; `NULL` picks a default based on encodings.
+#' @param conf_level (`choices_selected` or `values`, depending on the dispatched method)\cr confidence level control.
 #'
 #' @inherit module_arguments return seealso
 #'
@@ -279,30 +279,9 @@ template_g_ci <- function(dataname,
 #'
 #' @export
 tm_g_ci <- function(label,
-                    x_var = teal.picks::picks(
-                      teal.picks::datasets("ADSL"),
-                      teal.picks::variables(
-                        choices = c("ARMCD", "BMRKR2"),
-                        selected = "ARMCD",
-                        multiple = FALSE
-                      )
-                    ),
-                    y_var = teal.picks::picks(
-                      teal.picks::datasets("ADLB"),
-                      teal.picks::variables(
-                        choices = c("AVAL", "CHG", "CHG2"),
-                        selected = "AVAL",
-                        multiple = FALSE
-                      )
-                    ),
-                    color = teal.picks::picks(
-                      teal.picks::datasets("ADSL"),
-                      teal.picks::variables(
-                        choices = c("SEX", "STRATA1", "STRATA2"),
-                        selected = "STRATA1",
-                        multiple = FALSE
-                      )
-                    ),
+                    x_var,
+                    y_var,
+                    color,
                     x_dataname = NULL,
                     y_dataname = NULL,
                     paramcd_value = NULL,
@@ -318,17 +297,10 @@ tm_g_ci <- function(label,
                     decorators = list()) {
   message("Initializing tm_g_ci")
   checkmate::assert_string(label)
-  enc <- NULL
-  for (z in list(x_var, y_var, color)) {
-    if (!is.null(z)) {
-      enc <- z
-      break
-    }
+  if (is.null(x_var)) {
+    stop("`x_var` must not be NULL.", call. = FALSE)
   }
-  if (is.null(enc)) {
-    stop("At least one of `x_var`, `y_var`, and `color` must be non-NULL.", call. = FALSE)
-  }
-  UseMethod("tm_g_ci", enc)
+  UseMethod("tm_g_ci", x_var)
 }
 
 #' @describeIn tm_g_ci Legacy encodings via `data_extract_spec` (merge-based UI).
@@ -342,7 +314,7 @@ tm_g_ci.default <- function(label,
                             paramcd_value = NULL,
                             avisit_value = NULL,
                             stat = c("mean", "median"),
-                            conf_level = NULL,
+                            conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                             plot_height = c(700L, 200L, 2000L),
                             plot_width = NULL,
                             pre_output = NULL,
@@ -353,16 +325,16 @@ tm_g_ci.default <- function(label,
   checkmate::assert_null(paramcd_value, .var.name = "paramcd_value")
   checkmate::assert_null(avisit_value, .var.name = "avisit_value")
   stat <- match.arg(stat)
-  x_var <- teal.transform::list_extract_spec(x_var, allow_null = TRUE)
-  y_var <- teal.transform::list_extract_spec(y_var, allow_null = TRUE)
-  color <- teal.transform::list_extract_spec(color, allow_null = TRUE)
+  checkmate::assert_class(x_var, classes = "data_extract_spec")
+  checkmate::assert_class(y_var, classes = "data_extract_spec")
+  checkmate::assert_class(color, classes = "data_extract_spec")
+  x_var <- teal.transform::list_extract_spec(x_var, allow_null = FALSE)
+  y_var <- teal.transform::list_extract_spec(y_var, allow_null = FALSE)
+  color <- teal.transform::list_extract_spec(color, allow_null = FALSE)
   teal.transform::check_no_multiple_selection(x_var)
   teal.transform::check_no_multiple_selection(y_var)
   teal.transform::check_no_multiple_selection(color)
 
-  if (is.null(conf_level)) {
-    conf_level <- teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE)
-  }
   checkmate::assert_class(conf_level, "choices_selected")
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")

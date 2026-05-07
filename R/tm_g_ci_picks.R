@@ -1,4 +1,5 @@
-#' @describeIn tm_g_ci teal.picks encodings via \code{picks} objects for \code{x_var} / \code{y_var} / \code{color}.
+#' @describeIn tm_g_ci teal.picks encodings via \code{picks} objects for \code{x_var}, \code{y_var}, and \code{color}
+#' (use [`tm_g_ci.variables()`] to pass [`teal.picks::variables()`] objects; they are wrapped into \code{picks}).
 #' @export
 tm_g_ci.picks <- function(label,
                           x_var = teal.picks::picks(
@@ -65,36 +66,9 @@ tm_g_ci.picks <- function(label,
   checkmate::assert_string(x_dataname)
   checkmate::assert_string(y_dataname)
 
-  if (is.null(paramcd_value)) {
-    paramcd_value <- teal.picks::values(
-      choices = c("ALT", "CRP", "IGA"),
-      selected = "ALT",
-      multiple = FALSE
-    )
-  }
-  if (is.null(avisit_value)) {
-    avisit_value <- teal.picks::values(
-      choices = c(
-        "SCREENING", "BASELINE", "WEEK 1 DAY 8", "WEEK 2 DAY 15",
-        "WEEK 3 DAY 22", "WEEK 4 DAY 29", "WEEK 5 DAY 36"
-      ),
-      selected = "SCREENING",
-      multiple = FALSE
-    )
-  }
-  if (is.null(conf_level)) {
-    conf_level <- teal.picks::values(
-      c("0.95", "0.9", "0.8"),
-      selected = "0.95",
-      keep_order = TRUE
-    )
-  }
-
-  checkmate::assert_true(inherits(x_var, "variables") || inherits(x_var, "picks"))
-  checkmate::assert_true(inherits(y_var, "variables") || inherits(y_var, "picks"))
-  if (!is.null(color)) {
-    checkmate::assert_true(inherits(color, "variables") || inherits(color, "picks"))
-  }
+  checkmate::assert_class(x_var, "picks")
+  checkmate::assert_class(y_var, "picks")
+  checkmate::assert_class(color, "picks")
   checkmate::assert_class(paramcd_value, "values")
   checkmate::assert_class(avisit_value, "values")
   checkmate::assert_class(conf_level, "values")
@@ -110,11 +84,7 @@ tm_g_ci.picks <- function(label,
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
   teal::assert_decorators(decorators, "plot")
 
-  x_var_picks <- if (inherits(x_var, "picks")) {
-    x_var
-  } else {
-    teal.picks::picks(teal.picks::datasets(x_dataname), x_var)
-  }
+  x_var_picks <- x_var
 
   paramcd_picks <- teal.picks::picks(
     teal.picks::datasets(y_dataname, y_dataname),
@@ -127,19 +97,9 @@ tm_g_ci.picks <- function(label,
     avisit_value
   )
 
-  y_var_picks <- if (inherits(y_var, "picks")) {
-    y_var
-  } else {
-    teal.picks::picks(teal.picks::datasets(y_dataname), y_var)
-  }
+  y_var_picks <- y_var
 
-  color_picks <- if (is.null(color)) {
-    NULL
-  } else if (inherits(color, "picks")) {
-    color
-  } else {
-    teal.picks::picks(teal.picks::datasets(x_dataname), color)
-  }
+  color_picks <- color
 
   args <- as.list(environment())
 
@@ -200,11 +160,21 @@ tm_g_ci.variables <- function(label,
                               ggplot2_args = teal.widgets::ggplot2_args(),
                               transformators = list(),
                               decorators = list()) {
+  xd <- if (is.null(x_dataname)) {
+    "ADSL"
+  } else {
+    x_dataname
+  }
+  yd <- if (is.null(y_dataname)) {
+    "ADLB"
+  } else {
+    y_dataname
+  }
   tm_g_ci.picks(
     label = label,
-    x_var = x_var,
-    y_var = y_var,
-    color = color,
+    x_var = teal.picks::picks(teal.picks::datasets(xd), x_var),
+    y_var = teal.picks::picks(teal.picks::datasets(yd), y_var),
+    color = teal.picks::picks(teal.picks::datasets(xd), color),
     x_dataname = x_dataname,
     y_dataname = y_dataname,
     paramcd_value = paramcd_value,
@@ -254,12 +224,10 @@ ui_g_ci.picks <- function(id,
         tags$label("Analysis Value (y axis):"),
         teal.picks::picks_ui(ns("y_var_picks"), y_var_picks)
       ),
-      if (!is.null(color_picks)) {
-        tags$div(
-          tags$label("Groups (color):"),
-          teal.picks::picks_ui(ns("color_picks"), color_picks)
-        )
-      },
+      tags$div(
+        tags$label("Groups (color):"),
+        teal.picks::picks_ui(ns("color_picks"), color_picks)
+      ),
       teal.widgets::optionalSelectInput(
         inputId = ns("conf_level"),
         label = "Confidence Level",
@@ -302,13 +270,13 @@ srv_g_ci.picks <- function(id,
   moduleServer(id, function(input, output, session) {
     teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
 
-    picks_list <- Filter(Negate(is.null), list(
+    picks_list <- list(
       x_var_picks = x_var_picks,
       y_var_picks = y_var_picks,
       paramcd_picks = paramcd_picks,
       avisit_picks = avisit_picks,
       color_picks = color_picks
-    ))
+    )
 
     selectors <- teal.picks::picks_srv(
       picks = picks_list,
@@ -320,23 +288,28 @@ srv_g_ci.picks <- function(id,
 
       teal:::validate_input(
         inputId = "x_var_picks-variables-selected",
-        condition = !is.null(selectors$x_var_picks()$variables$selected),
+        condition = selectors$x_var_picks()$variables$selected,
         message = "Please select a treatment variable (x axis)."
       )
       teal:::validate_input(
         inputId = "paramcd_picks-values-selected",
-        condition = !is.null(selectors$paramcd_picks()$values$selected),
+        condition = selectors$paramcd_picks()$values$selected,
         message = "Please select a lab parameter (PARAMCD)."
       )
       teal:::validate_input(
         inputId = "avisit_picks-values-selected",
-        condition = !is.null(selectors$avisit_picks()$values$selected),
+        condition = selectors$avisit_picks()$values$selected,
         message = "Please select a visit (AVISIT)."
       )
       teal:::validate_input(
         inputId = "y_var_picks-variables-selected",
-        condition = !is.null(selectors$y_var_picks()$variables$selected),
+        condition = selectors$y_var_picks()$variables$selected,
         message = "Please select an analysis value variable (y axis)."
+      )
+      teal:::validate_input(
+        inputId = "color_picks-variables-selected",
+        condition = selectors$color_picks()$variables$selected,
+        message = "Please select a grouping variable (color)."
       )
       teal:::validate_input(
         inputId = "conf_level",
@@ -369,7 +342,7 @@ srv_g_ci.picks <- function(id,
     )
 
     # Merge x_dataname selectors (x variable + optional color variable)
-    x_selectors <- selectors[intersect(c("x_var_picks", "color_picks"), names(selectors))]
+    x_selectors <- selectors[c("x_var_picks", "color_picks")]
     adsl_inputs <- teal.picks::merge_srv(
       "adsl_inputs",
       data = validated_q,
@@ -399,7 +372,7 @@ srv_g_ci.picks <- function(id,
 
       x <- selectors$x_var_picks()$variables$selected
       y <- selectors$y_var_picks()$variables$selected
-      color <- if (!is.null(color_picks)) selectors$color_picks()$variables$selected else NULL
+      color <- selectors$color_picks()$variables$selected
 
       paramcd_sel <- selectors$paramcd_picks()$values$selected
       avisit_sel <- selectors$avisit_picks()$values$selected

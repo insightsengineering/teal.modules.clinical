@@ -9,12 +9,9 @@
 \usage{
 tm_g_ci(
   label,
-  x_var = teal.picks::picks(teal.picks::datasets("ADSL"), teal.picks::variables(choices =
-    c("ARMCD", "BMRKR2"), selected = "ARMCD", multiple = FALSE)),
-  y_var = teal.picks::picks(teal.picks::datasets("ADLB"), teal.picks::variables(choices =
-    c("AVAL", "CHG", "CHG2"), selected = "AVAL", multiple = FALSE)),
-  color = teal.picks::picks(teal.picks::datasets("ADSL"), teal.picks::variables(choices =
-    c("SEX", "STRATA1", "STRATA2"), selected = "STRATA1", multiple = FALSE)),
+  x_var,
+  y_var,
+  color,
   x_dataname = NULL,
   y_dataname = NULL,
   paramcd_value = NULL,
@@ -40,7 +37,7 @@ tm_g_ci(
   paramcd_value = NULL,
   avisit_value = NULL,
   stat = c("mean", "median"),
-  conf_level = NULL,
+  conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
   plot_height = c(700L, 200L, 2000L),
   plot_width = NULL,
   pre_output = NULL,
@@ -111,7 +108,7 @@ tm_g_ci(
 
 \item{y_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}, \code{\link[teal.picks:picks]{teal.picks::picks()}}, or legacy \code{data_extract_spec})\cr analysis-value encoding.}
 
-\item{color}{(\code{NULL}, \code{\link[teal.picks:variables]{teal.picks::variables()}}, \code{\link[teal.picks:picks]{teal.picks::picks()}}, or legacy \code{data_extract_spec})\cr optional grouping variable for colors, shapes, and line types.}
+\item{color}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}, \code{\link[teal.picks:picks]{teal.picks::picks()}}, or legacy \code{data_extract_spec})\cr grouping variable for colors, shapes, and line types.}
 
 \item{x_dataname}{(\code{character(1)} or \code{NULL})\cr dataset name for the treatment-axis (\code{x_var}) encoding (teal.picks API).}
 
@@ -123,7 +120,7 @@ tm_g_ci(
 
 \item{stat}{(\code{character})\cr statistic to plot. Options are \code{"mean"} and \code{"median"}.}
 
-\item{conf_level}{(\code{choices_selected}, \code{values}, or \code{NULL})\cr confidence level control; \code{NULL} picks a default based on encodings.}
+\item{conf_level}{(\code{choices_selected} or \code{values}, depending on the dispatched method)\cr confidence level control.}
 
 \item{plot_height}{(\code{numeric}) optional\cr vector of length three with \code{c(value, min, max)}. Specifies the
 height of the main plot and renders a slider on the plot to interactively adjust the plot height.}
@@ -163,7 +160,8 @@ This module produces a \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}} type conf
 \itemize{
 \item \code{tm_g_ci(default)}: Legacy encodings via \code{data_extract_spec} (merge-based UI).
 
-\item \code{tm_g_ci(picks)}: teal.picks encodings via \code{picks} objects for \code{x_var} / \code{y_var} / \code{color}.
+\item \code{tm_g_ci(picks)}: teal.picks encodings via \code{picks} objects for \code{x_var}, \code{y_var}, and \code{color}
+(use \code{\link[=tm_g_ci.variables]{tm_g_ci.variables()}} to pass \code{\link[teal.picks:variables]{teal.picks::variables()}} objects; they are wrapped into \code{picks}).
 
 \item \code{tm_g_ci(variables)}: teal.picks encodings via \code{variables} (recommended entry point).
 
