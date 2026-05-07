@@ -21,7 +21,7 @@ tm_t_summary_by(
   na_level = tern::default_na_str(),
   numeric_stats = c("n", "mean_sd", "median", "range"),
   categorical_stats = c("n", "count"),
-  denominator = values(c("n", "N", "omit"), "omit", fixed = TRUE),
+  denominator = teal.picks::values(c("n", "N", "omit"), "omit", fixed = TRUE),
   drop_arm_levels = TRUE,
   drop_zero_levels = TRUE,
   pre_output = NULL,
