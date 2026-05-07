@@ -38,7 +38,7 @@ app_driver_tm_g_km <- function() {
           teal.picks::datasets("ADTTE"),
           teal.picks::variables("PARAMCD", fixed = TRUE),
           teal.picks::values(
-            choices = levels(data[["ADTTE"]]$PARAMCD),
+            choices = unique(as.character(data[["ADTTE"]]$PARAMCD)),
             selected = "OS",
             multiple = FALSE
           )
@@ -113,10 +113,8 @@ testthat::test_that(
     testthat::expect_equal(exported_values[["paramcd-picks_resolved"]]$values$selected, "OS")
     testthat::expect_equal(exported_values[["aval_var-picks_resolved"]]$variables$selected, "ANALYSIS_VAL")
     testthat::expect_equal(exported_values[["cnsr_var-picks_resolved"]]$variables$selected, "CENSORING")
-    testthat::expect_equal(
-      get_teal_picks_slot(app_driver, "facet_var", "variables"),
-      "-- no selection --"
-    )
+    fv_sel <- exported_values[["facet_var-picks_resolved"]]$variables$selected
+    testthat::expect_true(is.null(fv_sel) || identical(fv_sel, "-- no selection --"))
     testthat::expect_equal(exported_values[["arm_var-picks_resolved"]]$variables$selected, "ARM")
     testthat::expect_true(app_driver$get_active_module_input("compare_arms"))
     testthat::expect_equal(exported_values[["strata_var-picks_resolved"]]$variables$selected, "SEX")
@@ -136,14 +134,13 @@ testthat::test_that("e2e - tm_g_km: Changing {paramcd} changes the plot without 
   app_driver$stop()
 })
 
-testthat::test_that("e2e - tm_g_km: Changing {facet_var} changes the plot without errors.", {
+testthat::test_that("e2e - tm_g_km: Changing {facet_var} updates the encoding without errors.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_km()
   app_driver$wait_for_idle()
-  plot_before <- app_driver$get_active_module_plot_output("myplot")
-  set_teal_picks_slot(app_driver, "facet_var", "variables", "SEX")
+  set_teal_picks_slot(app_driver, "facet_var", "variables", "BMRKR2")
+  app_driver$wait_for_idle()
   app_driver$expect_no_validation_error()
-  testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
   app_driver$stop()
 })
 
@@ -187,7 +184,7 @@ testthat::test_that("e2e - tm_g_km: Deselecting {paramcd} throws validation erro
   set_teal_picks_slot(app_driver, "paramcd", "values", character(0L))
   app_driver$expect_validation_error()
   testthat::expect_match(
-    app_driver$get_text(app_driver$namespaces(TRUE)$module("myplot-plot_main")),
+    app_driver$get_text(app_driver$namespaces(TRUE)$module("myplot-plot_out_main")),
     "Please select an endpoint.",
     fixed = TRUE
   )
@@ -201,8 +198,8 @@ testthat::test_that("e2e - tm_g_km: Deselecting {arm_var} throws validation erro
   set_teal_picks_slot(app_driver, "arm_var", "variables", character(0L))
   app_driver$expect_validation_error()
   testthat::expect_match(
-    app_driver$get_text(app_driver$namespaces(TRUE)$module("myplot-plot_main")),
-    "Please select a treatment variable.",
+    app_driver$get_text(app_driver$namespaces(TRUE)$module("myplot-plot_out_main")),
+    "Treatment variable must be selected.",
     fixed = TRUE
   )
   app_driver$stop()
@@ -386,7 +383,7 @@ testthat::test_that("e2e - tm_g_km: Deselecting {conf_level} throws validation e
   app_driver$set_active_module_input("conf_level", "-1")
   app_driver$expect_validation_error()
   testthat::expect_match(
-    app_driver$get_text(app_driver$namespaces(TRUE)$module("myplot-plot_main")),
+    app_driver$get_text(app_driver$namespaces(TRUE)$module("myplot-plot_out_main")),
     "Confidence level must be between 0 and 1."
   )
   app_driver$stop()

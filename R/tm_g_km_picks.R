@@ -117,23 +117,6 @@ tm_g_km.picks <- function(label,
   )
 }
 
-#' Drop `-- no selection --` facet tokens for the template and validation.
-#' @keywords internal
-#' @noRd
-tm_g_km_resolve_facet_cols <- function(x) {
-  if (is.null(x) || length(x) == 0L) {
-    return(character(0))
-  }
-  out <- character()
-  for (z in x) {
-    nz <- teal.transform::no_selected_as_NULL(z)
-    if (!is.null(nz)) {
-      out <- c(out, nz)
-    }
-  }
-  unique(out)
-}
-
 #' @keywords internal
 ui_g_km_picks <- function(id,
                           arm_var,
@@ -351,6 +334,30 @@ srv_g_km_picks <- function(id,
   checkmate::assert_class(isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
+    resolve_facet_cols <- function(x) {
+      no_sel_kw <- "-- no selection --"
+      facet_token_null <- function(z) {
+        if (is.null(z)) {
+          NULL
+        } else if (identical(z, no_sel_kw) || identical(z, "")) {
+          NULL
+        } else {
+          z
+        }
+      }
+      if (is.null(x) || length(x) == 0L) {
+        return(character(0))
+      }
+      out <- character()
+      for (z in x) {
+        nz <- facet_token_null(z)
+        if (!is.null(nz)) {
+          out <- c(out, nz)
+        }
+      }
+      unique(out)
+    }
+
     teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
 
     selectors <- teal.picks::picks_srv(
@@ -471,7 +478,7 @@ srv_g_km_picks <- function(id,
       vm <- anl_inputs$variables()
       input_arm_var <- vm$arm_var[[1L]]
       input_strata_var <- vm$strata_var[[1L]]
-      input_facet_var <- tm_g_km_resolve_facet_cols(vm$facet_var[[1L]])
+      input_facet_var <- resolve_facet_cols(vm$facet_var[[1L]])
       input_aval_var <- vm$aval_var[[1L]]
       input_cnsr_var <- vm$cnsr_var[[1L]]
       input_paramcd_col <- vm$paramcd[[1L]]
@@ -534,7 +541,7 @@ srv_g_km_picks <- function(id,
         strata_var = vm$strata_var[[1L]],
         time_points = NULL,
         time_unit_var = vm$time_unit_var[[1L]],
-        facet_var = tm_g_km_resolve_facet_cols(vm$facet_var[[1L]]),
+        facet_var = resolve_facet_cols(vm$facet_var[[1L]]),
         annot_surv_med = input$show_km_table,
         annot_coxph = input$compare_arms,
         control_annot_surv_med = control_annot_surv_med,
