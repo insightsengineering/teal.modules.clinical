@@ -10,21 +10,20 @@
 #' @seealso [template_tte()], [tm_t_tte()]
 #'
 #' @keywords internal
-control_tte <- function(
-    surv_time = list(
-      conf_level = 0.95,
-      conf_type = "plain",
-      quantiles = c(0.25, 0.75)
-    ),
-    coxph = list(
-      pval_method = "log-rank",
-      ties = "efron",
-      conf_level = 0.95
-    ),
-    surv_timepoint = tern::control_surv_timepoint(
-      conf_level = 0.95,
-      conf_type = c("plain", "none", "log", "log-log")
-    )) {
+control_tte <- function(surv_time = list(
+                          conf_level = 0.95,
+                          conf_type = "plain",
+                          quantiles = c(0.25, 0.75)
+                        ),
+                        coxph = list(
+                          pval_method = "log-rank",
+                          ties = "efron",
+                          conf_level = 0.95
+                        ),
+                        surv_timepoint = tern::control_surv_timepoint(
+                          conf_level = 0.95,
+                          conf_type = c("plain", "none", "log", "log-log")
+                        )) {
   list(
     surv_time = do.call("control_surv_time", surv_time, envir = getNamespace("tern")),
     coxph = do.call("control_coxph", coxph, envir = getNamespace("tern")),
@@ -381,17 +380,24 @@ template_tte <- function(dataname = "ANL",
 #' @inheritParams module_arguments
 #' @inheritParams teal::module
 #' @inheritParams template_tte
-#' @param arm_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr variable for treatment arm.
+#' @param arm_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
+#'   variable for treatment arm.
 #' @param paramcd ([`teal.picks::variables()`] for the parameter column, full [`teal.picks::picks()`] including
 #'   [`teal.picks::values()`], or legacy `teal.transform` objects; deprecated inputs still accepted)\cr
-#'   endpoint filter (parameter codes such as OS, PFS). [`teal.picks::variables()`] alone is enough; levels come from data.
-#' @param strata_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr variable(s) for stratification.
-#' @param aval_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr variable for analysis value (time-to-event).
-#' @param cnsr_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr variable for censoring indicator.
-#' @param time_unit_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr variable for time unit.
-#' @param event_desc_var ([`teal.picks::variables()`], [`teal.picks::picks()`], legacy [`teal.transform::choices_selected()`],
-#'   [`teal.transform::data_extract_spec()`], or a `list` of `data_extract_spec`)\cr
-#'   variable for event description. S3 dispatch uses the class of `event_desc_var`
+#'   endpoint filter (parameter codes such as `OS`, `PFS`). [`teal.picks::variables()`] alone is enough; levels come
+#'   from data.
+#' @param strata_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
+#'   variable(s) for stratification.
+#' @param aval_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
+#'   variable for analysis value (time-to-event).
+#' @param cnsr_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
+#'   variable for censoring indicator.
+#' @param time_unit_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still
+#'   accepted)\cr
+#'   variable for time unit.
+#' @param event_desc_var ([`teal.picks::variables()`], [`teal.picks::picks()`], legacy
+#'   [`teal.transform::choices_selected()`], [`teal.transform::data_extract_spec()`], or a `list` of
+#'   `data_extract_spec`) variable for event description. S3 dispatch uses the class of `event_desc_var`
 #'   ([`tm_t_tte.picks()`] / [`tm_t_tte.variables()`] vs legacy [`tm_t_tte.default()`] / [`tm_t_tte.list()`]).
 #' @param conf_level_coxph ([teal.transform::choices_selected()])\cr object with all available choices and
 #'   pre-selected option for confidence level, each within range of (0, 1).

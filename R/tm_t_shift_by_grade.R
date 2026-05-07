@@ -472,14 +472,15 @@ template_shift_by_grade <- function(parentname,
 #' @param paramcd ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
 #'   variable for lab parameter code. The `values()` element is added internally to allow
 #'   users to filter the parameter values interactively.
-#' @param worst_flag_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
-#'   variable for worst grade flag.
-#' @param worst_flag_indicator ([teal.picks::values()]; legacy `teal.transform::choices_selected()` is deprecated but still accepted)\cr
+#' @param worst_flag_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still
+#'   accepted)\cr variable for worst grade flag.
+#' @param worst_flag_indicator ([teal.picks::values()]; legacy `teal.transform::choices_selected()` is deprecated
+#'   but still accepted)\cr
 #'   value(s) indicating worst grade records.
-#' @param anl_toxgrade_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
-#'   variable for analysis toxicity grade.
-#' @param base_toxgrade_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
-#'   variable for baseline toxicity grade.
+#' @param anl_toxgrade_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still
+#'   accepted) variable for analysis toxicity grade.
+#' @param base_toxgrade_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still
+#'   accepted) variable for baseline toxicity grade.
 #' @param id_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
 #'   variable for subject identifier.
 #'
