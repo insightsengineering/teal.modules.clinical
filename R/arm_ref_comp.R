@@ -40,7 +40,7 @@ arm_ref_comp_observer <- function(session,
   iv1 <- shinyvalidate::InputValidator$new()
   iv2 <- shinyvalidate::InputValidator$new()
   iv2$condition(~ iv1$is_valid())
-  iv1$add_rule(id_arm_var, shinyvalidate::sv_required("Treatment variable must be selected"))
+  iv1$add_rule(id_arm_var, shinyvalidate::sv_required("Treatment variable must be selected."))
   iv2$add_rule(input_id, ~ if (length(arm_bucket_values(., id_ref)) == 0L) {
     "A reference arm must be selected"
   })
@@ -240,7 +240,7 @@ arm_ref_comp_observer_picks <- function(session, # nolint: object_name.
     validate_input(
       inputId = id_arm_var,
       condition = length(arm_var_r()) >= 1L,
-      message = "Treatment variable must be selected.",
+      message = "A treatment variable must be selected.",
       session = session
     )
     buckets_val <- input[[input_id]]
