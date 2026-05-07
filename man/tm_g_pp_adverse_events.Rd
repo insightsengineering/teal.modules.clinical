@@ -35,25 +35,25 @@ tm_g_pp_adverse_events(
 
 \item{patient_col}{(\code{character})\cr name of patient ID variable.}
 
-\item{aeterm}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
+\item{aeterm}{(\link[teal.picks:variables]{teal.picks::variables} or \code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
 available choices and preselected option for the \code{AETERM} variable from \code{dataname}.}
 
-\item{tox_grade}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
+\item{tox_grade}{(\link[teal.picks:variables]{teal.picks::variables} or \code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
 available choices and preselected option for the \code{AETOXGR} variable from \code{dataname}.}
 
-\item{causality}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
+\item{causality}{(\link[teal.picks:variables]{teal.picks::variables} or \code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
 available choices and preselected option for the \code{AEREL} variable from \code{dataname}.}
 
-\item{outcome}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
+\item{outcome}{(\link[teal.picks:variables]{teal.picks::variables} or \code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
 available choices and preselected option for the \code{AEOUT} variable from \code{dataname}.}
 
-\item{action}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
+\item{action}{(\link[teal.picks:variables]{teal.picks::variables} or \code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
 available choices and preselected option for the \code{AEACN} variable from \code{dataname}.}
 
-\item{time}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
+\item{time}{(\link[teal.picks:variables]{teal.picks::variables} or \code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
 available choices and preselected option for the \code{ASTDY} variable from \code{dataname}.}
 
-\item{decod}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
+\item{decod}{(\link[teal.picks:variables]{teal.picks::variables} or \code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
 available choices and preselected option for the \code{AEDECOD} variable from \code{dataname}.}
 
 \item{font_size}{(\code{numeric})\cr numeric vector of length 3 of current, minimum and maximum font size values.}
@@ -139,10 +139,8 @@ library(nestcolor)
 
 data <- teal_data()
 data <- within(data, {
-  library(teal.modules.clinical)
-  library(dplyr)
-  ADAE <- tmc_ex_adae
-  ADSL <- filter(tmc_ex_adsl, USUBJID \%in\% ADAE$USUBJID)
+  ADAE <- teal.modules.clinical::tmc_ex_adae
+  ADSL <- filter(teal.modules.clinical::tmc_ex_adsl, USUBJID \%in\% ADAE$USUBJID)
 })
 join_keys(data) <- default_cdisc_join_keys[names(data)]
 
@@ -158,30 +156,12 @@ app <- init(
       parentname = "ADSL",
       patient_col = "USUBJID",
       plot_height = c(600L, 200L, 2000L),
-      aeterm = choices_selected(
-        choices = variable_choices(ADAE, "AETERM"),
-        selected = "AETERM"
-      ),
-      tox_grade = choices_selected(
-        choices = variable_choices(ADAE, "AETOXGR"),
-        selected = "AETOXGR"
-      ),
-      causality = choices_selected(
-        choices = variable_choices(ADAE, "AEREL"),
-        selected = "AEREL"
-      ),
-      outcome = choices_selected(
-        choices = variable_choices(ADAE, "AEOUT"),
-        selected = "AEOUT"
-      ),
-      action = choices_selected(
-        choices = variable_choices(ADAE, "AEACN"),
-        selected = "AEACN"
-      ),
-      time = choices_selected(
-        choices = variable_choices(ADAE, "ASTDY"),
-        selected = "ASTDY"
-      ),
+      aeterm = variables("AETERM"),
+      tox_grade = variables("AETOXGR"),
+      causality = variables("AEREL"),
+      outcome = variables("AEOUT"),
+      action = variables("AEACN"),
+      time = variables("ASTDY"),
       decod = NULL
     )
   )
@@ -194,8 +174,8 @@ if (interactive()) {
 \section{Examples in Shinylive}{
 \describe{
   \item{example-1}{
-    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo67sxsnHDcvALCYhJSMvKl5QyVHPyo1KyBbQCCACIDTpE6pDAEMXAAHjFQoXCDQwDKADLjxrTU5IycUzPzi6LURQ6rDgBCAFIAkkM6AKS5TzrDowAkF9f3Q0EAXyCACsiLkYgBrOCsUT5ZI2VL8ODGKDCUgxAj8Wiiaag8FQmHAaDwWEFOQAXVcEGGG3GBWAwAUYBp6yZ5Mp1JGY0RyQZTI+LjA7KpaFQ41ymXYbQKOgAvDoCrg2nwhCJRHKdCqGrC2mVJjEAOYxdALfjaRiiOAzbRkHUQMoO8pQehwaga-lm1SWnROG2kURMpX2x0K5LE3Ty-lcwO6h2oFgUUjh93MtasvCxsrxjSJjFEN2RsA-W4PGPBx09IjorJwWgGrKkDUEdgANgADG31kUAEwdrs6Xt9uRBkM6KBwPYwJtZMEEMQxS0idRwfhS8shggzmRiDWaFi0Z0iDFbuewgVFflOWxOLAAWSZw8zDsXcGX-BTo2vd6ZT8f671RDzAazBItOs7zi+b5rqOZSbuB6rynujAHvQR5wduZ5chezJXgA8gAGgA4lgD4jjBkHkO+hafgRxE-v+Oh-qOsiCKI3CZKwYEYQurqvpR0Ewehp67vuh5WkJYjsOeOiXlgTjpkx5G8W+H43vJ9GjopjpEIIvhEPAXGnjxS78U+sEnjuiGiah4kWZhozYaMuEOLYpFmToFErqpzmuWAv5kY6UAWCQhkQcppkMeZ8EichYnHvBUlYTJOEDAAwgAcm5kUeeFXnUU4aWZX5DFaQ6GgGfKEmiMZfErgJzF2TFKFoXZiUOclAyrLYQwAJpZTBOUmXlHVdb1GkhqVZRIsQVE6OlDjrKy65BGUQRBLQxg6OwuR7EFGjaNYNglMGog5BArADOg7Cip8gi0EUN2Wow5qAkoYAAuSQA}{Open in Shinylive}
-    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo67sxsnHDcvALCYhJSMvKl5QyVHPyo1KyBbQCCACIDTpE6pDAEMXAAHjFQoXCDQwDKADLjxrTU5IycUzPzi6LURQ6rDgBCAFIAkkM6AKS5TzrDowAkF9f3Q0EAXyCACsiLkYgBrOCsUT5ZI2VL8ODGKDCUgxAj8Wiiaag8FQmHAaDwWEFOQAXVcEGGG3GBWAwAUYBp6yZ5Mp1JGY0RyQZTI+LjA7KpaFQ41ymXYbQKOgAvDoCrg2nwhCJRHKdCqGrC2mVJjEAOYxdALfjaRiiOAzbRkHUQMoO8pQehwaga-lm1SWnROG2kURMpX2x0K5LE3Ty-lcwO6h2oFgUUjh93MtasvCxsrxjSJjFEN2RsA-W4PGPBx09IjorJwWgGrKkDUEdgANgADG31kUAEwdrs6Xt9uRBkM6KBwPYwJtZMEEMQxS0idRwfhS8shggzmRiDWaFi0Z0iDFbuewgVFflOWxOLAAWSZw8zDsXcGX-BTo2vd6ZT8f671RDzAazBItOs7zi+b5rqOZSbuB6rynujAHvQR5wduZ5chezJXgA8gAGgA4lgD4jjBkHkO+hafgRxE-v+Oh-qOsiCKI3CZKwYEYQurqvpR0Ewehp67vuh5WkJYjsOeOiXlgTjpkx5G8W+H43vJ9GjopjpEIIvhEPAXGnjxS78U+sEnjuiGiah4kWZhozYaMuEOLYpFmToFErqpzmuWAv5kY6UAWCQhkQcppkMeZ8EichYnHvBUlYTJOEDAAwgAcm5kUeeFXnUU4aWZX5DFaQ6GgGfKEmiMZfErgJzF2TFKFoXZiUOclAyrLYQwAJpZTBOUmXlHVdb1GkhqVZRIsQVE6OlDjrKy65BGUQRBLQxg6OwuR7EFGjaNYNglMGog5BArADOg7Cip8gi0EUN2Wow5qAkoYAAuSQA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo6AIIAIuVOkTrRvALCYhJSMtyIiKQwBDFwAB4xUKFwpRWVAMoAMnXGtNTkjJxw3I1CIuKSue3Und29A0P8otRFDhMOAEIAUgCSlToApLmP4zUAJOdXd5VBAL5BABWRFyMQA1nBWKJ8skbKl+HBjFBhKQYgR+LRRL1gaCIVDgNB4NCCnIALquCBVaZ1ArAYAKMBUqYM0nkynVWrw5J0hlVGostlKNCoOrbUjsMYFHQAXh0BVwYz46zEMp0Sua0LGZW6MQA5jF0EdtIxRHA+toyJqIGUbTpqFB6HBqKrefxjaadE4LaRRAyFdbbXLkoTdLLeRy-VqbagWBRSCGXYzJsy8FGyjGNHG0URnWGwF8bvdIwHbah-KisnBaLqsqRVQR2AA2AAMzamRQATK32zou925P7AzooHBFjBVZoWLQHRsJYynLYnFgALIMgdp+pEQa65gIidTmdiOc1WwAeQAGgBxLBrweB2SCUTcTKsfeMaf0We8pdOFPrks2kQgi+EQ8Bvh+X7zqeDi2LeG5QBYJDgYemrzuUADCABycEAdqtBgbKk7vihx4TLYlQAJo4UOCLEPwqqYQ4UzMgBQRlEEQS0MYOjsLkiwIRo2jWDYJQBqIOQQKw5ToOwwrvIItBFHJpqMMa-xKGAfykkAA}{Open in Shinylive}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo6AIIAIuVOkTrRvALCYhJSMtyIiKQwBDFwAB4xUKFwpRWVAMoAMnXGtNTkjJxw3I1CIuKSue3Und29A0P8otRFDhMOAEIAUgCSlToApLmP4zUAJOdXd5VBAL5BABWRFyMQA1nBWKJ8skbKl+HBjFBhKQYgR+LRRL1gaCIVDgNB4NCCnIALquCBVaZ1ArAYAKMBUqYM0nkynVWrw5J0hlVGostlKNCoOrbUjsMYFHQAXh0BVwYz46zEMp0Sua0LGZW6MQA5jF0EdtIxRHA+toyJqIGUbTpqFB6HBqKrefxjaadE4LaRRAyFdbbXLkoTdLLeRy-VqbagWBRSCGXYzJsy8FGyjGNHG0URnWGwF8bvdIwHbah-KisnBaLqsqRVQR2AA2AAMzamRQATK32zou925P7AzooHBFjBVZoWLQHRsJYynLYnFgALIMgdp+pEQa65gIidTmdiOc1WwAeQAGgBxLBrweB2SCUTcTKsfeMaf0We8pdOFPrks2kQgi+EQ8Bvh+X7zqeDi2LeG5QBYJDgYemrzuUADCABycEAdqtBgbKk7vihx4TLYlQAJo4UOCLEPwqqYQ4UzMgBQRlEEQS0MYOjsLkiwIRo2jWDYJQBqIOQQKw5ToOwwrvIItBFHJpqMMa-xKGAfykkAA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
     \if{html}{\out{<a style='height: 800px; display: block;'></a>}}
   }
 }
