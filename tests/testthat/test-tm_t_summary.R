@@ -79,7 +79,6 @@ testthat::test_that("template_summary generates correct expressions for customiz
     var_labels = character(),
     na.rm = FALSE,
     numeric_stats = c("n", "median"),
-    numeric_formats = list("median" = "xx.x"),
     denominator = "N",
     drop_arm_levels = TRUE
   )

@@ -4,7 +4,7 @@ app_driver_tm_g_pp_adverse_events <- function() { # nolint: object_length.
     library(dplyr)
 
     ADAE <- teal.data::rADAE
-    ADSL <- teal.data::rADSL %>% filter(USUBJID %in% ADAE$USUBJID)
+    ADSL <- teal.data::rADSL |> filter(USUBJID %in% ADAE$USUBJID)
   })
   teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
 
@@ -17,30 +17,12 @@ app_driver_tm_g_pp_adverse_events <- function() { # nolint: object_length.
         parentname = "ADSL",
         patient_col = "USUBJID",
         plot_height = c(600L, 200L, 2000L),
-        aeterm = choices_selected(
-          choices = variable_choices(data[["ADAE"]], c("AETERM", "AGEU")),
-          selected = "AETERM"
-        ),
-        tox_grade = choices_selected(
-          choices = variable_choices(data[["ADAE"]], c("AETOXGR", "COUNTRY")),
-          selected = "AETOXGR"
-        ),
-        causality = choices_selected(
-          choices = variable_choices(data[["ADAE"]], c("AEREL", "ACTARM")),
-          selected = "AEREL"
-        ),
-        outcome = choices_selected(
-          choices = variable_choices(data[["ADAE"]], c("AEOUT", "SITEID")),
-          selected = "AEOUT"
-        ),
-        action = choices_selected(
-          choices = variable_choices(data[["ADAE"]], c("AEACN", "SMQ01NAM")),
-          selected = "AEACN"
-        ),
-        time = choices_selected(
-          choices = variable_choices(data[["ADAE"]], c("ASTDY", "AGE")),
-          selected = "ASTDY"
-        ),
+        aeterm = teal.picks::variables(c("AETERM", "AGEU"), multiple = FALSE),
+        tox_grade = teal.picks::variables(c("AETOXGR", "COUNTRY"), multiple = FALSE),
+        causality = teal.picks::variables(c("AEREL", "ACTARM"), multiple = FALSE),
+        outcome = teal.picks::variables(c("AEOUT", "SITEID"), multiple = FALSE),
+        action = teal.picks::variables(c("AEACN", "SMQ01NAM"), multiple = FALSE),
+        time = teal.picks::variables(c("ASTDY", "AGE"), multiple = FALSE),
         decod = NULL,
         font_size = c(12L, 12L, 25L),
         plot_width = NULL,
@@ -57,11 +39,11 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_adverse_events()
+    withr::defer(app_driver$stop())
     app_driver$expect_no_shiny_error()
     app_driver$expect_no_validation_error()
     testthat::expect_match(app_driver$get_active_module_plot_output("chart"), "data:image/png;base64,")
     app_driver$expect_visible(app_driver$namespaces(TRUE)$module("table"))
-    app_driver$stop()
   }
 )
 
@@ -71,51 +53,50 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_adverse_events()
+    withr::defer(app_driver$stop())
+
     testthat::expect_equal(
       app_driver$get_text("a.nav-link.active"),
       "Adverse Events"
     )
-
     testthat::expect_equal(
       app_driver$get_active_module_input("patient_id"),
       "AB12345-CHN-3-id-128"
     )
 
+    exported_values <- app_driver$get_values()$export
+    names(exported_values) <- gsub(
+      sprintf("%s-", app_driver$namespaces()$module(NULL)), "", names(exported_values),
+      fixed = TRUE
+    )
+
     testthat::expect_equal(
-      app_driver$get_active_module_input("aeterm-dataset_ADAE_singleextract-select"),
+      exported_values[["aeterm-picks_resolved"]]$variables$selected,
       "AETERM"
     )
-
     testthat::expect_equal(
-      app_driver$get_active_module_input("tox_grade-dataset_ADAE_singleextract-select"),
+      exported_values[["tox_grade-picks_resolved"]]$variables$selected,
       "AETOXGR"
     )
-
     testthat::expect_equal(
-      app_driver$get_active_module_input("causality-dataset_ADAE_singleextract-select"),
+      exported_values[["causality-picks_resolved"]]$variables$selected,
       "AEREL"
     )
-
     testthat::expect_equal(
-      app_driver$get_active_module_input("outcome-dataset_ADAE_singleextract-select"),
+      exported_values[["outcome-picks_resolved"]]$variables$selected,
       "AEOUT"
     )
-
     testthat::expect_equal(
-      app_driver$get_active_module_input("action-dataset_ADAE_singleextract-select"),
+      exported_values[["action-picks_resolved"]]$variables$selected,
       "AEACN"
     )
-
     testthat::expect_equal(
-      app_driver$get_active_module_input("time-dataset_ADAE_singleextract-select"),
+      exported_values[["time-picks_resolved"]]$variables$selected,
       "ASTDY"
     )
-
     testthat::expect_null(
-      app_driver$get_active_module_input("decod-dataset_ADAE_singleextract-select")
+      exported_values[["decod-picks_resolved"]]
     )
-
-    app_driver$stop()
   }
 )
 
@@ -124,6 +105,7 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_adverse_events()
+    withr::defer(app_driver$stop())
     plot_before <- app_driver$get_active_module_plot_output("chart")
     table_before <- app_driver$get_active_module_table_output("table")
     app_driver$set_active_module_input("patient_id", "AB12345-CHN-15-id-262")
@@ -140,7 +122,6 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_shiny_error()
-    app_driver$stop()
   }
 )
 
@@ -149,14 +130,14 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_adverse_events()
-    input_id <- "patient_id"
-    app_driver$set_active_module_input(input_id, NULL)
+    withr::defer(app_driver$stop())
+    app_driver$set_active_module_input("patient_id", NULL)
     app_driver$expect_validation_error()
-    testthat::expect_identical(
-      app_driver$get_text(app_driver$namespaces(TRUE)$module(sprintf("%s_input .shiny-validation-message", input_id))),
-      "Please select a patient"
+    testthat::expect_match(
+      app_driver$get_text(app_driver$namespaces(TRUE)$module("title")),
+      "Please select a patient.",
+      fixed = TRUE
     )
-    app_driver$stop()
   }
 )
 
@@ -165,16 +146,16 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_adverse_events()
+    withr::defer(app_driver$stop())
     plot_before <- app_driver$get_active_module_plot_output("chart")
     table_before <- app_driver$get_active_module_table_output("table")
-    app_driver$set_active_module_input("aeterm-dataset_ADAE_singleextract-select", "AGEU")
+    set_teal_picks_slot(app_driver, "aeterm", "variables", "AGEU")
     testthat::expect_false(
       identical(
         plot_before,
         app_driver$get_active_module_plot_output("chart")
       )
     )
-
     testthat::expect_false(
       identical(
         table_before,
@@ -182,7 +163,6 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_shiny_error()
-    app_driver$stop()
   }
 )
 
@@ -191,14 +171,14 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_adverse_events()
-    input_id <- "aeterm-dataset_ADAE_singleextract-select"
-    app_driver$set_active_module_input(input_id, "")
+    withr::defer(app_driver$stop())
+    set_teal_picks_slot(app_driver, "aeterm", "variables", character(0L))
     app_driver$expect_validation_error()
-    testthat::expect_identical(
-      app_driver$get_text(app_driver$namespaces(TRUE)$module(sprintf("%s_input .shiny-validation-message", input_id))),
-      "Please select AETERM variable."
+    testthat::expect_match(
+      app_driver$get_text(app_driver$namespaces(TRUE)$module("title")),
+      "Please select AETERM variable.",
+      fixed = TRUE
     )
-    app_driver$stop()
   }
 )
 
@@ -207,16 +187,16 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_adverse_events()
+    withr::defer(app_driver$stop())
     plot_before <- app_driver$get_active_module_plot_output("chart")
     table_before <- app_driver$get_active_module_table_output("table")
-    app_driver$set_active_module_input("tox_grade-dataset_ADAE_singleextract-select", "COUNTRY")
+    set_teal_picks_slot(app_driver, "tox_grade", "variables", "COUNTRY")
     testthat::expect_false(
       identical(
         plot_before,
         app_driver$get_active_module_plot_output("chart")
       )
     )
-
     testthat::expect_false(
       identical(
         table_before,
@@ -224,7 +204,6 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_shiny_error()
-    app_driver$stop()
   }
 )
 
@@ -233,14 +212,14 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_adverse_events()
-    input_id <- "tox_grade-dataset_ADAE_singleextract-select"
-    app_driver$set_active_module_input(input_id, "")
+    withr::defer(app_driver$stop())
+    set_teal_picks_slot(app_driver, "tox_grade", "variables", character(0L))
     app_driver$expect_validation_error()
-    testthat::expect_identical(
-      app_driver$get_text(app_driver$namespaces(TRUE)$module(sprintf("%s_input .shiny-validation-message", input_id))),
-      "Please select AETOXGR variable."
+    testthat::expect_match(
+      app_driver$get_text(app_driver$namespaces(TRUE)$module("title")),
+      "Please select AETOXGR variable.",
+      fixed = TRUE
     )
-    app_driver$stop()
   }
 )
 
@@ -249,16 +228,16 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_adverse_events()
+    withr::defer(app_driver$stop())
     plot_before <- app_driver$get_active_module_plot_output("chart")
     table_before <- app_driver$get_active_module_table_output("table")
-    app_driver$set_active_module_input("causality-dataset_ADAE_singleextract-select", "ACTARM")
+    set_teal_picks_slot(app_driver, "causality", "variables", "ACTARM")
     testthat::expect_false(
       identical(
         plot_before,
         app_driver$get_active_module_plot_output("chart")
       )
     )
-
     testthat::expect_false(
       identical(
         table_before,
@@ -266,7 +245,6 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_shiny_error()
-    app_driver$stop()
   }
 )
 
@@ -275,14 +253,14 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_adverse_events()
-    input_id <- "causality-dataset_ADAE_singleextract-select"
-    app_driver$set_active_module_input(input_id, "")
+    withr::defer(app_driver$stop())
+    set_teal_picks_slot(app_driver, "causality", "variables", character(0L))
     app_driver$expect_validation_error()
-    testthat::expect_identical(
-      app_driver$get_text(app_driver$namespaces(TRUE)$module(sprintf("%s_input .shiny-validation-message", input_id))),
-      "Please select AEREL variable."
+    testthat::expect_match(
+      app_driver$get_text(app_driver$namespaces(TRUE)$module("title")),
+      "Please select AEREL variable.",
+      fixed = TRUE
     )
-    app_driver$stop()
   }
 )
 
@@ -291,16 +269,16 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_adverse_events()
+    withr::defer(app_driver$stop())
     plot_before <- app_driver$get_active_module_plot_output("chart")
     table_before <- app_driver$get_active_module_table_output("table")
-    app_driver$set_active_module_input("outcome-dataset_ADAE_singleextract-select", "SITEID")
+    set_teal_picks_slot(app_driver, "outcome", "variables", "SITEID")
     testthat::expect_false(
       identical(
         plot_before,
         app_driver$get_active_module_plot_output("chart")
       )
     )
-
     testthat::expect_false(
       identical(
         table_before,
@@ -308,7 +286,6 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_shiny_error()
-    app_driver$stop()
   }
 )
 
@@ -317,14 +294,14 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_adverse_events()
-    input_id <- "outcome-dataset_ADAE_singleextract-select"
-    app_driver$set_active_module_input(input_id, "")
+    withr::defer(app_driver$stop())
+    set_teal_picks_slot(app_driver, "outcome", "variables", character(0L))
     app_driver$expect_validation_error()
-    testthat::expect_identical(
-      app_driver$get_text(app_driver$namespaces(TRUE)$module(sprintf("%s_input .shiny-validation-message", input_id))),
-      "Please select AEOUT variable."
+    testthat::expect_match(
+      app_driver$get_text(app_driver$namespaces(TRUE)$module("title")),
+      "Please select AEOUT variable.",
+      fixed = TRUE
     )
-    app_driver$stop()
   }
 )
 
@@ -333,16 +310,16 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_adverse_events()
+    withr::defer(app_driver$stop())
     plot_before <- app_driver$get_active_module_plot_output("chart")
     table_before <- app_driver$get_active_module_table_output("table")
-    app_driver$set_active_module_input("action-dataset_ADAE_singleextract-select", "SMQ01NAM")
+    set_teal_picks_slot(app_driver, "action", "variables", "SMQ01NAM")
     testthat::expect_false(
       identical(
         plot_before,
         app_driver$get_active_module_plot_output("chart")
       )
     )
-
     testthat::expect_false(
       identical(
         table_before,
@@ -350,7 +327,6 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_shiny_error()
-    app_driver$stop()
   }
 )
 
@@ -359,14 +335,14 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_adverse_events()
-    input_id <- "action-dataset_ADAE_singleextract-select"
-    app_driver$set_active_module_input(input_id, "")
+    withr::defer(app_driver$stop())
+    set_teal_picks_slot(app_driver, "action", "variables", character(0L))
     app_driver$expect_validation_error()
-    testthat::expect_identical(
-      app_driver$get_text(app_driver$namespaces(TRUE)$module(sprintf("%s_input .shiny-validation-message", input_id))),
-      "Please select AEACN variable."
+    testthat::expect_match(
+      app_driver$get_text(app_driver$namespaces(TRUE)$module("title")),
+      "Please select AEACN variable.",
+      fixed = TRUE
     )
-    app_driver$stop()
   }
 )
 
@@ -375,16 +351,16 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_adverse_events()
+    withr::defer(app_driver$stop())
     plot_before <- app_driver$get_active_module_plot_output("chart")
     table_before <- app_driver$get_active_module_table_output("table")
-    app_driver$set_active_module_input("time-dataset_ADAE_singleextract-select", "AGE")
+    set_teal_picks_slot(app_driver, "time", "variables", "AGE")
     testthat::expect_false(
       identical(
         plot_before,
         app_driver$get_active_module_plot_output("chart")
       )
     )
-
     testthat::expect_false(
       identical(
         table_before,
@@ -392,7 +368,6 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_shiny_error()
-    app_driver$stop()
   }
 )
 
@@ -401,13 +376,13 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_adverse_events()
-    input_id <- "time-dataset_ADAE_singleextract-select"
-    app_driver$set_active_module_input(input_id, "")
+    withr::defer(app_driver$stop())
+    set_teal_picks_slot(app_driver, "time", "variables", character(0L))
     app_driver$expect_validation_error()
-    testthat::expect_identical(
-      app_driver$get_text(app_driver$namespaces(TRUE)$module(sprintf("%s_input .shiny-validation-message", input_id))),
-      "Please select ASTDY variable."
+    testthat::expect_match(
+      app_driver$get_text(app_driver$namespaces(TRUE)$module("title")),
+      "Please select ASTDY variable.",
+      fixed = TRUE
     )
-    app_driver$stop()
   }
 )
