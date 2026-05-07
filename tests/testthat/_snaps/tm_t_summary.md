@@ -149,7 +149,7 @@
           split_fun = rtables::drop_split_levels) %>% tern::analyze_vars(vars = c("RACE", 
           "COUNTRY", "AGE"), show_labels = "visible", na.rm = FALSE, 
           na_str = "<Missing>", denom = "N_col", .stats = c("n", "median", 
-              "count_fraction"), .formats = list(median = "xx.x"))
+              "count_fraction"), .formats = NULL)
       
       $table
       {
