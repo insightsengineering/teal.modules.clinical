@@ -111,7 +111,7 @@ migrate_choices_selected_to_values <- function(x, # nolint: object_length_linter
 #'
 #' @param x (`variables`, `values`, `choices_selected` or `picks`) object.
 #'   A bare [`teal.picks::variables()`] pick is returned unchanged (column selector only; value
-#'   levels follow from data when the pick chain is completed with [`create_picks_helper()`]).
+#'   levels follow from data when the pick chain is completed with `create_picks_helper()`).
 #' @param arg_name optional (`character(1)`) argument name.
 #' @param multiple optional (`logical(1)`) whether multiple values are allowed.
 #' If `NULL` (default), it is not validated and inferred from the length of `selected` in the
@@ -176,6 +176,12 @@ migrate_value_choices_to_picks <- function(x, # nolint: object_length_linter.
   }
 }
 
+#' Supports the creation of picks object that does not override a dataset if already exists
+#' @param datasets ([`teal.picks::datasets()`] object) to use if `x` does not already have a dataset.
+#' @param x (`pick` or `picks` object) to ensure has a dataset.
+#' @return a `picks` object with a dataset, either from `x` or from `datasets`.
+#' @keywords internal
+#' @noRd
 create_picks_helper <- function(datasets = NULL, x) {
   if (inherits(x, "picks") && !is.null(x$datasets)) {
     return(x)
