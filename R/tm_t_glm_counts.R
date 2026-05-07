@@ -6,13 +6,18 @@
 #' @inheritParams template_arguments
 #' @inheritParams module_arguments
 #' @inheritParams teal::module
-#' @param arm_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr treatment variable (`parentname`).
-#' @param aval_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr analysis variable (`dataname`).
-#' @param strata_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr optional stratification columns (`dataname`).
-#' @param offset_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr optional offset column (`dataname`).
-#' @param cov_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr optional covariate columns (`dataname`).
-#' @param conf_level ([teal.picks::values()]; legacy `teal.transform::choices_selected()` is deprecated but still accepted)\cr
-#'   available confidence levels and default selection, each in the range (0, 1).
+#' @param arm_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
+#'   treatment variable (`parentname`).
+#' @param aval_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
+#'   analysis variable (`dataname`).
+#' @param strata_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
+#'   optional stratification columns (`dataname`).
+#' @param offset_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
+#'   optional offset column (`dataname`).
+#' @param cov_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
+#'   optional covariate columns (`dataname`).
+#' @param conf_level ([teal.picks::values()]; legacy `teal.transform::choices_selected()` is deprecated but still
+#'   accepted) available confidence levels and default selection, each in the range (0, 1).
 #' @param add_total (`logical`)\cr initial value for the \dQuote{Add All Patients column} checkbox when comparing arms.
 #' @param rate_mean_method (`character`) method used to estimate the mean odds ratio. Either "emmeans" or "ppmeans"
 #' (as in `summarize_glm_count()`).

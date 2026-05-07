@@ -779,10 +779,14 @@ template_events_col_by_grade <- function(dataname,
 #' @inheritParams teal::module
 #' @inheritParams template_events_by_grade
 #' @inheritParams template_events_col_by_grade
-#' @param arm_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr treatment arm variable on `parentname`.
-#' @param hlt ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr high-level term variable on `dataname` (optional).
-#' @param llt ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr low-level term variable on `dataname` (optional).
-#' @param grade ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr grade variable on `dataname`.
+#' @param arm_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
+#'   treatment arm variable on `parentname`.
+#' @param hlt ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
+#'   high-level term variable on `dataname` (optional).
+#' @param llt ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
+#'   low-level term variable on `dataname` (optional).
+#' @param grade ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
+#'   grade variable on `dataname`.
 #' @param col_by_grade (`logical`)\cr whether to display the grading groups in nested columns.
 #' @param grading_groups (`list`)\cr named list of grading groups used when `col_by_grade = TRUE`.
 #'

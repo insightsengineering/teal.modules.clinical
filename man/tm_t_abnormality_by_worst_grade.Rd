@@ -9,11 +9,11 @@ tm_t_abnormality_by_worst_grade(
   dataname,
   parentname = "ADSL",
   arm_var,
-  id_var = variables(choices = "USUBJID", fixed = TRUE),
+  id_var = teal.picks::variables(choices = "USUBJID", fixed = TRUE),
   paramcd,
-  atoxgr_var = variables(choices = "ATOXGR", fixed = TRUE),
-  worst_high_flag_var = variables(choices = "WGRHIFL", fixed = TRUE),
-  worst_low_flag_var = variables(choices = "WGRLOFL", fixed = TRUE),
+  atoxgr_var = teal.picks::variables(choices = "ATOXGR", fixed = TRUE),
+  worst_high_flag_var = teal.picks::variables("WGRHIFL", fixed = TRUE),
+  worst_low_flag_var = teal.picks::variables("WGRLOFL", fixed = TRUE),
   worst_flag_indicator = teal.picks::values(c("Y", "N", ""), "Y", multiple = FALSE),
   add_total = TRUE,
   total_label = default_total_label(),
@@ -32,26 +32,34 @@ tm_t_abnormality_by_worst_grade(
 
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr object with all available choices and preselected
+\item{arm_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+object with all available choices and preselected
 option for the treatment variable.}
 
-\item{id_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr subject identifier variable.}
+\item{id_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+subject identifier variable.}
 
-\item{paramcd}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr variable used to filter the analysis dataset
+\item{paramcd}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+variable used to filter the analysis dataset
 (typically \code{PARAMCD}). The \code{values()} element is added internally to allow users to pick
 laboratory parameter value(s) interactively.}
 
-\item{atoxgr_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr object with all available choices and preselected
+\item{atoxgr_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+object with all available choices and preselected
 option for the analysis toxicity grade variable.}
 
-\item{worst_high_flag_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr object with all available choices and
-preselected option for the worst high grade flag variable.}
+\item{worst_high_flag_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still
+accepted)\cr
+object with all available choices and preselected option for the worst high grade flag variable.}
 
-\item{worst_low_flag_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr object with all available choices and
-preselected option for the worst low grade flag variable.}
+\item{worst_low_flag_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still
+accepted)\cr
+object with all available choices and preselected option for the worst low grade flag variable.}
 
-\item{worst_flag_indicator}{(\code{\link[teal.picks:values]{teal.picks::values()}}; legacy \code{teal.transform::choices_selected()} is deprecated but still accepted)\cr
-Value(s) matching the worst high/low flag variables (default \code{"Y"}). Uses explicit candidate levels including an empty string where needed.
+\item{worst_flag_indicator}{(\code{\link[teal.picks:values]{teal.picks::values()}}; legacy \code{teal.transform::choices_selected()} is deprecated but
+still accepted)\cr
+Value(s) matching the worst high/low flag variables (default \code{"Y"}).
+Uses explicit candidate levels including anempty string where needed.
 The UI shows the selected value as static text (not an interactive control).}
 
 \item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}

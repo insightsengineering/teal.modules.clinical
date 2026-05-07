@@ -170,7 +170,7 @@ init_teal_app_driver <- function(...) {
 
 # Wait until a Shiny input in the active module has a non-empty DOM value (e.g. after
 # `updateSelectInput`). Uses one [`AppDriver$wait_for_js()`] instead of polling `wait_for_idle()`.
-wait_until_nonempty_active_module_input <- function(app_driver, input_id) {
+wait_until_nonempty_active_module_input <- function(app_driver, input_id) { # nolint: object_length_linter.
   checkmate::assert_string(input_id)
   full_id <- app_driver$namespaces(TRUE)$module(input_id)
   id_lit <- .teal_picks_js_id_literal(full_id)

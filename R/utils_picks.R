@@ -322,7 +322,7 @@ migrate_list_extract_spec_to_picks <- function(x, # nolint: object_length_linter
 
 #' @keywords internal
 #' @noRd
-.encoding_slot_is_legacy_data_extract <- function(z) {
+.encoding_slot_is_legacy_data_extract <- function(z) { # nolint: object_length_linter.
   if (is.null(z)) {
     return(FALSE)
   }

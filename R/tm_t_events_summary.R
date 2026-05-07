@@ -499,27 +499,31 @@ template_events_summary <- function(anl_name,
 #' @inheritParams teal::module
 #' @inheritParams template_arguments
 #' @inheritParams template_events_summary
-#' @param arm_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr object with all
-#'   available choices and preselected option for variable names that can be used as `arm_var`.
+#' @param arm_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
+#'   object with all available choices and preselected option for variable names that can be used as `arm_var`.
 #'   It defines the grouping variable(s) in the results table.
-#'   If there are two elements selected for `arm_var`,
-#'   second variable will be nested under the first variable.
-#' @param dthfl_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr object
-#'   with all available choices and preselected option for variable names that can be used as death flag variable.
+#'   If there are two elements selected for `arm_var`, second variable will be nested under the first variable.
+#' @param dthfl_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
+#'   object with all available choices and preselected option for variable names that can be used as
+#' death flag variable.
 #'   Records with `"Y"`` are summarized in the table row for "Total number of deaths".
-#' @param dcsreas_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr object
-#'   with all available choices and preselected option for variable names that can be used as study discontinuation
+#' @param dcsreas_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
+#'   object with all available choices and preselectedwith all available choices
+#'   and preselected option for variable names that can be used as study discontinuation
 #'   reason variable. Records with `"ADVERSE EVENTS"` are summarized in the table row for
 #'   "Total number of patients withdrawn from study due to an AE".
-#' @param flag_var_anl ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted or `NULL`)\cr
+#' @param flag_var_anl ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted
+#'   or `NULL`)\cr
 #'   vector with names of flag variables from `dataset` used to count adverse event sub-groups (e.g. Serious events,
 #'   Related events, etc.). Variable labels are used as table row names if they exist.
-#' @param flag_var_aesi ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted or `NULL`)\cr
+#' @param flag_var_aesi ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted
+#'   or `NULL`)\cr
 #'   vector with names of flag variables from `dataset` used to count adverse event special interest groups. All flag
 #'   variables must be of type `logical`. Variable labels are used as table row names if they exist.
-#' @param aeseq_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr variable for
-#'   adverse events sequence number from `dataset`. Used for counting total number of events.
-#' @param llt ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr adverse event term / low-level term column (e.g. `AEDECOD`).
+#' @param aeseq_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
+#'   variable for adverse events sequence number from `dataset`. Used for counting total number of events.
+#' @param llt ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
+#'   adverse event term / low-level term column (e.g. `AEDECOD`).
 #'
 #' @inherit module_arguments return seealso
 #'
@@ -655,8 +659,12 @@ tm_t_events_summary <- function(label,
                                 decorators = list()) {
   message("Initializing tm_t_events_summary")
   arm_var <- migrate_choices_selected_to_variables(arm_var, arg_name = "arm_var")
-  if (!is.null(flag_var_anl)) flag_var_anl <- migrate_choices_selected_to_variables(flag_var_anl, arg_name = "flag_var_anl")
-  if (!is.null(flag_var_aesi)) flag_var_aesi <- migrate_choices_selected_to_variables(flag_var_aesi, arg_name = "flag_var_aesi")
+  if (!is.null(flag_var_anl)) {
+    flag_var_anl <- migrate_choices_selected_to_variables(flag_var_anl, arg_name = "flag_var_anl")
+  }
+  if (!is.null(flag_var_aesi)) {
+    flag_var_aesi <- migrate_choices_selected_to_variables(flag_var_aesi, arg_name = "flag_var_aesi")
+  }
   dthfl_var <- migrate_choices_selected_to_variables(dthfl_var, arg_name = "dthfl_var")
   dcsreas_var <- migrate_choices_selected_to_variables(dcsreas_var, arg_name = "dcsreas_var")
   llt <- migrate_choices_selected_to_variables(llt, arg_name = "llt")
