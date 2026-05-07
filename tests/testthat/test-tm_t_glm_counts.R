@@ -26,27 +26,16 @@ app_driver_tm_t_glm_counts <- function() { # nolint: object_length.
       data = data,
       modules = tm_t_glm_counts(
         dataname = "ADTTE",
-        arm_var = choices_selected(
-          variable_choices("ADTTE", c("ARM", "ARMCD", "ACTARMCD")),
-          "ARMCD"
+        arm_var = teal.picks::variables(
+          choices = c("ARM", "ARMCD", "ACTARMCD"),
+          selected = "ARMCD"
         ),
         arm_ref_comp = arm_ref_comp,
-        aval_var = choices_selected(
-          variable_choices("ADTTE", "AVAL"),
-          "AVAL"
-        ),
-        strata_var = choices_selected(
-          variable_choices("ADSL", "SEX"),
-          NULL
-        ),
-        offset_var = choices_selected(
-          variable_choices("ADSL", "AGE"),
-          NULL
-        ),
-        cov_var = choices_selected(
-          variable_choices("ADTTE", "SITEID"),
-          NULL
-        )
+        aval_var = teal.picks::variables(choices = "AVAL"),
+        strata_var = teal.picks::variables(choices = "SEX", selected = NULL),
+        offset_var = teal.picks::variables(choices = "AGE", selected = NULL),
+        cov_var = teal.picks::variables(choices = "SITEID", selected = NULL),
+        conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95, multiple = FALSE)
       )
     )
   )
@@ -71,7 +60,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_glm_counts()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", "ACTARMCD")
+    set_teal_picks_slot(app_driver, "arm_var", "variables", "ACTARMCD")
     testthat::expect_false(
       identical(
         table_before,
