@@ -326,7 +326,7 @@ app <- init(
         datasets("ADTTE"),
         variables("PARAMCD", fixed = TRUE),
         values(
-          choices = levels(ADTTE$PARAMCD),
+          choices = sort(unique(as.character(ADTTE$PARAMCD))),
           selected = "OS",
           multiple = FALSE
         )
