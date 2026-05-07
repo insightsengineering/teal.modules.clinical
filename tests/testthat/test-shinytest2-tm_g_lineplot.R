@@ -114,7 +114,7 @@ testthat::test_that("e2e - tm_g_lineplot: Selecting param changes plot and doesn
   withr::defer(app_driver$stop())
   app_driver$wait_for_idle()
   plot_before <- app_driver$get_active_module_plot_output("myplot")
-  set_teal_picks_slot(app_driver, "param", "values", "CRP")
+  set_teal_picks_slot(app_driver, "paramcd", "values", "CRP")
   app_driver$wait_for_idle()
   testthat::expect_false(
     identical(plot_before, app_driver$get_active_module_plot_output("myplot"))
@@ -130,7 +130,7 @@ testthat::test_that("e2e - tm_g_lineplot: Deselecting paramcd throws validation 
   testthat::expect_identical(app_driver$get_active_module_plot_output("myplot"), character(0))
   app_driver$expect_validation_error()
   testthat::expect_match(
-    app_driver$get_text(app_driver$namespaces(TRUE)$module("myplot-plot_main")),
+    paste(app_driver$get_text(".shiny-output-error-validation"), collapse = " "),
     "Please select a Biomarker filter.",
     fixed = TRUE
   )
@@ -161,7 +161,7 @@ testthat::test_that("e2e - tm_g_lineplot: Deselecting group_var throws validatio
   testthat::expect_identical(app_driver$get_active_module_plot_output("myplot"), character(0))
   app_driver$expect_validation_error()
   testthat::expect_match(
-    app_driver$get_text(app_driver$namespaces(TRUE)$module("myplot-plot_main")),
+    paste(app_driver$get_text(".shiny-output-error-validation"), collapse = " "),
     "Please select a treatment variable.",
     fixed = TRUE
   )
@@ -189,7 +189,7 @@ testthat::test_that("e2e - tm_g_lineplot: Deselecting y throws validation error.
   testthat::expect_identical(app_driver$get_active_module_plot_output("myplot"), character(0))
   app_driver$expect_validation_error()
   testthat::expect_match(
-    app_driver$get_text(app_driver$namespaces(TRUE)$module("myplot-plot_main")),
+    paste(app_driver$get_text(".shiny-output-error-validation"), collapse = " "),
     "Please select an analysis variable.",
     fixed = TRUE
   )
@@ -217,7 +217,7 @@ testthat::test_that("e2e - tm_g_lineplot: Deselecting conf_level validation erro
   testthat::expect_identical(app_driver$get_active_module_plot_output("myplot"), character(0))
   app_driver$expect_validation_error()
   testthat::expect_match(
-    app_driver$get_text(app_driver$namespaces(TRUE)$module("myplot-plot_main")),
+    paste(app_driver$get_text(".shiny-output-error-validation"), collapse = " "),
     "Please choose a confidence level.",
     fixed = TRUE
   )
