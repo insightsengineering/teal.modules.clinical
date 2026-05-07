@@ -161,19 +161,19 @@ template_adverse_events <- function(dataname = "ANL",
 #' @inheritParams module_arguments
 #' @inheritParams teal::module
 #' @inheritParams template_adverse_events
-#' @param aeterm ([teal.transform::choices_selected()])\cr object with all
+#' @param aeterm ([teal.picks::variables] or [teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `AETERM` variable from `dataname`.
-#' @param tox_grade ([teal.transform::choices_selected()])\cr object with all
+#' @param tox_grade ([teal.picks::variables] or [teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `AETOXGR` variable from `dataname`.
-#' @param causality ([teal.transform::choices_selected()])\cr object with all
+#' @param causality ([teal.picks::variables] or [teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `AEREL` variable from `dataname`.
-#' @param outcome ([teal.transform::choices_selected()])\cr object with all
+#' @param outcome ([teal.picks::variables] or [teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `AEOUT` variable from `dataname`.
-#' @param action ([teal.transform::choices_selected()])\cr object with all
+#' @param action ([teal.picks::variables] or [teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `AEACN` variable from `dataname`.
-#' @param time ([teal.transform::choices_selected()])\cr object with all
+#' @param time ([teal.picks::variables] or [teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `ASTDY` variable from `dataname`.
-#' @param decod ([teal.transform::choices_selected()])\cr object with all
+#' @param decod ([teal.picks::variables] or [teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `AEDECOD` variable from `dataname`.
 #'
 #' @inherit module_arguments return
@@ -214,10 +214,8 @@ template_adverse_events <- function(dataname = "ANL",
 #'
 #' data <- teal_data()
 #' data <- within(data, {
-#'   library(teal.modules.clinical)
-#'   library(dplyr)
-#'   ADAE <- tmc_ex_adae
-#'   ADSL <- filter(tmc_ex_adsl, USUBJID %in% ADAE$USUBJID)
+#'   ADAE <- teal.modules.clinical::tmc_ex_adae
+#'   ADSL <- filter(teal.modules.clinical::tmc_ex_adsl, USUBJID %in% ADAE$USUBJID)
 #' })
 #' join_keys(data) <- default_cdisc_join_keys[names(data)]
 #'
@@ -233,30 +231,12 @@ template_adverse_events <- function(dataname = "ANL",
 #'       parentname = "ADSL",
 #'       patient_col = "USUBJID",
 #'       plot_height = c(600L, 200L, 2000L),
-#'       aeterm = choices_selected(
-#'         choices = variable_choices(ADAE, "AETERM"),
-#'         selected = "AETERM"
-#'       ),
-#'       tox_grade = choices_selected(
-#'         choices = variable_choices(ADAE, "AETOXGR"),
-#'         selected = "AETOXGR"
-#'       ),
-#'       causality = choices_selected(
-#'         choices = variable_choices(ADAE, "AEREL"),
-#'         selected = "AEREL"
-#'       ),
-#'       outcome = choices_selected(
-#'         choices = variable_choices(ADAE, "AEOUT"),
-#'         selected = "AEOUT"
-#'       ),
-#'       action = choices_selected(
-#'         choices = variable_choices(ADAE, "AEACN"),
-#'         selected = "AEACN"
-#'       ),
-#'       time = choices_selected(
-#'         choices = variable_choices(ADAE, "ASTDY"),
-#'         selected = "ASTDY"
-#'       ),
+#'       aeterm = variables("AETERM"),
+#'       tox_grade = variables("AETOXGR"),
+#'       causality = variables("AEREL"),
+#'       outcome = variables("AEOUT"),
+#'       action = variables("AEACN"),
+#'       time = variables("ASTDY"),
 #'       decod = NULL
 #'     )
 #'   )
@@ -286,17 +266,19 @@ tm_g_pp_adverse_events <- function(label,
                                    transformators = list(),
                                    decorators = list()) {
   message("Initializing tm_g_pp_adverse_events")
+
+  aeterm <- migrate_choices_selected_to_variables(aeterm, null.ok = TRUE, multiple = FALSE)
+  tox_grade <- migrate_choices_selected_to_variables(tox_grade, null.ok = TRUE, multiple = FALSE)
+  causality <- migrate_choices_selected_to_variables(causality, null.ok = TRUE, multiple = FALSE)
+  outcome <- migrate_choices_selected_to_variables(outcome, null.ok = TRUE, multiple = FALSE)
+  action <- migrate_choices_selected_to_variables(action, null.ok = TRUE, multiple = FALSE)
+  time <- migrate_choices_selected_to_variables(time, null.ok = TRUE, multiple = FALSE)
+  decod <- migrate_choices_selected_to_variables(decod, null.ok = TRUE, multiple = FALSE)
+
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_string(patient_col)
-  checkmate::assert_class(aeterm, "choices_selected", null.ok = TRUE)
-  checkmate::assert_class(tox_grade, "choices_selected", null.ok = TRUE)
-  checkmate::assert_class(causality, "choices_selected", null.ok = TRUE)
-  checkmate::assert_class(outcome, "choices_selected", null.ok = TRUE)
-  checkmate::assert_class(action, "choices_selected", null.ok = TRUE)
-  checkmate::assert_class(time, "choices_selected", null.ok = TRUE)
-  checkmate::assert_class(decod, "choices_selected", null.ok = TRUE)
   checkmate::assert_numeric(font_size, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(font_size[1], lower = font_size[2], upper = font_size[3], .var.name = "font_size")
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
@@ -309,55 +291,42 @@ tm_g_pp_adverse_events <- function(label,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
-  teal::assert_decorators(decorators, names = "plot")
+  assert_decorators(decorators, names = "plot")
+
+  aeterm <- if (!is.null(aeterm)) create_picks_helper(teal.picks::datasets(dataname, dataname), aeterm)
+  tox_grade <- if (!is.null(tox_grade)) create_picks_helper(teal.picks::datasets(dataname, dataname), tox_grade)
+  causality <- if (!is.null(causality)) create_picks_helper(teal.picks::datasets(dataname, dataname), causality)
+  outcome <- if (!is.null(outcome)) create_picks_helper(teal.picks::datasets(dataname, dataname), outcome)
+  action <- if (!is.null(action)) create_picks_helper(teal.picks::datasets(dataname, dataname), action)
+  time <- if (!is.null(time)) create_picks_helper(teal.picks::datasets(dataname, dataname), time)
+  decod <- if (!is.null(decod)) create_picks_helper(teal.picks::datasets(dataname, dataname), decod)
 
   args <- as.list(environment())
-  data_extract_list <- list(
-    aeterm = `if`(is.null(aeterm), NULL, cs_to_des_select(aeterm, dataname = dataname)),
-    tox_grade = `if`(is.null(tox_grade), NULL, cs_to_des_select(tox_grade, dataname = dataname)),
-    causality = `if`(is.null(causality), NULL, cs_to_des_select(causality, dataname = dataname)),
-    outcome = `if`(is.null(outcome), NULL, cs_to_des_select(outcome, dataname = dataname)),
-    action = `if`(is.null(action), NULL, cs_to_des_select(action, dataname = dataname)),
-    time = `if`(is.null(time), NULL, cs_to_des_select(time, dataname = dataname)),
-    decod = `if`(is.null(decod), NULL, cs_to_des_select(decod, dataname = dataname))
-  )
 
   module(
     label = label,
     ui = ui_g_adverse_events,
-    ui_args = c(data_extract_list, args),
+    ui_args = args[names(args) %in% names(formals(ui_g_adverse_events))],
     server = srv_g_adverse_events,
-    server_args = c(
-      data_extract_list,
-      list(
-        dataname = dataname,
-        parentname = parentname,
-        label = label,
-        patient_col = patient_col,
-        plot_height = plot_height,
-        plot_width = plot_width,
-        ggplot2_args = ggplot2_args,
-        decorators = decorators
-      )
-    ),
+    server_args = args[names(args) %in% names(formals(srv_g_adverse_events))],
     transformators = transformators,
     datanames = c(dataname, parentname)
   )
 }
 
 #' @keywords internal
-ui_g_adverse_events <- function(id, ...) {
-  ui_args <- list(...)
-  is_single_dataset_value <- teal.transform::is_single_dataset(
-    ui_args$aeterm,
-    ui_args$tox_grade,
-    ui_args$causality,
-    ui_args$outcome,
-    ui_args$action,
-    ui_args$time,
-    ui_args$decod
-  )
-
+ui_g_adverse_events <- function(id,
+                                aeterm,
+                                tox_grade,
+                                causality,
+                                outcome,
+                                action,
+                                time,
+                                decod,
+                                font_size,
+                                pre_output,
+                                post_output,
+                                decorators) {
   ns <- NS(id)
   teal.widgets::standard_layout(
     output = tags$div(
@@ -371,63 +340,43 @@ ui_g_adverse_events <- function(id, ...) {
     ),
     encoding = tags$div(
       tags$label("Encodings", class = "text-primary"), tags$br(),
-      teal.transform::datanames_input(ui_args[c(
-        "aeterm", "tox_grade", "causality", "outcome",
-        "action", "time", "decod"
-      )]),
       teal.widgets::optionalSelectInput(
         ns("patient_id"),
         "Select Patient:",
         multiple = FALSE,
         options = shinyWidgets::pickerOptions(`liveSearch` = TRUE)
       ),
-      teal.transform::data_extract_ui(
-        id = ns("aeterm"),
-        label = "Select AETERM variable:",
-        data_extract_spec = ui_args$aeterm,
-        is_single_dataset = is_single_dataset_value
+      tags$div(
+        tags$label("Select AETERM variable:"),
+        teal.picks::picks_ui(ns("aeterm"), aeterm)
       ),
-      teal.transform::data_extract_ui(
-        id = ns("tox_grade"),
-        label = "Select AETOXGR variable:",
-        data_extract_spec = ui_args$tox_grade,
-        is_single_dataset = is_single_dataset_value
+      tags$div(
+        tags$label("Select AETOXGR variable:"),
+        teal.picks::picks_ui(ns("tox_grade"), tox_grade)
       ),
-      teal.transform::data_extract_ui(
-        id = ns("causality"),
-        label = "Select AEREL variable:",
-        data_extract_spec = ui_args$causality,
-        is_single_dataset = is_single_dataset_value
+      tags$div(
+        tags$label("Select AEREL variable:"),
+        teal.picks::picks_ui(ns("causality"), causality)
       ),
-      teal.transform::data_extract_ui(
-        id = ns("outcome"),
-        label = "Select AEOUT variable:",
-        data_extract_spec = ui_args$outcome,
-        is_single_dataset = is_single_dataset_value
+      tags$div(
+        tags$label("Select AEOUT variable:"),
+        teal.picks::picks_ui(ns("outcome"), outcome)
       ),
-      teal.transform::data_extract_ui(
-        id = ns("action"),
-        label = "Select AEACN variable:",
-        data_extract_spec = ui_args$action,
-        is_single_dataset = is_single_dataset_value
+      tags$div(
+        tags$label("Select AEACN variable:"),
+        teal.picks::picks_ui(ns("action"), action)
       ),
-      teal.transform::data_extract_ui(
-        id = ns("time"),
-        label = "Select ASTDY variable:",
-        data_extract_spec = ui_args$time,
-        is_single_dataset = is_single_dataset_value
+      tags$div(
+        tags$label("Select ASTDY variable:"),
+        teal.picks::picks_ui(ns("time"), time)
       ),
-      `if`(
-        is.null(ui_args$decod),
-        NULL,
-        teal.transform::data_extract_ui(
-          id = ns("decod"),
-          label = "Select DECOD variable:",
-          data_extract_spec = ui_args$decod,
-          is_single_dataset = is_single_dataset_value
+      if (!is.null(decod)) {
+        tags$div(
+          tags$label("Select AEDECOD variable:"),
+          teal.picks::picks_ui(ns("decod"), decod)
         )
-      ),
-      teal::ui_transform_teal_data(ns("d_plot"), transformators = select_decorators(ui_args$decorators, "plot")),
+      },
+      teal::ui_transform_teal_data(ns("d_plot"), transformators = select_decorators(decorators, "plot")),
       bslib::accordion(
         open = TRUE,
         bslib::accordion_panel(
@@ -435,14 +384,14 @@ ui_g_adverse_events <- function(id, ...) {
           teal.widgets::optionalSliderInputValMinMax(
             ns("font_size"),
             "Font Size",
-            ui_args$font_size,
+            font_size,
             ticks = FALSE, step = 1
           )
         )
       )
     ),
-    pre_output = ui_args$pre_output,
-    post_output = ui_args$post_output
+    pre_output = pre_output,
+    post_output = post_output
   )
 }
 
@@ -471,112 +420,131 @@ srv_g_adverse_events <- function(id,
     teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
     patient_id <- reactive(input$patient_id)
 
-    # Init
+    # Init patient selector
     patient_data_base <- reactive(unique(data()[[parentname]][[patient_col]]))
     teal.widgets::updateOptionalSelectInput(
-      session,
-      "patient_id",
+      session, "patient_id",
       choices = patient_data_base(),
       selected = patient_data_base()[1]
     )
-
-    observeEvent(patient_data_base(),
-      handlerExpr = {
-        teal.widgets::updateOptionalSelectInput(
-          session,
-          "patient_id",
-          choices = patient_data_base(),
-          selected = if (length(patient_data_base()) == 1) {
-            patient_data_base()
-          } else {
-            intersect(patient_id(), patient_data_base())
-          }
-        )
-      },
-      ignoreInit = TRUE
-    )
-
-    # Adverse events tab ----
-    selector_list <- teal.transform::data_extract_multiple_srv(
-      data_extract = Filter(
-        Negate(is.null),
-        list(
-          aeterm = aeterm,
-          tox_grade = tox_grade,
-          causality = causality,
-          outcome = outcome,
-          action = action,
-          time = time,
-          decod = decod
-        )
-      ),
-      datasets = data,
-      select_validation_rule = list(
-        aeterm = shinyvalidate::sv_required("Please select AETERM variable."),
-        tox_grade = shinyvalidate::sv_required("Please select AETOXGR variable."),
-        causality = shinyvalidate::sv_required("Please select AEREL variable."),
-        outcome = shinyvalidate::sv_required("Please select AEOUT variable."),
-        action = shinyvalidate::sv_required("Please select AEACN variable."),
-        time = shinyvalidate::sv_required("Please select ASTDY variable."),
-        decod = shinyvalidate::sv_required("Please select ANRIND variable.")
+    observeEvent(patient_data_base(), ignoreInit = TRUE, {
+      teal.widgets::updateOptionalSelectInput(
+        session, "patient_id",
+        choices = patient_data_base(),
+        selected = if (length(patient_data_base()) == 1) {
+          patient_data_base()
+        } else {
+          intersect(patient_id(), patient_data_base())
+        }
       )
-    )
-
-    iv_r <- reactive({
-      iv <- shinyvalidate::InputValidator$new()
-      iv$add_rule("patient_id", shinyvalidate::sv_required("Please select a patient"))
-      teal.transform::compose_and_enable_validators(iv, selector_list)
     })
 
-    anl_inputs <- teal.transform::merge_expression_srv(
-      datasets = data,
-      selector_list = selector_list
+    # Picks selectors
+    selectors <- teal.picks::picks_srv(
+      picks = list(
+        aeterm = aeterm,
+        tox_grade = tox_grade,
+        causality = causality,
+        outcome = outcome,
+        action = action,
+        time = time,
+        decod = decod
+      ),
+      data = data
     )
 
-    anl_q <- reactive({
-      obj <- data()
-      teal.reporter::teal_card(obj) <-
-        c(
-          teal.reporter::teal_card(obj),
-          teal.reporter::teal_card("## Module's output(s)")
+    validated_q <- reactive({
+      obj <- req(data())
+      obj <- teal.code::eval_code(obj, "library(dplyr)")
+
+      validate_input(
+        inputId = "patient_id",
+        condition = !is.null(input$patient_id) && nzchar(input$patient_id),
+        message = "Please select a patient."
+      )
+      validate_input(
+        inputId = "aeterm-variables-selected",
+        condition = length(selectors$aeterm()$variables$selected) > 0,
+        message = "Please select AETERM variable."
+      )
+      validate_input(
+        inputId = "tox_grade-variables-selected",
+        condition = length(selectors$tox_grade()$variables$selected) > 0,
+        message = "Please select AETOXGR variable."
+      )
+      validate_input(
+        inputId = "causality-variables-selected",
+        condition = length(selectors$causality()$variables$selected) > 0,
+        message = "Please select AEREL variable."
+      )
+      validate_input(
+        inputId = "outcome-variables-selected",
+        condition = length(selectors$outcome()$variables$selected) > 0,
+        message = "Please select AEOUT variable."
+      )
+      validate_input(
+        inputId = "action-variables-selected",
+        condition = length(selectors$action()$variables$selected) > 0,
+        message = "Please select AEACN variable."
+      )
+      validate_input(
+        inputId = "time-variables-selected",
+        condition = length(selectors$time()$variables$selected) > 0,
+        message = "Please select ASTDY variable."
+      )
+      if (!is.null(decod)) {
+        validate_input(
+          inputId = "decod-variables-selected",
+          condition = length(selectors$decod()$variables$selected) > 0,
+          message = "Please select AEDECOD variable."
         )
-      obj %>% teal.code::eval_code(code = as.expression(anl_inputs()$expr))
+      }
+
+      teal.reporter::teal_card(obj) <- c(
+        teal.reporter::teal_card(obj),
+        teal.reporter::teal_card("## Module's output(s)")
+      )
+      obj
     })
+
+    anl_inputs <- teal.picks::merge_srv(
+      "anl_inputs",
+      data = validated_q,
+      selectors = selectors,
+      output_name = "ANL"
+    )
 
     all_q <- reactive({
-      teal::validate_inputs(iv_r())
-      anl_m <- anl_inputs()
-
-      ANL <- anl_q()[["ANL"]]
+      ANL <- anl_inputs$data()[["ANL"]]
 
       teal::validate_has_data(ANL[ANL[[patient_col]] == input$patient_id, ], min_nrow = 1)
 
+      vars <- anl_inputs$variables()
       anl_q2 <- teal.code::eval_code(
-        anl_q(),
+        anl_inputs$data(),
         substitute(
           expr = {
             pt_id <- patient_id
             ANL <- ANL[ANL[[patient_col]] == patient_id, ]
-          }, env = list(
-            patient_col = patient_col,
-            patient_id = patient_id()
-          )
+          },
+          env = list(patient_col = patient_col, patient_id = patient_id())
         )
       )
 
       calls <- template_adverse_events(
         dataname = "ANL",
-        aeterm = input[[extract_input("aeterm", dataname)]],
-        tox_grade = input[[extract_input("tox_grade", dataname)]],
-        causality = input[[extract_input("causality", dataname)]],
-        outcome = input[[extract_input("outcome", dataname)]],
-        action = input[[extract_input("action", dataname)]],
-        time = input[[extract_input("time", dataname)]],
-        decod = input[[extract_input("decod", dataname)]],
+        aeterm = vars$aeterm,
+        tox_grade = vars$tox_grade,
+        causality = vars$causality,
+        outcome = vars$outcome,
+        action = vars$action,
+        time = vars$time,
+        decod = if (!is.null(decod)) vars$decod else NULL,
         patient_id = patient_id(),
         font_size = input[["font_size"]],
         ggplot2_args = ggplot2_args
       )
+
       obj <- anl_q2
       teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "### Table and Plot")
       teal.code::eval_code(obj, as.expression(calls))
@@ -586,7 +554,6 @@ srv_g_adverse_events <- function(id,
       paste("<h5><b>Patient ID:", all_q()[["pt_id"]], "</b></h5>")
     })
 
-    # Allow for the table and plot qenv to be joined
     table_q <- reactive({
       req(all_q())
       within(all_q(), {
@@ -594,6 +561,7 @@ srv_g_adverse_events <- function(id,
         table
       })
     })
+
     plot_q <- reactive({
       req(all_q())
       within(all_q(), plot <- plot_output)
@@ -607,25 +575,20 @@ srv_g_adverse_events <- function(id,
     )
 
     plot_r <- reactive({
-      req(iv_r()$is_valid(), decorated_all_q_plot())
       req(decorated_all_q_plot())[["plot"]]
     })
 
     pws <- teal.widgets::plot_with_settings_srv(
-      id = "chart",
+      id     = "chart",
       plot_r = plot_r,
       height = plot_height,
-      width = plot_width
+      width  = plot_width
     )
 
     table_r <- reactive({
       q <- req(table_q())
-
       list(
-        html = DT::datatable(
-          data = q[["table_data"]],
-          options = list(pageLength = input$table_rows)
-        ),
+        html   = DT::datatable(q[["table_data"]], options = list(pageLength = input$table_rows)),
         report = q[["table"]]
       )
     })
@@ -633,7 +596,7 @@ srv_g_adverse_events <- function(id,
     output$table <- DT::renderDataTable(table_r()[["html"]])
 
     decorated_all_q <- reactive(
-      suppressWarnings(c(table_q(), decorated_all_q_plot())) # warning because of https://github.com/insightsengineering/teal.modules.clinical/issues/1427 # nolint: line_length_linter.
+      suppressWarnings(c(table_q(), decorated_all_q_plot()))
     )
 
     set_chunk_dims(pws, decorated_all_q)
