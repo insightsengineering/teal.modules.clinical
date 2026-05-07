@@ -149,6 +149,13 @@ describe("migrate_choices_selected_to_values", {
     expect_identical(output, input)
   })
 
+  it("returns variables() unchanged (column pick only; not coerced to values)", {
+    input <- teal.picks::variables("PARAMCD")
+    output <- migrate_choices_selected_to_values(input, arg_name = "paramcd")
+    expect_identical(output, input)
+    expect_s3_class(output, "variables")
+  })
+
   it("respects the multiple argument", {
     withr::local_options(lifecycle_verbosity = "quiet")
     cs <- choices_selected(choices = c("A", "B", "C"), selected = "A")
