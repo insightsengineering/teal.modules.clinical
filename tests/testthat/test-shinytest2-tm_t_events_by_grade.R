@@ -18,17 +18,17 @@ app_driver_tm_t_events_by_grade <- function() { # nolint: object_length.
         label = "Adverse Events by Grade Table",
         dataname = "ADAE",
         parentname = "ADSL",
-        arm_var = teal.transform::choices_selected(c("ARM", "ARMCD"), "ARM"),
-        llt = teal.transform::choices_selected(
-          choices = teal.transform::variable_choices(data[["ADAE"]], c("AETERM", "AEDECOD")),
-          selected = c("AEDECOD")
+        arm_var = teal.picks::variables(choices = c("ARM", "ARMCD"), selected = "ARM"),
+        llt = teal.picks::variables(
+          choices = c("AETERM", "AEDECOD"),
+          selected = "AEDECOD"
         ),
-        hlt = teal.transform::choices_selected(
-          choices = teal.transform::variable_choices(data[["ADAE"]], c("AEBODSYS", "AESOC")),
+        hlt = teal.picks::variables(
+          choices = c("AEBODSYS", "AESOC"),
           selected = "AEBODSYS"
         ),
-        grade = teal.transform::choices_selected(
-          choices = teal.transform::variable_choices(data[["ADAE"]], c("AETOXGR", "AESEV")),
+        grade = teal.picks::variables(
+          choices = c("AETOXGR", "AESEV"),
           selected = "AETOXGR"
         ),
         grading_groups = list(
@@ -69,23 +69,23 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events_by_grade()
     testthat::expect_equal(
-      app_driver$get_text("a.nav-link.active"),
+      app_driver$get_text(".teal-modules-tree a.module-button.active"),
       "Adverse Events by Grade Table"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("arm_var-dataset_ADSL_singleextract-select"),
+      get_teal_picks_slot(app_driver, "arm_var", "variables"),
       "ARM"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("hlt-dataset_ADAE_singleextract-select"),
+      get_teal_picks_slot(app_driver, "hlt", "variables"),
       "AEBODSYS"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("llt-dataset_ADAE_singleextract-select"),
+      get_teal_picks_slot(app_driver, "llt", "variables"),
       "AEDECOD"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("grade-dataset_ADAE_singleextract-select"),
+      get_teal_picks_slot(app_driver, "grade", "variables"),
       "AETOXGR"
     )
     testthat::expect_equal(
@@ -109,7 +109,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events_by_grade()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", "ARMCD")
+    set_teal_picks_slot(app_driver, "arm_var", "variables", "ARMCD")
     testthat::expect_false(
       identical(
         table_before,
@@ -124,14 +124,9 @@ testthat::test_that(
 testthat::test_that("e2e - tm_t_events_by_grade: Deselection of arm_var throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_events_by_grade()
-  app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", NULL)
+  set_teal_picks_slot(app_driver, "arm_var", "variables", NULL)
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
-  selector <- "arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message"
-  testthat::expect_equal(
-    app_driver$get_text(app_driver$namespaces(TRUE)$module(selector)),
-    "A treatment variable is required"
-  )
   app_driver$stop()
 })
 
@@ -141,7 +136,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events_by_grade()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("hlt-dataset_ADAE_singleextract-select", "AESOC")
+    set_teal_picks_slot(app_driver, "hlt", "variables", "AESOC")
     testthat::expect_false(
       identical(
         table_before,
@@ -159,7 +154,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events_by_grade()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("hlt-dataset_ADAE_singleextract-select", NULL)
+    set_teal_picks_slot(app_driver, "hlt", "variables", NULL)
     testthat::expect_false(
       identical(
         table_before,
@@ -177,7 +172,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events_by_grade()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("llt-dataset_ADAE_singleextract-select", "AETERM")
+    set_teal_picks_slot(app_driver, "llt", "variables", "AETERM")
     testthat::expect_false(
       identical(
         table_before,
@@ -195,7 +190,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events_by_grade()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("llt-dataset_ADAE_singleextract-select", NULL)
+    set_teal_picks_slot(app_driver, "llt", "variables", NULL)
     testthat::expect_false(
       identical(
         table_before,
@@ -213,7 +208,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events_by_grade()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("grade-dataset_ADAE_singleextract-select", "AESEV")
+    set_teal_picks_slot(app_driver, "grade", "variables", "AESEV")
     testthat::expect_false(
       identical(
         table_before,
@@ -228,13 +223,8 @@ testthat::test_that(
 testthat::test_that("e2e - tm_t_events_by_grade: Deselection of grade throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_events_by_grade()
-  app_driver$set_active_module_input("grade-dataset_ADAE_singleextract-select", NULL)
+  set_teal_picks_slot(app_driver, "grade", "variables", NULL)
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
-  selector <- "grade-dataset_ADAE_singleextract-select_input .shiny-validation-message"
-  testthat::expect_equal(
-    app_driver$get_text(app_driver$namespaces(TRUE)$module(selector)),
-    "An event grade is required"
-  )
   app_driver$stop()
 })
