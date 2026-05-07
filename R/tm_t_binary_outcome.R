@@ -337,7 +337,8 @@ template_binary_outcome <- function(dataname,
 #' @inheritParams teal::module
 #' @inheritParams template_binary_outcome
 #' @param rsp_table (`logical`)\cr whether the initial set-up of the module should match `RSPT01`. Defaults to `FALSE`.
-#' @param conf_level ([teal.picks::values()]; legacy `teal.transform::choices_selected()` is deprecated but still accepted)\cr
+#' @param conf_level ([teal.picks::values()]; legacy `teal.transform::choices_selected()` is deprecated but still
+#'   accepted)\cr
 #'   available confidence levels and default selection in (0, 1). Choice order follows the vector passed to
 #'   [teal.picks::values()] (there is no `keep_order` argument).
 #' @param control (named `list`)\cr named list containing 3 named lists as follows:

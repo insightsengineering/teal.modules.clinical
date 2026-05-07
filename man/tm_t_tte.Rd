@@ -147,7 +147,8 @@ tm_t_tte(
 
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr variable for treatment arm.}
+\item{arm_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+variable for treatment arm.}
 
 \item{arm_ref_comp}{(\code{list}) optional,\cr if specified it must be a named list with each element corresponding to
 an arm variable in \code{ADSL} and the element must be another list (possibly
@@ -157,13 +158,17 @@ reference and comparison arms when the arm variable is changed.}
 
 \item{paramcd}{(\code{\link[teal.picks:variables]{teal.picks::variables()}} for the parameter column, full \code{\link[teal.picks:picks]{teal.picks::picks()}} including
 \code{\link[teal.picks:values]{teal.picks::values()}}, or legacy \code{teal.transform} objects; deprecated inputs still accepted)\cr
-endpoint filter (parameter codes such as OS, PFS). \code{\link[teal.picks:variables]{teal.picks::variables()}} alone is enough; levels come from data.}
+endpoint filter (parameter codes such as \code{OS}, \code{PFS}). \code{\link[teal.picks:variables]{teal.picks::variables()}} alone is enough; levels come
+from data.}
 
-\item{strata_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr variable(s) for stratification.}
+\item{strata_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+variable(s) for stratification.}
 
-\item{aval_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr variable for analysis value (time-to-event).}
+\item{aval_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+variable for analysis value (time-to-event).}
 
-\item{cnsr_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr variable for censoring indicator.}
+\item{cnsr_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+variable for censoring indicator.}
 
 \item{conf_level_coxph}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all available choices and
 pre-selected option for confidence level, each within range of (0, 1).}
@@ -174,11 +179,13 @@ pre-selected option for confidence level, each within range of (0, 1).}
 \item{time_points}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all available choices and preselected option
 for time points that can be used in \code{\link[tern:surv_timepoint]{tern::surv_timepoint()}}.}
 
-\item{time_unit_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr variable for time unit.}
+\item{time_unit_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still
+accepted)\cr
+variable for time unit.}
 
-\item{event_desc_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}, \code{\link[teal.picks:picks]{teal.picks::picks()}}, legacy \code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}},
-\code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}}, or a \code{list} of \code{data_extract_spec})\cr
-variable for event description. S3 dispatch uses the class of \code{event_desc_var}
+\item{event_desc_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}, \code{\link[teal.picks:picks]{teal.picks::picks()}}, legacy
+\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}}, \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}}, or a \code{list} of
+\code{data_extract_spec}) variable for event description. S3 dispatch uses the class of \code{event_desc_var}
 (\code{\link[=tm_t_tte.picks]{tm_t_tte.picks()}} / \code{\link[=tm_t_tte.variables]{tm_t_tte.variables()}} vs legacy \code{\link[=tm_t_tte.default]{tm_t_tte.default()}} / \code{\link[=tm_t_tte.list]{tm_t_tte.list()}}).}
 
 \item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}

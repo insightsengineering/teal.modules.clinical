@@ -195,10 +195,10 @@ template_shift_by_arm <- function(dataname,
 #'   variable for analysis range indicator.
 #' @param baseline_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
 #'   variable for baseline reference range indicator.
-#' @param treatment_flag_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
-#'   variable for on-treatment flag.
-#' @param treatment_flag ([teal.picks::values()]; legacy `teal.transform::choices_selected()` is deprecated but still accepted)\cr
-#'   value matching `treatment_flag_var` for on-treatment records (default `"Y"`).
+#' @param treatment_flag_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still
+#'   accepted)\cr variable for on-treatment flag.
+#' @param treatment_flag ([teal.picks::values()]; legacy `teal.transform::choices_selected()` is deprecated but still
+#'   accepted) value matching `treatment_flag_var` for on-treatment records (default `"Y"`).
 #'
 #' @inherit module_arguments return seealso
 #'

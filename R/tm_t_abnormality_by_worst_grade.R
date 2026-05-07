@@ -236,20 +236,28 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint: object_len
 #' @inheritParams module_arguments
 #' @inheritParams teal::module
 #' @inheritParams template_abnormality_by_worst_grade
-#' @param arm_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr object with all available choices and preselected
+#' @param arm_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
+#'   object with all available choices and preselected
 #'   option for the treatment variable.
-#' @param id_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr subject identifier variable.
-#' @param paramcd ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr variable used to filter the analysis dataset
+#' @param id_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
+#'   subject identifier variable.
+#' @param paramcd ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
+#'   variable used to filter the analysis dataset
 #'   (typically `PARAMCD`). The `values()` element is added internally to allow users to pick
 #'   laboratory parameter value(s) interactively.
-#' @param atoxgr_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr object with all available choices and preselected
+#' @param atoxgr_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
+#'   object with all available choices and preselected
 #'   option for the analysis toxicity grade variable.
-#' @param worst_high_flag_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr object with all available choices and
-#'   preselected option for the worst high grade flag variable.
-#' @param worst_low_flag_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr object with all available choices and
-#'   preselected option for the worst low grade flag variable.
-#' @param worst_flag_indicator ([teal.picks::values()]; legacy `teal.transform::choices_selected()` is deprecated but still accepted)\cr
-#'   Value(s) matching the worst high/low flag variables (default `"Y"`). Uses explicit candidate levels including an empty string where needed.
+#' @param worst_high_flag_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still
+#'   accepted)\cr
+#'   object with all available choices and preselected option for the worst high grade flag variable.
+#' @param worst_low_flag_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still
+#'   accepted)\cr
+#'   object with all available choices and preselected option for the worst low grade flag variable.
+#' @param worst_flag_indicator ([teal.picks::values()]; legacy `teal.transform::choices_selected()` is deprecated but
+#'   still accepted)\cr
+#'   Value(s) matching the worst high/low flag variables (default `"Y"`).
+#'   Uses explicit candidate levels including an empty string where needed.
 #'   The UI shows the selected value as static text (not an interactive control).
 #'
 #' @inherit module_arguments return seealso
@@ -325,12 +333,15 @@ tm_t_abnormality_by_worst_grade <- function(label, # nolint: object_length.
                                             dataname,
                                             parentname = "ADSL",
                                             arm_var,
-                                            id_var = variables(choices = "USUBJID", fixed = TRUE),
+                                            id_var = teal.picks::variables(choices = "USUBJID", fixed = TRUE),
                                             paramcd,
-                                            atoxgr_var = variables(choices = "ATOXGR", fixed = TRUE),
-                                            worst_high_flag_var = variables(choices = "WGRHIFL", fixed = TRUE),
-                                            worst_low_flag_var = variables(choices = "WGRLOFL", fixed = TRUE),
-                                            worst_flag_indicator = teal.picks::values(c("Y", "N", ""), "Y", multiple = FALSE),
+                                            atoxgr_var = teal.picks::variables(choices = "ATOXGR", fixed = TRUE),
+                                            worst_high_flag_var = teal.picks::variables("WGRHIFL", fixed = TRUE),
+                                            worst_low_flag_var = teal.picks::variables("WGRLOFL", fixed = TRUE),
+                                            worst_flag_indicator = teal.picks::values(
+                                              c("Y", "N", ""), "Y",
+                                              multiple = FALSE
+                                            ),
                                             add_total = TRUE,
                                             total_label = default_total_label(),
                                             drop_arm_levels = TRUE,

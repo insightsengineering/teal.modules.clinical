@@ -341,7 +341,8 @@ template_coxreg_m <- function(dataname,
 #' @inheritParams template_coxreg_m
 #' @param multivariate (`logical`)\cr if `FALSE`, the univariable approach is used instead of the
 #'   multi-variable model.
-#' @param conf_level ([teal.picks::values()]; legacy `teal.transform::choices_selected()` is deprecated but still accepted)\cr
+#' @param conf_level ([teal.picks::values()]; legacy `teal.transform::choices_selected()` is deprecated but still
+#'   accepted)\cr
 #'   available confidence levels and default selection, each in the range (0, 1). Choice order follows
 #'   the vector passed to [teal.picks::values()] (there is no `keep_order` argument).
 #'
