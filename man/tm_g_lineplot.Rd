@@ -7,7 +7,7 @@
 tm_g_lineplot(
   label,
   dataname,
-  parentname = NULL,
+  parentname = "ADSL",
   strata = lifecycle::deprecated(),
   group_var = teal.picks::variables(choices = c("ARM", "ARMCD", "ACTARMCD"), selected =
     "ARM", multiple = FALSE),

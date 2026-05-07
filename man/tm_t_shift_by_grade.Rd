@@ -7,26 +7,16 @@
 tm_t_shift_by_grade(
   label,
   dataname,
-  parentname = ifelse(inherits(arm_var, "data_extract_spec"),
-    teal.transform::datanames_input(arm_var), "ADSL"),
+  parentname = "ADSL",
   arm_var,
-  visit_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
-    subset = "AVISIT"), selected = "AVISIT", fixed = TRUE),
+  visit_var = variables(choices = "AVISIT", fixed = TRUE),
   paramcd,
-  worst_flag_var =
-    teal.transform::choices_selected(teal.transform::variable_choices(dataname, subset =
-    c("WGRLOVFL", "WGRLOFL", "WGRHIVFL", "WGRHIFL")), selected = "WGRLOVFL"),
-  worst_flag_indicator =
-    teal.transform::choices_selected(teal.transform::value_choices(dataname, "WGRLOVFL"),
-    selected = "Y", fixed = TRUE),
-  anl_toxgrade_var =
-    teal.transform::choices_selected(teal.transform::variable_choices(dataname, subset =
-    c("ATOXGR")), selected = c("ATOXGR"), fixed = TRUE),
-  base_toxgrade_var =
-    teal.transform::choices_selected(teal.transform::variable_choices(dataname, subset =
-    c("BTOXGR")), selected = c("BTOXGR"), fixed = TRUE),
-  id_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
-    subset = "USUBJID"), selected = "USUBJID", fixed = TRUE),
+  worst_flag_var = variables(choices = c("WGRLOVFL", "WGRLOFL", "WGRHIVFL", "WGRHIFL"),
+    selected = "WGRLOVFL"),
+  worst_flag_indicator = teal.picks::values(c("Y", "N"), "Y", fixed = TRUE),
+  anl_toxgrade_var = variables(choices = "ATOXGR", fixed = TRUE),
+  base_toxgrade_var = variables(choices = "BTOXGR", fixed = TRUE),
+  id_var = variables(choices = "USUBJID", fixed = TRUE),
   add_total = FALSE,
   total_label = default_total_label(),
   drop_arm_levels = TRUE,
@@ -46,31 +36,30 @@ tm_t_shift_by_grade(
 
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
-available choices and preselected option for variable names that can be used as \code{arm_var}.
-It defines the grouping variable in the results table.}
+\item{arm_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+variable for treatment arm.}
 
-\item{visit_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
-all available choices and preselected option for variable names that can be used as \code{visit} variable.
-Must be a factor in \code{dataname}.}
+\item{visit_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+variable for analysis visit.}
 
-\item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
-available choices and preselected option for the parameter code variable from \code{dataname}.}
+\item{paramcd}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+variable for lab parameter code. The \code{values()} element is added internally to allow
+users to filter the parameter values interactively.}
 
-\item{worst_flag_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object
-with all available choices and preselected option for variable names that can be used as worst flag variable.}
+\item{worst_flag_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+variable for worst grade flag.}
 
-\item{worst_flag_indicator}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr
-value indicating worst grade.}
+\item{worst_flag_indicator}{(\code{\link[teal.picks:values]{teal.picks::values()}}; legacy \code{teal.transform::choices_selected()} is deprecated but still accepted)\cr
+value(s) indicating worst grade records.}
 
-\item{anl_toxgrade_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr
+\item{anl_toxgrade_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
 variable for analysis toxicity grade.}
 
-\item{base_toxgrade_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr
+\item{base_toxgrade_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
 variable for baseline toxicity grade.}
 
-\item{id_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object specifying
-the variable name for subject id.}
+\item{id_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+variable for subject identifier.}
 
 \item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
 
@@ -167,40 +156,17 @@ data <- within(data, {
 })
 join_keys(data) <- default_cdisc_join_keys[names(data)]
 
-ADSL <- data[["ADSL"]]
-ADLB <- data[["ADLB"]]
-
 app <- init(
   data = data,
   modules = modules(
     tm_t_shift_by_grade(
       label = "Grade Laboratory Abnormality Table",
       dataname = "ADLB",
-      arm_var = choices_selected(
-        choices = variable_choices(ADSL, subset = c("ARM", "ARMCD")),
-        selected = "ARM"
-      ),
-      paramcd = choices_selected(
-        choices = value_choices(ADLB, "PARAMCD", "PARAM"),
-        selected = "ALT"
-      ),
-      worst_flag_var = choices_selected(
-        choices = variable_choices(ADLB, subset = c("WGRLOVFL", "WGRLOFL", "WGRHIVFL", "WGRHIFL")),
-        selected = c("WGRLOVFL")
-      ),
-      worst_flag_indicator = choices_selected(
-        value_choices(ADLB, "WGRLOVFL"),
-        selected = "Y", fixed = TRUE
-      ),
-      anl_toxgrade_var = choices_selected(
-        choices = variable_choices(ADLB, subset = c("ATOXGR")),
-        selected = c("ATOXGR"),
-        fixed = TRUE
-      ),
-      base_toxgrade_var = choices_selected(
-        choices = variable_choices(ADLB, subset = c("BTOXGR")),
-        selected = c("BTOXGR"),
-        fixed = TRUE
+      arm_var = variables(choices = c("ARM", "ARMCD")),
+      paramcd = variables(choices = "PARAMCD"),
+      worst_flag_var = variables(
+        choices = c("WGRLOVFL", "WGRLOFL", "WGRHIVFL", "WGRHIFL"),
+        selected = "WGRLOVFL"
       ),
       add_total = FALSE
     )
@@ -219,8 +185,8 @@ apps implementing this module can be found.
 \section{Examples in Shinylive}{
 \describe{
   \item{example-1}{
-    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOz8gCEikrLK6v5qeiUAX0UIACsieL8AazhWUUTQm3D+OGMoYVI-An5aUTKRscnp4Gh4GaS5AF1XCByCoqTgYAUwa-zHs4urptaF0PvHnJbXu8lGhUEV4tF2A0kjoALw6JK4Bp8IQiUSwnTI4RiSEQDIZEp+NaiOLGNb0Vh+ADmzEWOLxeOoUHocGo6MeAHEabp8kyiMxSHzWFl6BA+TBuNEhbYmSJHojcfT4aEjro4X9PnKGvSWDA-JoWOiCDFRgQxH5RCy4Oo4Pw6YqMkaTWJ0frGLQZXB1saZNjnilRIJ6BbSIbIU8sABZOU6P6RgDC2Uecjk8vtGQtImt-DZ4ajYC1eJTBYyqBYsA2hu9ptE5stWbt9sdPrRcP11EEnqb1fY-2aKUeAAVMlhMhGE9HB8PR0nU2mM1byNm1U98rZHsWdEWFfSInzRGtjIzKXqDXCu2b5-WNw6q87Wyx3fQRF6nTNe-7A8HQ48AOrsrD5AA8gAagAYi8eAxmAf4AYB4ETtB-4ABIAJJgRB-aIVgqHwWAyazval6Lt+WFAehSYblu9q7ow+5+IeUDHvEmyyAKjCVq+taZouDaKm2HYvs2PafJhMFkbhVFznWxHLgAmtGxi0BUNrovYziUQReJQBA-gChU1I1J6rocc2XELjavH0ueLY6K6j7PtZwktB+QZwCGZ5hpktiAQAGv+SaSYR0kqR5fzeX5WAzteJhKSFdiOC426FppGT0FAFqEkQ+lcie7FnreNZERZ0XWS6D4eoJ3bvjoAaue5OgEGGzThf5eGBYqRVLg1TUtZFeEpXiinKV1amJfa7UZDU-CZZ4rJwqBmT5LkY2Fg0kmKdQ5B5cUcDcOadDdr4+0+p5eQYVBuSZKBuH+sFXWPPJbVKIMtDGDo7DxFtUAWNo1g2GkCrEvErCZOg7AggAJIItApJDFqMNojCDH0ShgH0ZxAA}{Open in Shinylive}
-    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOz8gCEikrLK6v5qeiUAX0UIACsieL8AazhWUUTQm3D+OGMoYVI-An5aUTKRscnp4Gh4GaS5AF1XCByCoqTgYAUwa-zHs4urptaF0PvHnJbXu8lGhUEV4tF2A0kjoALw6JK4Bp8IQiUSwnTI4RiSEQDIZEp+NaiOLGNb0Vh+ADmzEWOLxeOoUHocGo6MeAHEabp8kyiMxSHzWFl6BA+TBuNEhbYmSJHojcfT4aEjro4X9PnKGvSWDA-JoWOiCDFRgQxH5RCy4Oo4Pw6YqMkaTWJ0frGLQZXB1saZNjnilRIJ6BbSIbIU8sABZOU6P6RgDC2Uecjk8vtGQtImt-DZ4ajYC1eJTBYyqBYsA2hu9ptE5stWbt9sdPrRcP11EEnqb1fY-2aKUeAAVMlhMhGE9HB8PR0nU2mM1byNm1U98rZHsWdEWFfSInzRGtjIzKXqDXCu2b5-WNw6q87Wyx3fQRF6nTNe-7A8HQ48AOrsrD5AA8gAagAYi8eAxmAf4AYB4ETtB-4ABIAJJgRB-aIVgqHwWAyazval6Lt+WFAehSYblu9q7ow+5+IeUDHvEmyyAKjCVq+taZouDaKm2HYvs2PafJhMFkbhVFznWxHLgAmtGxi0BUNrovYziUQReJQBA-gChU1I1J6rocc2XELjavH0ueLY6K6j7PtZwktB+QZwCGZ5hpktiAQAGv+SaSYR0kqR5fzeX5WAzteJhKSFdiOC426FppGT0FAFqEkQ+lcie7FnreNZERZ0XWS6D4eoJ3bvjoAaue5OgEGGzThf5eGBYqRVLg1TUtZFeEpXiinKV1amJfa7UZDU-CZZ4rJwqBmT5LkY2Fg0kmKdQ5B5cUcDcOadDdr4+0+p5eQYVBuSZKBuH+sFXWPPJbVKIMtDGDo7DxFtUAWNo1g2GkCrEvErCZOg7AggAJIItApJDFqMNojCDH0ShgH0ZxAA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOz8gCEikrLK6v5qeiUAX0UIACsieL8AazhWUUTQm3D+OGMoYVI-An5aUTKRscnp4Gh4GaS5AF1XaHQi+Oj2BqSdAF4dJNwGviERUWedT+ExPcIBkMiU-GtRHFjGt6Kw-ABzZiLIEgkHUKD0ODUX4KMAAcSRunyGKIzFIpNYWXoEFJMG40UptgxIlx72BqNeoSOuheuJyLVZDVRLBgfk0LF+4sYtGZgIIMVGBDEvwI9zAmSwAFlWTo+VqAMLZXFyORsjk6VAsWAbSUsGX0b7seWK5W8sAABQ1mU1huNZo5EVJojWxnR8LFEpeUvtjqFHOdMldOlVuIA6nisPkAPIANQAYvkdWmM9mC0WwOmsAAJACS+cLeF1FYztbLYFNcdRoixcHUcH4OObmdzbc7Og77OF-H44KInmxLzzmXyuRck-HDQnGWMtGo5EYv18fjqiZmR5PSrVOQK5dymTzbZS3ZEfYHboAmsbBoNaMYdOx4n3KALG0awbDSdlIXiVhMnQdg0FQAASQRaBSBDEO7RhtEYQY+iUMA+jOIA}{Open in Shinylive}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOz8gCEikrLK6v5qeiUAX0UIACsieL8AazhWUUTQm3D+OGMoYVI-An5aUTKRscnp4Gh4GaS5AF1XaHQi+Oj2BqSdAF4dJNwGviERUWedT+ExPcIBkMiU-GtRHFjGt6Kw-ABzZiLIEgkHUKD0ODUX4KMAAcSRunyGKIzFIpNYWXoEFJMG40UptgxIlx72BqNeoSOuheuJyLVZDVRLBgfk0LF+4sYtGZgIIMVGBDEvwI9zAmSwAFlWTo+VqAMLZXFyORsjk6VAsWAbSUsGX0b7seWK5W8sAABQ1mU1huNZo5EVJojWxnR8LFEpeUvtjqFHOdMldOlVuIA6nisPkAPIANQAYvkdWmM9mC0WwOmsAAJACS+cLeF1FYztbLYFNcdRoixcHUcH4OObmdzbc7Og77OF-H44KInmxLzzmXyuRck-HDQnGWMtGo5EYv18fjqiZmR5PSrVOQK5dymTzbZS3ZEfYHboAmsbBoNaMYdOx4n3KALG0awbDSdlIXiVhMnQdg0FQAASQRaBSBDEO7RhtEYQY+iUMA+jOIA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
     \if{html}{\out{<a style='height: 800px; display: block;'></a>}}
   }
 }
