@@ -7,13 +7,11 @@
 tm_t_summary_by(
   label,
   dataname,
-  parentname = ifelse(inherits(arm_var, "data_extract_spec"),
-    teal.transform::datanames_input(arm_var), "ADSL"),
+  parentname = "ADSL",
   arm_var,
   by_vars,
   summarize_vars,
-  id_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
-    subset = "USUBJID"), selected = "USUBJID", fixed = TRUE),
+  id_var = variables(choices = "USUBJID", fixed = TRUE),
   paramcd = NULL,
   add_total = TRUE,
   total_label = default_total_label(),
@@ -23,8 +21,7 @@ tm_t_summary_by(
   na_level = tern::default_na_str(),
   numeric_stats = c("n", "mean_sd", "median", "range"),
   categorical_stats = c("n", "count"),
-  denominator = teal.transform::choices_selected(c("n", "N", "omit"), "omit", fixed =
-    TRUE),
+  denominator = teal.picks::values(c("n", "N", "omit"), "omit", fixed = TRUE),
   drop_arm_levels = TRUE,
   drop_zero_levels = TRUE,
   pre_output = NULL,
@@ -41,23 +38,20 @@ tm_t_summary_by(
 
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
-available choices and preselected option for variable names that can be used as \code{arm_var}.
+\item{arm_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr variable(s) for treatment arm.
 It defines the grouping variable(s) in the results table.
 If there are two elements selected for \code{arm_var},
 second variable will be nested under the first variable.}
 
-\item{by_vars}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
-available choices and preselected option for variable names used to split the summary by rows.}
+\item{by_vars}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr variable(s) for row grouping.}
 
-\item{summarize_vars}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr names of
-the variables that should be summarized.}
+\item{summarize_vars}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr variable(s) to summarize.}
 
-\item{id_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object specifying
-the variable name for subject id.}
+\item{id_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr variable for subject identifier.}
 
-\item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
-available choices and preselected option for the parameter code variable from \code{dataname}.}
+\item{paramcd}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr optional variable for parameter code filter.
+When provided, a \code{values()} selector is added with \code{multiple = FALSE}, so one parameter
+level is selected by default.}
 
 \item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
 
@@ -172,33 +166,18 @@ data <- within(data, {
 })
 join_keys(data) <- default_cdisc_join_keys[names(data)]
 
-ADSL <- data[["ADSL"]]
-ADLB <- data[["ADLB"]]
-
 app <- init(
   data = data,
   modules = modules(
     tm_t_summary_by(
       label = "Summary by Row Groups Table",
       dataname = "ADLB",
-      arm_var = choices_selected(
-        choices = variable_choices(ADSL, c("ARM", "ARMCD")),
-        selected = "ARM"
-      ),
+      arm_var = variables(choices = c("ARM", "ARMCD")),
       add_total = TRUE,
-      by_vars = choices_selected(
-        choices = variable_choices(ADLB, c("PARAM", "AVISIT")),
-        selected = c("AVISIT")
-      ),
-      summarize_vars = choices_selected(
-        choices = variable_choices(ADLB, c("AVAL", "CHG")),
-        selected = c("AVAL")
-      ),
+      by_vars = variables(choices = c("PARAM", "AVISIT"), selected = "AVISIT"),
+      summarize_vars = variables(choices = c("AVAL", "CHG"), selected = "AVAL"),
       useNA = "ifany",
-      paramcd = choices_selected(
-        choices = value_choices(ADLB, "PARAMCD", "PARAM"),
-        selected = "ALT"
-      )
+      paramcd = variables(choices = "PARAMCD")
     )
   )
 )
@@ -214,8 +193,8 @@ apps implementing this module can be found.
 \section{Examples in Shinylive}{
 \describe{
   \item{example-1}{
-    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOz8gCEikrLK6v5qeiUAX0UIACsieL8AazhWUUTQm3D+OGMoYVI-An5aUTKRscnp4Gh4GaS5AF1XCByCoqTgYAUwa-zHs4urptaF0PvHnJbXu8lGhUEV4tF2A0kjoALw6JK4Bp8IQiUSwnTI4RiSEQDIZEp+NaiQQwGAsVh+egcBp4nTUKD0ODUdGPXIkslsHRUnRYIgRHQAcUYREEqDRtgZIkeiNxtPhoSOujhf0+0ppeJYMD8mhY6IIMVGBDEflETLg6jg-Bxcrx+sNYnROsYtElcHWBpk2OeKQIkKeWAAstKdH9AwBhbKPORyGU2jKmkQW-gs-1BsDqjIxjM6Gr8QlETzMuH2ZyxuVU7UsNFwu2e0Qms1J61x2tG6s6J0u+gid32mb-Zo+v0ABUyWEyaZSfwAagBJXKz2xRrOym0J83kZM1v2ZOcLpdgQY2ldr9ksWgALzdTvbreN66b2Yyd-bnddvbr7AHQ5nmReeBDMAwwACQFZcyzXRtNz1Hdpz-KNsxPOVBFNAA5TIU1oZYIFYNVVzxVAWFgDY9Q9NsG0TTdmxtF9HW4QQ3RfL9PinMBR3HAMI2DR52InKMILlB9oOVJ58gPRD1SPHRBkGLCdHYeJyDUDRtGsGw0llUQ4hwzJ0HYEEABJBFoFJDNNRhtEYQY+iUMA+jOIA}{Open in Shinylive}
-    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOz8gCEikrLK6v5qeiUAX0UIACsieL8AazhWUUTQm3D+OGMoYVI-An5aUTKRscnp4Gh4GaS5AF1XCByCoqTgYAUwa-zHs4urptaF0PvHnJbXu8lGhUEV4tF2A0kjoALw6JK4Bp8IQiUSwnTI4RiSEQDIZEp+NaiQQwGAsVh+egcBp4nTUKD0ODUdGPXIkslsHRUnRYIgRHQAcUYREEqDRtgZIkeiNxtPhoSOujhf0+0ppeJYMD8mhY6IIMVGBDEflETLg6jg-Bxcrx+sNYnROsYtElcHWBpk2OeKQIkKeWAAstKdH9AwBhbKPORyGU2jKmkQW-gs-1BsDqjIxjM6Gr8QlETzMuH2ZyxuVU7UsNFwu2e0Qms1J61x2tG6s6J0u+gid32mb-Zo+v0ABUyWEyaZSfwAagBJXKz2xRrOym0J83kZM1v2ZOcLpdgQY2ldr9ksWgALzdTvbreN66b2Yyd-bnddvbr7AHQ5nmReeBDMAwwACQFZcyzXRtNz1Hdpz-KNsxPOVBFNAA5TIU1oZYIFYNVVzxVAWFgDY9Q9NsG0TTdmxtF9HW4QQ3RfL9PinMBR3HAMI2DR52InKMILlB9oOVJ58gPRD1SPHRBkGLCdHYeJyDUDRtGsGw0llUQ4hwzJ0HYEEABJBFoFJDNNRhtEYQY+iUMA+jOIA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOz8gCEikrLK6v5qeiUAX0UIACsieL8AazhWUUTQm3D+OGMoYVI-An5aUTKRscnp4Gh4GaS5AF1XaHQi+Oj2BqSdAF4dJNwGviERUWedT+ExPcIBkMiU-GtRIIYDAWKw-PQOA0QTpqFB6HBqL8FGBclCYWwdAidFgiBEdABxRhEQSoH62NEibHvYHI16hI66F7YnItJlIkEsGB+TQsX4ixi0BmAggxUYEMS-Aj3MCZLAAWSZOm56oAwtlsXI5MzWToavxwURPJiXvZnMbWQjhSwfi9xZL6N92DK5QqXkrsQAFVWZDV4LUqgBqAElclHbAaUqIMXB1HB+FjIzG4wn+RlIdCWLQAF5wJ2MF06N1SmbemS+nT+yOZfKa7E6gAS5ITOiTIlT6a5TZbYCNuZ0giTADlMhnaMsIKw+SzkagWLANmLC9WvbK6xXA8G1XqDfzBhlBoM5zp2PFyGoNNprDY0izRHEF5l0Ow0KgACSCWgUh-X8k0YbRGEGPolDAPoziAA}{Open in Shinylive}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOz8gCEikrLK6v5qeiUAX0UIACsieL8AazhWUUTQm3D+OGMoYVI-An5aUTKRscnp4Gh4GaS5AF1XaHQi+Oj2BqSdAF4dJNwGviERUWedT+ExPcIBkMiU-GtRIIYDAWKw-PQOA0QTpqFB6HBqL8FGBclCYWwdAidFgiBEdABxRhEQSoH62NEibHvYHI16hI66F7YnItJlIkEsGB+TQsX4ixi0BmAggxUYEMS-Aj3MCZLAAWSZOm56oAwtlsXI5MzWToavxwURPJiXvZnMbWQjhSwfi9xZL6N92DK5QqXkrsQAFVWZDV4LUqgBqAElclHbAaUqIMXB1HB+FjIzG4wn+RlIdCWLQAF5wJ2MF06N1SmbemS+nT+yOZfKa7E6gAS5ITOiTIlT6a5TZbYCNuZ0giTADlMhnaMsIKw+SzkagWLANmLC9WvbK6xXA8G1XqDfzBhlBoM5zp2PFyGoNNprDY0izRHEF5l0Ow0KgACSCWgUh-X8k0YbRGEGPolDAPoziAA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
     \if{html}{\out{<a style='height: 800px; display: block;'></a>}}
   }
 }
