@@ -58,7 +58,8 @@ the variables for stratified analysis.}
 \item{aval_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
 all available choices and pre-selected option for the analysis variable.}
 
-\item{conf_level}{(\code{\link[teal.picks:values]{teal.picks::values()}}; legacy \code{teal.transform::choices_selected()} is deprecated but still accepted)\cr
+\item{conf_level}{(\code{\link[teal.picks:values]{teal.picks::values()}}; legacy \code{teal.transform::choices_selected()} is deprecated but still
+accepted)\cr
 available confidence levels and default selection in (0, 1). Choice order follows the vector passed to
 \code{\link[teal.picks:values]{teal.picks::values()}} (there is no \code{keep_order} argument).}
 
