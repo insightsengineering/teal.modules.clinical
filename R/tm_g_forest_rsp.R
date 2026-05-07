@@ -283,9 +283,6 @@ template_forest_rsp <- function(dataname = "ANL",
 #' })
 #' join_keys(data) <- default_cdisc_join_keys[names(data)]
 #'
-#' ADSL <- data[["ADSL"]]
-#' ADRS <- data[["ADRS"]]
-#'
 #' arm_ref_comp <- list(
 #'   ARM = list(
 #'     ref = "B: Placebo",
@@ -303,23 +300,11 @@ template_forest_rsp <- function(dataname = "ANL",
 #'     tm_g_forest_rsp(
 #'       label = "Forest Response",
 #'       dataname = "ADRS",
-#'       arm_var = choices_selected(
-#'         variable_choices(ADSL, c("ARM", "ARMCD")),
-#'         "ARMCD"
-#'       ),
+#'       arm_var = variables(c("ARM", "ARMCD"), "ARMCD"),
 #'       arm_ref_comp = arm_ref_comp,
-#'       paramcd = choices_selected(
-#'         value_choices(ADRS, "PARAMCD", "PARAM"),
-#'         "INVET"
-#'       ),
-#'       subgroup_var = choices_selected(
-#'         variable_choices(ADSL, names(ADSL)),
-#'         c("BMRKR2", "SEX")
-#'       ),
-#'       strata_var = choices_selected(
-#'         variable_choices(ADSL, c("STRATA1", "STRATA2")),
-#'         "STRATA2"
-#'       ),
+#'       paramcd = picks(variables("PARAMCD", "PARAMCD", values(selected = "INVET"), check_dataset = FALSE),
+#'       subgroup_var = variables(c("BMRKR2", "SEX"), "BMRKR2"),
+#'       strata_var = variables(c("STRATA1", "STRATA2"), "STRATA2"),
 #'       plot_height = c(600L, 200L, 2000L),
 #'       default_responses = list(
 #'         BESRSPI = list(
