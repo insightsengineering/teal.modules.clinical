@@ -7,10 +7,8 @@
 tm_t_glm_counts(
   label = "Counts Module",
   dataname,
-  parentname = ifelse(inherits(arm_var, "data_extract_spec"),
-    teal.transform::datanames_input(arm_var), "ADSL"),
-  aval_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
-    "AVAL"), "AVAL", fixed = TRUE),
+  parentname = "ADSL",
+  aval_var = variables(choices = "AVAL", fixed = TRUE),
   arm_var,
   strata_var,
   rate_mean_method = c("emmeans", "ppmeans"),
@@ -18,8 +16,8 @@ tm_t_glm_counts(
   offset_var,
   cov_var,
   arm_ref_comp = NULL,
-  conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order =
-    TRUE),
+  conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95, multiple = FALSE),
+  add_total = FALSE,
   pre_output = NULL,
   post_output = NULL,
   basic_table_args = teal.widgets::basic_table_args(),
@@ -34,11 +32,11 @@ tm_t_glm_counts(
 
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{aval_var}{(\code{character})\cr name of the analysis value variable.}
+\item{aval_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr analysis variable (\code{dataname}).}
 
-\item{arm_var}{(\code{character})\cr variable names that can be used as \code{arm_var}.}
+\item{arm_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr treatment variable (\code{parentname}).}
 
-\item{strata_var}{(\code{character})\cr names of the variables for stratified analysis.}
+\item{strata_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr optional stratification columns (\code{dataname}).}
 
 \item{rate_mean_method}{(\code{character}) method used to estimate the mean odds ratio. Either "emmeans" or "ppmeans"
 (as in \code{summarize_glm_count()}).}
@@ -48,7 +46,7 @@ tm_t_glm_counts(
 
 \item{offset_var}{(\code{character}) a name of the numeric variable to be used as an offset?}
 
-\item{cov_var}{(\code{character})\cr names of the covariates variables.}
+\item{cov_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr optional covariate columns (\code{dataname}).}
 
 \item{arm_ref_comp}{(\code{list}) optional,\cr if specified it must be a named list with each element corresponding to
 an arm variable in \code{ADSL} and the element must be another list (possibly
@@ -56,8 +54,10 @@ with delayed \code{\link[teal.transform:variable_choices]{teal.transform::variab
 with the elements named \code{ref} and \code{comp} that the defined the default
 reference and comparison arms when the arm variable is changed.}
 
-\item{conf_level}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all available choices and
-pre-selected option for confidence level, each within range of (0, 1).}
+\item{conf_level}{(\code{\link[teal.picks:values]{teal.picks::values()}}; legacy \code{teal.transform::choices_selected()} is deprecated but still accepted)\cr
+available confidence levels and default selection, each in the range (0, 1).}
+
+\item{add_total}{(\code{logical})\cr initial value for the \dQuote{Add All Patients column} checkbox when comparing arms.}
 
 \item{pre_output}{(\code{shiny.tag}) optional,\cr with text placed before the output to put the output into context.
 For example a title.}
@@ -164,27 +164,15 @@ app <- init(
   modules = modules(
     tm_t_glm_counts(
       dataname = "ADTTE",
-      arm_var = choices_selected(
-        variable_choices(ADTTE, c("ARM", "ARMCD", "ACTARMCD")),
-        "ARMCD"
+      arm_var = variables(
+        choices = c("ARM", "ARMCD", "ACTARMCD"),
+        selected = "ARMCD"
       ),
       arm_ref_comp = arm_ref_comp,
-      aval_var = choices_selected(
-        variable_choices(ADTTE, "AVAL"),
-        "AVAL"
-      ),
-      strata_var = choices_selected(
-        variable_choices(ADSL, "SEX"),
-        NULL
-      ),
-      offset_var = choices_selected(
-        variable_choices(ADSL, "AGE"),
-        NULL
-      ),
-      cov_var = choices_selected(
-        variable_choices(ADTTE, "SITEID"),
-        NULL
-      )
+      aval_var = variables(choices = "AVAL", fixed = TRUE),
+      strata_var = variables(choices = "SEX", selected = NULL),
+      offset_var = variables(choices = "AGE", selected = NULL),
+      cov_var = variables(choices = "SITEID", selected = NULL)
     )
   )
 )
@@ -199,8 +187,8 @@ if (interactive()) {
 \section{Examples in Shinylive}{
 \describe{
   \item{example-1}{
-    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+owHdapAAtaCE44bgB9d09rXB0QJR0dAEEAEQBlABlvHXJGCEREXIhwuAAPcKh+UWoE5JTbWydsooKikvLK0nIlAF9FCCUAKyJg8IBrOFZRdiioG0MdfjhjKGFScIJ+WlECcOHRiangaHhp2bkAXVdoRhhwxmWNohhUbLpRUnZapIBhWySsABZH4pHQAXh070+tUSD2M4J0CjAAMBOgAQkjcDCdMQXgiCF9kUDkpjEUTUT8kf1EnIsRBEiiEVCvvTEjo4QikWjEDoAArUKAEOD0IiY7G414QglIpI8lKMQQAcx0AA1SUifjyfs96MEPJYBmBqTp+v0lKlMtlZsBgDL0hkkRcrhBUg0mgtrbbkfVGo7nQBiHQASWkGm4tAAXrpAtGwtQdGhUEpE9lgv4WYlZgjZnTEnwhCJRAj88IxBm2aQ7utFdQ7sQzKRptjMx4oCddBC7W6xay2QnbuFNCx8QERkLROFRHAROo4Pxy33EkPGLQoPQRBtRzIy67GrFpeT1eSQUffv8gSejbTm2yZReUkib9fe2yWHc4U88RC3-dHhLc4uUBDtQg7DlKW7jpO05wLO843kuLCruucCbmOO4+k4sQygAakkDpGgBi5kkkuH4U+hFsh8zCeKBjAjmhE5TjO5BwS+fbLkhG4EBB6GZFhYBpE4aoEfBOgAHIOBkDpsSaFGJEQxjGFO6zLvR26MdBsELouHFrlxPHTBaGT8UkADiLgiTJiQSVJ5E3sQmi0WpkFMTBLHaexiF6Sh3EMewu6YWSaRBo0QYPpZRHWZJ0lEcaNK1Ka1y0PC7DBLkgoaNo1g2PErKiEEECsEk6DsImAAkgi0LE5VTow2iMP0PRgD0FxAA}{Open in Shinylive}
-    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+owHdapAAtaCE44bgB9d09rXB0QJR0dAEEAEQBlABlvHXJGCEREXIhwuAAPcKh+UWoE5JTbWydsooKikvLK0nIlAF9FCCUAKyJg8IBrOFZRdiioG0MdfjhjKGFScIJ+WlECcOHRiangaHhp2bkAXVdoRhhwxmWNohhUbLpRUnZapIBhWySsABZH4pHQAXh070+tUSD2M4J0CjAAMBOgAQkjcDCdMQXgiCF9kUDkpjEUTUT8kf1EnIsRBEiiEVCvvTEjo4QikWjEDoAArUKAEOD0IiY7G414QglIpI8lKMQQAcx0AA1SUifjyfs96MEPJYBmBqTp+v0lKlMtlZsBgDL0hkkRcrhBUg0mgtrbbkfVGo7nQBiHQASWkGm4tAAXrpAtGwtQdGhUEpE9lgv4WYlZgjZnTEnwhCJRAj88IxBm2aQ7utFdQ7sQzKRptjMx4oCddBC7W6xay2QnbuFNCx8QERkLROFRHAROo4Pxy33EkPGLQoPQRBtRzIy67GrFpeT1eSQUffv8gSejbTm2yZReUkib9fe2yWHc4U88RC3-dHhLc4uUBDtQg7DlKW7jpO05wLO843kuLCruucCbmOO4+k4sQygAakkDpGgBi5kkkuH4U+hFsh8zCeKBjAjmhE5TjO5BwS+fbLkhG4EBB6GZFhYBpE4aoEfBOgAHIOBkDpsSaFGJEQxjGFO6zLvR26MdBsELouHFrlxPHTBaGT8UkADiLgiTJiQSVJ5E3sQmi0WpkFMTBLHaexiF6Sh3EMewu6YWSaRBo0QYPpZRHWZJ0lEcaNK1Ka1y0PC7DBLkgoaNo1g2PErKiEEECsEk6DsImAAkgi0LE5VTow2iMP0PRgD0FxAA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+owHdapAAtaCE44bgB9d09rXB0QJR0dAEEAEQBlABlvHXJGCEREXIhwuAAPcKh+UWoE5JTbWydsooKikvLK0nIlAF9FCCUAKyJg8IBrOFZRdiioG0MdfjhjKGFScIJ+WlECcOHRiangaHhp2bkAXVdoRhhwxmWNohhUbLpRUnZapIBhWySsABZH4pHQAXh070+tUSD2M4J0CjAAMBOgAQkjcDCdMQXgiCF9kUDkpjEUTUT8kf1EnIsRBEiiEVCvvTEjo4QikWjEDoAArUKAEOD0IiY7G414QglIpI8lKMQQAcx0AA1SUifjyfs96MEPJYBmBqTp+v0lKlMtlZsBgDL0hkkRcrhBUg0mgtrbbkfVGo7nQBiHQASWkGm4tAAXrpAtGwtQdGhUEpE9lgv4WYlZgjZnTEnwhCJRAj88IxBm2aQ7utFdQ7sQzKRptjMx4oCddBC7W6xay2QnbuFNCwEUPGLQoPRC+W+4kCAERkKi1LCSj1eSQWvfv8gRujbmZ4lRHAROo4PxOeuUkjmyb932WHc4U88RCH-dHhK72yoEPqIPhxCo7jpOZZzguYgXkkABqSQOngJi0KUZ4IvYzi0jeHzMJ4-6MCOLDAVOYEyBBnZgGkThqvBR4nuQ54QgAcg4GQZOhvZskQxjGEe6yjnhY4ToR87EUuZJJAA4i4VHHnAp50TojHMaxB7EJoOF8QRoFCYuF5pEGjRBleUk0chDFMSx2LGqa1y0PC7DBLkgoaNo1g2PErKiEEECsEk6DsImAAkgi0LEAVHow2iMP0PRgD0FxAA}{Open in Shinylive}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+owHdapAAtaCE44bgB9d09rXB0QJR0dAEEAEQBlABlvHXJGCEREXIhwuAAPcKh+UWoE5JTbWydsooKikvLK0nIlAF9FCCUAKyJg8IBrOFZRdiioG0MdfjhjKGFScIJ+WlECcOHRiangaHhp2bkAXVdoRhhwxmWNohhUbLpRUnZapIBhWySsABZH4pHQAXh070+tUSD2M4J0CjAAMBOgAQkjcDCdMQXgiCF9kUDkpjEUTUT8kf1EnIsRBEiiEVCvvTEjo4QikWjEDoAArUKAEOD0IiY7G414QglIpI8lKMQQAcx0AA1SUifjyfs96MEPJYBmBqTp+v0lKlMtlZsBgDL0hkkRcrhBUg0mgtrbbkfVGo7nQBiHQASWkGm4tAAXrpAtGwtQdGhUEpE9lgv4WYlZgjZnTEnwhCJRAj88IxBm2aQ7utFdQ7sQzKRptjMx4oCddBC7W6xay2QnbuFNCwEUPGLQoPRC+W+4kCAERkKi1LCSj1eSQWvfv8gRujbmZ4lRHAROo4PxOeuUkjmyb932WHc4U88RCH-dHhK72yoEPqIPhxCo7jpOZZzguYgXkkABqSQOngJi0KUZ4IvYzi0jeHzMJ4-6MCOLDAVOYEyBBnZgGkThqvBR4nuQ54QgAcg4GQZOhvZskQxjGEe6yjnhY4ToR87EUuZJJAA4i4VHHnAp50TojHMaxB7EJoOF8QRoFCYuF5pEGjRBleUk0chDFMSx2LGqa1y0PC7DBLkgoaNo1g2PErKiEEECsEk6DsImAAkgi0LEAVHow2iMP0PRgD0FxAA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
     \if{html}{\out{<a style='height: 800px; display: block;'></a>}}
   }
 }
