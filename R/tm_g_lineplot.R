@@ -295,7 +295,7 @@ template_g_lineplot <- function(dataname = "ANL",
 #' @export
 tm_g_lineplot <- function(label,
                           dataname,
-                          parentname = NULL,
+                          parentname = "ADSL",
                           strata = lifecycle::deprecated(),
                           group_var = teal.picks::variables(
                             choices = c("ARM", "ARMCD", "ACTARMCD"),
@@ -347,10 +347,6 @@ tm_g_lineplot <- function(label,
   }
 
   message("Initializing tm_g_lineplot")
-
-  if (is.null(parentname)) {
-    parentname <- "ADSL"
-  }
 
   group_var <- migrate_choices_selected_to_variables(group_var, arg_name = "group_var")
   x <- migrate_choices_selected_to_variables(x, arg_name = "x")
@@ -416,7 +412,6 @@ ui_g_lineplot <- function(id,
                           post_output,
                           decorators) {
   ns <- NS(id)
-  conf_level$fixed <- conf_level$fixed %||% FALSE
 
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(
@@ -470,7 +465,7 @@ ui_g_lineplot <- function(id,
             choices = conf_level$choices,
             selected = conf_level$selected,
             multiple = FALSE,
-            fixed = conf_level$fixed
+            fixed = teal.picks::is_pick_fixed(conf_level)
           ),
           teal.widgets::optionalSliderInputValMinMax(
             ns("mid_point_size"),
