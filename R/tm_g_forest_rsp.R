@@ -272,11 +272,10 @@ template_forest_rsp <- function(dataname = "ANL",
 #'
 #' data <- teal_data()
 #' data <- within(data, {
-#'   library(teal.modules.clinical)
 #'   library(formatters)
 #'   library(dplyr)
-#'   ADSL <- tmc_ex_adsl
-#'   ADRS <- tmc_ex_adrs %>%
+#'   ADSL <- teal.modules.clinical::tmc_ex_adsl
+#'   ADRS <- teal.modules.clinical::tmc_ex_adrs %>%
 #'     mutate(AVALC = d_onco_rsp_label(AVALC) %>%
 #'       with_label("Character Result/Finding")) %>%
 #'     filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")
@@ -302,9 +301,13 @@ template_forest_rsp <- function(dataname = "ANL",
 #'       dataname = "ADRS",
 #'       arm_var = variables(c("ARM", "ARMCD"), "ARMCD"),
 #'       arm_ref_comp = arm_ref_comp,
-#'       paramcd = picks(variables("PARAMCD", "PARAMCD", values(selected = "INVET"), check_dataset = FALSE),
-#'       subgroup_var = variables(c("BMRKR2", "SEX"), "BMRKR2"),
-#'       strata_var = variables(c("STRATA1", "STRATA2"), "STRATA2"),
+#'       paramcd = picks(
+#'         variables("PARAMCD", "PARAMCD"),
+#'         values(selected = "INVET", multiple = FALSE),
+#'         check_dataset = FALSE
+#'       ),
+#'       subgroup_var = variables(c("BMRKR2", "SEX"), "BMRKR2", multiple = TRUE),
+#'       strata_var = variables(c("STRATA1", "STRATA2"), "STRATA2", multiple = TRUE),
 #'       plot_height = c(600L, 200L, 2000L),
 #'       default_responses = list(
 #'         BESRSPI = list(
