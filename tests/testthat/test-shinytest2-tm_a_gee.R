@@ -33,9 +33,9 @@ app_driver_tm_a_gee <- function() {
         arm_var = teal.picks::variables(choices = c("ARM", "ARMCD"), selected = "ARM"),
         visit_var = teal.picks::variables(choices = c("AVISIT", "AVISITN"), selected = "AVISIT"),
         paramcd = picks(
-           variables(choices = c("PARAMCD", "PARAM")),
-           values(all_values, "FKSI-FWB"),
-           check_dataset = FALSE
+          variables(choices = c("PARAMCD", "PARAM")),
+          values(all_values, "FKSI-FWB"),
+          check_dataset = FALSE
         ),
         cov_var = teal.picks::variables(choices = c("BASE", "AGE", "SEX", "BASE:AVISIT"), selected = NULL),
         conf_level = teal.picks::values(c(0.95, 0.9, 0.8, -1), 0.95, multiple = FALSE),
