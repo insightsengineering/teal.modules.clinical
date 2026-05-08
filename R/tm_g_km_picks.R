@@ -105,6 +105,10 @@ tm_g_km.default <- function(label,
   )
 }
 
+#' @describeIn tm_g_km Backward-compatible picks-specific S3 method.
+#' @export
+tm_g_km.picks <- tm_g_km.default
+
 #' @keywords internal
 ui_g_km_picks <- function(id,
                           arm_var,
