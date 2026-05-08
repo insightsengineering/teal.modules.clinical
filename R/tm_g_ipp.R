@@ -155,9 +155,16 @@ template_g_ipp <- function(dataname = "ANL",
 #' @inheritParams module_arguments
 #' @inheritParams teal::module
 #' @inheritParams template_g_ipp
-#' @inheritParams template_arguments
-#' @param arm_var ([teal.transform::choices_selected()])\cr object with
-#'   all available choices and preselected option for variable values that can be used as arm variable.
+#' @param arm_var ([`teal.picks::variables()`], [`teal.picks::picks()`], or legacy `choices_selected`)\cr
+#'   **Required** (no default, as on `main`). Arm encoding; resolved on `parentname` (typically `ADSL`).
+#'   Legacy inputs are coerced with a deprecation warning.
+#' @param paramcd ([`teal.picks::picks()`] or legacy `choices_selected` from [`teal.transform::value_choices()`])\cr
+#'   **Required** (no default, as on `main`). Parameter code filter: a [`teal.picks::picks()`] with
+#'   [`teal.picks::variables()`] (typically `PARAMCD`) and [`teal.picks::values()`] for levels; legacy
+#'   `choices_selected` inputs are coerced with a deprecation warning.
+#' @param id_var, visit_var, aval_var, avalu_var, baseline_var ([`teal.picks::variables()`],
+#'   [`teal.picks::picks()`], or legacy `choices_selected`)\cr encodings on `dataname`. Legacy inputs are
+#'   coerced with a deprecation warning.
 #'
 #' @inherit module_arguments return seealso
 #'
@@ -219,37 +226,30 @@ template_g_ipp <- function(dataname = "ANL",
 #'     tm_g_ipp(
 #'       label = "Individual Patient Plot",
 #'       dataname = "ADLB",
-#'       arm_var = choices_selected(
-#'         value_choices(ADLB, "ARMCD"),
-#'         "ARM A"
+#'       parentname = "ADSL",
+#'       arm_var = variables(
+#'         choices = c("ARMCD", "ARM"),
+#'         selected = "ARMCD",
+#'         multiple = FALSE
 #'       ),
-#'       paramcd = choices_selected(
-#'         value_choices(ADLB, "PARAMCD"),
-#'         "ALT"
+#'       paramcd = picks(
+#'         datasets("ADLB"),
+#'         variables("PARAMCD", fixed = TRUE),
+#'         values(
+#'           choices = levels(ADLB$PARAMCD),
+#'           selected = "ALT",
+#'           multiple = FALSE
+#'         )
 #'       ),
-#'       aval_var = choices_selected(
-#'         variable_choices(ADLB, c("AVAL", "CHG")),
-#'         "AVAL"
+#'       id_var = variables("USUBJID", fixed = TRUE),
+#'       visit_var = variables("AVISIT", fixed = TRUE),
+#'       aval_var = variables(
+#'         choices = c("AVAL", "CHG"),
+#'         selected = "AVAL",
+#'         multiple = FALSE
 #'       ),
-#'       avalu_var = choices_selected(
-#'         variable_choices(ADLB, c("AVALU")),
-#'         "AVALU",
-#'         fixed = TRUE
-#'       ),
-#'       id_var = choices_selected(
-#'         variable_choices(ADLB, c("USUBJID")),
-#'         "USUBJID",
-#'         fixed = TRUE
-#'       ),
-#'       visit_var = choices_selected(
-#'         variable_choices(ADLB, c("AVISIT")),
-#'         "AVISIT"
-#'       ),
-#'       baseline_var = choices_selected(
-#'         variable_choices(ADLB, c("BASE")),
-#'         "BASE",
-#'         fixed = TRUE
-#'       ),
+#'       avalu_var = variables("AVALU", fixed = TRUE),
+#'       baseline_var = variables("BASE", fixed = TRUE),
 #'       add_baseline_hline = FALSE,
 #'       separate_by_obs = FALSE
 #'     )
@@ -263,13 +263,12 @@ template_g_ipp <- function(dataname = "ANL",
 tm_g_ipp <- function(label,
                      dataname,
                      parentname = "ADSL",
-                     arm_var = teal.picks::variables("ARMCD"),
-                     paramcd_var = teal.picks::variables("PARAMCD"),
-                     paramcd_value = teal.picks::values(multiple = FALSE),
+                     arm_var,
+                     paramcd,
+                     id_var = teal.picks::variables("USUBJID", fixed = TRUE),
+                     visit_var = teal.picks::variables("AVISIT", fixed = TRUE),
                      aval_var = teal.picks::variables("AVAL", fixed = TRUE),
                      avalu_var = teal.picks::variables("AVALU", fixed = TRUE),
-                     id_var = teal.picks::variables("USUBJID", fixed = TRUE),
-                     visit_var = teal.picks::variables("AVISIT"),
                      baseline_var = teal.picks::variables("BASE", fixed = TRUE),
                      add_baseline_hline = FALSE,
                      separate_by_obs = FALSE,
@@ -281,43 +280,20 @@ tm_g_ipp <- function(label,
                      post_output = NULL,
                      ggplot2_args = teal.widgets::ggplot2_args(),
                      transformators = list(),
-                     decorators = list(),
-                     # legacy choices_selected arguments kept for back-compat
-                     paramcd) {
+                     decorators = list()) {
   message("Initializing tm_g_ipp")
 
-  # Compatibility layer: convert choices_selected -> teal.picks
-  for (arg in c("arm_var", "aval_var", "avalu_var", "id_var", "visit_var", "baseline_var")) {
-    if (inherits(get(arg), "choices_selected")) {
-      assign(arg, teal.picks::as.picks(get(arg)))
-    }
-  }
-
-  if (missing(paramcd)) {
-    checkmate::assert_class(paramcd_var, "variables")
-    checkmate::assert_class(paramcd_value, "values")
-    paramcd <- teal.picks::picks(
-      datasets(dataname),
-      variables = paramcd_var, values = paramcd_value
-    )
-  } else {
-    if (!missing(paramcd_var) || !missing(paramcd_value)) {
-      stop("Please provide either `paramcd` or `paramcd_var` with `paramcd_value`, not both.")
-    }
-    checkmate::assert_class(paramcd, "choices_selected")
-    paramcd <- teal.picks::as.picks(paramcd)
-  }
-  # End of compatibility
+  arm_var <- migrate_choices_selected_to_variables(arm_var, arg_name = "arm_var")
+  aval_var <- migrate_choices_selected_to_variables(aval_var, arg_name = "aval_var")
+  avalu_var <- migrate_choices_selected_to_variables(avalu_var, arg_name = "avalu_var")
+  id_var <- migrate_choices_selected_to_variables(id_var, arg_name = "id_var")
+  visit_var <- migrate_choices_selected_to_variables(visit_var, arg_name = "visit_var")
+  baseline_var <- migrate_choices_selected_to_variables(baseline_var, arg_name = "baseline_var")
+  paramcd <- migrate_value_choices_to_picks(paramcd, multiple = FALSE, arg_name = "paramcd")
 
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
-  checkmate::assert_class(arm_var, "variables")
-  checkmate::assert_class(aval_var, "variables")
-  checkmate::assert_class(avalu_var, "variables")
-  checkmate::assert_class(id_var, "variables")
-  checkmate::assert_class(visit_var, "variables")
-  checkmate::assert_class(baseline_var, "variables")
   checkmate::assert_flag(add_baseline_hline)
   checkmate::assert_flag(separate_by_obs)
   checkmate::assert_flag(suppress_legend)
@@ -331,15 +307,15 @@ tm_g_ipp <- function(label,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
-  assert_decorators(decorators, "plot")
+  teal::assert_decorators(decorators, "plot")
 
-  # Build picks objects bound to datasets
-  arm_var <- teal.picks::picks(datasets(parentname), arm_var)
-  aval_var <- teal.picks::picks(datasets(dataname), aval_var)
-  avalu_var <- teal.picks::picks(datasets(dataname), avalu_var)
-  id_var <- teal.picks::picks(datasets(dataname), id_var)
-  visit_var <- teal.picks::picks(datasets(dataname), visit_var)
-  baseline_var <- teal.picks::picks(datasets(dataname), baseline_var)
+  arm_var <- create_picks_helper(teal.picks::datasets(parentname, parentname), arm_var)
+  aval_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), aval_var)
+  avalu_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), avalu_var)
+  id_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), id_var)
+  visit_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), visit_var)
+  baseline_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), baseline_var)
+  paramcd <- create_picks_helper(teal.picks::datasets(dataname, dataname), paramcd)
 
   args <- as.list(environment())
 

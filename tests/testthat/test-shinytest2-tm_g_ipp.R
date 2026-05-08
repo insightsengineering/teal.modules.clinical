@@ -36,12 +36,15 @@ app_driver_tm_g_ipp <- function() {
           teal.picks::variables("ARMCD", fixed = TRUE),
           arm_var_value
         ),
-        paramcd_var = teal.picks::variables("PARAMCD", fixed = TRUE),
-        paramcd_value = paramcd_value,
-        aval_var = teal.picks::variables(c("AVAL", "CHG"), multiple = FALSE),
-        avalu_var = teal.picks::variables("AVALU", fixed = TRUE),
+        paramcd = teal.picks::picks(
+          teal.picks::datasets("ADLB"),
+          teal.picks::variables("PARAMCD", fixed = TRUE),
+          paramcd_value
+        ),
         id_var = teal.picks::variables("USUBJID", fixed = TRUE),
         visit_var = teal.picks::variables(c("AVISIT", "ATOXGR"), multiple = FALSE),
+        aval_var = teal.picks::variables(c("AVAL", "CHG"), multiple = FALSE),
+        avalu_var = teal.picks::variables("AVALU", fixed = TRUE),
         baseline_var = teal.picks::variables("BASE", fixed = TRUE),
         add_baseline_hline = FALSE,
         separate_by_obs = FALSE,
@@ -151,11 +154,11 @@ testthat::test_that("e2e - tm_g_ipp: Deselecting arm_var column throws validatio
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ipp()
   withr::defer(app_driver$stop())
-  set_teal_picks_slot(app_driver, "arm_var", "values", character(0L))
+  set_teal_picks_slot(app_driver, "arm_var", "variables", character(0L))
   testthat::expect_identical(app_driver$get_active_module_plot_output("myplot"), character(0))
   app_driver$expect_validation_error()
   testthat::expect_match(
-    app_driver$get_text(app_driver$namespaces(TRUE)$module("myplot-plot_main")),
+    paste(app_driver$get_text(".shiny-output-error-validation"), collapse = " "),
     "Arm variable is empty.",
     fixed = TRUE
   )
@@ -184,7 +187,7 @@ testthat::test_that("e2e - tm_g_ipp: Deselecting paramcd throws validation error
   testthat::expect_identical(app_driver$get_active_module_plot_output("myplot"), character(0))
   app_driver$expect_validation_error()
   testthat::expect_match(
-    app_driver$get_text(app_driver$namespaces(TRUE)$module("myplot-plot_main")),
+    paste(app_driver$get_text(".shiny-output-error-validation"), collapse = " "),
     "`Select Parameter` field is empty",
     fixed = TRUE
   )
@@ -213,7 +216,7 @@ testthat::test_that("e2e - tm_g_ipp: Deselecting visit_var throws validation err
   testthat::expect_identical(app_driver$get_active_module_plot_output("myplot"), character(0))
   app_driver$expect_validation_error()
   testthat::expect_match(
-    app_driver$get_text(app_driver$namespaces(TRUE)$module("myplot-plot_main")),
+    paste(app_driver$get_text(".shiny-output-error-validation"), collapse = " "),
     "A Timepoint Variable must be selected",
     fixed = TRUE
   )
@@ -242,7 +245,7 @@ testthat::test_that("e2e - tm_g_ipp: Deselecting aval_var throws validation erro
   testthat::expect_identical(app_driver$get_active_module_plot_output("myplot"), character(0))
   app_driver$expect_validation_error()
   testthat::expect_match(
-    app_driver$get_text(app_driver$namespaces(TRUE)$module("myplot-plot_main")),
+    paste(app_driver$get_text(".shiny-output-error-validation"), collapse = " "),
     "A Parameter values over Time must be selected",
     fixed = TRUE
   )

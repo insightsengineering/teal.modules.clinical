@@ -7,22 +7,14 @@
 tm_g_ipp(
   label,
   dataname,
-  parentname = ifelse(inherits(arm_var, "data_extract_spec"),
-    teal.transform::datanames_input(arm_var), "ADSL"),
+  parentname = "ADSL",
   arm_var,
   paramcd,
-  id_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
-    "USUBJID"), "USUBJID", fixed = TRUE),
-  visit_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
-    "AVISIT"), "AVISIT", fixed = TRUE),
-  aval_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
-    "AVAL"), "AVAL", fixed = TRUE),
-  avalu_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
-    "AVALU"), "AVALU", fixed = TRUE),
-  base_var = lifecycle::deprecated(),
-  baseline_var =
-    teal.transform::choices_selected(teal.transform::variable_choices(dataname, "BASE"),
-    "BASE", fixed = TRUE),
+  id_var = teal.picks::variables("USUBJID", fixed = TRUE),
+  visit_var = teal.picks::variables("AVISIT", fixed = TRUE),
+  aval_var = teal.picks::variables("AVAL", fixed = TRUE),
+  avalu_var = teal.picks::variables("AVALU", fixed = TRUE),
+  baseline_var = teal.picks::variables("BASE", fixed = TRUE),
   add_baseline_hline = FALSE,
   separate_by_obs = FALSE,
   suppress_legend = FALSE,
@@ -43,29 +35,15 @@ tm_g_ipp(
 
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
-all available choices and preselected option for variable values that can be used as arm variable.}
+\item{arm_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}, \code{\link[teal.picks:picks]{teal.picks::picks()}}, or legacy \code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr
+\strong{Required} (no default, as on \code{main}). Arm encoding; resolved on \code{parentname} (typically \code{ADSL}).
+Legacy inputs are coerced with a deprecation warning.}
 
-\item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
-available choices and preselected option for the parameter code variable from \code{dataname}.}
+\item{paramcd}{(\code{\link[teal.picks:picks]{teal.picks::picks()}} or legacy \code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} from \code{\link[teal.transform:value_choices]{teal.transform::value_choices()}})\cr
+\strong{Required} (no default, as on \code{main}). Parameter code filter: a \code{\link[teal.picks:picks]{teal.picks::picks()}} with \code{\link[teal.picks:variables]{teal.picks::variables()}} (typically \code{PARAMCD}) and \code{\link[teal.picks:values]{teal.picks::values()}} for levels; legacy \code{choices_selected} inputs are coerced with a deprecation warning.}
 
-\item{id_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object specifying
-the variable name for subject id.}
-
-\item{visit_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
-all available choices and preselected option for variable names that can be used as \code{visit} variable.
-Must be a factor in \code{dataname}.}
-
-\item{aval_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
-all available choices and pre-selected option for the analysis variable.}
-
-\item{avalu_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
-all available choices and preselected option for the analysis unit variable.}
-
-\item{base_var}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use the \code{baseline_var} argument instead.}
-
-\item{baseline_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
-all available choices and preselected option for variable values that can be used as \code{baseline_var}.}
+\item{id_var, visit_var, aval_var, avalu_var, baseline_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}, \code{\link[teal.picks:picks]{teal.picks::picks()}}, or legacy \code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr
+Encodings on \code{dataname}. Legacy inputs are coerced with a deprecation warning.}
 
 \item{add_baseline_hline}{(\code{logical})\cr whether a horizontal line should be added to the plot at baseline y-value.}
 
@@ -182,37 +160,30 @@ app <- init(
     tm_g_ipp(
       label = "Individual Patient Plot",
       dataname = "ADLB",
-      arm_var = choices_selected(
-        value_choices(ADLB, "ARMCD"),
-        "ARM A"
+      parentname = "ADSL",
+      arm_var = variables(
+        choices = c("ARMCD", "ARM"),
+        selected = "ARMCD",
+        multiple = FALSE
       ),
-      paramcd = choices_selected(
-        value_choices(ADLB, "PARAMCD"),
-        "ALT"
+      paramcd = picks(
+        datasets("ADLB"),
+        variables("PARAMCD", fixed = TRUE),
+        values(
+          choices = levels(ADLB$PARAMCD),
+          selected = "ALT",
+          multiple = FALSE
+        )
       ),
-      aval_var = choices_selected(
-        variable_choices(ADLB, c("AVAL", "CHG")),
-        "AVAL"
+      id_var = variables("USUBJID", fixed = TRUE),
+      visit_var = variables("AVISIT", fixed = TRUE),
+      aval_var = variables(
+        choices = c("AVAL", "CHG"),
+        selected = "AVAL",
+        multiple = FALSE
       ),
-      avalu_var = choices_selected(
-        variable_choices(ADLB, c("AVALU")),
-        "AVALU",
-        fixed = TRUE
-      ),
-      id_var = choices_selected(
-        variable_choices(ADLB, c("USUBJID")),
-        "USUBJID",
-        fixed = TRUE
-      ),
-      visit_var = choices_selected(
-        variable_choices(ADLB, c("AVISIT")),
-        "AVISIT"
-      ),
-      baseline_var = choices_selected(
-        variable_choices(ADLB, c("BASE")),
-        "BASE",
-        fixed = TRUE
-      ),
+      avalu_var = variables("AVALU", fixed = TRUE),
+      baseline_var = variables("BASE", fixed = TRUE),
       add_baseline_hline = FALSE,
       separate_by_obs = FALSE
     )
