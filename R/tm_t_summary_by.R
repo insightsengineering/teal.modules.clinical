@@ -565,7 +565,7 @@ ui_summary_by <- function(id,
             label = "Denominator choice",
             choices = denominator$choices,
             selected = denominator$selected,
-            fixed = denominator$fixed
+            fixed = teal.picks::is_pick_fixed(denominator)
           ),
           checkboxGroupInput(
             ns("numeric_stats"),

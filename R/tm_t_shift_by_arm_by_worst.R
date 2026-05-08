@@ -255,7 +255,7 @@ template_shift_by_arm_by_worst <- function(dataname,
 #'         choices = c("WORS01FL", "WORS02FL"),
 #'         selected = "WORS02FL"
 #'       ),
-#'       worst_flag = teal.picks::values(c("Y", "N", ""), "Y", multiple = FALSE),
+#'       worst_flag = values(c("Y", "N", ""), "Y", multiple = FALSE),
 #'       aval_var = variables(choices = c("AVALC", "ANRIND"), selected = "ANRIND"),
 #'       baseline_var = variables(choices = c("BASEC", "BNRIND"), selected = "BNRIND"),
 #'       useNA = "ifany"
