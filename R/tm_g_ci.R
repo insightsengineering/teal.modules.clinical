@@ -188,6 +188,10 @@ template_g_ci <- function(dataname,
 #' @param x_var ([`teal.picks::variables()`], [`teal.picks::picks()`], or legacy `data_extract_spec`)\cr treatment-axis encoding.
 #' @param y_var ([`teal.picks::variables()`], [`teal.picks::picks()`], or legacy `data_extract_spec`)\cr analysis-value encoding.
 #' @param color ([`teal.picks::variables()`], [`teal.picks::picks()`], or legacy `data_extract_spec`)\cr grouping variable for colors, shapes, and line types.
+#' @param paramcd (`NULL` or [`teal.picks::values()`])\cr used only by the `teal.picks`/`variables` methods;
+#'   ignored by the legacy `data_extract_spec` method.
+#' @param avisit (`NULL` or [`teal.picks::values()`])\cr used only by the `teal.picks`/`variables` methods;
+#'   ignored by the legacy `data_extract_spec` method.
 #' @param conf_level (`choices_selected` or `values`, depending on the dispatched method)\cr confidence level control.
 #'
 #' @inherit module_arguments return seealso
@@ -267,7 +271,9 @@ tm_g_ci <- function(label,
                     y_var,
                     color,
                     stat = c("mean", "median"),
-                    conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE)
+                    paramcd = NULL,
+                    avisit = NULL,
+                    conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                     plot_height = c(700L, 200L, 2000L),
                     plot_width = NULL,
                     pre_output = NULL,
@@ -290,6 +296,8 @@ tm_g_ci.default <- function(label,
                             y_var,
                             color,
                             stat = c("mean", "median"),
+                            paramcd = NULL,
+                            avisit = NULL,
                             conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                             plot_height = c(700L, 200L, 2000L),
                             plot_width = NULL,

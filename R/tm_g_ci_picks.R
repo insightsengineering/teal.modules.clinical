@@ -27,6 +27,19 @@ tm_g_ci.picks <- function(label,
                             )
                           ),
                           stat = c("mean", "median"),
+                          paramcd = teal.picks::values(
+                            choices = c("ALT", "CRP", "IGA"),
+                            selected = "ALT",
+                            multiple = FALSE
+                          ),
+                          avisit = teal.picks::values(
+                            choices = c(
+                              "SCREENING", "BASELINE", "WEEK 1 DAY 8", "WEEK 2 DAY 15",
+                              "WEEK 3 DAY 22", "WEEK 4 DAY 29", "WEEK 5 DAY 36"
+                            ),
+                            selected = "SCREENING",
+                            multiple = FALSE
+                          ),
                           conf_level = teal.picks::values(
                             c("0.95", "0.9", "0.8"),
                             selected = "0.95",
@@ -44,25 +57,12 @@ tm_g_ci.picks <- function(label,
   checkmate::assert_string(label)
   x_dataname <- "ADSL"
   y_dataname <- "ADLB"
-  paramcd_value <- teal.picks::values(
-    choices = c("ALT", "CRP", "IGA"),
-    selected = "ALT",
-    multiple = FALSE
-  )
-  avisit_value <- teal.picks::values(
-    choices = c(
-      "SCREENING", "BASELINE", "WEEK 1 DAY 8", "WEEK 2 DAY 15",
-      "WEEK 3 DAY 22", "WEEK 4 DAY 29", "WEEK 5 DAY 36"
-    ),
-    selected = "SCREENING",
-    multiple = FALSE
-  )
 
   checkmate::assert_class(x_var, "picks")
   checkmate::assert_class(y_var, "picks")
   checkmate::assert_class(color, "picks")
-  checkmate::assert_class(paramcd_value, "values")
-  checkmate::assert_class(avisit_value, "values")
+  checkmate::assert_class(paramcd, "values")
+  checkmate::assert_class(avisit, "values")
   checkmate::assert_class(conf_level, "values")
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")
@@ -81,12 +81,12 @@ tm_g_ci.picks <- function(label,
   paramcd_picks <- teal.picks::picks(
     teal.picks::datasets(y_dataname, y_dataname),
     teal.picks::variables("PARAMCD"),
-    paramcd_value
+    paramcd
   )
   avisit_picks <- teal.picks::picks(
     teal.picks::datasets(y_dataname, y_dataname),
     teal.picks::variables("AVISIT"),
-    avisit_value
+    avisit
   )
 
   y_var_picks <- y_var
@@ -125,6 +125,19 @@ tm_g_ci.variables <- function(label,
                                 multiple = FALSE
                               ),
                               stat = c("mean", "median"),
+                              paramcd = teal.picks::values(
+                                choices = c("ALT", "CRP", "IGA"),
+                                selected = "ALT",
+                                multiple = FALSE
+                              ),
+                              avisit = teal.picks::values(
+                                choices = c(
+                                  "SCREENING", "BASELINE", "WEEK 1 DAY 8", "WEEK 2 DAY 15",
+                                  "WEEK 3 DAY 22", "WEEK 4 DAY 29", "WEEK 5 DAY 36"
+                                ),
+                                selected = "SCREENING",
+                                multiple = FALSE
+                              ),
                               conf_level = teal.picks::values(
                                 c("0.95", "0.9", "0.8"),
                                 selected = "0.95",
@@ -143,6 +156,8 @@ tm_g_ci.variables <- function(label,
     y_var = teal.picks::picks(teal.picks::datasets("ADLB"), y_var),
     color = teal.picks::picks(teal.picks::datasets("ADSL"), color),
     stat = stat,
+    paramcd = paramcd,
+    avisit = avisit,
     conf_level = conf_level,
     plot_height = plot_height,
     plot_width = plot_width,
