@@ -2,94 +2,48 @@
 % Please edit documentation in R/tm_g_km.R, R/tm_g_km_picks.R
 \name{tm_g_km}
 \alias{tm_g_km}
-\alias{tm_g_km.choices_selected}
-\alias{tm_g_km.default}
-\alias{tm_g_km.picks}
 \title{teal Module: Kaplan-Meier Plot}
 \usage{
 tm_g_km(
   label,
   dataname,
-  parentname = NULL,
-  arm_var,
-  arm_ref_comp = NULL,
-  paramcd,
-  strata_var,
-  facet_var,
-  time_unit_var,
-  aval_var,
-  cnsr_var,
-  conf_level,
-  conf_type,
-  font_size,
-  xticks = NULL,
-  control_annot_surv_med = tern::control_surv_med_annot(),
-  control_annot_coxph = tern::control_coxph_annot(x = 0.27, y = 0.35, w = 0.3),
-  legend_pos = c(0.9, 0.5),
-  rel_height_plot = c(80L, 0L, 100L),
-  plot_height = c(800L, 400L, 5000L),
-  plot_width = NULL,
-  pre_output = NULL,
-  post_output = NULL,
-  transformators = list(),
-  decorators = list()
-)
-
-\method{tm_g_km}{choices_selected}(
-  label,
-  dataname,
-  parentname = ifelse(inherits(arm_var, "data_extract_spec"),
-    teal.transform::datanames_input(arm_var), "ADSL"),
-  arm_var,
-  arm_ref_comp = NULL,
-  paramcd,
-  strata_var,
-  facet_var,
-  time_unit_var =
-    teal.transform::choices_selected(teal.transform::variable_choices(dataname, "AVALU"),
-    "AVALU", fixed = TRUE),
-  aval_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
-    "AVAL"), "AVAL", fixed = TRUE),
-  cnsr_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
-    "CNSR"), "CNSR", fixed = TRUE),
-  conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order =
-    TRUE),
-  conf_type = teal.transform::choices_selected(c("plain", "log", "log-log"), "plain",
-    TRUE),
-  font_size = c(11L, 1L, 30),
-  xticks = NULL,
-  control_annot_surv_med = tern::control_surv_med_annot(),
-  control_annot_coxph = tern::control_coxph_annot(x = 0.27, y = 0.35, w = 0.3),
-  legend_pos = c(0.9, 0.5),
-  rel_height_plot = c(80L, 0L, 100L),
-  plot_height = c(800L, 400L, 5000L),
-  plot_width = NULL,
-  pre_output = NULL,
-  post_output = NULL,
-  transformators = list(),
-  decorators = list()
-)
-
-\method{tm_g_km}{default}(
-  label,
-  dataname,
   parentname = "ADSL",
-  arm_var = teal.picks::variables(choices = c("ARM", "ARMCD", "ACTARMCD"), selected =
-    "ARM", multiple = FALSE),
+  arm_var = teal.picks::variables(
+    choices = c("ARM", "ARMCD", "ACTARMCD"),
+    selected = "ARM",
+    multiple = FALSE
+  ),
   arm_ref_comp = NULL,
-  paramcd = teal.picks::picks(teal.picks::variables("PARAMCD", fixed = TRUE),
-    teal.picks::values(choices = c("OS", "PFS", "EFS"), selected = "OS", multiple =
-    FALSE), check_dataset = FALSE),
-  strata_var = teal.picks::variables(choices = c("SEX", "BMRKR2"), selected = "SEX",
-    multiple = TRUE),
+  paramcd = teal.picks::picks(
+    teal.picks::variables("PARAMCD", fixed = TRUE),
+    teal.picks::values(
+      choices = c("OS", "PFS", "EFS"),
+      selected = "OS",
+      multiple = FALSE
+    ),
+    check_dataset = FALSE
+  ),
+  strata_var = teal.picks::variables(
+    choices = c("SEX", "BMRKR2"),
+    selected = "SEX",
+    multiple = TRUE
+  ),
   facet_var = NULL,
   time_unit_var = teal.picks::variables("AVALU", fixed = TRUE),
   aval_var = teal.picks::variables("AVAL", fixed = TRUE),
   cnsr_var = teal.picks::variables("CNSR", fixed = TRUE),
-  conf_level = teal.picks::values(c("0.95", "0.9", "0.8"), selected = "0.95", keep_order
-    = TRUE, multiple = FALSE),
-  conf_type = teal.picks::values(c("plain", "log", "log-log"), selected = "plain",
-    keep_order = TRUE, multiple = FALSE),
+  conf_level = teal.picks::values(
+    c("0.95", "0.9", "0.8"),
+    selected = "0.95",
+    keep_order = TRUE,
+    multiple = FALSE
+  ),
+  conf_type = teal.picks::values(
+    c("plain", "log", "log-log"),
+    selected = "plain",
+    keep_order = TRUE,
+    multiple = FALSE
+  ),
   font_size = c(11L, 1L, 30L),
   xticks = NULL,
   control_annot_surv_med = tern::control_surv_med_annot(),
@@ -103,53 +57,17 @@ tm_g_km(
   transformators = list(),
   decorators = list()
 )
-
-\method{tm_g_km}{picks}(
-  label,
-  dataname,
-  parentname = "ADSL",
-  arm_var = teal.picks::variables(choices = c("ARM", "ARMCD", "ACTARMCD"), selected =
-    "ARM", multiple = FALSE),
-  arm_ref_comp = NULL,
-  paramcd = teal.picks::picks(teal.picks::variables("PARAMCD", fixed = TRUE),
-    teal.picks::values(choices = c("OS", "PFS", "EFS"), selected = "OS", multiple =
-    FALSE), check_dataset = FALSE),
-  strata_var = teal.picks::variables(choices = c("SEX", "BMRKR2"), selected = "SEX",
-    multiple = TRUE),
-  facet_var = NULL,
-  time_unit_var = teal.picks::variables("AVALU", fixed = TRUE),
-  aval_var = teal.picks::variables("AVAL", fixed = TRUE),
-  cnsr_var = teal.picks::variables("CNSR", fixed = TRUE),
-  conf_level = teal.picks::values(c("0.95", "0.9", "0.8"), selected = "0.95", keep_order
-    = TRUE, multiple = FALSE),
-  conf_type = teal.picks::values(c("plain", "log", "log-log"), selected = "plain",
-    keep_order = TRUE, multiple = FALSE),
-  font_size = c(11L, 1L, 30L),
-  xticks = NULL,
-  control_annot_surv_med = tern::control_surv_med_annot(),
-  control_annot_coxph = tern::control_coxph_annot(x = 0.27, y = 0.35, w = 0.3),
-  legend_pos = c(0.9, 0.5),
-  rel_height_plot = c(80L, 0L, 100L),
-  plot_height = c(800L, 400L, 5000L),
-  plot_width = NULL,
-  pre_output = NULL,
-  post_output = NULL,
-  transformators = list(),
-  decorators = list()
-)
-}
 \arguments{
 \item{label}{(\code{character})\cr menu item label of the module in the teal app.}
 
 \item{dataname}{(\code{character})\cr analysis data used in teal module.}
 
 \item{parentname}{(\code{character(1)})\cr
-name of the parent dataset (e.g. \code{ADSL}). If \code{NULL} (default) and \code{arm_var} is a
-\code{data_extract_spec}, the name is taken from that spec; otherwise it defaults to \code{"ADSL"}.}
+parent analysis data used in the teal app, usually \code{ADSL}.}
 
 \item{arm_var, paramcd, strata_var, aval_var, cnsr_var, time_unit_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}},
-\code{\link[teal.picks:picks]{teal.picks::picks()}}, or legacy \code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} / \code{value_choices})\cr
-encodings. The class of \code{paramcd} selects the implementation (see Details).}
+\code{\link[teal.picks:picks]{teal.picks::picks()}}, \code{\link[teal.picks:values]{teal.picks::values()}})\cr
+encodings (see Details).}
 
 \item{arm_ref_comp}{(\code{list}) optional,\cr if specified it must be a named list with each element corresponding to
 an arm variable in \code{ADSL} and the element must be another list (possibly
@@ -157,12 +75,12 @@ with delayed \code{\link[teal.transform:variable_choices]{teal.transform::variab
 with the elements named \code{ref} and \code{comp} that the defined the default
 reference and comparison arms when the arm variable is changed.}
 
-\item{facet_var}{(\code{NULL}, \code{\link[teal.picks:variables]{teal.picks::variables()}}, or legacy \code{choices_selected})\cr
+\item{facet_var}{(\code{NULL}, \code{\link[teal.picks:variables]{teal.picks::variables()}}, \code{\link[teal.picks:picks]{teal.picks::picks()}})\cr
 faceting variable(s). The default \code{NULL} is expanded with
 \code{\link[teal.transform:add_no_selected_choices]{teal.transform::add_no_selected_choices()}} (no faceting until the user picks a variable).
 Do not pass \code{\link[teal.picks:variables]{teal.picks::variables()}} with \code{selected} of length 0; use \code{NULL} instead.}
 
-\item{conf_level, conf_type}{(\code{\link[teal.picks:values]{teal.picks::values()}} or legacy \code{choices_selected})\cr
+\item{conf_level, conf_type}{(\code{\link[teal.picks:values]{teal.picks::values()}})\cr
 confidence UI inputs.}
 
 \item{font_size}{(\code{numeric})\cr numeric vector of length 3 of current, minimum and maximum font size values.}
@@ -217,27 +135,9 @@ a \code{teal_module} object.
 This module produces a \code{ggplot}-style Kaplan-Meier plot for data with ADaM structure.
 }
 \details{
-\strong{S3 dispatch} is on \code{arm_var}:
-\itemize{
-\item \code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} for \code{arm_var} keeps the legacy \code{teal.transform}
-data-extract / merge UI (\code{data_extract_spec} objects built from \code{choices_selected} inputs).
-\item other classes use the picks merge/UI path; other encoding arguments
-may still be legacy \code{choices_selected} / \code{value_choices} and are coerced with the \verb{migrate_*}
-helpers (with deprecation warnings where applicable) before the module is built.
+Encoding arguments use \code{\link[teal.picks:variables]{teal.picks}} (\code{variables()}, \code{picks()},
+\code{\link[teal.picks:values]{teal.picks::values()}}, etc.).
 }
-
-\code{parentname} is the parent dataset name (\code{character(1)}, e.g. \code{ADSL}).
-}
-\section{Methods (by class)}{
-\itemize{
-\item \code{tm_g_km(choices_selected)}: Legacy \code{\link[teal.transform:teal.transform]{teal.transform}} data-extract implementation when \code{paramcd} is
-\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}}.
-
-\item \code{tm_g_km(default)}: Default implementation for picks-style encodings.
-
-\item \code{tm_g_km(picks)}: Backward-compatible picks-specific S3 method.
-
-}}
 \section{Decorating Module}{
 
 

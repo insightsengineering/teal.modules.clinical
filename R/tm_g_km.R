@@ -252,28 +252,9 @@ template_g_km <- function(dataname = "ANL",
 #'   for the x-axis. If `NULL` (default), users can specify this interactively in the module.
 #'   If provided, the interactive input field is pre-populated with the specified values as a default.
 #'   Users can then modify these values interactively, and their changes will take precedence over the default.
-#' @param parentname (`character(1)`)\cr
-#'   name of the parent dataset (e.g. `ADSL`). If `NULL` (default) and `arm_var` is a
-#'   `data_extract_spec`, the name is taken from that spec; otherwise it defaults to `"ADSL"`.
-#' @param arm_var,paramcd,strata_var,aval_var,cnsr_var,time_unit_var ([`teal.picks::variables()`],
-#'   [`teal.picks::picks()`], or legacy [`teal.transform::choices_selected()`] / `value_choices`)\cr
-#'   encodings. The class of `paramcd` selects the implementation (see Details).
-#' @param facet_var (`NULL`, [`teal.picks::variables()`], or legacy `choices_selected`)\cr
-#'   faceting variable(s). The default `NULL` is expanded with
-#'   [`teal.transform::add_no_selected_choices()`] (no faceting until the user picks a variable).
-#'   Do not pass [`teal.picks::variables()`] with `selected` of length 0; use `NULL` instead.
-#' @param conf_level,conf_type ([`teal.picks::values()`] or legacy `choices_selected`)\cr
-#'   confidence UI inputs.
 #'
 #' @details
-#' **S3 dispatch** is on `arm_var`:
-#' - [`teal.transform::choices_selected()`] for `arm_var` keeps the legacy `teal.transform`
-#'   data-extract / merge UI (`data_extract_spec` objects built from `choices_selected` inputs).
-#' - other classes use the picks merge/UI path; other encoding arguments
-#'   may still be legacy `choices_selected` / `value_choices` and are coerced with the `migrate_*`
-#'   helpers (with deprecation warnings where applicable) before the module is built.
-#'
-#' `parentname` is the parent dataset name (`character(1)`, e.g. `ADSL`).
+#' Encoding arguments use [`teal.picks`] (`variables()`, `picks()`, [`teal.picks::values()`], etc.).
 #'
 #' @inherit module_arguments return seealso
 #'
@@ -375,52 +356,47 @@ template_g_km <- function(dataname = "ANL",
 #'   shinyApp(app$ui, app$server)
 #' }
 #'
-#' \donttest{
-#' # Legacy `choices_selected` for `paramcd` (uses `teal.transform` data-extract UI):
-#' app <- init(
-#'   data = data,
-#'   modules = modules(
-#'     tm_g_km(
-#'       label = "Kaplan-Meier Plot",
-#'       dataname = "ADTTE",
-#'       arm_var = choices_selected(
-#'         variable_choices(ADSL, c("ARM", "ARMCD", "ACTARMCD")),
-#'         "ARM"
-#'       ),
-#'       paramcd = choices_selected(
-#'         value_choices(ADTTE, "PARAMCD", "PARAM"),
-#'         "OS"
-#'       ),
-#'       arm_ref_comp = arm_ref_comp,
-#'       strata_var = choices_selected(
-#'         variable_choices(ADSL, c("SEX", "BMRKR2")),
-#'         "SEX"
-#'       ),
-#'       facet_var = choices_selected(
-#'         variable_choices(ADSL, c("SEX", "BMRKR2")),
-#'         NULL
-#'       ),
-#'       xticks = c(0, 30, 60, 90, 120, 150, 180)
-#'     )
-#'   )
-#' )
-#' }
-#'
 #' @export
 tm_g_km <- function(label,
                     dataname,
-                    parentname = NULL,
-                    arm_var,
+                    parentname = "ADSL",
+                    arm_var = teal.picks::variables(
+                      choices = c("ARM", "ARMCD", "ACTARMCD"),
+                      selected = "ARM",
+                      multiple = FALSE
+                    ),
                     arm_ref_comp = NULL,
-                    paramcd,
-                    strata_var,
-                    facet_var,
-                    time_unit_var,
-                    aval_var,
-                    cnsr_var,
-                    conf_level,
-                    conf_type,
-                    font_size,
+                    paramcd = teal.picks::picks(
+                      teal.picks::variables("PARAMCD", fixed = TRUE),
+                      teal.picks::values(
+                        choices = c("OS", "PFS", "EFS"),
+                        selected = "OS",
+                        multiple = FALSE
+                      ),
+                      check_dataset = FALSE
+                    ),
+                    strata_var = teal.picks::variables(
+                      choices = c("SEX", "BMRKR2"),
+                      selected = "SEX",
+                      multiple = TRUE
+                    ),
+                    facet_var = NULL,
+                    time_unit_var = teal.picks::variables("AVALU", fixed = TRUE),
+                    aval_var = teal.picks::variables("AVAL", fixed = TRUE),
+                    cnsr_var = teal.picks::variables("CNSR", fixed = TRUE),
+                    conf_level = teal.picks::values(
+                      c("0.95", "0.9", "0.8"),
+                      selected = "0.95",
+                      keep_order = TRUE,
+                      multiple = FALSE
+                    ),
+                    conf_type = teal.picks::values(
+                      c("plain", "log", "log-log"),
+                      selected = "plain",
+                      keep_order = TRUE,
+                      multiple = FALSE
+                    ),
+                    font_size = c(11L, 1L, 30L),
                     xticks = NULL,
                     control_annot_surv_med = tern::control_surv_med_annot(),
                     control_annot_coxph = tern::control_coxph_annot(x = 0.27, y = 0.35, w = 0.3),
@@ -433,64 +409,17 @@ tm_g_km <- function(label,
                     transformators = list(),
                     decorators = list()) {
   message("Initializing tm_g_km")
-  UseMethod("tm_g_km", arm_var)
-}
-
-
-#' @describeIn tm_g_km Legacy [`teal.transform`] data-extract implementation when `paramcd` is
-#'   [`teal.transform::choices_selected()`].
-#' @keywords internal
-#' @export
-tm_g_km.choices_selected <- function(label,
-                    dataname,
-                    parentname = ifelse(
-                      inherits(arm_var, "data_extract_spec"),
-                      teal.transform::datanames_input(arm_var),
-                      "ADSL"
-                    ),
-                    arm_var,
-                    arm_ref_comp = NULL,
-                    paramcd,
-                    strata_var,
-                    facet_var,
-                    time_unit_var = teal.transform::choices_selected(
-                      teal.transform::variable_choices(dataname, "AVALU"), "AVALU",
-                      fixed = TRUE
-                    ),
-                    aval_var = teal.transform::choices_selected(
-                      teal.transform::variable_choices(dataname, "AVAL"), "AVAL",
-                      fixed = TRUE
-                    ),
-                    cnsr_var = teal.transform::choices_selected(
-                      teal.transform::variable_choices(dataname, "CNSR"), "CNSR",
-                      fixed = TRUE
-                    ),
-                    conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
-                    conf_type = teal.transform::choices_selected(c("plain", "log", "log-log"), "plain", TRUE),
-                    font_size = c(11L, 1L, 30),
-                    xticks = NULL,
-                    control_annot_surv_med = tern::control_surv_med_annot(),
-                    control_annot_coxph = tern::control_coxph_annot(x = 0.27, y = 0.35, w = 0.3),
-                    legend_pos = c(0.9, 0.5),
-                    rel_height_plot = c(80L, 0L, 100L),
-                    plot_height = c(800L, 400L, 5000L),
-                    plot_width = NULL,
-                    pre_output = NULL,
-                    post_output = NULL,
-                    transformators = list(),
-                    decorators = list()) {
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
+
+  if (is.null(facet_var)) {
+    facet_var <- teal.picks::picks(
+      teal.picks::datasets(parentname, parentname),
+      teal.picks::variables(c("SEX", "BMRKR2"), NULL, multiple = FALSE)
+    )
+  }
+
   checkmate::assert_string(parentname)
-  checkmate::assert_class(arm_var, "choices_selected")
-  checkmate::assert_class(paramcd, "choices_selected")
-  checkmate::assert_class(strata_var, "choices_selected")
-  checkmate::assert_class(facet_var, "choices_selected")
-  checkmate::assert_class(time_unit_var, "choices_selected")
-  checkmate::assert_class(aval_var, "choices_selected")
-  checkmate::assert_class(cnsr_var, "choices_selected")
-  checkmate::assert_class(conf_level, "choices_selected")
-  checkmate::assert_class(conf_type, "choices_selected")
   checkmate::assert_numeric(xticks, null.ok = TRUE)
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")
@@ -503,468 +432,24 @@ tm_g_km.choices_selected <- function(label,
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   teal::assert_decorators(decorators, "plot")
 
+  arm_var <- create_picks_helper(teal.picks::datasets(parentname, parentname), arm_var)
+  strata_var <- create_picks_helper(teal.picks::datasets(parentname, parentname), strata_var)
+  facet_var <- create_picks_helper(teal.picks::datasets(parentname, parentname), facet_var)
+  aval_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), aval_var)
+  cnsr_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), cnsr_var)
+  time_unit_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), time_unit_var)
+  paramcd <- create_picks_helper(teal.picks::datasets(dataname, dataname), paramcd)
+
   args <- as.list(environment())
-  data_extract_list <- list(
-    arm_var = cs_to_des_select(arm_var, dataname = parentname),
-    paramcd = cs_to_des_filter(paramcd, dataname = dataname),
-    strata_var = cs_to_des_select(strata_var, dataname = parentname, multiple = TRUE),
-    facet_var = cs_to_des_select(facet_var, dataname = parentname, multiple = FALSE),
-    aval_var = cs_to_des_select(aval_var, dataname = dataname),
-    cnsr_var = cs_to_des_select(cnsr_var, dataname = dataname),
-    time_unit_var = cs_to_des_select(time_unit_var, dataname = dataname)
-  )
 
   module(
     label = label,
-    server = srv_g_km,
-    ui = ui_g_km,
-    ui_args = c(data_extract_list, args),
-    server_args = c(
-      data_extract_list,
-      list(
-        dataname = dataname,
-        label = label,
-        parentname = parentname,
-        arm_ref_comp = arm_ref_comp,
-        plot_height = plot_height,
-        plot_width = plot_width,
-        xticks = xticks,
-        control_annot_surv_med = control_annot_surv_med,
-        control_annot_coxph = control_annot_coxph,
-        legend_pos = legend_pos,
-        decorators = decorators
-      )
-    ),
+    server = srv_g_km_picks,
+    ui = ui_g_km_picks,
+    ui_args = args[names(args) %in% names(formals(ui_g_km_picks))],
+    server_args = args[names(args) %in% names(formals(srv_g_km_picks))],
     transformators = transformators,
-    datanames = teal.transform::get_extract_datanames(data_extract_list)
+    datanames = c(dataname, parentname)
   )
-}
-
-#' @keywords internal
-ui_g_km <- function(id, ...) {
-  a <- list(...)
-  is_single_dataset_value <- teal.transform::is_single_dataset(
-    a$arm_var,
-    a$paramcd,
-    a$strata_var,
-    a$facet_var,
-    a$aval_var,
-    a$cnsr_var,
-    a$time_unit_var
-  )
-
-  ns <- NS(id)
-
-  teal.widgets::standard_layout(
-    output = teal.widgets::white_small_well(
-      verbatimTextOutput(outputId = ns("text")),
-      teal.widgets::plot_with_settings_ui(
-        id = ns("myplot")
-      )
-    ),
-    encoding = tags$div(
-      tags$label("Encodings", class = "text-primary"), tags$br(),
-      teal.transform::datanames_input(a[c("arm_var", "paramcd", "strata_var", "facet_var", "aval_var", "cnsr_var")]),
-      teal.transform::data_extract_ui(
-        id = ns("paramcd"),
-        label = "Select Endpoint",
-        data_extract_spec = a$paramcd,
-        is_single_dataset = is_single_dataset_value
-      ),
-      teal.transform::data_extract_ui(
-        id = ns("aval_var"),
-        label = "Analysis Variable",
-        data_extract_spec = a$aval_var,
-        is_single_dataset = is_single_dataset_value
-      ),
-      teal.transform::data_extract_ui(
-        id = ns("cnsr_var"),
-        label = "Censor Variable",
-        data_extract_spec = a$cnsr_var,
-        is_single_dataset = is_single_dataset_value
-      ),
-      teal.transform::data_extract_ui(
-        id = ns("facet_var"),
-        label = "Facet Plots by",
-        data_extract_spec = a$facet_var,
-        is_single_dataset = is_single_dataset_value
-      ),
-      teal.transform::data_extract_ui(
-        id = ns("arm_var"),
-        label = "Select Treatment Variable",
-        data_extract_spec = a$arm_var,
-        is_single_dataset = is_single_dataset_value
-      ),
-      tags$div(
-        class = "arm-comp-box",
-        bslib::input_switch(
-          id = ns("compare_arms"),
-          label = "Compare Treatments",
-          value = !is.null(a$arm_ref_comp)
-        ),
-        conditionalPanel(
-          condition = paste0("input['", ns("compare_arms"), "']"),
-          tags$div(
-            uiOutput(
-              ns("arms_buckets"),
-              title = paste(
-                "Multiple reference groups are automatically combined into a single group when more than one",
-                "value is selected."
-              )
-            ),
-            checkboxInput(
-              ns("combine_comp_arms"),
-              "Combine all comparison groups?",
-              value = FALSE
-            ),
-            teal.transform::data_extract_ui(
-              id = ns("strata_var"),
-              label = "Stratify by",
-              data_extract_spec = a$strata_var,
-              is_single_dataset = is_single_dataset_value
-            )
-          )
-        )
-      ),
-      teal::ui_transform_teal_data(ns("decorator"), transformators = select_decorators(a$decorators, "plot")),
-      conditionalPanel(
-        condition = paste0("input['", ns("compare_arms"), "']"),
-        bslib::accordion(
-          open = TRUE,
-          bslib::accordion_panel(
-            title = "Comparison settings",
-            radioButtons(
-              ns("pval_method_coxph"),
-              label = HTML(
-                paste(
-                  "p-value method for ",
-                  tags$span(class = "text-primary", "Coxph"),
-                  " (Hazard Ratio)",
-                  sep = ""
-                )
-              ),
-              choices = c("wald", "log-rank", "likelihood"),
-              selected = "log-rank"
-            ),
-            radioButtons(
-              ns("ties_coxph"),
-              label = HTML(
-                paste(
-                  "Ties for ",
-                  tags$span(class = "text-primary", "Coxph"),
-                  " (Hazard Ratio)",
-                  sep = ""
-                )
-              ),
-              choices = c("exact", "breslow", "efron"),
-              selected = "exact"
-            )
-          )
-        )
-      ),
-      bslib::accordion(
-        open = FALSE,
-        bslib::accordion_panel(
-          title = "Additional plot settings",
-          textInput(
-            inputId = ns("xticks"),
-            label = "Specify break intervals for x-axis e.g. 0 ; 500",
-            value = if (!is.null(a$xticks)) {
-              paste(a$xticks, collapse = " ; ")
-            }
-          ),
-          radioButtons(
-            ns("yval"),
-            tags$label("Value on y-axis", class = "text-primary"),
-            choices = c("Survival probability", "Failure probability"),
-            selected = c("Survival probability"),
-          ),
-          teal.widgets::optionalSliderInput(
-            ns("ylim"),
-            tags$label("y-axis limits", class = "text-primary"),
-            value = c(0, 1),
-            min = 0, max = 1
-          ),
-          teal.widgets::optionalSliderInputValMinMax(
-            ns("font_size"),
-            "Table Font Size",
-            a$font_size,
-            ticks = FALSE, step = 1
-          ),
-          teal.widgets::optionalSliderInputValMinMax(
-            ns("rel_height_plot"),
-            "Relative Height of Plot (%)",
-            a$rel_height_plot,
-            ticks = FALSE, step = 1
-          ),
-          checkboxInput(
-            inputId = ns("show_ci_ribbon"),
-            label = "Show CI ribbon",
-            value = FALSE,
-            width = "100%"
-          ),
-          checkboxInput(
-            inputId = ns("show_km_table"),
-            label = "Show KM table",
-            value = TRUE,
-            width = "100%"
-          ),
-          teal.widgets::optionalSelectInput(
-            ns("conf_level"),
-            "Level of Confidence",
-            a$conf_level$choices,
-            a$conf_level$selected,
-            multiple = FALSE,
-            fixed = a$conf_level$fixed
-          ),
-          teal.widgets::optionalSelectInput(
-            ns("conf_type"),
-            "Confidence Interval Type",
-            a$conf_type$choices,
-            a$conf_type$selected,
-            multiple = FALSE,
-            fixed = a$conf_type$fixed
-          ),
-          textInput(ns("xlab"), "X-axis label", "Time"),
-          teal.transform::data_extract_ui(
-            id = ns("time_unit_var"),
-            label = "Time Unit Variable",
-            data_extract_spec = a$time_unit_var,
-            is_single_dataset = is_single_dataset_value
-          )
-        )
-      )
-    ),
-    pre_output = a$pre_output,
-    post_output = a$post_output
-  )
-}
-
-#' @keywords internal
-srv_g_km <- function(id,
-                     data,
-                     dataname,
-                     parentname,
-                     paramcd,
-                     arm_var,
-                     arm_ref_comp,
-                     strata_var,
-                     facet_var,
-                     aval_var,
-                     cnsr_var,
-                     label,
-                     time_unit_var,
-                     plot_height,
-                     plot_width,
-                     xticks,
-                     control_annot_surv_med,
-                     control_annot_coxph,
-                     legend_pos,
-                     decorators) {
-  checkmate::assert_class(data, "reactive")
-  checkmate::assert_class(isolate(data()), "teal_data")
-
-  moduleServer(id, function(input, output, session) {
-    teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
-    # Setup arm variable selection, default reference arms and default
-    # comparison arms for encoding panel
-    iv_arm_ref <- arm_ref_comp_observer(
-      session,
-      input,
-      output,
-      id_arm_var = extract_input("arm_var", parentname),
-      data = data()[[parentname]],
-      arm_ref_comp = arm_ref_comp,
-      module = "tm_t_tte",
-      on_off = reactive(input$compare_arms)
-    )
-
-    selector_list <- teal.transform::data_extract_multiple_srv(
-      data_extract = list(
-        aval_var = aval_var,
-        cnsr_var = cnsr_var,
-        arm_var = arm_var,
-        paramcd = paramcd,
-        strata_var = strata_var,
-        facet_var = facet_var,
-        time_unit_var = time_unit_var
-      ),
-      datasets = data,
-      select_validation_rule = list(
-        aval_var = shinyvalidate::sv_required("An analysis variable is required"),
-        cnsr_var = shinyvalidate::sv_required("A censor variable is required"),
-        arm_var = shinyvalidate::sv_required("A treatment variable is required")
-      ),
-      filter_validation_rule = list(
-        paramcd = shinyvalidate::sv_required("An endpoint is required")
-      )
-    )
-
-    iv_r <- reactive({
-      iv <- shinyvalidate::InputValidator$new()
-
-      if (isTRUE(input$compare_arms)) {
-        iv$add_validator(iv_arm_ref)
-      }
-
-      iv$add_rule("font_size", shinyvalidate::sv_required("Plot tables font size must be greater than or equal to 5"))
-      iv$add_rule("font_size", shinyvalidate::sv_gte(5, "Plot tables font size must be greater than or equal to 5"))
-      iv$add_rule("ylim", shinyvalidate::sv_required("Please choose a range for y-axis limits"))
-      iv$add_rule("conf_level", shinyvalidate::sv_required("Please choose a confidence level"))
-      iv$add_rule("conf_type", shinyvalidate::sv_required("Please choose a confidence interval type"))
-      iv$add_rule(
-        "conf_level",
-        shinyvalidate::sv_between(
-          0, 1,
-          inclusive = c(FALSE, FALSE),
-          message_fmt = "Confidence level must be between 0 and 1"
-        )
-      )
-      iv$add_rule(
-        "conf_type",
-        shinyvalidate::sv_in_set(
-          c("plain", "log", "log-log"),
-          message_fmt = "Confidence interval type must be one of {values_text}."
-        )
-      )
-      iv$add_rule("xticks", shinyvalidate::sv_optional())
-      iv$add_rule(
-        "xticks",
-        function(value) {
-          val <- as_numeric_from_comma_sep_str(value, sep = ";")
-          if (anyNA(val) || any(val < 0)) {
-            "All break intervals for x-axis must be non-negative numbers separated by semicolons"
-          } else if (all(val == 0)) {
-            "At least one break interval for x-axis must be > 0"
-          }
-        }
-      )
-      teal.transform::compose_and_enable_validators(iv, selector_list)
-    })
-
-    anl_inputs <- teal.transform::merge_expression_srv(
-      datasets = data,
-      selector_list = selector_list,
-      merge_function = "dplyr::inner_join"
-    )
-
-    anl_q <- reactive({
-      obj <- data()
-      teal.reporter::teal_card(obj) <-
-        c(
-          teal.reporter::teal_card(obj),
-          teal.reporter::teal_card("## Module's output(s)")
-        )
-      obj %>% teal.code::eval_code(code = as.expression(anl_inputs()$expr))
-    })
-
-    validate_checks <- reactive({
-      teal::validate_inputs(iv_r())
-
-      adsl_filtered <- anl_q()[[parentname]]
-      anl_filtered <- anl_q()[[dataname]]
-
-      anl_m <- anl_inputs()
-      input_arm_var <- as.vector(anl_m$columns_source$arm_var)
-      input_strata_var <- as.vector(anl_m$columns_source$strata_var)
-      input_facet_var <- as.vector(anl_m$columns_source$facet_var)
-      input_aval_var <- as.vector(anl_m$columns_source$aval_var)
-      input_cnsr_var <- as.vector(anl_m$columns_source$cnsr_var)
-      input_paramcd <- as.vector(anl_m$columns_source$paramcd)
-      input_time_unit_var <- as.vector(anl_m$columns_source$time_unit_var)
-
-      # validate inputs
-      validate_args <- list(
-        adsl = adsl_filtered,
-        adslvars = c("USUBJID", "STUDYID", input_arm_var, input_strata_var, input_facet_var),
-        anl = anl_filtered,
-        anlvars = c("USUBJID", "STUDYID", input_paramcd, input_aval_var, input_cnsr_var, input_time_unit_var),
-        arm_var = input_arm_var
-      )
-
-      # validate arm levels
-      if (length(input_arm_var) > 0 && length(unique(adsl_filtered[[input_arm_var]])) == 1) {
-        validate_args <- append(validate_args, list(min_n_levels_armvar = NULL))
-      }
-      if (isTRUE(input$compare_arms)) {
-        validate_args <- append(
-          validate_args,
-          list(ref_arm = unlist(input$buckets$Ref), comp_arm = unlist(input$buckets$Comp))
-        )
-      }
-      do.call(what = "validate_standard_inputs", validate_args)
-
-      NULL
-    })
-
-    all_q <- reactive({
-      validate_checks()
-
-      anl_m <- anl_inputs()
-
-      anl <- anl_q()[["ANL"]]
-      teal::validate_has_data(anl, 2)
-
-      input_xticks <- if (!is.null(input$xticks)) {
-        as_numeric_from_comma_sep_str(input$xticks, sep = ";")
-      }
-
-      input_paramcd <- as.character(unique(anl[[as.vector(anl_m$columns_source$paramcd)]]))
-      title <- paste("KM Plot of", input_paramcd)
-
-      my_calls <- template_g_km(
-        dataname = "ANL",
-        arm_var = as.vector(anl_m$columns_source$arm_var),
-        ref_arm = unlist(input$buckets$Ref),
-        comp_arm = unlist(input$buckets$Comp),
-        compare_arm = input$compare_arms,
-        combine_comp_arms = input$combine_comp_arms,
-        aval_var = as.vector(anl_m$columns_source$aval_var),
-        cnsr_var = as.vector(anl_m$columns_source$cnsr_var),
-        strata_var = as.vector(anl_m$columns_source$strata_var),
-        time_points = NULL,
-        time_unit_var = as.vector(anl_m$columns_source$time_unit_var),
-        facet_var = as.vector(anl_m$columns_source$facet_var),
-        annot_surv_med = input$show_km_table,
-        annot_coxph = input$compare_arms,
-        control_annot_surv_med = control_annot_surv_med,
-        control_annot_coxph = control_annot_coxph,
-        legend_pos = legend_pos,
-        xticks = input_xticks,
-        font_size = input$font_size,
-        pval_method = input$pval_method_coxph,
-        conf_level = as.numeric(input$conf_level),
-        conf_type = input$conf_type,
-        ties = input$ties_coxph,
-        xlab = input$xlab,
-        yval = ifelse(input$yval == "Survival probability", "Survival", "Failure"),
-        ylim = input$ylim,
-        rel_height_plot = input$rel_height_plot / 100,
-        ci_ribbon = input$show_ci_ribbon,
-        title = title
-      )
-      obj <- anl_q()
-      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "### Plot")
-      teal.code::eval_code(obj, as.expression(unlist(my_calls)))
-    })
-
-    decorated_all_q <- teal::srv_transform_teal_data(
-      id = "decorator",
-      data = all_q,
-      transformators = select_decorators(decorators, "plot"),
-      expr = quote(plot)
-    )
-    plot_r <- reactive(decorated_all_q()[["plot"]])
-
-    # Insert the plot into a plot with settings module from teal.widgets
-    pws <- teal.widgets::plot_with_settings_srv(
-      id = "myplot",
-      plot_r = plot_r,
-      height = plot_height,
-      width = plot_width
-    )
-
-    set_chunk_dims(pws, decorated_all_q)
-  })
 }
 
