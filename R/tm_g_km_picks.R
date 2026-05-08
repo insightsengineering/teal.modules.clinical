@@ -1,6 +1,7 @@
 #' @describeIn tm_g_km Default implementation for picks-style encodings.
 #'
 #' @keywords internal
+#' @export
 tm_g_km.default <- function(label,
                           dataname,
                           parentname = "ADSL",
