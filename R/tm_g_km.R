@@ -440,6 +440,7 @@ tm_g_km <- function(label,
 #' @describeIn tm_g_km Legacy [`teal.transform`] data-extract implementation when `paramcd` is
 #'   [`teal.transform::choices_selected()`].
 #' @keywords internal
+#' @export
 tm_g_km.choices_selected <- function(label,
                     dataname,
                     parentname = ifelse(
