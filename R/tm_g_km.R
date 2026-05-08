@@ -356,7 +356,7 @@ template_g_km <- function(dataname = "ANL",
 #'         datasets("ADTTE"),
 #'         variables("PARAMCD", fixed = TRUE),
 #'         values(
-#'           choices = sort(unique(as.character(ADTTE$PARAMCD))),
+#'           choices = unique(ADTTE$PARAMCD),
 #'           selected = "OS",
 #'           multiple = FALSE
 #'         )
