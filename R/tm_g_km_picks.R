@@ -1,7 +1,7 @@
-#' @describeIn tm_g_km [`teal.picks`] implementation when `paramcd` is [`teal.picks::picks()`].
+#' @describeIn tm_g_km Default implementation for picks-style encodings.
 #'
 #' @keywords internal
-tm_g_km.picks <- function(label,
+tm_g_km.default <- function(label,
                           dataname,
                           parentname = NULL,
                           arm_var = teal.picks::variables(

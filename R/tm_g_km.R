@@ -967,37 +967,3 @@ srv_g_km <- function(id,
   })
 }
 
-#' @describeIn tm_g_km Unsupported `paramcd` class.
-#' @keywords internal
-tm_g_km.default <- function(label,
-                            dataname,
-                            parentname = NULL,
-                            arm_var,
-                            arm_ref_comp = NULL,
-                            paramcd,
-                            strata_var,
-                            facet_var,
-                            time_unit_var,
-                            aval_var,
-                            cnsr_var,
-                            conf_level,
-                            conf_type,
-                            font_size,
-                            xticks = NULL,
-                            control_annot_surv_med = tern::control_surv_med_annot(),
-                            control_annot_coxph = tern::control_coxph_annot(x = 0.27, y = 0.35, w = 0.3),
-                            legend_pos = c(0.9, 0.5),
-                            rel_height_plot = c(80L, 0L, 100L),
-                            plot_height = c(800L, 400L, 5000L),
-                            plot_width = NULL,
-                            pre_output = NULL,
-                            post_output = NULL,
-                            transformators = list(),
-                            decorators = list()) {
-  stop(
-    "Unsupported class for `paramcd`: ", paste(class(paramcd), collapse = "/"),
-    ". Use `teal.transform::choices_selected()` (legacy data-extract UI) or ",
-    "`teal.picks::picks()` (picks UI).",
-    call. = FALSE
-  )
-}
