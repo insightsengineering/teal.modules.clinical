@@ -64,7 +64,6 @@ tm_g_km.default <- function(label,
 
   arm_var <- migrate_choices_selected_to_variables(arm_var, arg_name = "arm_var")
   strata_var <- migrate_choices_selected_to_variables(strata_var, arg_name = "strata_var", multiple = TRUE)
-  facet_var <- migrate_choices_selected_to_variables(facet_var, arg_name = "facet_var")
   aval_var <- migrate_choices_selected_to_variables(aval_var, arg_name = "aval_var")
   cnsr_var <- migrate_choices_selected_to_variables(cnsr_var, arg_name = "cnsr_var")
   time_unit_var <- migrate_choices_selected_to_variables(time_unit_var, arg_name = "time_unit_var")
