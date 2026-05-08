@@ -8,42 +8,22 @@ tm_g_km(
   label,
   dataname,
   parentname = "ADSL",
-  arm_var = teal.picks::variables(
-    choices = c("ARM", "ARMCD", "ACTARMCD"),
-    selected = "ARM",
-    multiple = FALSE
-  ),
+  arm_var = teal.picks::variables(choices = c("ARM", "ARMCD", "ACTARMCD"), selected =
+    "ARM", multiple = FALSE),
   arm_ref_comp = NULL,
-  paramcd = teal.picks::picks(
-    teal.picks::variables("PARAMCD", fixed = TRUE),
-    teal.picks::values(
-      choices = c("OS", "PFS", "EFS"),
-      selected = "OS",
-      multiple = FALSE
-    ),
-    check_dataset = FALSE
-  ),
-  strata_var = teal.picks::variables(
-    choices = c("SEX", "BMRKR2"),
-    selected = "SEX",
-    multiple = TRUE
-  ),
+  paramcd = teal.picks::picks(teal.picks::variables("PARAMCD", fixed = TRUE),
+    teal.picks::values(choices = c("OS", "PFS", "EFS"), selected = "OS", multiple =
+    FALSE), check_dataset = FALSE),
+  strata_var = teal.picks::variables(choices = c("SEX", "BMRKR2"), selected = "SEX",
+    multiple = TRUE),
   facet_var = NULL,
   time_unit_var = teal.picks::variables("AVALU", fixed = TRUE),
   aval_var = teal.picks::variables("AVAL", fixed = TRUE),
   cnsr_var = teal.picks::variables("CNSR", fixed = TRUE),
-  conf_level = teal.picks::values(
-    c("0.95", "0.9", "0.8"),
-    selected = "0.95",
-    keep_order = TRUE,
-    multiple = FALSE
-  ),
-  conf_type = teal.picks::values(
-    c("plain", "log", "log-log"),
-    selected = "plain",
-    keep_order = TRUE,
-    multiple = FALSE
-  ),
+  conf_level = teal.picks::values(c("0.95", "0.9", "0.8"), selected = "0.95", keep_order
+    = TRUE, multiple = FALSE),
+  conf_type = teal.picks::values(c("plain", "log", "log-log"), selected = "plain",
+    keep_order = TRUE, multiple = FALSE),
   font_size = c(11L, 1L, 30L),
   xticks = NULL,
   control_annot_surv_med = tern::control_surv_med_annot(),
@@ -57,17 +37,17 @@ tm_g_km(
   transformators = list(),
   decorators = list()
 )
+}
 \arguments{
 \item{label}{(\code{character})\cr menu item label of the module in the teal app.}
 
 \item{dataname}{(\code{character})\cr analysis data used in teal module.}
 
-\item{parentname}{(\code{character(1)})\cr
-parent analysis data used in the teal app, usually \code{ADSL}.}
+\item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var, paramcd, strata_var, aval_var, cnsr_var, time_unit_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}},
-\code{\link[teal.picks:picks]{teal.picks::picks()}}, \code{\link[teal.picks:values]{teal.picks::values()}})\cr
-encodings (see Details).}
+\item{arm_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
+available choices and preselected option for variable names that can be used as \code{arm_var}.
+It defines the grouping variable in the results table.}
 
 \item{arm_ref_comp}{(\code{list}) optional,\cr if specified it must be a named list with each element corresponding to
 an arm variable in \code{ADSL} and the element must be another list (possibly
@@ -75,13 +55,28 @@ with delayed \code{\link[teal.transform:variable_choices]{teal.transform::variab
 with the elements named \code{ref} and \code{comp} that the defined the default
 reference and comparison arms when the arm variable is changed.}
 
-\item{facet_var}{(\code{NULL}, \code{\link[teal.picks:variables]{teal.picks::variables()}}, \code{\link[teal.picks:picks]{teal.picks::picks()}})\cr
-faceting variable(s). The default \code{NULL} is expanded with
-\code{\link[teal.transform:add_no_selected_choices]{teal.transform::add_no_selected_choices()}} (no faceting until the user picks a variable).
-Do not pass \code{\link[teal.picks:variables]{teal.picks::variables()}} with \code{selected} of length 0; use \code{NULL} instead.}
+\item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
+available choices and preselected option for the parameter code variable from \code{dataname}.}
 
-\item{conf_level, conf_type}{(\code{\link[teal.picks:values]{teal.picks::values()}})\cr
-confidence UI inputs.}
+\item{strata_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr names of
+the variables for stratified analysis.}
+
+\item{facet_var}{(\code{character})\cr name of the variable to use to facet the plot.}
+
+\item{time_unit_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object
+with all available choices and pre-selected option for the time unit variable.}
+
+\item{aval_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
+all available choices and pre-selected option for the analysis variable.}
+
+\item{cnsr_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
+available choices and preselected option for the censoring variable.}
+
+\item{conf_level}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
+all available choices and pre-selected option for the confidence level, each within range of (0, 1).}
+
+\item{conf_type}{(\code{string})\cr confidence interval type for median survival time CI. Options are "plain" (default),
+"log", "log-log".}
 
 \item{font_size}{(\code{numeric})\cr numeric vector of length 3 of current, minimum and maximum font size values.}
 
@@ -135,8 +130,7 @@ a \code{teal_module} object.
 This module produces a \code{ggplot}-style Kaplan-Meier plot for data with ADaM structure.
 }
 \details{
-Encoding arguments use \code{\link[teal.picks:variables]{teal.picks}} (\code{variables()}, \code{picks()},
-\code{\link[teal.picks:values]{teal.picks::values()}}, etc.).
+Encoding arguments use \code{\link{teal.picks}} (\code{variables()}, \code{picks()}, \code{\link[teal.picks:values]{teal.picks::values()}}, etc.).
 }
 \section{Decorating Module}{
 
@@ -250,48 +244,16 @@ if (interactive()) {
   shinyApp(app$ui, app$server)
 }
 
-\donttest{
-# Legacy `choices_selected` for `paramcd` (uses `teal.transform` data-extract UI):
-app <- init(
-  data = data,
-  modules = modules(
-    tm_g_km(
-      label = "Kaplan-Meier Plot",
-      dataname = "ADTTE",
-      arm_var = choices_selected(
-        variable_choices(ADSL, c("ARM", "ARMCD", "ACTARMCD")),
-        "ARM"
-      ),
-      paramcd = choices_selected(
-        value_choices(ADTTE, "PARAMCD", "PARAM"),
-        "OS"
-      ),
-      arm_ref_comp = arm_ref_comp,
-      strata_var = choices_selected(
-        variable_choices(ADSL, c("SEX", "BMRKR2")),
-        "SEX"
-      ),
-      facet_var = choices_selected(
-        variable_choices(ADSL, c("SEX", "BMRKR2")),
-        NULL
-      ),
-      xticks = c(0, 30, 60, 90, 120, 150, 180)
-    )
-  )
-)
-}
-
 }
 \seealso{
 The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
 apps implementing this module can be found.
 }
-\keyword{internal}
 \section{Examples in Shinylive}{
 \describe{
   \item{example-1}{
-    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo67sxs+ajUrIGl5QyVHNG8AsJiElIy8g0AggAiAMoAMpE6pDAEMXAAHjFQ-KLU-QO2tk7jk9NzC-yk5EoAvkEAVkS5MQDWcKyi+ck2qfxwxlDCpDEE-LSi0+eXG53YDQeD3ApyAC6rggg1G4wKwGACjAcJGKMh0Nhaw2COSSJRg3WLjAmJhLBgMUYry+RBgqHGdFEpHY-QAwrY+lgALJsgY6AC8jWZrIgZTK1OMgp0hJ5OgAQijcA0ysR6dKCKzUXK+kqZdruTo2SigmU5MqxTouYahUyWSqdJLpSj5YgdAAFahQAhwehEJUOtUMoWawlugaMQQAcx0AA09Si2W62XT6LkwpZgmBTTogkElGgGalcplRWUCtKChaynwhCJRNLax17g7JjEo9cYGXxWUvfQ4NRnWAANJoL0QAzcuC0VQe-ykAOWnsFUG6IWEnEk6s9nSoFgUUirodoxc7nQUmKaFjSq+MWhQej17tnghZC4+hshrXWhMGvm-voOWtf9s23M9RAHOB1Dgfhjx5U8zx0GAPloGo1x0AAxPoRiGFwl3Fc0HTKPdmCmWChVQGQrhbfDl2SCDSBbVFNxNMCd1ve9HzELV3S5PpeQGPVjFoWYYOlexnEI2jxSvahBG4oid1fd8xGlMxaAAR3k9giQ2AASXisH4vkpMQ8UIJEaDyP1AB5IYELM5DqA0NDpSwnC8LMnMe1MncL0lWl1SFfyaSDNiymZZhwkva8hQ4h8n0U1U3xkVSvxRXD4zwfV5W5LBhywAAmVikp0CyoPIayMqcLLwvFJyXJEcTHE8ndfJ7WYNAIaiNXYAAGIoAGYBp0AA2EaAE4RoARkKmaAFYZoADj67zcwaPMlFoKV2Fycg1A0bRrBsEpLVEHIIFYPp0HYQs9MEWgijuiDGG0eoICOGEFAUfgSAOHxToAYh0EY4Cjb1WB0AADZTUtEGJyqsqGTACaGSNgb5kfYQQIIbKHWlIZgIFEYwAhgZGCgMOZCe9UgdAcABJOREALdBxhLe1LQrIUqwaJt60bdpEvwtsOyuLtFL7Ach1HGooAnKcZ0YOciAXPBFJXWB0I3YkHPFC9bw1FKPwRyCrOfdiWE4kQvmN7i0SKUMDQAnkQKKQkgNdwTs3andZW5FFFN94iWAx6zYZNxHKotntZPk22VPuXSnHdsBDOM73U-TgPQNKlE7MD6Tg-PRhKQCoNpRC4xAtQOrIuSGLlZDO34ajmCY5kq2ErgBO4Z04YRkdrVMt-XL8qKk1i7KaqsqDuq3h9T5DebxPTcs6PSvirje4-fvRiHmfR7ygrip9uqygAOQcEZ0SLurOqoz8dE1EbhqKcaiimopZoW5bVodHMm0PpKDAEcSEQA}{Open in Shinylive}
-    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo67sxs+ajUrIGl5QyVHNG8AsJiElIy8g0AggAiAMoAMpE6pDAEMXAAHjFQ-KLU-QO2tk7jk9NzC-yk5EoAvkEAVkS5MQDWcKyi+ck2qfxwxlDCpDEE-LSi0+eXG53YDQeD3ApyAC6rggg1G4wKwGACjAcJGKMh0Nhaw2COSSJRg3WLjAmJhLBgMUYry+RBgqHGdFEpHY-QAwrY+lgALJsgY6AC8jWZrIgZTK1OMgp0hJ5OgAQijcA0ysR6dKCKzUXK+kqZdruTo2SigmU5MqxTouYahUyWSqdJLpSj5YgdAAFahQAhwehEJUOtUMoWawlugaMQQAcx0AA09Si2W62XT6LkwpZgmBTTogkElGgGalcplRWUCtKChaynwhCJRNLax17g7JjEo9cYGXxWUvfQ4NRnWAANJoL0QAzcuC0VQe-ykAOWnsFUG6IWEnEk6s9nSoFgUUirodoxc7nQUmKaFjSq+MWhQej17tnghZC4+hshrXWhMGvm-voOWtf9s23M9RAHOB1Dgfhjx5U8zx0GAPloGo1x0AAxPoRiGFwl3Fc0HTKPdmCmWChVQGQrhbfDl2SCDSBbVFNxNMCd1ve9HzELV3S5PpeQGPVjFoWYYOlexnEI2jxSvahBG4oid1fd8xGlMxaAAR3k9giQ2AASXisH4vkpMQ8UIJEaDyP1AB5IYELM5DqA0NDpSwnC8LMnMe1MncL0lWl1SFfyaSDNiymZZhwkva8hQ4h8n0U1U3xkVSvxRXD4zwfV5W5LBhywAAmVikp0CyoPIayMqcLLwvFJyXJEcTHE8ndfJ7WYNAIaiNXYAAGIoAGYBp0AA2EaAE4RoARkKmaAFYZoADj67zcwaPMlFoKV2Fycg1A0bRrBsEpLVEHIIFYPp0HYQs9MEWgijuiDGG0eoICOGEFAUfgSAOHxToAYh0EY4Cjb1WB0AADZTUtEGJyqsqGTACaGSNgb5kfYQQIIbKHWlIZgIFEYwAhgZGCgMOZCe9UgdAcABJOREALdBxhLe1LQrIUqwaJt60bdpEvwtsOyuLtFL7Ach1HGooAnKcZ0YOciAXPBFJXWB0I3YkHPFC9bw1FKPwRyCrOfdiWE4kQvmN7i0SKUMDQAnkQKKQkgNdwTs3andZW5FFFN94iWAx6zYZNxHKotntZPk22VPuXSnHdsBDOM73U-TgPQNKlE7MD6Tg-PRhKQCoNpRC4xAtQOrIuSGLlZDO34ajmCY5kq2ErgBO4Z04YRkdrVMt-XL8qKk1i7KaqsqDuq3h9T5DebxPTcs6PSvirje4-fvRiHmfR7ygrip9uqygAOQcEZ0SLurOqoz8dE1EbhqKcaiimopZoW5bVodHMm0PpKDAEcSEQA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo67sxs+ajUrIGl5QyVHNG8AsJiElIy8g0AggAiAMoAMpE6pDAEMXAAHjFQ-KLU-QO2tk7jk9NzC-yk5EoAvkEAVkS5MQDWcKyi+ck2qfxwxlDCpDEE-LSi0+eXG53YDQeD3ApyAC6rggg1G4wKwGACjAcJGKMh0Nhaw2COSSJRg3WLjAmJhLBgMUYry+RBgqHGdFEpHY-QAwrY+lgALJsgY6AC8jWZrIgZTK1OMgp0hJ5OgAQijcA0ysR6dKCKzUXK+kqZdruTo2SigmU5MqxTouYahUyWSqdJLpSj5YgdAAFahQAhwehEJUOtUMoWawlugaMQQAcx0AA09Si2W62XT6LkwpZgmBTTogkElGgGalcplRWUCtKChaynwhCJRNLax17g7JjEo9cYGXxWUvfQ4NRnWAANJoL0QAzcuC0VQe-ykAOWnsFUG6IWEnEk6s9nSoFgUUirodoxc7nQUmKaFjSq+MWhQej17tnghZC4+hshrXWhMGvm-voOWtf9s23M9RAHOB1Dgfhjx5U8zx0GAPloGo1x0AAxPoRiGFwl3Fc0HTKPdmCmWChVQGQrhbfDl2SCDSBbVFNxNMCd1ve9HzELV3S5PpeQGPVjFoWYYOlexnEI2jxSvahBG4oid1fd8xGlMxaAAR3k9giQ2AASXisH4vkpMQ8UIJEaDyP1AB5IYELM5DqA0NDpSwnC8LMnMe1MncL0lWl1SFfyaSDNiymZZhwkva8hQ4h8n0U1U3xkVSvxRXD4zwfV5W5LBhywAAmVikp0CyoPIayMqcLLwvFJyXJEcTHE8ndfJ7WYNAIaiNXYAAGIoAGYBp0AA2EaAE4RoARkKmaAFYZoADj67zcwaPMlFoKV2Fycg1A0bRrBsEpLVEHIIFYPp0HYQs9MEWgijuiDGG0eoICOJQwCOSEgA}{Open in Shinylive}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo67sxs+ajUrIGl5QyVHNG8AsJiElIy8g0AggAiAMoAMpE6pDAEMXAAHjFQ-KLU-QO2tk7jk9NzC-yk5EoAvkEAVkS5MQDWcKyi+ck2qfxwxlDCpDEE-LSi0+eXG53YDQeD3ApyAC6rggg1G4wKwGACjAcJGKMh0Nhaw2COSSJRg3WLjAmJhLBgMUYry+RBgqHGdFEpHY-QAwrY+lgALJsgY6AC8jWZrIgZTK1OMgp0hJ5OgAQijcA0ysR6dKCKzUXK+kqZdruTo2SigmU5MqxTouYahUyWSqdJLpSj5YgdAAFahQAhwehEJUOtUMoWawlugaMQQAcx0AA09Si2W62XT6LkwpZgmBTTogkElGgGalcplRWUCtKChaynwhCJRNLax17g7JjEo9cYGXxWUvfQ4NRnWAANJoL0QAzcuC0VQe-ykAOWnsFUG6IWEnEk6s9nSoFgUUirodoxc7nQUmKaFjSq+MWhQej17tnghZC4+hshrXWhMGvm-voOWtf9s23M9RAHOB1Dgfhjx5U8zx0GAPloGo1x0AAxPoRiGFwl3Fc0HTKPdmCmWChVQGQrhbfDl2SCDSBbVFNxNMCd1ve9HzELV3S5PpeQGPVjFoWYYOlexnEI2jxSvahBG4oid1fd8xGlMxaAAR3k9giQ2AASXisH4vkpMQ8UIJEaDyP1AB5IYELM5DqA0NDpSwnC8LMnMe1MncL0lWl1SFfyaSDNiymZZhwkva8hQ4h8n0U1U3xkVSvxRXD4zwfV5W5LBhywAAmVikp0CyoPIayMqcLLwvFJyXJEcTHE8ndfJ7WYNAIaiNXYAAGIoAGYBp0AA2EaAE4RoARkKmaAFYZoADj67zcwaPMlFoKV2Fycg1A0bRrBsEpLVEHIIFYPp0HYQs9MEWgijuiDGG0eoICOJQwCOSEgA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
     \if{html}{\out{<a style='height: 800px; display: block;'></a>}}
   }
 }
