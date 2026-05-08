@@ -327,24 +327,36 @@ template_patient_timeline <- function(dataname = "ANL",
 #' @inheritParams template_patient_timeline
 #' @param dataname_adcm (`character`)\cr name of `ADCM` dataset or equivalent.
 #' @param dataname_adae (`character`)\cr name of `ADAE` dataset or equivalent.
-#' @param aerelday_start ([teal.transform::choices_selected()])\cr object
-#'   with all available choices and preselected option for the `ASTDY` variable from `dataname_adae`.
-#' @param aerelday_end ([teal.transform::choices_selected()])\cr object
-#'   with all available choices and preselected option for the `AENDY` variable from `dataname_adae`.
-#' @param dsrelday_start ([teal.transform::choices_selected()])\cr object
-#'   with all available choices and preselected option for the `ASTDY` variable from `dataname_adcm`.
-#' @param dsrelday_end ([teal.transform::choices_selected()])\cr object
-#'   with all available choices and preselected option for the `AENDY` variable from `dataname_adcm`.
-#' @param cmdecod ([teal.transform::choices_selected()])\cr object with all
-#'   available choices and preselected option for the `CMDECOD` variable from `dataname_adcm`.
-#' @param aetime_start ([teal.transform::choices_selected()])\cr object with
-#'   all available choices and preselected option for the `ASTDTM` variable from `dataname_adae`.
-#' @param aetime_end ([teal.transform::choices_selected()])\cr object with all
-#'   available choices and preselected option for the `AENDTM` variable from `dataname_adae`.
-#' @param dstime_start ([teal.transform::choices_selected()])\cr object with
-#'   all available choices and preselected option for the `CMASTDTM` variable from `dataname_adcm`.
-#' @param dstime_end ([teal.transform::choices_selected()])\cr object with all
-#'   available choices and preselected option for the `CMAENDTM` variable from `dataname_adcm`.
+#' @param aeterm ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
+#'   object with all available choices and preselected
+#'   option for the `AETERM` variable from `dataname_adae`.
+#' @param aerelday_start ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
+#'   object with all available choices and preselected
+#'   option for the `ASTDY` variable from `dataname_adae`.
+#' @param aerelday_end ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
+#'   object with all available choices and preselected
+#'   option for the `AENDY` variable from `dataname_adae`.
+#' @param dsrelday_start ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
+#'   object with all available choices and preselected
+#'   option for the `ASTDY` variable from `dataname_adcm`.
+#' @param dsrelday_end ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
+#'   object with all available choices and preselected
+#'   option for the `AENDY` variable from `dataname_adcm`.
+#' @param cmdecod ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
+#'   object with all available choices and preselected
+#'   option for the `CMDECOD` variable from `dataname_adcm`.
+#' @param aetime_start ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
+#'   object with all available choices and preselected
+#'   option for the `ASTDTM` variable from `dataname_adae`.
+#' @param aetime_end ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
+#'   object with all available choices and preselected
+#'   option for the `AENDTM` variable from `dataname_adae`.
+#' @param dstime_start ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
+#'   object with all available choices and preselected
+#'   option for the `CMASTDTM` variable from `dataname_adcm`.
+#' @param dstime_end ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
+#'   object with all available choices and preselected
+#'   option for the `CMAENDTM` variable from `dataname_adcm`.
 #'
 #' @inherit module_arguments return
 #'
@@ -421,45 +433,55 @@ template_patient_timeline <- function(dataname = "ANL",
 #'       parentname = "ADSL",
 #'       patient_col = "USUBJID",
 #'       plot_height = c(600L, 200L, 2000L),
-#'       cmdecod = choices_selected(
-#'         choices = variable_choices(data[["ADCM"]], "CMDECOD"),
+#'       cmdecod = variables(
+#'         choices = "CMDECOD",
 #'         selected = "CMDECOD",
+#'         multiple = FALSE
 #'       ),
-#'       aeterm = choices_selected(
-#'         choices = variable_choices(data[["ADAE"]], "AETERM"),
-#'         selected = c("AETERM")
+#'       aeterm = variables(
+#'         choices = "AETERM",
+#'         selected = "AETERM",
+#'         multiple = FALSE
 #'       ),
-#'       aetime_start = choices_selected(
-#'         choices = variable_choices(data[["ADAE"]], "ASTDTM"),
-#'         selected = c("ASTDTM")
+#'       aetime_start = variables(
+#'         choices = "ASTDTM",
+#'         selected = "ASTDTM",
+#'         multiple = FALSE
 #'       ),
-#'       aetime_end = choices_selected(
-#'         choices = variable_choices(data[["ADAE"]], "AENDTM"),
-#'         selected = c("AENDTM")
+#'       aetime_end = variables(
+#'         choices = "AENDTM",
+#'         selected = "AENDTM",
+#'         multiple = FALSE
 #'       ),
-#'       dstime_start = choices_selected(
-#'         choices = variable_choices(data[["ADCM"]], "CMASTDTM"),
-#'         selected = c("CMASTDTM")
+#'       dstime_start = variables(
+#'         choices = "CMASTDTM",
+#'         selected = "CMASTDTM",
+#'         multiple = FALSE
 #'       ),
-#'       dstime_end = choices_selected(
-#'         choices = variable_choices(data[["ADCM"]], "CMAENDTM"),
-#'         selected = c("CMAENDTM")
+#'       dstime_end = variables(
+#'         choices = "CMAENDTM",
+#'         selected = "CMAENDTM",
+#'         multiple = FALSE
 #'       ),
-#'       aerelday_start = choices_selected(
-#'         choices = variable_choices(data[["ADAE"]], "ASTDY"),
-#'         selected = c("ASTDY")
+#'       aerelday_start = variables(
+#'         choices = "ASTDY",
+#'         selected = "ASTDY",
+#'         multiple = FALSE
 #'       ),
-#'       aerelday_end = choices_selected(
-#'         choices = variable_choices(data[["ADAE"]], "AENDY"),
-#'         selected = c("AENDY")
+#'       aerelday_end = variables(
+#'         choices = "AENDY",
+#'         selected = "AENDY",
+#'         multiple = FALSE
 #'       ),
-#'       dsrelday_start = choices_selected(
-#'         choices = variable_choices(data[["ADCM"]], "ASTDY"),
-#'         selected = c("ASTDY")
+#'       dsrelday_start = variables(
+#'         choices = "ASTDY",
+#'         selected = "ASTDY",
+#'         multiple = FALSE
 #'       ),
-#'       dsrelday_end = choices_selected(
-#'         choices = variable_choices(data[["ADCM"]], "AENDY"),
-#'         selected = c("AENDY")
+#'       dsrelday_end = variables(
+#'         choices = "AENDY",
+#'         selected = "AENDY",
+#'         multiple = FALSE
 #'       )
 #'     )
 #'   )
@@ -520,7 +542,7 @@ tm_g_pp_patient_timeline <- function(label,
     plot_width[1],
     lower = plot_width[2], upper = plot_width[3], null.ok = TRUE, .var.name = "plot_width"
   )
-  assert_decorators(decorators, "plot")
+  teal::assert_decorators(decorators, "plot")
 
   xor_error_string <- function(x, y) {
     paste("Both `", x, "` and `", y, "` need to be provided or both need to be `NULL`.")
