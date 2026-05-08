@@ -73,18 +73,24 @@ tm_g_km(
 \method{tm_g_km}{default}(
   label,
   dataname,
-  parentname = NULL,
-  arm_var,
+  parentname = "ADSL",
+  arm_var = teal.picks::variables(choices = c("ARM", "ARMCD", "ACTARMCD"), selected =
+    "ARM", multiple = FALSE),
   arm_ref_comp = NULL,
-  paramcd,
-  strata_var,
-  facet_var,
-  time_unit_var,
-  aval_var,
-  cnsr_var,
-  conf_level,
-  conf_type,
-  font_size,
+  paramcd = teal.picks::picks(teal.picks::variables("PARAMCD", fixed = TRUE),
+    teal.picks::values(choices = c("OS", "PFS", "EFS"), selected = "OS", multiple =
+    FALSE), check_dataset = FALSE),
+  strata_var = teal.picks::variables(choices = c("SEX", "BMRKR2"), selected = "SEX",
+    multiple = TRUE),
+  facet_var = NULL,
+  time_unit_var = teal.picks::variables("AVALU", fixed = TRUE),
+  aval_var = teal.picks::variables("AVAL", fixed = TRUE),
+  cnsr_var = teal.picks::variables("CNSR", fixed = TRUE),
+  conf_level = teal.picks::values(c("0.95", "0.9", "0.8"), selected = "0.95", keep_order
+    = TRUE, multiple = FALSE),
+  conf_type = teal.picks::values(c("plain", "log", "log-log"), selected = "plain",
+    keep_order = TRUE, multiple = FALSE),
+  font_size = c(11L, 1L, 30L),
   xticks = NULL,
   control_annot_surv_med = tern::control_surv_med_annot(),
   control_annot_coxph = tern::control_coxph_annot(x = 0.27, y = 0.35, w = 0.3),
@@ -101,7 +107,7 @@ tm_g_km(
 \method{tm_g_km}{picks}(
   label,
   dataname,
-  parentname = NULL,
+  parentname = "ADSL",
   arm_var = teal.picks::variables(choices = c("ARM", "ARMCD", "ACTARMCD"), selected =
     "ARM", multiple = FALSE),
   arm_ref_comp = NULL,
@@ -211,26 +217,25 @@ a \code{teal_module} object.
 This module produces a \code{ggplot}-style Kaplan-Meier plot for data with ADaM structure.
 }
 \details{
-\strong{S3 dispatch} is on \code{paramcd} (endpoint encoding):
+\strong{S3 dispatch} is on \code{arm_var}:
 \itemize{
-\item \code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} for \code{paramcd} keeps the legacy \code{teal.transform}
+\item \code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} for \code{arm_var} keeps the legacy \code{teal.transform}
 data-extract / merge UI (\code{data_extract_spec} objects built from \code{choices_selected} inputs).
-\item \code{\link[teal.picks:picks]{teal.picks::picks()}} for \code{paramcd} uses the picks merge/UI path; other encoding arguments
+\item other classes use the picks merge/UI path; other encoding arguments
 may still be legacy \code{choices_selected} / \code{value_choices} and are coerced with the \verb{migrate_*}
 helpers (with deprecation warnings where applicable) before the module is built.
 }
 
-\code{parentname} is the parent dataset name (\code{character(1)}, e.g. \code{ADSL}); it is not used as the
-S3 dispatch value because it has no distinguishing class.
+\code{parentname} is the parent dataset name (\code{character(1)}, e.g. \code{ADSL}).
 }
 \section{Methods (by class)}{
 \itemize{
 \item \code{tm_g_km(choices_selected)}: Legacy \code{\link[teal.transform:teal.transform]{teal.transform}} data-extract implementation when \code{paramcd} is
 \code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}}.
 
-\item \code{tm_g_km(default)}: Unsupported \code{paramcd} class.
+\item \code{tm_g_km(default)}: Default implementation for picks-style encodings.
 
-\item \code{tm_g_km(picks)}: \code{\link{teal.picks}} implementation when \code{paramcd} is \code{\link[teal.picks:picks]{teal.picks::picks()}}.
+\item \code{tm_g_km(picks)}: Backward-compatible picks-specific S3 method.
 
 }}
 \section{Decorating Module}{
@@ -326,7 +331,7 @@ app <- init(
         datasets("ADTTE"),
         variables("PARAMCD", fixed = TRUE),
         values(
-          choices = sort(unique(as.character(ADTTE$PARAMCD))),
+          choices = unique(ADTTE$PARAMCD),
           selected = "OS",
           multiple = FALSE
         )
@@ -385,8 +390,8 @@ apps implementing this module can be found.
 \section{Examples in Shinylive}{
 \describe{
   \item{example-1}{
-    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo67sxs+ajUrIGl5QyVHNG8AsJiElIy8g0AggAiAMoAMpE6pDAEMXAAHjFQ-KLU-QO2tk7jk9NzC-yk5EoAvkEAVkS5MQDWcKyi+ck2qfxwxlDCpDEE-LSi0+eXG53YDQeD3ApyAC6rggg1G4wKwGACjAcJGKMh0Nhaw2COSSJRg3WLjAmJhLBgMUYry+RBgqHGdFEpHY-QAwrY+lgALJsgY6AC8jWZrIgZTK1OMgp0hJ5OgAQijcA0ysR6dKCKzUXK+kqZdruTo2SigmU5MqxTouYahUyWSqdJLpSj5YgdAAFahQAhwehEJUOtUMoWawlugaMQQAcx0AA09Si2W62XT6LkwpZgmBTTogkElGgGalcplRWUCtKChaynwhCJRNLax17g7JjEo9cYGXxWUvfQ4NRnWAANJoL0QAzcuC0VQe-ykAOWnsFUG6IWEnEk6s9nSoFgUUirodoxc7nQUmKaFjSq+MWhQej17tnghZC4+hshrXWhMGvm-voOWtf9s23M9RAHOB1Dgfhjx5U8zx0GAPloGo1x0AAxPoRiGFwl3Fc0HTKPdmCmWChVQGQrhbfDl2SCDSBbVFNxNMCd1ve9HzELV3S5PpeQGPVjFoWYYOlexnEI2jxSvahBG4oid1fd8xGlUQAhZMxaAAR3k9goHEV8WG9chGHYIkNgAEl4rB+L5OQHLY8DIOg8j9QAeSGBDEKQlC0OlLCcLwnycx7KSzwvSVaXVIVIppIMnJ0ZlmHCS9ryFDiHyfRTVTfGRVK-FFcPjPB9XlbksGHLAACZWJypKXPINyiqcErEprPyRHExxgp3cKd1mDQCGojV2AABiKABmCadAANhmgBOGaAEZqpWgBWFaAA4xtC3MGjzJRaCldhclMkytDgawbBKS1RByCBWD6dB9PQSzBFoIpC0siDGG0eoICOGEFAUfgSAOHxboAYh0EY4Cjb1WB0AADZT8tEGIIJEVzkZMAIUZI2Bvlx9hBAghtkdaUhmAgURjACGBcYKAw5mpkydAcABJOREALdBxhLe1LQrIUqwaJt60bdpsvwtsOyuLtFL7Ach1HGooAnKcZ0YOciAXPBFJXWB0I3YlvPFC9bw1PKP0xxqYOfdiWE4kQvht7i0SKUMDQAnkQKKQkgL9wTs36s9ZW5FFFLD8VCbI62VIxrGoKax2e1k+S3cT8zNwDsAbLskO84LyPQPqlFPKj6SY7KOLjGi4Nz0YSkooSxTkuSNKdZDd2k-t-g05k52srgLP0Zz0Yva1Yrf3KyqapNGvxRakro8St4fU+K2e8Tu3sdT+rMq4sePwnkYp5X2eKqq2rQ-anQADkHBGdFq8SwaqM-HRNRm6ainmooS0iirQ2ttXaDocyHUBkoMARxIRAA}{Open in Shinylive}
-    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo67sxs+ajUrIGl5QyVHNG8AsJiElIy8g0AggAiAMoAMpE6pDAEMXAAHjFQ-KLU-QO2tk7jk9NzC-yk5EoAvkEAVkS5MQDWcKyi+ck2qfxwxlDCpDEE-LSi0+eXG53YDQeD3ApyAC6rggg1G4wKwGACjAcJGKMh0Nhaw2COSSJRg3WLjAmJhLBgMUYry+RBgqHGdFEpHY-QAwrY+lgALJsgY6AC8jWZrIgZTK1OMgp0hJ5OgAQijcA0ysR6dKCKzUXK+kqZdruTo2SigmU5MqxTouYahUyWSqdJLpSj5YgdAAFahQAhwehEJUOtUMoWawlugaMQQAcx0AA09Si2W62XT6LkwpZgmBTTogkElGgGalcplRWUCtKChaynwhCJRNLax17g7JjEo9cYGXxWUvfQ4NRnWAANJoL0QAzcuC0VQe-ykAOWnsFUG6IWEnEk6s9nSoFgUUirodoxc7nQUmKaFjSq+MWhQej17tnghZC4+hshrXWhMGvm-voOWtf9s23M9RAHOB1Dgfhjx5U8zx0GAPloGo1x0AAxPoRiGFwl3Fc0HTKPdmCmWChVQGQrhbfDl2SCDSBbVFNxNMCd1ve9HzELV3S5PpeQGPVjFoWYYOlexnEI2jxSvahBG4oid1fd8xGlUQAhZMxaAAR3k9goHEV8WG9chGHYIkNgAEl4rB+L5OQHLY8DIOg8j9QAeSGBDEKQlC0OlLCcLwnycx7KSzwvSVaXVIVIppIMnJ0ZlmHCS9ryFDiHyfRTVTfGRVK-FFcPjPB9XlbksGHLAACZWJypKXPINyiqcErEprPyRHExxgp3cKd1mDQCGojV2AABiKABmCadAANhmgBOGaAEZqpWgBWFaAA4xtC3MGjzJRaCldhclMkytDgawbBKS1RByCBWD6dB9PQSzBFoIpC0siDGG0eoICOGEFAUfgSAOHxboAYh0EY4Cjb1WB0AADZT8tEGIIJEVzkZMAIUZI2Bvlx9hBAghtkdaUhmAgURjACGBcYKAw5mpkydAcABJOREALdBxhLe1LQrIUqwaJt60bdpsvwtsOyuLtFL7Ach1HGooAnKcZ0YOciAXPBFJXWB0I3YlvPFC9bw1PKP0xxqYOfdiWE4kQvht7i0SKUMDQAnkQKKQkgL9wTs36s9ZW5FFFLD8VCbI62VIxrGoKax2e1k+S3cT8zNwDsAbLskO84LyPQPqlFPKj6SY7KOLjGi4Nz0YSkooSxTkuSNKdZDd2k-t-g05k52srgLP0Zz0Yva1Yrf3KyqapNGvxRakro8St4fU+K2e8Tu3sdT+rMq4sePwnkYp5X2eKqq2rQ-anQADkHBGdFq8SwaqM-HRNRm6ainmooS0iirQ2ttXaDocyHUBkoMARxIRAA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo67sxs+ajUrIGl5QyVHNG8AsJiElIy8g0AggAiAMoAMpE6pDAEMXAAHjFQ-KLU-QO2tk7jk9NzC-yk5EoAvkEAVkS5MQDWcKyi+ck2qfxwxlDCpDEE-LSi0+eXG53YDQeD3ApyAC6rggg1G4wKwGACjAcJGKMh0Nhaw2COSSJRg3WLjAmJhLBgMUYry+RBgqHGdFEpHY-QAwrY+lgALJsgY6AC8jWZrIgZTK1OMgp0hJ5OgAQijcA0ysR6dKCKzUXK+kqZdruTo2SigmU5MqxTouYahUyWSqdJLpSj5YgdAAFahQAhwehEJUOtUMoWawlugaMQQAcx0AA09Si2W62XT6LkwpZgmBTTogkElGgGalcplRWUCtKChaynwhCJRNLax17g7JjEo9cYGXxWUvfQ4NRnWAANJoL0QAzcuC0VQe-ykAOWnsFUG6IWEnEk6s9nSoFgUUirodoxc7nQUmKaFjSq+MWhQej17tnghZC4+hshrXWhMGvm-voOWtf9s23M9RAHOB1Dgfhjx5U8zx0GAPloGo1x0AAxPoRiGFwl3Fc0HTKPdmCmWChVQGQrhbfDl2SCDSBbVFNxNMCd1ve9HzELV3S5PpeQGPVjFoWYYOlexnEI2jxSvahBG4oid1fd8xGlMxaAAR3k9giQ2AASXisH4vkpMQ8UIJEaDyP1AB5IYELM5DqA0NDpSwnC8LMnMe1MncL0lWl1SFfyaSDNiymZZhwkva8hQ4h8n0U1U3xkVSvxRXD4zwfV5W5LBhywAAmVikp0CyoPIayMqcLLwvFJyXJEcTHE8ndfJ7WYNAIaiNXYAAGIoAGYBp0AA2EaAE4RoARkKmaAFYZoADj67zcwaPMlFoKV2Fycg1A0bRrBsEpLVEHIIFYPp0HYQs9MEWgijuiDGG0eoICOGEFAUfgSAOHxToAYh0EY4Cjb1WB0AADZTUtEGJyqsqGTACaGSNgb5kfYQQIIbKHWlIZgIFEYwAhgZGCgMOZCe9UgdAcABJOREALdBxhLe1LQrIUqwaJt60bdpEvwtsOyuLtFL7Ach1HGooAnKcZ0YOciAXPBFJXWB0I3YkHPFC9bw1FKPwRyCrOfdiWE4kQvmN7i0SKUMDQAnkQKKQkgNdwTs3andZW5FFFN94iWAx6zYZNxHKotntZPk22VPuXSnHdsBDOM73U-TgPQNKlE7MD6Tg-PRhKQCoNpRC4xAtQOrIuSGLlZDO34ajmCY5kq2ErgBO4Z04YRkdrVMt-XL8qKk1i7KaqsqDuq3h9T5DebxPTcs6PSvirje4-fvRiHmfR7ygrip9uqygAOQcEZ0SLurOqoz8dE1EbhqKcaiimopZoW5bVodHMm0PpKDAEcSEQA}{Open in Shinylive}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo67sxs+ajUrIGl5QyVHNG8AsJiElIy8g0AggAiAMoAMpE6pDAEMXAAHjFQ-KLU-QO2tk7jk9NzC-yk5EoAvkEAVkS5MQDWcKyi+ck2qfxwxlDCpDEE-LSi0+eXG53YDQeD3ApyAC6rggg1G4wKwGACjAcJGKMh0Nhaw2COSSJRg3WLjAmJhLBgMUYry+RBgqHGdFEpHY-QAwrY+lgALJsgY6AC8jWZrIgZTK1OMgp0hJ5OgAQijcA0ysR6dKCKzUXK+kqZdruTo2SigmU5MqxTouYahUyWSqdJLpSj5YgdAAFahQAhwehEJUOtUMoWawlugaMQQAcx0AA09Si2W62XT6LkwpZgmBTTogkElGgGalcplRWUCtKChaynwhCJRNLax17g7JjEo9cYGXxWUvfQ4NRnWAANJoL0QAzcuC0VQe-ykAOWnsFUG6IWEnEk6s9nSoFgUUirodoxc7nQUmKaFjSq+MWhQej17tnghZC4+hshrXWhMGvm-voOWtf9s23M9RAHOB1Dgfhjx5U8zx0GAPloGo1x0AAxPoRiGFwl3Fc0HTKPdmCmWChVQGQrhbfDl2SCDSBbVFNxNMCd1ve9HzELV3S5PpeQGPVjFoWYYOlexnEI2jxSvahBG4oid1fd8xGlMxaAAR3k9giQ2AASXisH4vkpMQ8UIJEaDyP1AB5IYELM5DqA0NDpSwnC8LMnMe1MncL0lWl1SFfyaSDNiymZZhwkva8hQ4h8n0U1U3xkVSvxRXD4zwfV5W5LBhywAAmVikp0CyoPIayMqcLLwvFJyXJEcTHE8ndfJ7WYNAIaiNXYAAGIoAGYBp0AA2EaAE4RoARkKmaAFYZoADj67zcwaPMlFoKV2Fycg1A0bRrBsEpLVEHIIFYPp0HYQs9MEWgijuiDGG0eoICOGEFAUfgSAOHxToAYh0EY4Cjb1WB0AADZTUtEGJyqsqGTACaGSNgb5kfYQQIIbKHWlIZgIFEYwAhgZGCgMOZCe9UgdAcABJOREALdBxhLe1LQrIUqwaJt60bdpEvwtsOyuLtFL7Ach1HGooAnKcZ0YOciAXPBFJXWB0I3YkHPFC9bw1FKPwRyCrOfdiWE4kQvmN7i0SKUMDQAnkQKKQkgNdwTs3andZW5FFFN94iWAx6zYZNxHKotntZPk22VPuXSnHdsBDOM73U-TgPQNKlE7MD6Tg-PRhKQCoNpRC4xAtQOrIuSGLlZDO34ajmCY5kq2ErgBO4Z04YRkdrVMt-XL8qKk1i7KaqsqDuq3h9T5DebxPTcs6PSvirje4-fvRiHmfR7ygrip9uqygAOQcEZ0SLurOqoz8dE1EbhqKcaiimopZoW5bVodHMm0PpKDAEcSEQA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
     \if{html}{\out{<a style='height: 800px; display: block;'></a>}}
   }
 }
