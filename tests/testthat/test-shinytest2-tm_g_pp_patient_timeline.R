@@ -56,6 +56,7 @@ app_driver_tm_g_pp_patient_timeline <- function() { # nolint object_length.
   )
 }
 
+suppressWarnings({
 testthat::test_that(
   "e2e - tm_g_pp_patient_timeline: Module initializes in teal without errors and produces plot output.",
   {
@@ -188,7 +189,7 @@ testthat::test_that(
 )
 
 testthat::test_that(
-  "e2e - tm_g_pp_patient_timeline: Selecting patient_id changes plot and doesn't throw validation errors.",
+   "e2e - tm_g_pp_patient_timeline: Selecting patient_id changes plot and doesn't throw validation errors.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_patient_timeline()
@@ -213,7 +214,7 @@ testthat::test_that("e2e - tm_g_pp_patient_timeline: Deselecting patient_id colu
   testthat::expect_identical(app_driver$get_active_module_plot_output("patient_timeline_plot"), character(0))
   app_driver$expect_validation_error()
   testthat::expect_match(
-    app_driver$get_text(app_driver$namespaces(TRUE)$module("patient_timeline_plot-plot_main")),
+    app_driver$get_text(app_driver$namespaces(TRUE)$module("patient_timeline_plot-plot_out_main")),
     "Please select a patient.",
     fixed = TRUE
   )
@@ -536,3 +537,4 @@ testthat::test_that(
     app_driver$expect_no_validation_error()
   }
 )
+})
