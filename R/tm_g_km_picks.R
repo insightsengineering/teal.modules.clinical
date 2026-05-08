@@ -3,7 +3,7 @@
 #' @keywords internal
 tm_g_km.default <- function(label,
                           dataname,
-                          parentname = NULL,
+                          parentname = "ADSL",
                           arm_var = teal.picks::variables(
                             choices = c("ARM", "ARMCD", "ACTARMCD"),
                             selected = "ARM",
@@ -54,14 +54,6 @@ tm_g_km.default <- function(label,
                           decorators = list()) {
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
-
-  if (is.null(parentname)) {
-    parentname <- if (inherits(arm_var, "data_extract_spec")) {
-      teal.transform::datanames_input(arm_var)
-    } else {
-      "ADSL"
-    }
-  }
 
   if (is.null(facet_var)) {
     facet_var <- teal.transform::add_no_selected_choices(
