@@ -8,12 +8,22 @@ tm_g_ipp(
   label,
   dataname,
   parentname = "ADSL",
+<<<<<<< HEAD
   arm_var,
   paramcd,
   id_var = teal.picks::variables("USUBJID", fixed = TRUE),
   visit_var = teal.picks::variables("AVISIT", fixed = TRUE),
   aval_var = teal.picks::variables("AVAL", fixed = TRUE),
   avalu_var = teal.picks::variables("AVALU", fixed = TRUE),
+=======
+  arm_var = teal.picks::variables("ARMCD"),
+  paramcd_var = teal.picks::variables("PARAMCD"),
+  paramcd_value = teal.picks::values(multiple = FALSE),
+  aval_var = teal.picks::variables("AVAL", fixed = TRUE),
+  avalu_var = teal.picks::variables("AVALU", fixed = TRUE),
+  id_var = teal.picks::variables("USUBJID", fixed = TRUE),
+  visit_var = teal.picks::variables("AVISIT"),
+>>>>>>> f18676d5dd36134b36067b56151216318cd30f0a
   baseline_var = teal.picks::variables("BASE", fixed = TRUE),
   add_baseline_hline = FALSE,
   separate_by_obs = FALSE,
@@ -25,7 +35,8 @@ tm_g_ipp(
   post_output = NULL,
   ggplot2_args = teal.widgets::ggplot2_args(),
   transformators = list(),
-  decorators = list()
+  decorators = list(),
+  paramcd
 )
 }
 \arguments{
@@ -39,11 +50,29 @@ tm_g_ipp(
 \strong{Required} (no default, as on \code{main}). Arm encoding; resolved on \code{parentname} (typically \code{ADSL}).
 Legacy inputs are coerced with a deprecation warning.}
 
+<<<<<<< HEAD
 \item{paramcd}{(\code{\link[teal.picks:picks]{teal.picks::picks()}} or legacy \code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} from \code{\link[teal.transform:value_choices]{teal.transform::value_choices()}})\cr
 \strong{Required} (no default, as on \code{main}). Parameter code filter: a \code{\link[teal.picks:picks]{teal.picks::picks()}} with \code{\link[teal.picks:variables]{teal.picks::variables()}} (typically \code{PARAMCD}) and \code{\link[teal.picks:values]{teal.picks::values()}} for levels; legacy \code{choices_selected} inputs are coerced with a deprecation warning.}
 
 \item{id_var, visit_var, aval_var, avalu_var, baseline_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}, \code{\link[teal.picks:picks]{teal.picks::picks()}}, or legacy \code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr
 Encodings on \code{dataname}. Legacy inputs are coerced with a deprecation warning.}
+=======
+\item{aval_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
+all available choices and pre-selected option for the analysis variable.}
+
+\item{avalu_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
+all available choices and preselected option for the analysis unit variable.}
+
+\item{id_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object specifying
+the variable name for subject id.}
+
+\item{visit_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
+all available choices and preselected option for variable names that can be used as \code{visit} variable.
+Must be a factor in \code{dataname}.}
+
+\item{baseline_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
+all available choices and preselected option for variable values that can be used as \code{baseline_var}.}
+>>>>>>> f18676d5dd36134b36067b56151216318cd30f0a
 
 \item{add_baseline_hline}{(\code{logical})\cr whether a horizontal line should be added to the plot at baseline y-value.}
 
@@ -82,6 +111,9 @@ decorator for tables or plots included in the module output reported.
 The decorators are applied to the respective output objects.
 
 See section "Decorating Module" below for more details.}
+
+\item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
+available choices and preselected option for the parameter code variable from \code{dataname}.}
 }
 \value{
 a \code{teal_module} object.
