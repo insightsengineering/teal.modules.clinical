@@ -474,16 +474,16 @@ tm_g_pp_patient_timeline <- function(label,
                                      dataname_adae = "ADAE",
                                      parentname = "ADSL",
                                      patient_col = "USUBJID",
-                                     aeterm = teal.picks::variables("AETERM", fixed = TRUE),
-                                     cmdecod = teal.picks::variables("CMDECOD", fixed = TRUE),
-                                     aetime_start = teal.picks::variables("ASTDTM", fixed = TRUE),
-                                     aetime_end = teal.picks::variables("AENDTM", fixed = TRUE),
-                                     dstime_start = teal.picks::variables("CMASTDTM", fixed = TRUE),
-                                     dstime_end = teal.picks::variables("CMAENDTM", fixed = TRUE),
-                                     aerelday_start = teal.picks::variables("ASTDY", fixed = TRUE),
-                                     aerelday_end = teal.picks::variables("AENDY", fixed = TRUE),
-                                     dsrelday_start = teal.picks::variables("ASTDY", fixed = TRUE),
-                                     dsrelday_end = teal.picks::variables("AENDY", fixed = TRUE),
+                                     aeterm = NULL,
+                                     cmdecod = NULL,
+                                     aetime_start = NULL,
+                                     aetime_end = NULL,
+                                     dstime_start = NULL,
+                                     dstime_end = NULL,
+                                     aerelday_start = NULL,
+                                     aerelday_end = NULL,
+                                     dsrelday_start = NULL,
+                                     dsrelday_end = NULL,
                                      font_size = c(12L, 12L, 25L),
                                      plot_height = c(700L, 200L, 2000L),
                                      plot_width = NULL,
@@ -494,28 +494,23 @@ tm_g_pp_patient_timeline <- function(label,
                                      decorators = list()) {
   message("Initializing tm_g_pp_patient_timeline")
 
-  # Compatibility: coerce choices_selected
-  for (arg in c(
-    "aeterm", "cmdecod",
-    "aetime_start", "aetime_end", "dstime_start", "dstime_end",
-    "aerelday_start", "aerelday_end", "dsrelday_start", "dsrelday_end"
-  )) {
-    val <- get(arg)
-    if (!is.null(val) && inherits(val, "choices_selected")) assign(arg, teal.picks::as.picks(val))
-  }
+  aeterm <- migrate_choices_selected_to_variables(aeterm, "aeterm", null.ok = TRUE)
+  cmdecod <- migrate_choices_selected_to_variables(cmdecod, "cmdecod", null.ok = TRUE)
+  aetime_start <- migrate_choices_selected_to_variables(aetime_start, "aetime_start", null.ok = TRUE)
+  aetime_end <- migrate_choices_selected_to_variables(aetime_end, "aetime_end", null.ok = TRUE)
+  dstime_start <- migrate_choices_selected_to_variables(dstime_start, "dstime_start", null.ok = TRUE)
+  dstime_end <- migrate_choices_selected_to_variables(dstime_end, "dstime_end", null.ok = TRUE)
+  aerelday_start <- migrate_choices_selected_to_variables(aerelday_start, "aerelday_start", null.ok = TRUE)
+  aerelday_end <- migrate_choices_selected_to_variables(aerelday_end, "aerelday_end", null.ok = TRUE)
+  dsrelday_start <- migrate_choices_selected_to_variables(dsrelday_start, "dsrelday_start", null.ok = TRUE)
+  dsrelday_end <- migrate_choices_selected_to_variables(dsrelday_end, "dsrelday_end", null.ok = TRUE)
 
   checkmate::assert_string(label)
   checkmate::assert_string(dataname_adcm)
   checkmate::assert_string(dataname_adae)
   checkmate::assert_string(parentname)
   checkmate::assert_string(patient_col)
-  for (arg in c(
-    "aeterm", "cmdecod",
-    "aetime_start", "aetime_end", "dstime_start", "dstime_end",
-    "aerelday_start", "aerelday_end", "dsrelday_start", "dsrelday_end"
-  )) {
-    checkmate::assert_class(get(arg), "variables", null.ok = TRUE)
-  }
+
   checkmate::assert_numeric(font_size, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(font_size[1], lower = font_size[2], upper = font_size[3], .var.name = "font_size")
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
@@ -530,6 +525,7 @@ tm_g_pp_patient_timeline <- function(label,
   xor_error_string <- function(x, y) {
     paste("Both `", x, "` and `", y, "` need to be provided or both need to be `NULL`.")
   }
+
   if (xor(is.null(aetime_start), is.null(aetime_end))) stop(xor_error_string("aetime_start", "aetime_end"))
   if (xor(is.null(dstime_start), is.null(dstime_end))) stop(xor_error_string("dstime_start", "dstime_end"))
   if (xor(is.null(aerelday_start), is.null(aerelday_end))) stop(xor_error_string("aerelday_start", "aerelday_end"))
@@ -538,7 +534,6 @@ tm_g_pp_patient_timeline <- function(label,
     stop("At least one of 'aeterm' or 'cmdecod' needs to be provided.")
   }
 
-  # Build picks — AE variables bound to dataname_adae, CM variables to dataname_adcm
   picks_adae_vars <- Filter(Negate(is.null), list(
     aeterm = aeterm,
     aetime_start = aetime_start,
@@ -555,13 +550,13 @@ tm_g_pp_patient_timeline <- function(label,
   ))
 
   picks_adae <- if (length(picks_adae_vars) > 0) {
-    do.call(teal.picks::picks, c(list(teal.picks::datasets(dataname_adae)), picks_adae_vars))
+    lapply(picks_adae_vars, function(my_pick) create_picks_helper(teal.picks::datasets(dataname_adae), my_pick))
   } else {
     NULL
   }
 
   picks_adcm <- if (length(picks_adcm_vars) > 0) {
-    do.call(teal.picks::picks, c(list(teal.picks::datasets(dataname_adcm)), picks_adcm_vars))
+    lapply(picks_adcm_vars, function(my_pick) create_picks_helper(teal.picks::datasets(dataname_adcm), my_pick))
   } else {
     NULL
   }
@@ -588,8 +583,6 @@ tm_g_pp_patient_timeline <- function(label,
 #' @keywords internal
 ui_g_patient_timeline <- function(id,
                                   picks_timeline,
-                                  picks_adae,
-                                  picks_adcm,
                                   aeterm,
                                   cmdecod,
                                   aetime_start,
@@ -621,13 +614,13 @@ ui_g_patient_timeline <- function(id,
       if (!is.null(cmdecod)) {
         tags$div(
           tags$label("Select Medication standardized term variable:"),
-          teal.picks::picks_ui(ns("cmdecod"), picks_timeline["cmdecod"])
+          teal.picks::picks_ui(ns("cmdecod"), picks_timeline[["cmdecod"]])
         )
       },
       if (!is.null(aeterm)) {
         tags$div(
           tags$label("Select AE reported term variable:"),
-          teal.picks::picks_ui(ns("aeterm"), picks_timeline["aeterm"])
+          teal.picks::picks_ui(ns("aeterm"), picks_timeline[["aeterm"]])
         )
       },
       if (has_relday || has_abstime) {
@@ -644,11 +637,11 @@ ui_g_patient_timeline <- function(id,
                 tagList(
                   tags$div(
                     tags$label("Select AE relative start day variable:"),
-                    teal.picks::picks_ui(ns("aerelday_start"), picks_timeline["aerelday_start"])
+                    teal.picks::picks_ui(ns("aerelday_start"), picks_timeline[["aerelday_start"]])
                   ),
                   tags$div(
                     tags$label("Select AE relative end day variable:"),
-                    teal.picks::picks_ui(ns("aerelday_end"), picks_timeline["aerelday_end"])
+                    teal.picks::picks_ui(ns("aerelday_end"), picks_timeline[["aerelday_end"]])
                   )
                 )
               },
@@ -656,11 +649,11 @@ ui_g_patient_timeline <- function(id,
                 tagList(
                   tags$div(
                     tags$label("Select Medication relative start day variable:"),
-                    teal.picks::picks_ui(ns("dsrelday_start"), picks_timeline["dsrelday_start"])
+                    teal.picks::picks_ui(ns("dsrelday_start"), picks_timeline[["dsrelday_start"]])
                   ),
                   tags$div(
                     tags$label("Select Medication relative end day variable:"),
-                    teal.picks::picks_ui(ns("dsrelday_end"), picks_timeline["dsrelday_end"])
+                    teal.picks::picks_ui(ns("dsrelday_end"), picks_timeline[["dsrelday_end"]])
                   )
                 )
               }
@@ -678,11 +671,11 @@ ui_g_patient_timeline <- function(id,
             tagList(
               tags$div(
                 tags$label("Select ASTDTM variable:"),
-                teal.picks::picks_ui(ns("aetime_start"), picks_timeline["aetime_start"])
+                teal.picks::picks_ui(ns("aetime_start"), picks_timeline[["aetime_start"]])
               ),
               tags$div(
                 tags$label("Select AENDTM variable:"),
-                teal.picks::picks_ui(ns("aetime_end"), picks_timeline["aetime_end"])
+                teal.picks::picks_ui(ns("aetime_end"), picks_timeline[["aetime_end"]])
               )
             )
           },
@@ -690,11 +683,11 @@ ui_g_patient_timeline <- function(id,
             tagList(
               tags$div(
                 tags$label("Select TRTSDTM variable:"),
-                teal.picks::picks_ui(ns("dstime_start"), picks_timeline["dstime_start"])
+                teal.picks::picks_ui(ns("dstime_start"), picks_timeline[["dstime_start"]])
               ),
               tags$div(
                 tags$label("Select TRTEDTM variable:"),
-                teal.picks::picks_ui(ns("dstime_end"), picks_timeline["dstime_end"])
+                teal.picks::picks_ui(ns("dstime_end"), picks_timeline[["dstime_end"]])
               )
             )
           }
@@ -725,8 +718,6 @@ srv_g_patient_timeline <- function(id,
                                    parentname,
                                    patient_col,
                                    picks_timeline,
-                                   picks_adae,
-                                   picks_adcm,
                                    aeterm,
                                    cmdecod,
                                    aetime_start,
@@ -768,28 +759,14 @@ srv_g_patient_timeline <- function(id,
       )
     })
 
-    # Build selector IDs — only include variables that were provided
-    selector_ids <- names(Filter(Negate(is.null), list(
-      aeterm = aeterm, cmdecod = cmdecod,
-      aetime_start = aetime_start, aetime_end = aetime_end,
-      dstime_start = dstime_start, dstime_end = dstime_end,
-      aerelday_start = aerelday_start, aerelday_end = aerelday_end,
-      dsrelday_start = dsrelday_start, dsrelday_end = dsrelday_end
-    )))
-
     selectors <- teal.picks::picks_srv(
-      picks = picks_timeline[selector_ids],
+      picks = picks_timeline,
       data  = data
     )
 
     validated_q <- reactive({
       obj <- req(data())
 
-      validate_input(
-        inputId   = "patient_id",
-        condition = !is.null(input$patient_id) && nzchar(input$patient_id),
-        message   = "Please select a patient."
-      )
       if (!is.null(aeterm)) {
         validate_input(
           inputId   = "aeterm-variables-selected",
@@ -820,6 +797,12 @@ srv_g_patient_timeline <- function(id,
     )
 
     all_q <- reactive({
+      validate_input(
+        inputId   = "patient_id",
+        condition = !is.null(input$patient_id) && nzchar(input$patient_id),
+        message   = "Please select a patient."
+      )
+
       vars <- anl_inputs$variables()
       ANL <- anl_inputs$data()[["ANL"]]
 
