@@ -56,12 +56,9 @@ tm_g_km.default <- function(label,
   checkmate::assert_string(dataname)
 
   if (is.null(facet_var)) {
-    facet_var <- teal.transform::add_no_selected_choices(
-      teal.transform::choices_selected(
-        teal.transform::variable_choices(parentname, c("SEX", "BMRKR2")),
-        selected = NULL
-      ),
-      multiple = FALSE
+    facet_var <- teal.picks::picks(
+      teal.picks::datasets(parentname, parentname),
+      teal.picks::variables(c("SEX", "BMRKR2"), NULL, multiple = FALSE)
     )
   }
 
