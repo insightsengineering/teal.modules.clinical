@@ -22,3 +22,8 @@ testthat::test_that("template_g_lineplot gives correct data expression with cust
   res <- testthat::expect_silent(result)
   testthat::expect_snapshot(res)
 })
+
+testthat::test_that("tm_g_lineplot builds a teal module with teal.picks defaults", {
+  m <- tm_g_lineplot(label = "Line Plot", dataname = "ADLB")
+  testthat::expect_s3_class(m, "teal_module")
+})

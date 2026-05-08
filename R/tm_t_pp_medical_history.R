@@ -79,11 +79,11 @@ template_medical_history <- function(dataname = "ANL",
 #' @inheritParams module_arguments
 #' @inheritParams teal::module
 #' @inheritParams template_medical_history
-#' @param mhterm ([teal.transform::choices_selected()])\cr object with all
+#' @param mhterm ([teal.picks::variables] or [teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `MHTERM` variable from `dataname`.
-#' @param mhbodsys ([teal.transform::choices_selected()])\cr object with all
+#' @param mhbodsys ([teal.picks::variables] or [teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `MHBODSYS` variable from `dataname`.
-#' @param mhdistat ([teal.transform::choices_selected()])\cr object with all
+#' @param mhdistat ([teal.picks::variables] or [teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `MHDISTAT` variable from `dataname`.
 #'
 #' @inherit module_arguments return
@@ -137,18 +137,9 @@ template_medical_history <- function(dataname = "ANL",
 #'       dataname = "ADMH",
 #'       parentname = "ADSL",
 #'       patient_col = "USUBJID",
-#'       mhterm = choices_selected(
-#'         choices = variable_choices(ADMH, c("MHTERM")),
-#'         selected = "MHTERM"
-#'       ),
-#'       mhbodsys = choices_selected(
-#'         choices = variable_choices(ADMH, "MHBODSYS"),
-#'         selected = "MHBODSYS"
-#'       ),
-#'       mhdistat = choices_selected(
-#'         choices = variable_choices(ADMH, "MHDISTAT"),
-#'         selected = "MHDISTAT"
-#'       )
+#'       mhterm = variables("MHTERM", fixed = TRUE),
+#'       mhbodsys = variables("MHBODSYS", fixed = TRUE),
+#'       mhdistat = variables("MHDISTAT", fixed = TRUE),
 #'     )
 #'   )
 #' )
@@ -169,53 +160,44 @@ tm_t_pp_medical_history <- function(label,
                                     transformators = list(),
                                     decorators = list()) {
   message("Initializing tm_t_pp_medical_history")
+
+  mhterm <- migrate_choices_selected_to_variables(mhterm, null.ok = TRUE, multiple = FALSE)
+  mhbodsys <- migrate_choices_selected_to_variables(mhbodsys, null.ok = TRUE, multiple = FALSE)
+  mhdistat <- migrate_choices_selected_to_variables(mhdistat, null.ok = TRUE, multiple = FALSE)
+
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_string(patient_col)
-  checkmate::assert_class(mhterm, "choices_selected", null.ok = TRUE)
-  checkmate::assert_class(mhbodsys, "choices_selected", null.ok = TRUE)
-  checkmate::assert_class(mhdistat, "choices_selected", null.ok = TRUE)
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
-  teal::assert_decorators(decorators, "table")
+  assert_decorators(decorators, "table")
+
+  if (!is.null(mhterm)) mhterm <- create_picks_helper(teal.picks::datasets(dataname, dataname), mhterm)
+  if (!is.null(mhbodsys)) mhbodsys <- create_picks_helper(teal.picks::datasets(dataname, dataname), mhbodsys)
+  if (!is.null(mhdistat)) mhdistat <- create_picks_helper(teal.picks::datasets(dataname, dataname), mhdistat)
 
   args <- as.list(environment())
-  data_extract_list <- list(
-    mhterm = `if`(is.null(mhterm), NULL, cs_to_des_select(mhterm, dataname = dataname)),
-    mhbodsys = `if`(is.null(mhbodsys), NULL, cs_to_des_select(mhbodsys, dataname = dataname)),
-    mhdistat = `if`(is.null(mhdistat), NULL, cs_to_des_select(mhdistat, dataname = dataname))
-  )
 
   module(
     label = label,
     ui = ui_t_medical_history,
-    ui_args = c(data_extract_list, args),
+    ui_args = args[names(args) %in% names(formals(ui_t_medical_history))],
     server = srv_t_medical_history,
-    server_args = c(
-      data_extract_list,
-      list(
-        dataname = dataname,
-        parentname = parentname,
-        label = label,
-        patient_col = patient_col,
-        decorators = decorators
-      )
-    ),
+    server_args = args[names(args) %in% names(formals(srv_t_medical_history))],
     transformators = transformators,
     datanames = c(dataname, parentname)
   )
 }
 
 #' @keywords internal
-ui_t_medical_history <- function(id, ...) {
-  ui_args <- list(...)
-  is_single_dataset_value <- teal.transform::is_single_dataset(
-    ui_args$mhterm,
-    ui_args$mhbodsys,
-    ui_args$mhdistat
-  )
-
+ui_t_medical_history <- function(id,
+                                 mhterm,
+                                 mhbodsys,
+                                 mhdistat,
+                                 pre_output,
+                                 post_output,
+                                 decorators) {
   ns <- NS(id)
   teal.widgets::standard_layout(
     output = tags$div(
@@ -223,35 +205,34 @@ ui_t_medical_history <- function(id, ...) {
     ),
     encoding = tags$div(
       tags$label("Encodings", class = "text-primary"), tags$br(),
-      teal.transform::datanames_input(ui_args[c("mhterm", "mhbodsys", "mhdistat")]),
       teal.widgets::optionalSelectInput(
         ns("patient_id"),
         "Select Patient:",
         multiple = FALSE,
         options = shinyWidgets::pickerOptions(`liveSearch` = TRUE)
       ),
-      teal.transform::data_extract_ui(
-        id = ns("mhterm"),
-        label = "Select MHTERM variable:",
-        data_extract_spec = ui_args$mhterm,
-        is_single_dataset = is_single_dataset_value
-      ),
-      teal.transform::data_extract_ui(
-        id = ns("mhbodsys"),
-        label = "Select MHBODSYS variable:",
-        data_extract_spec = ui_args$mhbodsys,
-        is_single_dataset = is_single_dataset_value
-      ),
-      teal.transform::data_extract_ui(
-        id = ns("mhdistat"),
-        label = "Select MHDISTAT variable:",
-        data_extract_spec = ui_args$mhdistat,
-        is_single_dataset = is_single_dataset_value
-      ),
-      teal::ui_transform_teal_data(ns("decorator"), transformators = select_decorators(ui_args$decorators, "table"))
+      if (!is.null(mhterm)) {
+        tags$div(
+          tags$label("Select MHTERM variable:"),
+          teal.picks::picks_ui(ns("mhterm"), mhterm)
+        )
+      },
+      if (!is.null(mhbodsys)) {
+        tags$div(
+          tags$label("Select MHBODSYS variable:"),
+          teal.picks::picks_ui(ns("mhbodsys"), mhbodsys)
+        )
+      },
+      if (!is.null(mhdistat)) {
+        tags$div(
+          tags$label("Select MHDISTAT variable:"),
+          teal.picks::picks_ui(ns("mhdistat"), mhdistat)
+        )
+      },
+      teal::ui_transform_teal_data(ns("decorator"), transformators = select_decorators(decorators, "table"))
     ),
-    pre_output = ui_args$pre_output,
-    post_output = ui_args$post_output
+    pre_output = pre_output,
+    post_output = post_output
   )
 }
 
@@ -273,11 +254,13 @@ srv_t_medical_history <- function(id,
     teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
     patient_id <- reactive(input$patient_id)
 
-    # Init
+    # Patient selector initialisation
     patient_data_base <- reactive(unique(data()[[parentname]][[patient_col]]))
     teal.widgets::updateOptionalSelectInput(
-      session, "patient_id",
-      choices = patient_data_base(), selected = patient_data_base()[1]
+      session,
+      "patient_id",
+      choices = patient_data_base(),
+      selected = patient_data_base()[1]
     )
 
     observeEvent(patient_data_base(),
@@ -296,74 +279,92 @@ srv_t_medical_history <- function(id,
       ignoreInit = TRUE
     )
 
-    # Medical history tab ----
-    selector_list <- teal.transform::data_extract_multiple_srv(
-      data_extract = list(mhterm = mhterm, mhbodsys = mhbodsys, mhdistat = mhdistat),
-      datasets = data,
-      select_validation_rule = list(
-        mhterm = shinyvalidate::sv_required("Please select MHTERM variable."),
-        mhbodsys = shinyvalidate::sv_required("Please select MHBODSYS variable."),
-        mhdistat = shinyvalidate::sv_required("Please select MHDISTAT variable.")
+    # Build selector list — only include non-NULL picks
+    picks_list <- Filter(Negate(is.null), list(
+      mhterm   = mhterm,
+      mhbodsys = mhbodsys,
+      mhdistat = mhdistat
+    ))
+
+    selectors <- teal.picks::picks_srv(
+      picks = picks_list,
+      data = data
+    )
+
+    validated_q <- reactive({
+      obj <- req(data())
+
+      teal:::validate_input(
+        inputId = "mhterm-variables-selected",
+        condition = !is.null(selectors$mhterm()$variables$selected),
+        message = "Please select MHTERM variable."
       )
-    )
+      teal:::validate_input(
+        inputId = "mhbodsys-variables-selected",
+        condition = !is.null(selectors$mhbodsys()$variables$selected),
+        message = "Please select MHBODSYS variable."
+      )
+      teal:::validate_input(
+        inputId = "mhdistat-variables-selected",
+        condition = !is.null(selectors$mhdistat()$variables$selected),
+        message = "Please select MHDISTAT variable."
+      )
+      teal:::validate_input(
+        inputId = "patient_id",
+        condition = !is.null(input$patient_id) && length(input$patient_id) > 0,
+        message = "Please select a patient"
+      )
 
-    iv_r <- reactive({
-      iv <- shinyvalidate::InputValidator$new()
-      iv$add_rule("patient_id", shinyvalidate::sv_required("Please select a patient"))
-      teal.transform::compose_and_enable_validators(iv, selector_list)
+      teal.reporter::teal_card(obj) <- c(
+        teal.reporter::teal_card(obj),
+        teal.reporter::teal_card("## Module's output(s)")
+      )
+      obj
     })
 
-    anl_inputs <- teal.transform::merge_expression_srv(
-      datasets = data,
-      selector_list = selector_list,
-      merge_function = "dplyr::left_join"
+    anl_inputs <- teal.picks::merge_srv(
+      "anl_inputs",
+      data = validated_q,
+      selectors = selectors,
+      join_fun = "dplyr::left_join",
+      output_name = "ANL"
     )
 
-    anl_q <- reactive({
-      obj <- data()
-      teal.reporter::teal_card(obj) <-
-        c(
-          teal.reporter::teal_card(obj),
-          teal.reporter::teal_card("## Module's output(s)")
-        )
-      obj %>% teal.code::eval_code(as.expression(anl_inputs()$expr))
-    })
-
-    # Generate r code for the analysis.
     all_q <- reactive({
-      teal::validate_inputs(iv_r())
+      obj <- anl_inputs$data()
 
       validate(
         need(
-          nrow(anl_q()[["ANL"]][anl_q()[["ANL"]][[patient_col]] == patient_id(), ]) > 0,
+          nrow(obj[["ANL"]][obj[["ANL"]][[patient_col]] == patient_id(), ]) > 0,
           "Patient has no data about medical history."
         )
       )
 
       my_calls <- template_medical_history(
         dataname = "ANL",
-        mhterm = input[[extract_input("mhterm", dataname)]],
-        mhbodsys = input[[extract_input("mhbodsys", dataname)]],
-        mhdistat = input[[extract_input("mhdistat", dataname)]],
+        mhterm = anl_inputs$variables()$mhterm,
+        mhbodsys = anl_inputs$variables()$mhbodsys,
+        mhdistat = anl_inputs$variables()$mhdistat,
         patient_id = patient_id()
       )
 
       obj <- teal.code::eval_code(
-        anl_q(),
+        obj,
         substitute(
           expr = {
             ANL <- ANL[ANL[[patient_col]] == patient_id, ]
-          }, env = list(
+          },
+          env = list(
             patient_col = patient_col,
             patient_id = patient_id()
           )
         )
       )
       teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "### Table")
-      obj %>% teal.code::eval_code(as.expression(unlist(my_calls)))
+      obj |> teal.code::eval_code(as.expression(unlist(my_calls)))
     })
 
-    # Decoration of table output.
+    # Decoration of table output
     decorated_table_q <- teal::srv_transform_teal_data(
       id = "decorator",
       data = all_q,
@@ -371,7 +372,6 @@ srv_t_medical_history <- function(id,
       expr = quote(table)
     )
 
-    # Outputs to render.
     table_r <- reactive(decorated_table_q()[["table"]])
 
     teal.widgets::table_with_settings_srv(
