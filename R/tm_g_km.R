@@ -266,15 +266,14 @@ template_g_km <- function(dataname = "ANL",
 #'   confidence UI inputs.
 #'
 #' @details
-#' **S3 dispatch** is on `paramcd` (endpoint encoding):
-#' - [`teal.transform::choices_selected()`] for `paramcd` keeps the legacy `teal.transform`
+#' **S3 dispatch** is on `arm_var`:
+#' - [`teal.transform::choices_selected()`] for `arm_var` keeps the legacy `teal.transform`
 #'   data-extract / merge UI (`data_extract_spec` objects built from `choices_selected` inputs).
-#' - [`teal.picks::picks()`] for `paramcd` uses the picks merge/UI path; other encoding arguments
+#' - other classes use the picks merge/UI path; other encoding arguments
 #'   may still be legacy `choices_selected` / `value_choices` and are coerced with the `migrate_*`
 #'   helpers (with deprecation warnings where applicable) before the module is built.
 #'
-#' `parentname` is the parent dataset name (`character(1)`, e.g. `ADSL`); it is not used as the
-#' S3 dispatch value because it has no distinguishing class.
+#' `parentname` is the parent dataset name (`character(1)`, e.g. `ADSL`).
 #'
 #' @inherit module_arguments return seealso
 #'
@@ -434,7 +433,7 @@ tm_g_km <- function(label,
                     transformators = list(),
                     decorators = list()) {
   message("Initializing tm_g_km")
-  UseMethod("tm_g_km", paramcd)
+  UseMethod("tm_g_km", arm_var)
 }
 
 
