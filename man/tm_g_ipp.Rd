@@ -7,22 +7,15 @@
 tm_g_ipp(
   label,
   dataname,
-  parentname = ifelse(inherits(arm_var, "data_extract_spec"),
-    teal.transform::datanames_input(arm_var), "ADSL"),
-  arm_var,
-  paramcd,
-  id_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
-    "USUBJID"), "USUBJID", fixed = TRUE),
-  visit_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
-    "AVISIT"), "AVISIT", fixed = TRUE),
-  aval_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
-    "AVAL"), "AVAL", fixed = TRUE),
-  avalu_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
-    "AVALU"), "AVALU", fixed = TRUE),
-  base_var = lifecycle::deprecated(),
-  baseline_var =
-    teal.transform::choices_selected(teal.transform::variable_choices(dataname, "BASE"),
-    "BASE", fixed = TRUE),
+  parentname = "ADSL",
+  arm_var = teal.picks::variables("ARMCD"),
+  paramcd_var = teal.picks::variables("PARAMCD"),
+  paramcd_value = teal.picks::values(multiple = FALSE),
+  aval_var = teal.picks::variables("AVAL", fixed = TRUE),
+  avalu_var = teal.picks::variables("AVALU", fixed = TRUE),
+  id_var = teal.picks::variables("USUBJID", fixed = TRUE),
+  visit_var = teal.picks::variables("AVISIT"),
+  baseline_var = teal.picks::variables("BASE", fixed = TRUE),
   add_baseline_hline = FALSE,
   separate_by_obs = FALSE,
   suppress_legend = FALSE,
@@ -33,7 +26,8 @@ tm_g_ipp(
   post_output = NULL,
   ggplot2_args = teal.widgets::ggplot2_args(),
   transformators = list(),
-  decorators = list()
+  decorators = list(),
+  paramcd
 )
 }
 \arguments{
@@ -46,8 +40,11 @@ tm_g_ipp(
 \item{arm_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
 all available choices and preselected option for variable values that can be used as arm variable.}
 
-\item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
-available choices and preselected option for the parameter code variable from \code{dataname}.}
+\item{aval_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
+all available choices and pre-selected option for the analysis variable.}
+
+\item{avalu_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
+all available choices and preselected option for the analysis unit variable.}
 
 \item{id_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object specifying
 the variable name for subject id.}
@@ -55,14 +52,6 @@ the variable name for subject id.}
 \item{visit_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
 all available choices and preselected option for variable names that can be used as \code{visit} variable.
 Must be a factor in \code{dataname}.}
-
-\item{aval_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
-all available choices and pre-selected option for the analysis variable.}
-
-\item{avalu_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
-all available choices and preselected option for the analysis unit variable.}
-
-\item{base_var}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use the \code{baseline_var} argument instead.}
 
 \item{baseline_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
 all available choices and preselected option for variable values that can be used as \code{baseline_var}.}
@@ -104,6 +93,9 @@ decorator for tables or plots included in the module output reported.
 The decorators are applied to the respective output objects.
 
 See section "Decorating Module" below for more details.}
+
+\item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
+available choices and preselected option for the parameter code variable from \code{dataname}.}
 }
 \value{
 a \code{teal_module} object.
