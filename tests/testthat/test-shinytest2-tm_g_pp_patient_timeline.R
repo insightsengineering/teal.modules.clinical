@@ -247,7 +247,7 @@ testthat::test_that(
     plot_before <- app_driver$get_active_module_plot_output("patient_timeline_plot")
     set_teal_picks_slot(app_driver, "cmdecod", "variables", character(0L))
     testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("patient_timeline_plot")))
-    app_driver$expect_no_validation_error()
+    app_driver$expect_validation_error()
   }
 )
 
@@ -278,7 +278,7 @@ testthat::test_that(
     plot_before <- app_driver$get_active_module_plot_output("patient_timeline_plot")
     set_teal_picks_slot(app_driver, "aeterm", "variables", character(0L))
     testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("patient_timeline_plot")))
-    app_driver$expect_no_validation_error()
+    app_driver$expect_validation_error()
   }
 )
 
