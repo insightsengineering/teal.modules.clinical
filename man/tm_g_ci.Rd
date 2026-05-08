@@ -13,7 +13,10 @@ tm_g_ci(
   y_var,
   color,
   stat = c("mean", "median"),
-  conf_level = NULL,
+  paramcd = NULL,
+  avisit = NULL,
+  conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order =
+    TRUE),
   plot_height = c(700L, 200L, 2000L),
   plot_width = NULL,
   pre_output = NULL,
@@ -29,7 +32,10 @@ tm_g_ci(
   y_var,
   color,
   stat = c("mean", "median"),
-  conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+  paramcd = NULL,
+  avisit = NULL,
+  conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order =
+    TRUE),
   plot_height = c(700L, 200L, 2000L),
   plot_width = NULL,
   pre_output = NULL,
@@ -48,6 +54,11 @@ tm_g_ci(
   color = teal.picks::picks(teal.picks::datasets("ADSL"), teal.picks::variables(choices =
     c("SEX", "STRATA1", "STRATA2"), selected = "STRATA1", multiple = FALSE)),
   stat = c("mean", "median"),
+  paramcd = teal.picks::values(choices = c("ALT", "CRP", "IGA"), selected = "ALT",
+    multiple = FALSE),
+  avisit = teal.picks::values(choices = c("SCREENING", "BASELINE", "WEEK 1 DAY 8",
+    "WEEK 2 DAY 15", "WEEK 3 DAY 22", "WEEK 4 DAY 29", "WEEK 5 DAY 36"), selected =
+    "SCREENING", multiple = FALSE),
   conf_level = teal.picks::values(c("0.95", "0.9", "0.8"), selected = "0.95", keep_order
     = TRUE),
   plot_height = c(700L, 200L, 2000L),
@@ -68,6 +79,11 @@ tm_g_ci(
   color = teal.picks::variables(choices = c("SEX", "STRATA1", "STRATA2"), selected =
     "STRATA1", multiple = FALSE),
   stat = c("mean", "median"),
+  paramcd = teal.picks::values(choices = c("ALT", "CRP", "IGA"), selected = "ALT",
+    multiple = FALSE),
+  avisit = teal.picks::values(choices = c("SCREENING", "BASELINE", "WEEK 1 DAY 8",
+    "WEEK 2 DAY 15", "WEEK 3 DAY 22", "WEEK 4 DAY 29", "WEEK 5 DAY 36"), selected =
+    "SCREENING", multiple = FALSE),
   conf_level = teal.picks::values(c("0.95", "0.9", "0.8"), selected = "0.95", keep_order
     = TRUE),
   plot_height = c(700L, 200L, 2000L),
@@ -89,6 +105,12 @@ tm_g_ci(
 \item{color}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}, \code{\link[teal.picks:picks]{teal.picks::picks()}}, or legacy \code{data_extract_spec})\cr grouping variable for colors, shapes, and line types.}
 
 \item{stat}{(\code{character})\cr statistic to plot. Options are \code{"mean"} and \code{"median"}.}
+
+\item{paramcd}{(\code{NULL} or \code{\link[teal.picks:values]{teal.picks::values()}})\cr used only by the \code{teal.picks}/\code{variables} methods;
+ignored by the legacy \code{data_extract_spec} method.}
+
+\item{avisit}{(\code{NULL} or \code{\link[teal.picks:values]{teal.picks::values()}})\cr used only by the \code{teal.picks}/\code{variables} methods;
+ignored by the legacy \code{data_extract_spec} method.}
 
 \item{conf_level}{(\code{choices_selected} or \code{values}, depending on the dispatched method)\cr confidence level control.}
 
@@ -209,18 +231,6 @@ app <- init(
         choices = c("SEX", "STRATA1", "STRATA2"),
         selected = "STRATA1",
         multiple = FALSE
-      ),
-      x_dataname = "ADSL",
-      y_dataname = "ADLB",
-      paramcd_value = values(
-        choices = levels(data[["ADLB"]]$PARAMCD),
-        selected = levels(data[["ADLB"]]$PARAMCD)[[1]],
-        multiple = FALSE
-      ),
-      avisit_value = values(
-        choices = levels(data[["ADLB"]]$AVISIT),
-        selected = levels(data[["ADLB"]]$AVISIT)[[1]],
-        multiple = FALSE
       )
     )
   )
@@ -237,8 +247,8 @@ apps implementing this module can be found.
 \section{Examples in Shinylive}{
 \describe{
   \item{example-1}{
-    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo67sxs+ajUrIGlOgCCACIAygAykTqkMAQxcAAeMVD8otQNLe0AQl09fYPD-NT0SgC+QQBWRLkxANZwrKL5yTap-HDGUMKkMQT8tKJ9Wzv7h8DQ8EcFcgC6rtDoLq5TLsBoFHQAXh0BVwDT4QhEokhOnhwjEoIgZTKPRiAHNbrQMVisdQoPQ4NRkQowABhEjGWjncy6ACSKkYmm4OgACv5SNTYZjiTohpzGMixbQyYiicKygQstsCGJkQRQWBGlgALI05oCnTUqZarAAaSwACZqXJBXKyqIKXB1HB+FSNdrdQKGnKYNdaDVdFCAGKNdqtFxC4nWr1Y1gxMUSlhS+gy6PEhVKlVQtXUxoANRD+upNIAEgBxK02232kROl1QnP59qeiPCn3UDT+5HB0PhuVRlvyoj+cVQyXS9GprHpmSZnTZsBhgAahYX9katkaAEYV601xvLWB+7adNXHeQ6wbV1h11vm8e2x2RF2Q2HJ0fhUMCh8A5eWh078KsZfrAP45s00wAcSqAsLAdxxtwgg-py1CIUck7yoqM5IlCIjaNQXzJMAwBgRBYA-D8AAk3Kao0OrNO+cqnrWyK4RSBHhERJFTNS5FUTRdFyERm7kZW3q+p2QYvr2woMViUCaA8mTwShSEIROA5TphyrYeUcB4exUCcRq4HcWRlF5iyrQsrYsnEkx54sXpbHHBxxHGaRvEWVZNlCSJ6EouJT6ST2b7RkEZRBEEtDGDo7C5OQagaNo1g2CUQqiDkECsI06DsGgqAUYItBFPlFH2hyqhBKsShgKsPxAA}{Open in Shinylive}
-    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo67sxs+ajUrIGlOgCCACIAygAykTqkMAQxcAAeMVD8otQNLe0AQl09fYPD-NT0SgC+QQBWRLkxANZwrKL5yTap-HDGUMKkMQT8tKJ9Wzv7h8DQ8EcFcgC6rtDoLq5TLsBoFHQAXh0BVwDT4QhEokhOnhwjEoIgZTKPRiAHNbrQMVisdQoPQ4NRkQowABhEjGWjncy6ACSKkYmm4OgACv5SNTYZjiTohpzGMixbQyYiicKygQstsCGJkQRQWBGlgALI05oCnTUqZarAAaSwACZqXJBXKyqIKXB1HB+FSNdrdQKGnKYNdaDVdFCAGKNdqtFxC4nWr1Y1gxMUSlhS+gy6PEhVKlVQtXUxoANRD+upNIAEgBxK02232kROl1QnP59qeiPCn3UDT+5HB0PhuVRlvyoj+cVQyXS9GprHpmSZnTZsBhgAahYX9katkaAEYV601xvLWB+7adNXHeQ6wbV1h11vm8e2x2RF2Q2HJ0fhUMCh8A5eWh078KsZfrAP45s00wAcSqAsLAdxxtwgg-py1CIUck7yoqM5IlCIjaNQXzJMAwBgRBYA-D8AAk3Kao0OrNO+cqnrWyK4RSBHhERJFTNS5FUTRdFyERm7kZW3q+p2QYvr2woMViUCaA8mTwShSEIROA5TphyrYeUcB4exUCcRq4HcWRlF5iyrQsrYsnEkx54sXpbHHBxxHGaRvEWVZNlCSJ6EouJT6ST2b7RkEZRBEEtDGDo7C5OQagaNo1g2CUQqiDkECsI06DsGgqAUYItBFPlFH2hyqhBKsShgKsPxAA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo67sxs+ajUrIGlOgCCACIAygAykTqkMAQxcAAeMVD8otQNLe0AQl09fYPD-NT0SgC+QQBWRLkxANZwrKL5yTap-HDGUMKkMQT8tKJ9Wzv7h8DQ8EcFcgC6rtDoLq5TLsBoFHQAXh0BVwDT4QhEokhOnhwjEoIgZTKPRiAHNbrQMVisdQoPQ4NRkQowABhEjGWjncy6ACSKkYmm4OgACv5SNTYZjiTohpzGMixbQyYiicKygQstsCGJkQRQWBGlgALI05oCnTUqZarAAaSwACZqXJBXKyqIKXB1HB+FSNdrdQKGnKYNdaDVdFCAGKNdqtFxC4nWr1Y1gxMUSlhS+gy6PEhVKlVQtXUxoANRD+upNIAEgBxK02232kROl1QnP59qeiPCn3UDT+5HB0PhuVRlvyoj+cVQyXS9GprHpmSZnTZsBhgAahYX9katkaAEYV601xvLWB+7adNXHeQ6wbV1h11vm8e2x2RF2Q2HJ0FIw0gkFaMYdOxcuQagaNo1g2CUQqiDkECsI06DsGgqAACSCLQRQIYh9ocqoQSrEoYCrD8QA}{Open in Shinylive}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo67sxs+ajUrIGlOgCCACIAygAykTqkMAQxcAAeMVD8otQNLe0AQl09fYPD-NT0SgC+QQBWRLkxANZwrKL5yTap-HDGUMKkMQT8tKJ9Wzv7h8DQ8EcFcgC6rtDoLq5TLsBoFHQAXh0BVwDT4QhEokhOnhwjEoIgZTKPRiAHNbrQMVisdQoPQ4NRkQowABhEjGWjncy6ACSKkYmm4OgACv5SNTYZjiTohpzGMixbQyYiicKygQstsCGJkQRQWBGlgALI05oCnTUqZarAAaSwACZqXJBXKyqIKXB1HB+FSNdrdQKGnKYNdaDVdFCAGKNdqtFxC4nWr1Y1gxMUSlhS+gy6PEhVKlVQtXUxoANRD+upNIAEgBxK02232kROl1QnP59qeiPCn3UDT+5HB0PhuVRlvyoj+cVQyXS9GprHpmSZnTZsBhgAahYX9katkaAEYV601xvLWB+7adNXHeQ6wbV1h11vm8e2x2RF2Q2HJ0FIw0gkFaMYdOxcuQagaNo1g2CUQqiDkECsI06DsGgqAACSCLQRQIYh9ocqoQSrEoYCrD8QA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
     \if{html}{\out{<a style='height: 800px; display: block;'></a>}}
   }
 }
