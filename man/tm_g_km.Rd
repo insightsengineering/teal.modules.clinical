@@ -129,9 +129,6 @@ a \code{teal_module} object.
 \description{
 This module produces a \code{ggplot}-style Kaplan-Meier plot for data with ADaM structure.
 }
-\details{
-Encoding arguments use \code{\link{teal.picks}} (\code{variables()}, \code{picks()}, \code{\link[teal.picks:values]{teal.picks::values()}}, etc.).
-}
 \section{Decorating Module}{
 
 
@@ -157,14 +154,6 @@ For additional details and examples of decorators, refer to the vignette
 
 To learn more please refer to the vignette
 \code{vignette("transform-module-output", package = "teal")} or the \code{\link[teal:teal_transform_module]{teal::teal_transform_module()}} documentation.
-}
-
-\section{Faceting}{
-
-Never pass \code{\link[teal.picks:variables]{teal.picks::variables()}} with empty \code{selected} (for example
-\code{selected = character(0)}): that fails inside \pkg{teal.picks} while arguments are evaluated,
-before \code{tm_g_km()} runs. For no faceting, omit \code{facet_var} or pass \code{facet_var = NULL}; the module
-adds the \verb{-- no selection --} choice via \code{\link[teal.transform:add_no_selected_choices]{teal.transform::add_no_selected_choices()}}.
 }
 
 \section{Reporting}{
