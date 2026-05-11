@@ -188,11 +188,6 @@ template_g_ci <- function(dataname,
 #' @param x_var ([`teal.picks::variables()`], [`teal.picks::picks()`], or legacy `data_extract_spec`)\cr treatment-axis encoding.
 #' @param y_var ([`teal.picks::variables()`], [`teal.picks::picks()`], or legacy `data_extract_spec`)\cr analysis-value encoding.
 #' @param color ([`teal.picks::variables()`], [`teal.picks::picks()`], or legacy `data_extract_spec`)\cr grouping variable for colors, shapes, and line types.
-#' @param paramcd (`NULL` or [`teal.picks::values()`])\cr used only by the `teal.picks`/`variables` methods;
-#'   ignored by the legacy `data_extract_spec` method.
-#' @param avisit (`NULL` or [`teal.picks::values()`])\cr used only by the `teal.picks`/`variables` methods;
-#'   ignored by the legacy `data_extract_spec` method.
-#' @param conf_level (`choices_selected` or `values`, depending on the dispatched method)\cr confidence level control.
 #'
 #' @inherit module_arguments return seealso
 #'
@@ -307,6 +302,8 @@ tm_g_ci.default <- function(label,
                             transformators = list(),
                             decorators = list()) {
   stat <- match.arg(stat)
+  checkmate::assert_null(paramcd, .var.name = "paramcd")
+  checkmate::assert_null(avisit, .var.name = "avisit")
   checkmate::assert_class(x_var, classes = "data_extract_spec")
   checkmate::assert_class(y_var, classes = "data_extract_spec")
   checkmate::assert_class(color, classes = "data_extract_spec")

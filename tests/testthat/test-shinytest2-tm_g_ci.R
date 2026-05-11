@@ -38,6 +38,56 @@ app_driver_tm_g_ci <- function() {
   )
 }
 
+app_driver_tm_g_ci_custom_filters <- function() {
+  data <- teal.data::teal_data()
+  data <- within(data, {
+    ADSL <- teal.data::rADSL
+    ADLB <- teal.data::rADLB
+  })
+  teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
+
+  init_teal_app_driver(
+    teal::init(
+      data = data,
+      modules = tm_g_ci(
+        label = "Confidence Interval Plot",
+        x_var = teal.picks::variables(
+          choices = c("ARMCD", "BMRKR2"),
+          selected = "ARMCD",
+          multiple = FALSE
+        ),
+        y_var = teal.picks::variables(
+          choices = c("AVAL", "CHG", "CHG2"),
+          selected = "AVAL",
+          multiple = FALSE
+        ),
+        color = teal.picks::variables(
+          choices = c("SEX", "STRATA1", "STRATA2"),
+          selected = "STRATA1",
+          multiple = FALSE
+        ),
+        paramcd = teal.picks::values(
+          choices = c("CRP", "IGA"),
+          selected = "CRP",
+          multiple = FALSE
+        ),
+        avisit = teal.picks::values(
+          choices = c("BASELINE", "WEEK 1 DAY 8"),
+          selected = "BASELINE",
+          multiple = FALSE
+        ),
+        stat = c("mean", "median"),
+        conf_level = teal.picks::values(c("0.95", "0.9", "0.8"), selected = "0.95", keep_order = TRUE),
+        plot_height = c(700L, 200L, 2000L),
+        plot_width = NULL,
+        pre_output = NULL,
+        post_output = NULL,
+        ggplot2_args = teal.widgets::ggplot2_args()
+      )
+    )
+  )
+}
+
 testthat::test_that("e2e - tm_g_ci: Module initializes and produces plot output.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ci()
@@ -95,6 +145,28 @@ testthat::test_that(
     testthat::expect_equal(app_driver$get_active_module_input("stat"), "mean")
   }
 )
+
+testthat::test_that("e2e - tm_g_ci: Uses PARAMCD and AVISIT module arguments in picks mode.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_g_ci_custom_filters()
+  withr::defer(app_driver$stop())
+
+  exported_values <- app_driver$get_values()$export
+  names(exported_values) <- gsub(
+    sprintf("%s-", app_driver$namespaces()$module(NULL)), "", names(exported_values),
+    fixed = TRUE
+  )
+
+  testthat::expect_equal(
+    exported_values[["paramcd_picks-picks_resolved"]]$values$selected,
+    "CRP"
+  )
+  testthat::expect_equal(
+    exported_values[["avisit_picks-picks_resolved"]]$values$selected,
+    "BASELINE"
+  )
+  app_driver$expect_no_validation_error()
+})
 
 testthat::test_that("e2e - tm_g_ci: Selecting x_var column updates plot.", {
   skip_if_too_deep(5)

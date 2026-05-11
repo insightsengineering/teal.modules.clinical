@@ -266,27 +266,27 @@ srv_g_ci.picks <- function(id,
 
       teal:::validate_input(
         inputId = "x_var_picks-variables-selected",
-        condition = selectors$x_var_picks()$variables$selected,
+        condition = length(selectors$x_var_picks()$variables$selected) > 0L,
         message = "Please select a treatment variable (x axis)."
       )
       teal:::validate_input(
         inputId = "paramcd_picks-values-selected",
-        condition = selectors$paramcd_picks()$values$selected,
+        condition = length(selectors$paramcd_picks()$values$selected) > 0L,
         message = "Please select a lab parameter (PARAMCD)."
       )
       teal:::validate_input(
         inputId = "avisit_picks-values-selected",
-        condition = selectors$avisit_picks()$values$selected,
+        condition = length(selectors$avisit_picks()$values$selected) > 0L,
         message = "Please select a visit (AVISIT)."
       )
       teal:::validate_input(
         inputId = "y_var_picks-variables-selected",
-        condition = selectors$y_var_picks()$variables$selected,
+        condition = length(selectors$y_var_picks()$variables$selected) > 0L,
         message = "Please select an analysis value variable (y axis)."
       )
       teal:::validate_input(
         inputId = "color_picks-variables-selected",
-        condition = selectors$color_picks()$variables$selected,
+        condition = length(selectors$color_picks()$variables$selected) > 0L,
         message = "Please select a grouping variable (color)."
       )
       teal:::validate_input(
