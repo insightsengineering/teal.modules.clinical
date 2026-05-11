@@ -472,8 +472,6 @@ ui_g_km <- function(id,
                     post_output,
                     decorators) {
   ns <- NS(id)
-  conf_level$fixed <- conf_level$fixed %||% FALSE
-  conf_type$fixed <- conf_type$fixed %||% FALSE
 
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(
@@ -622,7 +620,7 @@ ui_g_km <- function(id,
             conf_level$choices,
             conf_level$selected,
             multiple = FALSE,
-            fixed = conf_level$fixed
+            fixed = teal.picks::is_pick_fixed(conf_level)
           ),
           teal.widgets::optionalSelectInput(
             ns("conf_type"),
@@ -630,7 +628,7 @@ ui_g_km <- function(id,
             conf_type$choices,
             conf_type$selected,
             multiple = FALSE,
-            fixed = conf_type$fixed
+            fixed = teal.picks::is_pick_fixed(conf_type)
           ),
           textInput(ns("xlab"), "X-axis label", "Time"),
           tags$div(
