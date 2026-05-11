@@ -325,16 +325,16 @@ tm_g_pp_therapy <- function(label,
                             dataname = "ADCM",
                             parentname = "ADSL",
                             patient_col = "USUBJID",
-                            atirel = teal.picks::variables("ATIREL"),
-                            cmdecod = teal.picks::variables("CMDECOD"),
-                            cmindc = teal.picks::variables("CMINDC"),
-                            cmdose = teal.picks::variables("CMDOSE"),
-                            cmtrt = teal.picks::variables("CMTRT"),
-                            cmdosu = teal.picks::variables("CMDOSU"),
-                            cmroute = teal.picks::variables("CMROUTE"),
-                            cmdosfrq = teal.picks::variables("CMDOSFRQ"),
-                            cmstdy = teal.picks::variables("CMSTDY"),
-                            cmendy = teal.picks::variables("CMENDY"),
+                            atirel = NULL,
+                            cmdecod = NULL,
+                            cmindc = NULL,
+                            cmdose = NULL,
+                            cmtrt = NULL,
+                            cmdosu = NULL,
+                            cmroute = NULL,
+                            cmdosfrq = NULL,
+                            cmstdy = NULL,
+                            cmendy = NULL,
                             font_size = c(12L, 12L, 25L),
                             plot_height = c(700L, 200L, 2000L),
                             plot_width = NULL,
@@ -373,7 +373,7 @@ tm_g_pp_therapy <- function(label,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
-  assert_decorators(decorators, names = "plot")
+  teal::assert_decorators(decorators, names = "plot")
 
   atirel <- create_picks_helper(teal.picks::datasets(dataname, dataname), atirel)
   cmdecod <- create_picks_helper(teal.picks::datasets(dataname, dataname), cmdecod)
@@ -618,9 +618,19 @@ srv_g_pp_therapy <- function(id,
       obj
     })
 
+    data_with_card <- reactive({
+      obj <- validated_q()
+      teal.reporter::teal_card(obj) <-
+        c(
+          teal.reporter::teal_card(obj),
+          teal.reporter::teal_card("## Module's output(s)")
+        )
+      obj
+    })
+
     anl_inputs <- teal.picks::merge_srv(
       "anl_inputs",
-      data = validated_q,
+      data = data_with_card,
       selectors = selectors,
       join_fun = "dplyr::left_join",
       output_name = "ANL"
