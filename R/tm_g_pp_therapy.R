@@ -345,20 +345,11 @@ tm_g_pp_therapy <- function(label,
                             decorators = list()) {
   message("Initializing tm_g_pp_therapy")
 
-  # Compatibility layer: convert choices_selected to teal.picks variables
-  for (arg in c(
-    "atirel", "cmdecod", "cmindc", "cmdose", "cmtrt",
-    "cmdosu", "cmroute", "cmdosfrq", "cmstdy", "cmendy"
-  )) {
-    if (inherits(get(arg), "choices_selected")) {
-      assign(arg, teal.picks::as.picks(get(arg)))
-    }
-  }
-
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_string(patient_col)
+
   migrate_choices_selected_to_variables(atirel, "atirel", null.ok = TRUE)
   migrate_choices_selected_to_variables(cmdecod, "cmdecod", null.ok = TRUE)
   migrate_choices_selected_to_variables(cmindc, "cmindc", null.ok = TRUE)
@@ -369,6 +360,7 @@ tm_g_pp_therapy <- function(label,
   migrate_choices_selected_to_variables(cmdosfrq, "cmdosfrq", null.ok = TRUE)
   migrate_choices_selected_to_variables(cmstdy, "cmstdy", null.ok = TRUE)
   migrate_choices_selected_to_variables(cmendy, "cmendy", null.ok = TRUE)
+
   checkmate::assert_numeric(font_size, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(font_size[1], lower = font_size[2], upper = font_size[3], .var.name = "font_size")
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
@@ -383,17 +375,16 @@ tm_g_pp_therapy <- function(label,
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
   assert_decorators(decorators, names = "plot")
 
-  # Build picks objects from variable specs
-  atirel <- teal.picks::picks(teal.picks::datasets(dataname), atirel)
-  cmdecod <- teal.picks::picks(teal.picks::datasets(dataname), cmdecod)
-  cmindc <- teal.picks::picks(teal.picks::datasets(dataname), cmindc)
-  cmdose <- teal.picks::picks(teal.picks::datasets(dataname), cmdose)
-  cmtrt <- teal.picks::picks(teal.picks::datasets(dataname), cmtrt)
-  cmdosu <- teal.picks::picks(teal.picks::datasets(dataname), cmdosu)
-  cmroute <- teal.picks::picks(teal.picks::datasets(dataname), cmroute)
-  cmdosfrq <- teal.picks::picks(teal.picks::datasets(dataname), cmdosfrq)
-  cmstdy <- teal.picks::picks(teal.picks::datasets(dataname), cmstdy)
-  cmendy <- teal.picks::picks(teal.picks::datasets(dataname), cmendy)
+  atirel <- create_picks_helper(teal.picks::datasets(dataname, dataname), atirel)
+  cmdecod <- create_picks_helper(teal.picks::datasets(dataname, dataname), cmdecod)
+  cmindc <- create_picks_helper(teal.picks::datasets(dataname, dataname), cmindc)
+  cmdose <- create_picks_helper(teal.picks::datasets(dataname, dataname), cmdose)
+  cmtrt <- create_picks_helper(teal.picks::datasets(dataname, dataname), cmtrt)
+  cmdosu <- create_picks_helper(teal.picks::datasets(dataname, dataname), cmdosu)
+  cmroute <- create_picks_helper(teal.picks::datasets(dataname, dataname), cmroute)
+  cmdosfrq <- create_picks_helper(teal.picks::datasets(dataname, dataname), cmdosfrq)
+  cmstdy <- create_picks_helper(teal.picks::datasets(dataname, dataname), cmstdy)
+  cmendy <- create_picks_helper(teal.picks::datasets(dataname, dataname), cmendy)
 
   args <- as.list(environment())
 
