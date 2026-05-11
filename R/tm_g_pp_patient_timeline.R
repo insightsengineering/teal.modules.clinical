@@ -330,14 +330,14 @@ template_patient_timeline <- function(dataname = "ANL",
 #' @param aeterm ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
 #'   object with all available choices and preselected
 #'   option for the `AETERM` variable from `dataname_adae`.
-#' @param aerelday_start ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
-#'   object with all available choices and preselected
+#' @param aerelday_start ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated
+#'   but still accepted)\cr object with all available choices and preselected
 #'   option for the `ASTDY` variable from `dataname_adae`.
 #' @param aerelday_end ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
 #'   object with all available choices and preselected
 #'   option for the `AENDY` variable from `dataname_adae`.
-#' @param dsrelday_start ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
-#'   object with all available choices and preselected
+#' @param dsrelday_start ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated
+#'   but still accepted)\cr object with all available choices and preselected
 #'   option for the `ASTDY` variable from `dataname_adcm`.
 #' @param dsrelday_end ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
 #'   object with all available choices and preselected
