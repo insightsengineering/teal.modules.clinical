@@ -244,7 +244,6 @@ template_g_km <- function(dataname = "ANL",
 #'
 #' This module produces a `ggplot`-style Kaplan-Meier plot for data with ADaM structure.
 #'
-#' @name tm_g_km
 #' @inheritParams module_arguments
 #' @inheritParams teal::module
 #' @inheritParams template_g_km
@@ -252,9 +251,6 @@ template_g_km <- function(dataname = "ANL",
 #'   for the x-axis. If `NULL` (default), users can specify this interactively in the module.
 #'   If provided, the interactive input field is pre-populated with the specified values as a default.
 #'   Users can then modify these values interactively, and their changes will take precedence over the default.
-#'
-#' @details
-#' Encoding arguments use [`teal.picks`] (`variables()`, `picks()`, [`teal.picks::values()`], etc.).
 #'
 #' @inherit module_arguments return seealso
 #'
@@ -283,12 +279,6 @@ template_g_km <- function(dataname = "ANL",
 #' `vignette("transform-module-output", package = "teal")` or the [`teal::teal_transform_module()`] documentation.
 #'
 #' @inheritSection teal::example_module Reporting
-#'
-#' @section Faceting:
-#' Never pass [`teal.picks::variables()`] with empty `selected` (for example
-#' `selected = character(0)`): that fails inside \pkg{teal.picks} while arguments are evaluated,
-#' before `tm_g_km()` runs. For no faceting, omit `facet_var` or pass `facet_var = NULL`; the module
-#' adds the `-- no selection --` choice via [`teal.transform::add_no_selected_choices()`].
 #'
 #' @examplesShinylive
 #' library(teal.modules.clinical)
