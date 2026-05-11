@@ -225,18 +225,24 @@ template_therapy <- function(dataname = "ANL",
 #' @inheritParams module_arguments
 #' @inheritParams teal::module
 #' @inheritParams template_therapy
-#' @param cmdose ([teal.transform::choices_selected()])\cr object with all
-#'   available choices and preselected option for the `CMDOSE` variable from `dataname`.
-#' @param cmtrt ([teal.transform::choices_selected()])\cr object with all
-#'   available choices and preselected option for the `CMTRT` variable from `dataname`.
-#' @param cmdosu ([teal.transform::choices_selected()])\cr object with all
-#'   available choices and preselected option for the `CMDOSU` variable from `dataname`.
-#' @param cmroute ([teal.transform::choices_selected()])\cr object with all
-#'   available choices and preselected option for the `CMROUTE` variable from `dataname`.
-#' @param cmdosfrq ([teal.transform::choices_selected()])\cr object with all
-#'   available choices and preselected option for the `CMDOSFRQ` variable from `dataname`.
-#' @param cmendy ([teal.transform::choices_selected()])\cr object with all
-#'   available choices and preselected option for the `CMENDY` variable from `dataname`.
+#' @param cmdose ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
+#'   object with all available choices and preselected
+#'   option for the `CMDOSE` variable from `dataname`.
+#' @param cmtrt ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
+#'   object with all available choices and preselected
+#'   option for the `CMTRT` variable from `dataname`.
+#' @param cmdosu ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
+#'   object with all available choices and preselected
+#'   option for the `CMDOSU` variable from `dataname`.
+#' @param cmroute ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
+#'   object with all available choices and preselected
+#'   option for the `CMROUTE` variable from `dataname`.
+#' @param cmdosfrq ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
+#'   object with all available choices and preselected
+#'   option for the `CMDOSFRQ` variable from `dataname`.
+#' @param cmendy ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
+#'   object with all available choices and preselected
+#'   option for the `CMENDY` variable from `dataname`.
 #'
 #' @inherit module_arguments return
 #'
@@ -297,46 +303,16 @@ template_therapy <- function(dataname = "ANL",
 #'       parentname = "ADSL",
 #'       patient_col = "USUBJID",
 #'       plot_height = c(600L, 200L, 2000L),
-#'       atirel = choices_selected(
-#'         choices = variable_choices(ADCM, "ATIREL"),
-#'         selected = c("ATIREL")
-#'       ),
-#'       cmdecod = choices_selected(
-#'         choices = variable_choices(ADCM, "CMDECOD"),
-#'         selected = "CMDECOD"
-#'       ),
-#'       cmindc = choices_selected(
-#'         choices = variable_choices(ADCM, "CMINDC"),
-#'         selected = "CMINDC"
-#'       ),
-#'       cmdose = choices_selected(
-#'         choices = variable_choices(ADCM, "CMDOSE"),
-#'         selected = "CMDOSE"
-#'       ),
-#'       cmtrt = choices_selected(
-#'         choices = variable_choices(ADCM, "CMTRT"),
-#'         selected = "CMTRT"
-#'       ),
-#'       cmdosu = choices_selected(
-#'         choices = variable_choices(ADCM, "CMDOSU"),
-#'         selected = c("CMDOSU")
-#'       ),
-#'       cmroute = choices_selected(
-#'         choices = variable_choices(ADCM, "CMROUTE"),
-#'         selected = "CMROUTE"
-#'       ),
-#'       cmdosfrq = choices_selected(
-#'         choices = variable_choices(ADCM, "CMDOSFRQ"),
-#'         selected = "CMDOSFRQ"
-#'       ),
-#'       cmstdy = choices_selected(
-#'         choices = variable_choices(ADCM, "ASTDY"),
-#'         selected = "ASTDY"
-#'       ),
-#'       cmendy = choices_selected(
-#'         choices = variable_choices(ADCM, "AENDY"),
-#'         selected = "AENDY"
-#'       )
+#'       atirel = teal.picks::variables(choices = "ATIREL", selected = "ATIREL"),
+#'       cmdecod = teal.picks::variables(choices = "CMDECOD", selected = "CMDECOD"),
+#'       cmindc = teal.picks::variables(choices = "CMINDC", selected = "CMINDC"),
+#'       cmdose = teal.picks::variables(choices = "CMDOSE", selected = "CMDOSE"),
+#'       cmtrt = teal.picks::variables(choices = "CMTRT", selected = "CMTRT"),
+#'       cmdosu = teal.picks::variables(choices = "CMDOSU", selected = "CMDOSU"),
+#'       cmroute = teal.picks::variables(choices = "CMROUTE", selected = "CMROUTE"),
+#'       cmdosfrq = teal.picks::variables(choices = "CMDOSFRQ", selected = "CMDOSFRQ"),
+#'       cmstdy = teal.picks::variables(choices = "ASTDY", selected = "ASTDY"),
+#'       cmendy = teal.picks::variables(choices = "AENDY", selected = "AENDY")
 #'     )
 #'   )
 #' )
@@ -383,16 +359,16 @@ tm_g_pp_therapy <- function(label,
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_string(patient_col)
-  checkmate::assert_class(atirel, "variables", null.ok = TRUE)
-  checkmate::assert_class(cmdecod, "variables", null.ok = TRUE)
-  checkmate::assert_class(cmindc, "variables", null.ok = TRUE)
-  checkmate::assert_class(cmdose, "variables", null.ok = TRUE)
-  checkmate::assert_class(cmtrt, "variables", null.ok = TRUE)
-  checkmate::assert_class(cmdosu, "variables", null.ok = TRUE)
-  checkmate::assert_class(cmroute, "variables", null.ok = TRUE)
-  checkmate::assert_class(cmdosfrq, "variables", null.ok = TRUE)
-  checkmate::assert_class(cmstdy, "variables", null.ok = TRUE)
-  checkmate::assert_class(cmendy, "variables", null.ok = TRUE)
+  migrate_choices_selected_to_variables(atirel, "atirel", null.ok = TRUE)
+  migrate_choices_selected_to_variables(cmdecod, "cmdecod", null.ok = TRUE)
+  migrate_choices_selected_to_variables(cmindc, "cmindc", null.ok = TRUE)
+  migrate_choices_selected_to_variables(cmdose, "cmdose", null.ok = TRUE)
+  migrate_choices_selected_to_variables(cmtrt, "cmtrt", null.ok = TRUE)
+  migrate_choices_selected_to_variables(cmdosu, "cmdosu", null.ok = TRUE)
+  migrate_choices_selected_to_variables(cmroute, "cmroute", null.ok = TRUE)
+  migrate_choices_selected_to_variables(cmdosfrq, "cmdosfrq", null.ok = TRUE)
+  migrate_choices_selected_to_variables(cmstdy, "cmstdy", null.ok = TRUE)
+  migrate_choices_selected_to_variables(cmendy, "cmendy", null.ok = TRUE)
   checkmate::assert_numeric(font_size, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(font_size[1], lower = font_size[2], upper = font_size[3], .var.name = "font_size")
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
