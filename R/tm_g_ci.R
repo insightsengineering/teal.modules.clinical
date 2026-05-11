@@ -252,6 +252,16 @@ template_g_ci <- function(dataname,
 #'         choices = c("SEX", "STRATA1", "STRATA2"),
 #'         selected = "STRATA1",
 #'         multiple = FALSE
+#'       ),
+#'       paramcd = values(
+#'         choices = levels(data[["ADLB"]]$PARAMCD),
+#'         selected = levels(data[["ADLB"]]$PARAMCD)[[1]],
+#'         multiple = FALSE
+#'       ),
+#'       avisit = values(
+#'         choices = levels(data[["ADLB"]]$AVISIT),
+#'         selected = levels(data[["ADLB"]]$AVISIT)[[1]],
+#'         multiple = FALSE
 #'       )
 #'     )
 #'   )
