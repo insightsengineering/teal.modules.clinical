@@ -49,11 +49,7 @@ app_driver_tm_g_km <- function() {
           selected = "SEX",
           multiple = TRUE
         ),
-        facet_var = teal.picks::variables(
-          choices = c("SEX", "BMRKR2"),
-          selected = "SEX",
-          multiple = FALSE
-        ),
+        facet_var = NULL,
         time_unit_var = teal.picks::variables("VALUE_UNIT", fixed = TRUE),
         aval_var = teal.picks::variables("ANALYSIS_VAL", fixed = TRUE),
         cnsr_var = teal.picks::variables("CENSORING", fixed = TRUE),
