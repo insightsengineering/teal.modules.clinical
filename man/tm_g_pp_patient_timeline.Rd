@@ -65,16 +65,16 @@ option for the \code{CMASTDTM} variable from \code{dataname_adcm}.}
 object with all available choices and preselected
 option for the \code{CMAENDTM} variable from \code{dataname_adcm}.}
 
-\item{aerelday_start}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
-object with all available choices and preselected
+\item{aerelday_start}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated
+but still accepted)\cr object with all available choices and preselected
 option for the \code{ASTDY} variable from \code{dataname_adae}.}
 
 \item{aerelday_end}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
 object with all available choices and preselected
 option for the \code{AENDY} variable from \code{dataname_adae}.}
 
-\item{dsrelday_start}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
-object with all available choices and preselected
+\item{dsrelday_start}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated
+but still accepted)\cr object with all available choices and preselected
 option for the \code{ASTDY} variable from \code{dataname_adcm}.}
 
 \item{dsrelday_end}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
