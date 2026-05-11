@@ -46,11 +46,10 @@ app_driver_tm_g_pp_therapy <- function() {
         cmstdy = teal.picks::variables(c("ASTDY", "ASTDY2"), selected = "ASTDY2", multiple = FALSE),
         cmendy = teal.picks::variables(c("AENDY", "AENDY2"), selected = "AENDY2", multiple = FALSE),
         font_size = c(12L, 1L, 30L),
-        plot_height = c(500L, 300L, 2000L),
+        plot_height = c(600L, 200L, 2000L),
         plot_width = c(1000L, 700L, 2000L),
         pre_output = NULL,
         post_output = NULL,
-        ggplot2_args = teal.widgets::ggplot2_args()
       )
     )
   )
@@ -371,7 +370,7 @@ testthat::test_that("e2e - tm_g_pp_therapy: Deselection of patient_id throws val
   app_driver$set_active_module_input("patient_id", NULL)
   app_driver$expect_validation_error()
   testthat::expect_match(
-    app_driver$get_text(app_driver$namespaces(TRUE)$module("therapy_plot-plot_main")),
+    app_driver$get_text(app_driver$namespaces(TRUE)$module("therapy_plot-plot-out-main")),
     "Please select a patient.",
     fixed = TRUE
   )
@@ -384,7 +383,7 @@ testthat::test_that("e2e - tm_g_pp_therapy: Deselection of cmdecod throws valida
   set_teal_picks_slot(app_driver, "cmdecod", "variables", character(0L))
   app_driver$expect_validation_error()
   testthat::expect_match(
-    app_driver$get_text(app_driver$namespaces(TRUE)$module("therapy_plot-plot_main")),
+    app_driver$get_text(app_driver$namespaces(TRUE)$module("therapy_plot-plot-out-main")),
     "Please select medication decoding variable.",
     fixed = TRUE
   )
@@ -397,7 +396,7 @@ testthat::test_that("e2e - tm_g_pp_therapy: Deselection of atirel throws validat
   set_teal_picks_slot(app_driver, "atirel", "variables", character(0L))
   app_driver$expect_validation_error()
   testthat::expect_match(
-    app_driver$get_text(app_driver$namespaces(TRUE)$module("therapy_plot-plot_main")),
+    app_driver$get_text(app_driver$namespaces(TRUE)$module("therapy_plot-plot-out-main")),
     "Please select ATIREL variable.",
     fixed = TRUE
   )
@@ -410,7 +409,7 @@ testthat::test_that("e2e - tm_g_pp_therapy: Deselection of cmindc throws validat
   set_teal_picks_slot(app_driver, "cmindc", "variables", character(0L))
   app_driver$expect_validation_error()
   testthat::expect_match(
-    app_driver$get_text(app_driver$namespaces(TRUE)$module("therapy_plot-plot_main")),
+    app_driver$get_text(app_driver$namespaces(TRUE)$module("therapy_plot-plot-out-main")),
     "Please select CMINDC variable.",
     fixed = TRUE
   )
@@ -423,7 +422,7 @@ testthat::test_that("e2e - tm_g_pp_therapy: Deselection of cmdose throws validat
   set_teal_picks_slot(app_driver, "cmdose", "variables", character(0L))
   app_driver$expect_validation_error()
   testthat::expect_match(
-    app_driver$get_text(app_driver$namespaces(TRUE)$module("therapy_plot-plot_main")),
+    app_driver$get_text(app_driver$namespaces(TRUE)$module("therapy_plot-plot-out-main")),
     "Please select CMDOSE variable.",
     fixed = TRUE
   )
@@ -436,7 +435,7 @@ testthat::test_that("e2e - tm_g_pp_therapy: Deselection of cmdosu throws validat
   set_teal_picks_slot(app_driver, "cmdosu", "variables", character(0L))
   app_driver$expect_validation_error()
   testthat::expect_match(
-    app_driver$get_text(app_driver$namespaces(TRUE)$module("therapy_plot-plot_main")),
+    app_driver$get_text(app_driver$namespaces(TRUE)$module("therapy_plot-plot-out-main")),
     "Please select CMDOSU variable.",
     fixed = TRUE
   )
@@ -449,7 +448,7 @@ testthat::test_that("e2e - tm_g_pp_therapy: Deselection of cmroute throws valida
   set_teal_picks_slot(app_driver, "cmroute", "variables", character(0L))
   app_driver$expect_validation_error()
   testthat::expect_match(
-    app_driver$get_text(app_driver$namespaces(TRUE)$module("therapy_plot-plot_main")),
+    app_driver$get_text(app_driver$namespaces(TRUE)$module("therapy_plot-plot-out-main")),
     "Please select CMROUTE variable.",
     fixed = TRUE
   )
@@ -462,7 +461,7 @@ testthat::test_that("e2e - tm_g_pp_therapy: Deselection of cmdosfrq throws valid
   set_teal_picks_slot(app_driver, "cmdosfrq", "variables", character(0L))
   app_driver$expect_validation_error()
   testthat::expect_match(
-    app_driver$get_text(app_driver$namespaces(TRUE)$module("therapy_plot-plot_main")),
+    app_driver$get_text(app_driver$namespaces(TRUE)$module("therapy_plot-plot-out-main")),
     "Please select CMDOSFRQ variable.",
     fixed = TRUE
   )
@@ -475,7 +474,7 @@ testthat::test_that("e2e - tm_g_pp_therapy: Deselection of cmstdy throws validat
   set_teal_picks_slot(app_driver, "cmstdy", "variables", character(0L))
   app_driver$expect_validation_error()
   testthat::expect_match(
-    app_driver$get_text(app_driver$namespaces(TRUE)$module("therapy_plot-plot_main")),
+    app_driver$get_text(app_driver$namespaces(TRUE)$module("therapy_plot-plot-out-main")),
     "Please select CMSTDY variable.",
     fixed = TRUE
   )
@@ -488,7 +487,7 @@ testthat::test_that("e2e - tm_g_pp_therapy: Deselection of cmendy throws validat
   set_teal_picks_slot(app_driver, "cmendy", "variables", character(0L))
   app_driver$expect_validation_error()
   testthat::expect_match(
-    app_driver$get_text(app_driver$namespaces(TRUE)$module("therapy_plot-plot_main")),
+    app_driver$get_text(app_driver$namespaces(TRUE)$module("therapy_plot-plot-out-main")),
     "Please select CMENDY variable.",
     fixed = TRUE
   )

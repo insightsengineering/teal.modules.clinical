@@ -303,16 +303,16 @@ template_therapy <- function(dataname = "ANL",
 #'       parentname = "ADSL",
 #'       patient_col = "USUBJID",
 #'       plot_height = c(600L, 200L, 2000L),
-#'       atirel = teal.picks::variables(choices = "ATIREL", selected = "ATIREL"),
-#'       cmdecod = teal.picks::variables(choices = "CMDECOD", selected = "CMDECOD"),
-#'       cmindc = teal.picks::variables(choices = "CMINDC", selected = "CMINDC"),
-#'       cmdose = teal.picks::variables(choices = "CMDOSE", selected = "CMDOSE"),
-#'       cmtrt = teal.picks::variables(choices = "CMTRT", selected = "CMTRT"),
-#'       cmdosu = teal.picks::variables(choices = "CMDOSU", selected = "CMDOSU"),
-#'       cmroute = teal.picks::variables(choices = "CMROUTE", selected = "CMROUTE"),
-#'       cmdosfrq = teal.picks::variables(choices = "CMDOSFRQ", selected = "CMDOSFRQ"),
-#'       cmstdy = teal.picks::variables(choices = "ASTDY", selected = "ASTDY"),
-#'       cmendy = teal.picks::variables(choices = "AENDY", selected = "AENDY")
+#'       atirel = variables(choices = "ATIREL", selected = "ATIREL"),
+#'       cmdecod = variables(choices = "CMDECOD", selected = "CMDECOD"),
+#'       cmindc = variables(choices = "CMINDC", selected = "CMINDC"),
+#'       cmdose = variables(choices = "CMDOSE", selected = "CMDOSE"),
+#'       cmtrt = variables(choices = "CMTRT", selected = "CMTRT"),
+#'       cmdosu = variables(choices = "CMDOSU", selected = "CMDOSU"),
+#'       cmroute = variables(choices = "CMROUTE", selected = "CMROUTE"),
+#'       cmdosfrq = variables(choices = "CMDOSFRQ", selected = "CMDOSFRQ"),
+#'       cmstdy = variables(choices = "ASTDY", selected = "ASTDY"),
+#'       cmendy = variables(choices = "AENDY", selected = "AENDY")
 #'     )
 #'   )
 #' )
