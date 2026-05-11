@@ -338,6 +338,11 @@ template_g_km <- function(dataname = "ANL",
 #'         selected = "SEX",
 #'         multiple = TRUE
 #'       ),
+#'       facet_var = variables(
+#'         choices = c("SEX", "BMRKR2"),
+#'         selected = "SEX",
+#'         multiple = FALSE
+#'       ),
 #'       xticks = c(0, 30, 60, 90, 120, 150, 180)
 #'     )
 #'   )
@@ -350,27 +355,11 @@ template_g_km <- function(dataname = "ANL",
 tm_g_km <- function(label,
                     dataname,
                     parentname = "ADSL",
-                    arm_var = teal.picks::variables(
-                      choices = c("ARM", "ARMCD", "ACTARMCD"),
-                      selected = "ARM",
-                      multiple = FALSE
-                    ),
+                    arm_var,
                     arm_ref_comp = NULL,
-                    paramcd = teal.picks::picks(
-                      teal.picks::variables("PARAMCD", fixed = TRUE),
-                      teal.picks::values(
-                        choices = c("OS", "PFS", "EFS"),
-                        selected = "OS",
-                        multiple = FALSE
-                      ),
-                      check_dataset = FALSE
-                    ),
-                    strata_var = teal.picks::variables(
-                      choices = c("SEX", "BMRKR2"),
-                      selected = "SEX",
-                      multiple = TRUE
-                    ),
-                    facet_var = NULL,
+                    paramcd,
+                    strata_var,
+                    facet_var,
                     time_unit_var = teal.picks::variables("AVALU", fixed = TRUE),
                     aval_var = teal.picks::variables("AVAL", fixed = TRUE),
                     cnsr_var = teal.picks::variables("CNSR", fixed = TRUE),
@@ -386,7 +375,7 @@ tm_g_km <- function(label,
                       keep_order = TRUE,
                       multiple = FALSE
                     ),
-                    font_size = c(11L, 1L, 30L),
+                    font_size = c(11L, 1L, 30),
                     xticks = NULL,
                     control_annot_surv_med = tern::control_surv_med_annot(),
                     control_annot_coxph = tern::control_coxph_annot(x = 0.27, y = 0.35, w = 0.3),
