@@ -494,31 +494,21 @@ template_ancova <- function(dataname = "ANL",
 #'     tm_t_ancova(
 #'       label = "ANCOVA Table",
 #'       dataname = "ADQS",
-#'       avisit = choices_selected(
-#'         choices = value_choices(ADQS, "AVISIT"),
-#'         selected = "WEEK 1 DAY 8"
+#'       avisit = picks(
+#'         variables("AVISIT", "AVISIT"),
+#'         values(selected = "WEEK 1 DAY 8", multiple = TRUE),
+#'         check_dataset = FALSE
 #'       ),
-#'       arm_var = choices_selected(
-#'         choices = variable_choices(ADSL, c("ARM", "ACTARMCD", "ARMCD")),
-#'         selected = "ARMCD"
-#'       ),
+#'       arm_var = variables(c("ARM", "ACTARMCD", "ARMCD"), selected = "ARMCD"),
 #'       arm_ref_comp = arm_ref_comp,
-#'       aval_var = choices_selected(
-#'         choices = variable_choices(ADQS, c("CHG", "AVAL")),
-#'         selected = "CHG"
+#'       aval_var = variables(c("CHG", "AVAL"), selected = "CHG", multiple = FALSE),
+#'       cov_var = variables(c("BASE", "STRATA1", "SEX"), selected = "STRATA1"),
+#'       paramcd = picks(
+#'         variables("PARAMCD", "PARAMCD"),
+#'         values(selected = "FKSI-FWB", multiple = TRUE),
+#'         check_dataset = FALSE
 #'       ),
-#'       cov_var = choices_selected(
-#'         choices = variable_choices(ADQS, c("BASE", "STRATA1", "SEX")),
-#'         selected = "STRATA1"
-#'       ),
-#'       paramcd = choices_selected(
-#'         choices = value_choices(ADQS, "PARAMCD", "PARAM"),
-#'         selected = "FKSI-FWB"
-#'       ),
-#'       interact_var = choices_selected(
-#'         choices = variable_choices(ADQS, c("BASE", "STRATA1", "SEX")),
-#'         selected = "STRATA1"
-#'       )
+#'       interact_var = variables(c("BASE", "STRATA1", "SEX"), selected = "STRATA1", multiple = FALSE)
 #'     )
 #'   )
 #' )
@@ -529,11 +519,7 @@ template_ancova <- function(dataname = "ANL",
 #' @export
 tm_t_ancova <- function(label,
                         dataname,
-                        parentname = ifelse(
-                          inherits(arm_var, "data_extract_spec"),
-                          teal.transform::datanames_input(arm_var),
-                          "ADSL"
-                        ),
+                        parentname = "ADSL",
                         arm_var,
                         arm_ref_comp = NULL,
                         aval_var,
@@ -543,104 +529,89 @@ tm_t_ancova <- function(label,
                         interact_y = FALSE,
                         avisit,
                         paramcd,
-                        conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+                        conf_level = teal.picks::values(c("0.95", "0.9", "0.8"), "0.95", keep_order = TRUE),
                         pre_output = NULL,
                         post_output = NULL,
                         basic_table_args = teal.widgets::basic_table_args(),
                         transformators = list(),
                         decorators = list()) {
   message("Initializing tm_t_ancova")
+
+  arm_var <- migrate_choices_selected_to_variables(arm_var, multiple = FALSE)
+  aval_var <- migrate_choices_selected_to_variables(aval_var, multiple = FALSE)
+  cov_var <- migrate_choices_selected_to_variables(cov_var, null.ok = TRUE)
+  conf_level <- migrate_choices_selected_to_values(conf_level)
+  avisit <- migrate_value_choices_to_picks(avisit, multiple = TRUE)
+  paramcd <- migrate_value_choices_to_picks(paramcd, multiple = TRUE)
+
+  if (is.null(interact_var)) {
+    interact_var <- cov_var
+    interact_var$selected <- NULL
+  } else {
+    interact_var <- migrate_choices_selected_to_variables(interact_var, multiple = FALSE, null.ok = TRUE)
+  }
+
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
-  checkmate::assert_class(arm_var, "choices_selected")
-  checkmate::assert_class(aval_var, "choices_selected")
-  checkmate::assert_class(cov_var, "choices_selected")
-  checkmate::assert_class(avisit, "choices_selected")
-  checkmate::assert_class(paramcd, "choices_selected")
-  checkmate::assert_class(conf_level, "choices_selected")
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
   teal::assert_decorators(decorators, "table")
 
-  args <- c(as.list(environment()))
+  arm_var <- create_picks_helper(teal.picks::datasets(parentname, parentname), arm_var)
+  aval_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), aval_var)
+  cov_var <- if (!is.null(cov_var)) create_picks_helper(teal.picks::datasets(dataname, dataname), cov_var)
+  avisit <- create_picks_helper(teal.picks::datasets(dataname, dataname), avisit)
+  paramcd <- create_picks_helper(teal.picks::datasets(dataname, dataname), paramcd)
+  interact_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), interact_var)
 
-  if (is.null(interact_var)) {
-    interact_var <- teal.transform::choices_selected(
-      choices = cov_var$choices,
-      selected = NULL
-    )
-  }
-
-  data_extract_list <- list(
-    arm_var = cs_to_des_select(arm_var, dataname = parentname),
-    aval_var = cs_to_des_select(aval_var, dataname = dataname),
-    cov_var = cs_to_des_select(cov_var, dataname = dataname, multiple = TRUE),
-    avisit = cs_to_des_filter(avisit, dataname = dataname, multiple = TRUE, include_vars = TRUE),
-    paramcd = cs_to_des_filter(paramcd, dataname = dataname, multiple = TRUE),
-    interact_var = cs_to_des_select(interact_var, dataname = dataname)
-  )
+  args <- as.list(environment())
 
   module(
     label = label,
     ui = ui_ancova,
-    ui_args = c(data_extract_list, args),
+    ui_args = args[names(args) %in% names(formals(ui_ancova))],
     server = srv_ancova,
-    server_args = c(
-      data_extract_list,
-      list(
-        dataname = dataname,
-        parentname = parentname,
-        arm_ref_comp = arm_ref_comp,
-        include_interact = include_interact,
-        label = label,
-        basic_table_args = basic_table_args,
-        decorators = decorators
-      )
-    ),
+    server_args = args[names(args) %in% names(formals(srv_ancova))],
     transformators = transformators,
-    datanames = teal.transform::get_extract_datanames(data_extract_list)
+    datanames = c(dataname, parentname)
   )
 }
 
 #' @keywords internal
-ui_ancova <- function(id, ...) {
-  a <- list(...)
-  is_single_dataset_value <- teal.transform::is_single_dataset(
-    a$arm_var, a$aval_var, a$cov_var, a$avisit, a$paramcd, a$interact_var
-  )
-
+ui_ancova <- function(id,
+                      arm_var,
+                      aval_var,
+                      cov_var,
+                      avisit,
+                      paramcd,
+                      interact_var,
+                      conf_level,
+                      decorators,
+                      pre_output,
+                      post_output) {
   ns <- NS(id)
 
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(teal.widgets::table_with_settings_ui(ns("table"))),
     encoding = tags$div(
       tags$label("Encodings", class = "text-primary"), tags$br(),
-      teal.transform::datanames_input(a[c("arm_var", "aval_var", "cov_var", "avisit", "paramcd", "interact_var")]),
-      teal.transform::data_extract_ui(
-        id = ns("avisit"),
-        label = "Analysis Visit",
-        data_extract_spec = a$avisit,
-        is_single_dataset = is_single_dataset_value
+      tags$div(
+        tags$label("Analysis Visit"),
+        teal.picks::picks_ui(ns("avisit"), avisit)
       ),
-      teal.transform::data_extract_ui(
-        id = ns("paramcd"),
-        label = "Select Endpoint",
-        data_extract_spec = a$paramcd,
-        is_single_dataset = is_single_dataset_value
+      tags$div(
+        tags$label("Select Endpoint"),
+        teal.picks::picks_ui(ns("paramcd"), paramcd)
       ),
-      teal.transform::data_extract_ui(
-        id = ns("aval_var"),
-        label = "Analysis Variable",
-        data_extract_spec = a$aval_var,
-        is_single_dataset = is_single_dataset_value
+      tags$div(
+        tags$label("Analysis Variable"),
+        teal.picks::picks_ui(ns("aval_var"), aval_var)
       ),
-      teal.transform::data_extract_ui(
-        id = ns("arm_var"),
-        label = "Select Treatment Variable",
-        data_extract_spec = a$arm_var,
-        is_single_dataset = is_single_dataset_value
+      tags$div(
+        tags$label("Select Treatment Variable"),
+        teal.picks::picks_ui(ns("arm_var"), arm_var)
       ),
       uiOutput(
         ns("arms_buckets"),
@@ -655,19 +626,17 @@ ui_ancova <- function(id, ...) {
         "Combine all comparison groups?",
         value = FALSE
       ),
-      teal.transform::data_extract_ui(
-        id = ns("cov_var"),
-        label = "Covariates",
-        data_extract_spec = a$cov_var,
-        is_single_dataset = is_single_dataset_value
+      tags$div(
+        tags$label("Covariates"),
+        teal.picks::picks_ui(ns("cov_var"), cov_var)
       ),
       teal.widgets::optionalSelectInput(
         inputId = ns("conf_level"),
         label = HTML(paste("Confidence Level")),
-        a$conf_level$choices,
-        a$conf_level$selected,
+        conf_level$choices,
+        conf_level$selected,
         multiple = FALSE,
-        fixed = a$conf_level$fixed
+        fixed = attr(conf_level, "fixed", exact = TRUE)
       ),
       tags$div(
         bslib::input_switch(
@@ -678,11 +647,9 @@ ui_ancova <- function(id, ...) {
         conditionalPanel(
           condition = paste0("input['", ns("include_interact"), "']"),
           tags$div(
-            teal.transform::data_extract_ui(
-              id = ns("interact_var"),
-              label = "Select Interaction Variable",
-              data_extract_spec = a$interact_var,
-              is_single_dataset = is_single_dataset_value
+            tags$div(
+              tags$label("Select Interaction Variable"),
+              teal.picks::picks_ui(ns("interact_var"), interact_var)
             ),
             teal.widgets::optionalSelectInput(
               ns("interact_y"),
@@ -694,11 +661,11 @@ ui_ancova <- function(id, ...) {
             )
           )
         ),
-        teal::ui_transform_teal_data(ns("decorator"), transformators = select_decorators(a$decorators, "table"))
+        teal::ui_transform_teal_data(ns("decorator"), transformators = select_decorators(decorators, "table"))
       )
     ),
-    pre_output = a$pre_output,
-    post_output = a$post_output
+    pre_output = pre_output,
+    post_output = post_output
   )
 }
 
@@ -723,20 +690,9 @@ srv_ancova <- function(id,
 
   moduleServer(id, function(input, output, session) {
     teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
-    # Setup arm variable selection, default reference arms, and default
-    # comparison arms for encoding panel.
-    iv_arco <- arm_ref_comp_observer(
-      session,
-      input,
-      output,
-      id_arm_var = extract_input("arm_var", parentname),
-      data = data()[[parentname]],
-      arm_ref_comp = arm_ref_comp,
-      module = "tm_ancova"
-    )
 
-    selector_list <- teal.transform::data_extract_multiple_srv(
-      data_extract = list(
+    selectors <- teal.picks::picks_srv(
+      picks = list(
         arm_var = arm_var,
         aval_var = aval_var,
         cov_var = cov_var,
@@ -744,70 +700,87 @@ srv_ancova <- function(id,
         paramcd = paramcd,
         interact_var = interact_var
       ),
-      datasets = data,
-      select_validation_rule = list(
-        arm_var = shinyvalidate::sv_required("Arm variable cannot be empty."),
-        aval_var = shinyvalidate::sv_required("Analysis variable cannot be empty."),
-        cov_var = shinyvalidate::sv_optional(),
-        interact_var = shinyvalidate::sv_optional()
-      ),
-      filter_validation_rule = list(
-        avisit = shinyvalidate::sv_required("`Analysis Visit` field cannot be empty."),
-        paramcd = shinyvalidate::sv_required("`Select Endpoint` is not selected.")
+      data = data
+    )
+
+    arm_var_r <- reactive(selectors$arm_var()$variables$selected)
+
+    # Setup arm variable selection, default reference arms, and default
+    # comparison arms for encoding panel.
+    iv_arco <- arm_ref_comp_observer_picks(
+      session,
+      input,
+      output,
+      id_arm_var = "arm_var-variables-selected",
+      data = reactive(data()[[parentname]]),
+      arm_ref_comp = arm_ref_comp,
+      module = "tm_ancova",
+      arm_var_r = arm_var_r
+    )
+
+    validated_q <- reactive({
+      obj <- req(data())
+      obj <- teal.code::eval_code(obj, "library(dplyr)")
+      validate_input(
+        inputId = "arm_var-variables-selected",
+        condition = !is.null(selectors$arm_var()$variables$selected),
+        message = "Arm variable cannot be empty."
       )
-    )
+      validate_input(
+        inputId = "aval_var-variables-selected",
+        condition = !is.null(selectors$aval_var()$variables$selected),
+        message = "Analysis variable cannot be empty."
+      )
+      validate_input(
+        inputId = "avisit-values-selected",
+        condition = !is.null(selectors$avisit()$values$selected),
+        message = "`Analysis Visit` field cannot be empty."
+      )
+      validate_input(
+        inputId = "paramcd-values-selected",
+        condition = !is.null(selectors$paramcd()$values$selected),
+        message = "`Select Endpoint` is not selected."
+      )
+      validate_input(
+        inputId = "conf_level",
+        condition = !is.null(input$conf_level),
+        message = "Please choose a confidence level."
+      )
+      validate_input(
+        inputId = "conf_level",
+        condition = as.numeric(input$conf_level) > 0 && as.numeric(input$conf_level) < 1,
+        message = "Confidence level must be between 0 and 1."
+      )
 
-    iv_r <- reactive({
-      iv <- shinyvalidate::InputValidator$new()
-      iv$add_rule("conf_level", shinyvalidate::sv_required("Please choose a confidence level."))
-      iv$add_rule("conf_level", shinyvalidate::sv_between(
-        0, 1,
-        message_fmt = "Confdence level must be between {left} and {right}."
-      ))
-      iv$add_validator(iv_arco)
-      teal.transform::compose_and_enable_validators(iv, selector_list)
-    })
-
-    # Set tern default for missing values for reproducibility (on .onLoad for the examples)
-    data_with_tern_options_r <- reactive({
-      within(data(), {
-        tern::set_default_na_str("<Missing>")
-      })
-    })
-
-    anl_inputs <- teal.transform::merge_expression_srv(
-      selector_list = selector_list,
-      datasets = data,
-      merge_function = "dplyr::inner_join"
-    )
-
-    adsl_inputs <- teal.transform::merge_expression_module(
-      datasets = data,
-      data_extract = list(arm_var = arm_var),
-      anl_name = "ANL_ADSL"
-    )
-
-    anl_q <- reactive({
-      obj <- data()
-      teal.reporter::teal_card(obj) <-
-        c(
-          teal.reporter::teal_card(obj),
-          teal.reporter::teal_card("## Module's output(s)")
+      teal.reporter::teal_card(obj) <- c(
+        teal.reporter::teal_card(obj),
+        teal.reporter::teal_card("## Module's output(s)")
+      )
+      obj |>
+        within(
+          tern::set_default_na_str(default_na_str),
+          default_na_str = getOption("tern_default_na_str", default = "<Missing>")
         )
-      obj %>%
-        teal.code::eval_code(as.expression(anl_inputs()$expr)) %>%
-        teal.code::eval_code(as.expression(adsl_inputs()$expr))
     })
 
-    merged <- list(
-      anl_input_r = anl_inputs,
-      adsl_input_r = adsl_inputs,
-      anl_q = anl_q
+    anl_inputs <- teal.picks::merge_srv(
+      id = "merge",
+      data = validated_q,
+      selectors = selectors,
+      output_name = "ANL"
     )
 
+    adsl_inputs <- teal.picks::merge_srv(
+      id = "merge_adsl",
+      data = anl_inputs$data,
+      selectors = selectors["arm_var"],
+      output_name = "ANL_ADSL"
+    )
+
+    anl_q <- reactive(adsl_inputs$data())
 
     output$helptext_ui <- renderUI({
-      if (length(selector_list()$arm_var()$select) != 0) {
+      if (length(selectors$arm_var()$variables$selected) != 0) {
         helpText("Multiple reference groups are automatically combined into a single group.")
       }
     })
@@ -817,12 +790,12 @@ srv_ancova <- function(id,
     observeEvent(
       {
         input$include_interact
-        input$`interact_var-dataset_ADQS_singleextract-select`
+        selectors$interact_var()$variables$selected
       },
       {
-        interact_var <- input$`interact_var-dataset_ADQS_singleextract-select`
-        if (isTRUE(input$include_interact) && length(interact_var) > 0) {
-          interact_choices <- sort(as.vector(unique(merged$anl_q()[[dataname]][[interact_var]])))
+        interact_var_sel <- selectors$interact_var()$variables$selected
+        if (isTRUE(input$include_interact) && length(interact_var_sel) > 0) {
+          interact_choices <- sort(as.vector(unique(anl_q()[[dataname]][[interact_var_sel]])))
           if (all(is.numeric(interact_choices))) {
             shinyjs::hide("interact_y")
           } else {
@@ -845,17 +818,15 @@ srv_ancova <- function(id,
 
     # Prepare the analysis environment (filter data, check data, populate envir).
     validate_checks <- reactive({
-      adsl_filtered <- merged$anl_q()[[parentname]]
-      anl_filtered <- merged$anl_q()[[dataname]]
+      adsl_filtered <- anl_q()[[parentname]]
+      anl_filtered <- anl_q()[[dataname]]
 
-      teal::validate_inputs(iv_r())
-
-      input_arm_var <- as.vector(merged$anl_input_r()$columns_source$arm_var)
-      input_aval_var <- as.vector(merged$anl_input_r()$columns_source$aval_var)
-      input_cov_var <- as.vector(merged$anl_input_r()$columns_source$cov_var)
-      input_interact_var <- as.vector(merged$anl_input_r()$columns_source$interact_var)
-      input_avisit <- unlist(avisit$filter)["vars_selected"]
-      input_paramcd <- unlist(paramcd$filter)["vars_selected"]
+      input_arm_var <- anl_inputs$variables()$arm_var
+      input_aval_var <- anl_inputs$variables()$aval_var
+      input_cov_var <- anl_inputs$variables()$cov_var
+      input_interact_var <- anl_inputs$variables()$interact_var
+      input_avisit <- selectors$avisit()$variables$selected
+      input_paramcd <- selectors$paramcd()$variables$selected
 
       # Validate inputs.
       validate_args <- list(
@@ -880,11 +851,11 @@ srv_ancova <- function(id,
       ))
       # check that there is at least one record with no missing data
       validate(shiny::need(
-        !all(is.na(merged$anl_q()[["ANL"]][[input_aval_var]])),
+        !all(is.na(anl_q()[["ANL"]][[input_aval_var]])),
         "ANCOVA table cannot be calculated as all values are missing."
       ))
       # check that for each visit there is at least one record with no missing data
-      all_NA_dataset <- merged$anl_q()[["ANL"]] %>% # nolint: object_name.
+      all_NA_dataset <- anl_q()[["ANL"]] %>% # nolint: object_name.
         dplyr::group_by(dplyr::across(dplyr::all_of(c(input_avisit, input_arm_var)))) %>%
         dplyr::summarize(all_NA = all(is.na(.data[[input_aval_var]])))
       validate(shiny::need(
@@ -928,25 +899,25 @@ srv_ancova <- function(id,
     # The R-code corresponding to the analysis.
     table_q <- reactive({
       validate_checks()
-      ANL <- merged$anl_q()[["ANL"]]
+      ANL <- anl_q()[["ANL"]]
 
-      label_paramcd <- get_paramcd_label(ANL, paramcd)
-      input_aval <- as.vector(merged$anl_input_r()$columns_source$aval_var)
+      label_paramcd <- selectors$paramcd()$values$selected
+      input_aval <- anl_inputs$variables()$aval_var
       label_aval <- if (length(input_aval) != 0) attributes(ANL[[input_aval]])$label else NULL
-      paramcd_levels <- unique(ANL[[unlist(paramcd$filter)["vars_selected"]]])
-      visit_levels <- unique(ANL[[unlist(avisit$filter)["vars_selected"]]])
+      paramcd_levels <- unique(ANL[[selectors$paramcd()$variables$selected]])
+      visit_levels <- unique(ANL[[selectors$avisit()$variables$selected]])
 
-      interact_var <- as.vector(merged$anl_input_r()$columns_source$interact_var)
-      if (length(interact_var) > 0) {
-        if (is.numeric(ANL[[interact_var]])) {
+      interact_var_sel <- anl_inputs$variables()$interact_var
+      if (length(interact_var_sel) > 0) {
+        if (is.numeric(ANL[[interact_var_sel]])) {
           interact_y <- FALSE
-        } else if (!all(input$interact_y %in% levels(ANL[[interact_var]]))) {
-          interact_y <- levels(ANL[[interact_var]])[1]
+        } else if (!all(input$interact_y %in% levels(ANL[[interact_var_sel]]))) {
+          interact_y <- levels(ANL[[interact_var_sel]])[1]
         } else {
           interact_y <- input$interact_y
         }
       } else {
-        interact_var <- NULL
+        interact_var_sel <- NULL
         if (length(input$interact_y) == 0 || all(input$interact_y == "")) {
           interact_y <- FALSE
         }
@@ -955,25 +926,25 @@ srv_ancova <- function(id,
       my_calls <- template_ancova(
         parentname = "ANL_ADSL",
         dataname = "ANL",
-        arm_var = as.vector(merged$anl_input_r()$columns_source$arm_var),
+        arm_var = anl_inputs$variables()$arm_var,
         ref_arm = unlist(input$buckets$Ref),
         comp_arm = unlist(input$buckets$Comp),
         combine_comp_arms = input$combine_comp_arms,
-        aval_var = as.vector(merged$anl_input_r()$columns_source$aval_var),
+        aval_var = anl_inputs$variables()$aval_var,
         label_aval = label_aval,
-        cov_var = as.vector(merged$anl_input_r()$columns_source$cov_var),
+        cov_var = selectors$cov_var()$variables$selected %||% character(0),
         include_interact = input$include_interact,
-        interact_var = interact_var,
+        interact_var = interact_var_sel,
         interact_y = interact_y,
         paramcd_levels = paramcd_levels,
-        paramcd_var = unlist(paramcd$filter)["vars_selected"],
+        paramcd_var = selectors$paramcd()$variables$selected,
         label_paramcd = label_paramcd,
         visit_levels = visit_levels,
-        visit_var = unlist(avisit$filter)["vars_selected"],
+        visit_var = selectors$avisit()$variables$selected,
         conf_level = as.numeric(input$conf_level),
         basic_table_args = basic_table_args
       )
-      obj <- merged$anl_q()
+      obj <- anl_q()
       teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "### Table")
       teal.code::eval_code(obj, as.expression(unlist(my_calls)))
     })
