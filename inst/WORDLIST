@@ -19,6 +19,7 @@ TLG
 TableTree
 UI
 Univariable
+biomarker
 datatables
 de
 draggable
@@ -33,6 +34,7 @@ reactives
 reportable
 responder
 responders
+tidyselect
 univariable
 unstratified
 validator

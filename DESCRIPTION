@@ -34,7 +34,7 @@ BugReports:
 Depends:
     R (>= 4.4),
     teal (>= 1.1.0.9029),
-    teal.picks (>= 0.1.0.9212),
+    teal.picks (>= 0.1.0),
     teal.transform (>= 0.7.0),
     tern (>= 0.9.9)
 Imports:
@@ -112,3 +112,4 @@ Language: en-US
 LazyData: true
 Roxygen: list(markdown = TRUE, packages = c("roxy.shinylive"))
 Config/roxygen2/version: 8.0.0
+RoxygenNote: 7.3.3

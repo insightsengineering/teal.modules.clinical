@@ -3,7 +3,7 @@ app_driver_tm_t_pp_prior_medication <- function() { # nolint: object_length.
   data <- within(data, {
     library(dplyr)
     ADCM <- teal.data::rADCM
-    ADSL <- teal.data::rADSL %>%
+    ADSL <- teal.data::rADSL |>
       filter(USUBJID %in% ADCM$USUBJID)
     ADCM$CMASTDTM <- ADCM$ASTDTM
     ADCM$CMAENDTM <- ADCM$AENDTM
@@ -20,22 +20,10 @@ app_driver_tm_t_pp_prior_medication <- function() { # nolint: object_length.
         dataname = "ADCM",
         parentname = "ADSL",
         patient_col = "USUBJID",
-        atirel = teal.transform::choices_selected(
-          choices = teal.transform::variable_choices(data[["ADCM"]], c("ATIREL", "SEX")),
-          selected = "ATIREL"
-        ),
-        cmdecod = teal.transform::choices_selected(
-          choices = teal.transform::variable_choices(data[["ADCM"]], c("CMDECOD", "RACE")),
-          selected = "CMDECOD"
-        ),
-        cmindc = teal.transform::choices_selected(
-          choices = teal.transform::variable_choices(data[["ADCM"]], c("CMINDC", "SEX")),
-          selected = "CMINDC"
-        ),
-        cmstdy = teal.transform::choices_selected(
-          choices = teal.transform::variable_choices(data[["ADCM"]], c("ASTDY", "AGE")),
-          selected = "ASTDY"
-        ),
+        atirel = teal.picks::variables(c("ATIREL", "SEX"), multiple = FALSE),
+        cmdecod = teal.picks::variables(c("CMDECOD", "RACE"), multiple = FALSE),
+        cmindc = teal.picks::variables(c("CMINDC", "SEX"), multiple = FALSE),
+        cmstdy = teal.picks::variables(c("ASTDY", "AGE"), multiple = FALSE),
         pre_output = NULL,
         post_output = NULL
       )
@@ -48,10 +36,10 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_pp_prior_medication()
+    withr::defer(app_driver$stop())
     app_driver$expect_no_shiny_error()
     app_driver$expect_no_validation_error()
     app_driver$expect_visible(app_driver$namespaces(TRUE)$module("prior_medication_table"))
-    app_driver$stop()
   }
 )
 
@@ -60,6 +48,8 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_pp_prior_medication()
+    withr::defer(app_driver$stop())
+
     testthat::expect_equal(
       app_driver$get_text("a.nav-link.active"),
       "Prior Medication"
@@ -68,23 +58,29 @@ testthat::test_that(
       app_driver$get_active_module_input("patient_id"),
       "AB12345-CHN-3-id-128"
     )
+
+    exported_values <- app_driver$get_values()$export
+    names(exported_values) <- gsub(
+      sprintf("%s-", app_driver$namespaces()$module(NULL)), "", names(exported_values),
+      fixed = TRUE
+    )
+
     testthat::expect_equal(
-      app_driver$get_active_module_input("cmdecod-dataset_ADCM_singleextract-select"),
+      exported_values[["cmdecod-picks_resolved"]]$variables$selected,
       "CMDECOD"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("atirel-dataset_ADCM_singleextract-select"),
+      exported_values[["atirel-picks_resolved"]]$variables$selected,
       "ATIREL"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("cmindc-dataset_ADCM_singleextract-select"),
+      exported_values[["cmindc-picks_resolved"]]$variables$selected,
       "CMINDC"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("cmstdy-dataset_ADCM_singleextract-select"),
+      exported_values[["cmstdy-picks_resolved"]]$variables$selected,
       "ASTDY"
     )
-    app_driver$stop()
   }
 )
 
@@ -93,6 +89,7 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_pp_prior_medication()
+    withr::defer(app_driver$stop())
     table_before <- app_driver$get_active_module_table_output("prior_medication_table")
     app_driver$set_active_module_input("patient_id", "AB12345-USA-1-id-261")
     testthat::expect_false(
@@ -102,20 +99,19 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
   }
 )
 
 testthat::test_that("e2e - tm_t_pp_prior_medication: Deselection of patient_id throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_pp_prior_medication()
+  withr::defer(app_driver$stop())
   app_driver$set_active_module_input("patient_id", NULL)
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$get_text(app_driver$namespaces(TRUE)$module("patient_id_input .shiny-validation-message")),
+    app_driver$get_text(".teal-widgets.standard-layout .htmlwidgets-error"),
     "Please select patient id"
   )
-  app_driver$stop()
 })
 
 testthat::test_that(
@@ -123,8 +119,9 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_pp_prior_medication()
+    withr::defer(app_driver$stop())
     table_before <- app_driver$get_active_module_table_output("prior_medication_table")
-    app_driver$set_active_module_input("cmdecod-dataset_ADCM_singleextract-select", "RACE")
+    set_teal_picks_slot(app_driver, "cmdecod", "variables", "RACE")
     testthat::expect_false(
       identical(
         table_before,
@@ -132,22 +129,20 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
   }
 )
 
 testthat::test_that("e2e - tm_t_pp_prior_medication: Deselection of cmdecod throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_pp_prior_medication()
-  app_driver$set_active_module_input("cmdecod-dataset_ADCM_singleextract-select", NULL)
+  withr::defer(app_driver$stop())
+  set_teal_picks_slot(app_driver, "cmdecod", "variables", character(0L))
   app_driver$expect_validation_error()
-  testthat::expect_equal(
-    app_driver$get_text(
-      app_driver$namespaces(TRUE)$module("cmdecod-dataset_ADCM_singleextract-select_input .shiny-validation-message")
-    ),
-    "A medication decoding variable is required"
+  testthat::expect_match(
+    app_driver$get_text(".teal-widgets.standard-layout .htmlwidgets-error"),
+    "A medication decoding variable is required",
+    fixed = TRUE
   )
-  app_driver$stop()
 })
 
 testthat::test_that(
@@ -155,8 +150,9 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_pp_prior_medication()
+    withr::defer(app_driver$stop())
     table_before <- app_driver$get_active_module_table_output("prior_medication_table")
-    app_driver$set_active_module_input("atirel-dataset_ADCM_singleextract-select", "SEX")
+    set_teal_picks_slot(app_driver, "atirel", "variables", "SEX")
     testthat::expect_false(
       identical(
         table_before,
@@ -164,22 +160,20 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
   }
 )
 
 testthat::test_that("e2e - tm_t_pp_prior_medication: Deselection of atirel throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_pp_prior_medication()
-  app_driver$set_active_module_input("atirel-dataset_ADCM_singleextract-select", NULL)
+  withr::defer(app_driver$stop())
+  set_teal_picks_slot(app_driver, "atirel", "variables", character(0L))
   app_driver$expect_validation_error()
-  testthat::expect_equal(
-    app_driver$get_text(
-      app_driver$namespaces(TRUE)$module("atirel-dataset_ADCM_singleextract-select_input .shiny-validation-message")
-    ),
-    "An ATIREL variable is required"
+  testthat::expect_match(
+    app_driver$get_text(".teal-widgets.standard-layout .htmlwidgets-error"),
+    "An ATIREL variable is required",
+    fixed = TRUE
   )
-  app_driver$stop()
 })
 
 testthat::test_that(
@@ -187,8 +181,9 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_pp_prior_medication()
+    withr::defer(app_driver$stop())
     table_before <- app_driver$get_active_module_table_output("prior_medication_table")
-    app_driver$set_active_module_input("cmindc-dataset_ADCM_singleextract-select", "SEX")
+    set_teal_picks_slot(app_driver, "cmindc", "variables", "SEX")
     testthat::expect_false(
       identical(
         table_before,
@@ -196,22 +191,20 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
   }
 )
 
 testthat::test_that("e2e - tm_t_pp_prior_medication: Deselection of cmindc throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_pp_prior_medication()
-  app_driver$set_active_module_input("cmindc-dataset_ADCM_singleextract-select", NULL)
+  withr::defer(app_driver$stop())
+  set_teal_picks_slot(app_driver, "cmindc", "variables", character(0L))
   app_driver$expect_validation_error()
-  testthat::expect_equal(
-    app_driver$get_text(
-      app_driver$namespaces(TRUE)$module("cmindc-dataset_ADCM_singleextract-select_input .shiny-validation-message")
-    ),
-    "A CMINDC variable is required"
+  testthat::expect_match(
+    app_driver$get_text(".teal-widgets.standard-layout .htmlwidgets-error"),
+    "A CMINDC variable is required",
+    fixed = TRUE
   )
-  app_driver$stop()
 })
 
 testthat::test_that(
@@ -219,8 +212,9 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_pp_prior_medication()
+    withr::defer(app_driver$stop())
     table_before <- app_driver$get_active_module_table_output("prior_medication_table")
-    app_driver$set_active_module_input("cmstdy-dataset_ADCM_singleextract-select", "AGE")
+    set_teal_picks_slot(app_driver, "cmstdy", "variables", "AGE")
     testthat::expect_false(
       identical(
         table_before,
@@ -228,20 +222,18 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
   }
 )
 
 testthat::test_that("e2e - tm_t_pp_prior_medication: Deselection of cmstdy throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_pp_prior_medication()
-  app_driver$set_active_module_input("cmstdy-dataset_ADCM_singleextract-select", NULL)
+  withr::defer(app_driver$stop())
+  set_teal_picks_slot(app_driver, "cmstdy", "variables", character(0L))
   app_driver$expect_validation_error()
-  testthat::expect_equal(
-    app_driver$get_text(
-      app_driver$namespaces(TRUE)$module("cmstdy-dataset_ADCM_singleextract-select_input .shiny-validation-message")
-    ),
-    "A CMSTDY variable is required"
+  testthat::expect_match(
+    app_driver$get_text(".teal-widgets.standard-layout .htmlwidgets-error"),
+    "A CMSTDY variable is required",
+    fixed = TRUE
   )
-  app_driver$stop()
 })
