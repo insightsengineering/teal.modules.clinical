@@ -625,7 +625,18 @@ srv_g_pp_therapy <- function(id,
           teal.reporter::teal_card(obj),
           teal.reporter::teal_card("## Module's output(s)")
         )
-      obj
+
+      col_labels_list <- teal.data::col_labels(obj[[dataname]], fill = TRUE)
+      col_labels_list <- col_labels_list[nzchar(col_labels_list)]
+
+      relabel_call <- rlang::call2(
+        quote(teal.data::col_relabel),
+        as.name(dataname),
+        !!!setNames(as.list(col_labels_list), names(col_labels_list))
+      )
+      relabel_expr <- call("<-", as.name(dataname), relabel_call)
+
+      teal.code::eval_code(obj, relabel_expr)
     })
 
     anl_inputs <- teal.picks::merge_srv(
