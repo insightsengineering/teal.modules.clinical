@@ -288,14 +288,17 @@ testthat::test_that("e2e - tm_g_ci: Selecting color column updates plot.", {
   app_driver$expect_no_validation_error()
 })
 
-testthat::test_that("e2e - tm_g_ci: Deselecting color column updates plot without validation error.", {
+testthat::test_that("e2e - tm_g_ci: Deselecting color column shows validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ci()
   withr::defer(app_driver$stop())
-  plot_before <- app_driver$get_active_module_plot_output("myplot")
   set_teal_picks_slot(app_driver, "color_picks", "variables", character(0L))
-  testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
-  app_driver$expect_no_validation_error()
+  testthat::expect_identical(app_driver$get_active_module_plot_output("myplot"), character(0))
+  app_driver$expect_validation_error()
+  testthat::expect_match(
+    app_driver$get_text(app_driver$namespaces(TRUE)$module("myplot-plot_out_main")),
+    "Please select a grouping variable"
+  )
 })
 
 testthat::test_that("e2e - tm_g_ci: Changing confidence level updates plot.", {
