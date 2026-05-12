@@ -224,7 +224,7 @@ testthat::test_that("e2e - tm_g_forest_tte: Selecting conf_level outside range 0
   app_driver$expect_validation_error()
   testthat::expect_match(
     app_driver$get_text(app_driver$namespaces(TRUE)$module("myplot-plot_out_main")),
-    "Confidence level must be between 0 and 1.",
+    "Please choose a confidence level.",
     fixed = TRUE
   )
 })

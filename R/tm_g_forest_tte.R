@@ -548,43 +548,42 @@ srv_g_forest_tte <- function(id,
 
     validated_q <- reactive({
       obj <- req(data())
-      # browser()
-      #
-      # validate_input(
-      #   inputId   = "paramcd-values-selected",
-      #   condition = !is.null(selectors$paramcd()$values$selected),
-      #   message   = "Please select Endpoint filter."
-      # )
-      # validate_input(
-      #   inputId   = "aval_var-variables-selected",
-      #   condition = !is.null(selectors$aval_var()$variables$selected),
-      #   message   = "An analysis variable is required."
-      # )
-      # validate_input(
-      #   inputId   = "cnsr_var-variables-selected",
-      #   condition = !is.null(selectors$cnsr_var()$variables$selected),
-      #   message   = "A censor variable is required."
-      # )
-      # if (!is.null(arm_var)) {
-      #   validate_input(
-      #     inputId   = "arm_var-variables-selected",
-      #     condition = !is.null(selectors$arm_var()$variables$selected),
-      #     message   = "A treatment variable is required."
-      #   )
-      # }
-      # validate_input(
-      #   inputId   = "conf_level",
-      #   condition = !is.null(input$conf_level),
-      #   message   = "Please choose a confidence level."
-      # )
-      # validate_input(
-      #   inputId = "conf_level",
-      #   condition = {
-      #     cv <- suppressWarnings(as.numeric(input$conf_level))
-      #     !is.na(cv) && cv > 0 && cv < 1
-      #   },
-      #   message = "Confidence level must be between 0 and 1."
-      # )
+
+      validate_input(
+        inputId   = "paramcd-values-selected",
+        condition = !is.null(selectors$paramcd()$values$selected),
+        message   = "Please select Endpoint filter."
+      )
+      validate_input(
+        inputId   = "aval_var-variables-selected",
+        condition = !is.null(selectors$aval_var()$variables$selected),
+        message   = "An analysis variable is required."
+      )
+      validate_input(
+        inputId   = "cnsr_var-variables-selected",
+        condition = !is.null(selectors$cnsr_var()$variables$selected),
+        message   = "A censor variable is required."
+      )
+      if (!is.null(arm_var)) {
+        validate_input(
+          inputId   = "arm_var-variables-selected",
+          condition = !is.null(selectors$arm_var()$variables$selected),
+          message   = "A treatment variable is required."
+        )
+      }
+      validate_input(
+        inputId   = "conf_level",
+        condition = !is.null(input$conf_level),
+        message   = "Please choose a confidence level."
+      )
+      validate_input(
+        inputId = "conf_level",
+        condition = {
+          cv <- suppressWarnings(as.numeric(input$conf_level))
+          !is.na(cv) && cv > 0 && cv < 1
+        },
+        message = "Confidence level must be between 0 and 1."
+      )
 
       teal.reporter::teal_card(obj) <- c(
         teal.reporter::teal_card("# Forest Survival Plot"),
