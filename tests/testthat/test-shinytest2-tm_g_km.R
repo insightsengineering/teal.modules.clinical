@@ -35,12 +35,14 @@ app_driver_tm_g_km <- function() {
           multiple = FALSE
         ),
         paramcd = teal.picks::picks(
-          teal.picks::datasets("ADTTE"),
-          teal.picks::variables("PARAMCD", fixed = TRUE),
-          teal.picks::values(
-            choices = unique(as.character(data[["ADTTE"]]$PARAMCD)),
-            selected = "OS",
-            multiple = FALSE
+          teal.picks::datasets("ADTTE", "ADTTE"),
+          teal.picks::variables("PARAMCD", "PARAMCD", fixed = TRUE),
+          suppressWarnings(
+            teal.picks::values(
+              selected = "OS",
+              multiple = FALSE
+            ),
+            classes = "picks_delayed"
           )
         ),
         arm_ref_comp = arm_ref_comp,
