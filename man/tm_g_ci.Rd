@@ -232,6 +232,16 @@ app <- init(
         choices = c("SEX", "STRATA1", "STRATA2"),
         selected = "STRATA1",
         multiple = FALSE
+      ),
+      paramcd = values(
+        choices = levels(data[["ADLB"]]$PARAMCD),
+        selected = levels(data[["ADLB"]]$PARAMCD)[[1]],
+        multiple = FALSE
+      ),
+      avisit = values(
+        choices = levels(data[["ADLB"]]$AVISIT),
+        selected = levels(data[["ADLB"]]$AVISIT)[[1]],
+        multiple = FALSE
       )
     )
   )
@@ -248,8 +258,8 @@ apps implementing this module can be found.
 \section{Examples in Shinylive}{
 \describe{
   \item{example-1}{
-    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo67sxs+ajUrIGlOgCCACIAygAykTqkMAQxcAAeMVD8otQNLe0AQl09fYPD-NT0SgC+QQBWRLkxANZwrKL5yTap-HDGUMKkMQT8tKJ9Wzv7h8DQ8EcFcgC6rtDoLq5TLsBoFHQAXh0BVwDT4QhEokhOnhwjEoIgZTKPRiAHNbrQMVisdQoPQ4NRkQowABhEjGWjncy6ACSKkYmm4OgACv5SNTYZjiTohpzGMixbQyYiicKygQstsCGJkQRQWBGlgALI05oCnTUqZarAAaSwACZqXJBXKyqIKXB1HB+FSNdrdQKGnKYNdaDVdFCAGKNdqtFxC4nWr1Y1gxMUSlhS+gy6PEhVKlVQtXUxoANRD+upNIAEgBxK02232kROl1QnP59qeiPCn3UDT+5HB0PhuVRlvyoj+cVQyXS9GprHpmSZnTZsBhgAahYX9katkaAEYV601xvLWB+7adNXHeQ6wbV1h11vm8e2x2RF2Q2HJ0FIw0gkFaMYdOxcuQagaNo1g2CUQqiDkECsI06DsGgqAACSCLQRQIYh9ocqoQSrEoYCrD8QA}{Open in Shinylive}
-    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo67sxs+ajUrIGlOgCCACIAygAykTqkMAQxcAAeMVD8otQNLe0AQl09fYPD-NT0SgC+QQBWRLkxANZwrKL5yTap-HDGUMKkMQT8tKJ9Wzv7h8DQ8EcFcgC6rtDoLq5TLsBoFHQAXh0BVwDT4QhEokhOnhwjEoIgZTKPRiAHNbrQMVisdQoPQ4NRkQowABhEjGWjncy6ACSKkYmm4OgACv5SNTYZjiTohpzGMixbQyYiicKygQstsCGJkQRQWBGlgALI05oCnTUqZarAAaSwACZqXJBXKyqIKXB1HB+FSNdrdQKGnKYNdaDVdFCAGKNdqtFxC4nWr1Y1gxMUSlhS+gy6PEhVKlVQtXUxoANRD+upNIAEgBxK02232kROl1QnP59qeiPCn3UDT+5HB0PhuVRlvyoj+cVQyXS9GprHpmSZnTZsBhgAahYX9katkaAEYV601xvLWB+7adNXHeQ6wbV1h11vm8e2x2RF2Q2HJ0FIw0gkFaMYdOxcuQagaNo1g2CUQqiDkECsI06DsGgqAACSCLQRQIYh9ocqoQSrEoYCrD8QA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo67sxs+ajUrIGlOgCCACIAygAykTqkMAQxcAAeMVD8otQNLe0AQl09fYPD-NT0SgC+QQBWRLkxANZwrKL5yTap-HDGUMKkMQT8tKJ9Wzv7h8DQ8EcFcgC6rtDoLq5TLsBoFHQAXh0BVwDT4QhEokhOnhwjEoIgZTKPRiAHNbrQMVisdQoPQ4NRkQowABhEjGWjncy6ACSKkYmm4OgACv5SNTYZjiTohpzGMixbQyYiicKygQstsCGJkQRQWBGlgALI05oCnTUqZarAAaSwACZqXJBXKyqIKXB1HB+FSNdrdQKGnKYNdaDVdFCAGKNdqtFxC4nWr1Y1gxMUSlhS+gy6PEhVKlVQtXUxoANRD+upNIAEgBxK02232kROl1QnP59qeiPCn3UDT+5HB0PhuVRlvyoj+cVQyXS9GprHpmSZnTZsBhgAahYX9katkaAEYV601xvLWB+7adNXHeQ6wbV1h11vm8e2x2RF2Q2HJ0fhagWLA7gnqIIJwOU6KjOSJQiI2jUF8yTAMAObNNM1I-D8AAk3Kao0OrNO+cqnrWyLgRSUHhDBcEIWASGoehmFyDBm5IZW3q+p2QYvr2wrYViUCaA8mS-v+RyTvKwHKqB5RwBBRFQCRGrwVMiEoXmLKtCytgccSuHnvh4mEccxGwTJZEUYpymqbR9GCSiTFPixPZvtGQRlEEQS0MYOjsLk5BqBo2jWDYJRCqIOQQKwjToOwaCoMhgi0EUEXIfaHKqEEqxKGAqw-EAA}{Open in Shinylive}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo67sxs+ajUrIGlOgCCACIAygAykTqkMAQxcAAeMVD8otQNLe0AQl09fYPD-NT0SgC+QQBWRLkxANZwrKL5yTap-HDGUMKkMQT8tKJ9Wzv7h8DQ8EcFcgC6rtDoLq5TLsBoFHQAXh0BVwDT4QhEokhOnhwjEoIgZTKPRiAHNbrQMVisdQoPQ4NRkQowABhEjGWjncy6ACSKkYmm4OgACv5SNTYZjiTohpzGMixbQyYiicKygQstsCGJkQRQWBGlgALI05oCnTUqZarAAaSwACZqXJBXKyqIKXB1HB+FSNdrdQKGnKYNdaDVdFCAGKNdqtFxC4nWr1Y1gxMUSlhS+gy6PEhVKlVQtXUxoANRD+upNIAEgBxK02232kROl1QnP59qeiPCn3UDT+5HB0PhuVRlvyoj+cVQyXS9GprHpmSZnTZsBhgAahYX9katkaAEYV601xvLWB+7adNXHeQ6wbV1h11vm8e2x2RF2Q2HJ0fhagWLA7gnqIIJwOU6KjOSJQiI2jUF8yTAMAObNNM1I-D8AAk3Kao0OrNO+cqnrWyLgRSUHhDBcEIWASGoehmFyDBm5IZW3q+p2QYvr2wrYViUCaA8mS-v+RyTvKwHKqB5RwBBRFQCRGrwVMiEoXmLKtCytgccSuHnvh4mEccxGwTJZEUYpymqbR9GCSiTFPixPZvtGQRlEEQS0MYOjsLk5BqBo2jWDYJRCqIOQQKwjToOwaCoMhgi0EUEXIfaHKqEEqxKGAqw-EAA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
     \if{html}{\out{<a style='height: 800px; display: block;'></a>}}
   }
 }
