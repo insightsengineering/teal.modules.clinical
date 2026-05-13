@@ -388,6 +388,17 @@ tm_g_km <- function(label,
                     transformators = list(),
                     decorators = list()) {
   message("Initializing tm_g_km")
+
+  arm_var <- migrate_choices_selected_to_variables(arm_var, arg_name = "arm_var")
+  strata_var <- migrate_choices_selected_to_variables(strata_var, arg_name = "strata_var")
+  facet_var <- migrate_choices_selected_to_variables(facet_var, arg_name = "facet_var", null.ok = TRUE)
+  aval_var <- migrate_choices_selected_to_variables(aval_var, arg_name = "aval_var")
+  cnsr_var <- migrate_choices_selected_to_variables(cnsr_var, arg_name = "cnsr_var")
+  time_unit_var <- migrate_choices_selected_to_variables(time_unit_var, arg_name = "time_unit_var")
+  paramcd <- migrate_value_choices_to_picks(paramcd, multiple = FALSE, arg_name = "paramcd")
+  conf_level <- migrate_choices_selected_to_values(conf_level, arg_name = "conf_level")
+  conf_type <- migrate_choices_selected_to_values(conf_type, arg_name = "conf_type")
+
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
 
