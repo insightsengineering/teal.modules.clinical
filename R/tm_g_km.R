@@ -402,13 +402,6 @@ tm_g_km <- function(label,
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
 
-  if (is.null(facet_var)) {
-    facet_var <- teal.picks::picks(
-      teal.picks::datasets(parentname, parentname),
-      teal.picks::variables(c("SEX", "BMRKR2"), NULL, multiple = FALSE)
-    )
-  }
-
   checkmate::assert_string(parentname)
   checkmate::assert_numeric(xticks, null.ok = TRUE)
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
