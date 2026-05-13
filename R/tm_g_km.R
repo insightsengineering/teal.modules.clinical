@@ -340,7 +340,7 @@ template_g_km <- function(dataname = "ANL",
 #'       ),
 #'       facet_var = variables(
 #'         choices = c("SEX", "BMRKR2"),
-#'         selected = "SEX",
+#'         selected = NULL,
 #'         multiple = FALSE
 #'       ),
 #'       xticks = c(0, 30, 60, 90, 120, 150, 180)
