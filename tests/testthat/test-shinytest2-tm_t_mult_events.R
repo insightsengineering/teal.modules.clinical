@@ -131,8 +131,8 @@ testthat::test_that(
   "e2e - tm_t_mult_events: Deselection of hlt changes the table and does not throw validation errors.",
   {
     skip_if_too_deep(5)
-    withr::defer(app_driver$stop())
     app_driver <- app_driver_tm_t_mult_events()
+    withr::defer(app_driver$stop())
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
     set_teal_picks_slot(app_driver, "hlt", "variables", NULL)
     testthat::expect_false(
