@@ -535,7 +535,6 @@ srv_t_mult_events_byterm <- function(id,
     adsl_selectors <- selectors["arm_var"]
 
 
-
     anl_q <- merged_adsl_anl$data
 
     validate_checks <- reactive({
