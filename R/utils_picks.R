@@ -128,7 +128,7 @@ migrate_value_choices_to_picks <- function(x, # nolint: object_length_linter.
       stop(
         sprintf("`multiple` metadata does not match the requirement for %s.", arg_name),
         sprintf(" Please set multiple = %s in the picks object.", multiple),
-        .call. = FALSE
+        call. = FALSE
       )
     }
 

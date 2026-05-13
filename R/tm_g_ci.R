@@ -319,7 +319,8 @@ tm_g_ci <- function(label,
   teal.transform::check_no_multiple_selection(y_var)
   teal.transform::check_no_multiple_selection(color)
 
-  checkmate::assert_class(conf_level, "choices_selected")
+  conf_level <- migrate_choices_selected_to_values(conf_level, multiple = FALSE, arg_name = "conf_level")
+
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")
   checkmate::assert_numeric(plot_width, len = 3, any.missing = FALSE, null.ok = TRUE, finite = TRUE)
@@ -387,7 +388,7 @@ ui_g_ci <- function(id, ...) {
         choices = args$conf_level$choices,
         selected = args$conf_level$selected,
         multiple = FALSE,
-        fixed = args$conf_level$fixed
+        fixed = teal.picks::is_pick_fixed(args$conf_level)
       ),
       radioButtons(
         inputId = ns("stat"),
