@@ -356,7 +356,6 @@ tm_g_forest_tte <- function(label,
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
-  checkmate::assert_class(conf_level, "values")
   checkmate::assert_character(stats, min.len = 3)
   checkmate::assert_true(any(c("n_tot", "n_tot_events") %in% stats))
   checkmate::assert_true(all(c("hr", "ci") %in% stats))
@@ -372,7 +371,7 @@ tm_g_forest_tte <- function(label,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
-  assert_decorators(decorators, "plot")
+  teal::assert_decorators(decorators, "plot")
 
   arm_var <- if (!is.null(arm_var)) create_picks_helper(teal.picks::datasets(parentname, parentname), arm_var)
   paramcd <- create_picks_helper(teal.picks::datasets(dataname, dataname), paramcd)
@@ -463,7 +462,7 @@ ui_g_forest_tte <- function(id,
             conf_level$choices,
             conf_level$selected,
             multiple = FALSE,
-            fixed = conf_level$fixed %||% FALSE
+            fixed = teal.picks::is_pick_fixed(conf_level)
           ),
           checkboxInput(ns("fixed_symbol_size"), "Fixed symbol size", value = fixed_symbol_size),
           tags$div(
@@ -511,7 +510,7 @@ srv_g_forest_tte <- function(id,
                              ggplot2_args,
                              decorators) {
   checkmate::assert_class(data, "reactive")
-  checkmate::assert_class(shiny::isolate(data()), "teal_data")
+  checkmate::assert_class(isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
     teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
