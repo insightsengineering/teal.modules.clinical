@@ -707,42 +707,42 @@ srv_g_km <- function(id,
     validated_q <- reactive({
       obj <- req(data())
 
-      teal::validate_input(
+      validate_input(
         inputId = "aval_var-variables-selected",
         condition = !is.null(selectors$aval_var()$variables$selected),
         message = "Please select an analysis variable."
       )
-      teal::validate_input(
+      validate_input(
         inputId = "cnsr_var-variables-selected",
         condition = !is.null(selectors$cnsr_var()$variables$selected),
         message = "Please select a censor variable."
       )
-      teal::validate_input(
+      validate_input(
         inputId = "arm_var-variables-selected",
         condition = !is.null(selectors$arm_var()$variables$selected),
         message = "Please select a treatment variable."
       )
-      teal::validate_input(
+      validate_input(
         inputId = "paramcd-values-selected",
         condition = !is.null(selectors$paramcd()$values$selected),
         message = "Please select an endpoint."
       )
-      teal::validate_input(
+      validate_input(
         inputId = "time_unit_var-variables-selected",
         condition = !is.null(selectors$time_unit_var()$variables$selected),
         message = "Please select a time unit variable."
       )
-      teal::validate_input(
+      validate_input(
         inputId = "conf_level",
         condition = !is.null(input$conf_level),
         message = "Please choose a confidence level."
       )
-      teal::validate_input(
+      validate_input(
         inputId = "conf_level",
         condition = as.numeric(input$conf_level) > 0 && as.numeric(input$conf_level) < 1,
         message = "Confidence level must be between 0 and 1."
       )
-      teal::validate_input(
+      validate_input(
         inputId = "conf_type",
         condition = !is.null(input$conf_type) && input$conf_type %in% c("plain", "log", "log-log"),
         message = "Please choose a confidence interval type."
@@ -765,13 +765,13 @@ srv_g_km <- function(id,
       }
 
       fs <- suppressWarnings(as.numeric(input$font_size))
-      teal::validate_input(
+      validate_input(
         inputId = "font_size",
         condition = length(fs) == 1L && is.finite(fs) && fs >= 5,
         message = "Plot tables font size must be greater than or equal to 5"
       )
       yl <- suppressWarnings(as.numeric(input$ylim))
-      teal::validate_input(
+      validate_input(
         inputId = "ylim",
         condition = length(yl) == 2L && all(is.finite(yl)),
         message = "Please choose a range for y-axis limits"
@@ -787,13 +787,13 @@ srv_g_km <- function(id,
         !is.null(val_xticks) &&
         !anyNA(val_xticks) &&
         !any(val_xticks < 0, na.rm = TRUE)
-      teal::validate_input(
+      validate_input(
         inputId = "xticks",
         condition = !xticks_nonempty ||
           (!is.null(val_xticks) && !anyNA(val_xticks) && !any(val_xticks < 0, na.rm = TRUE)),
         message = "All break intervals for x-axis must be non-negative numbers separated by semicolons"
       )
-      teal::validate_input(
+      validate_input(
         inputId = "xticks",
         condition = !xticks_ok_nums || !all(val_xticks == 0),
         message = "At least one break interval for x-axis must be > 0"
