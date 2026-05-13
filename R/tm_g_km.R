@@ -401,7 +401,6 @@ tm_g_km <- function(label,
 
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
-
   checkmate::assert_string(parentname)
   checkmate::assert_numeric(xticks, null.ok = TRUE)
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
