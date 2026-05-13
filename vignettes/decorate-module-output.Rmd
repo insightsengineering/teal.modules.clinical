@@ -97,7 +97,6 @@ can be modified with the help of `rtables` modifiers like `rtables::insert_rrow`
 
 ```{r decorate_listing_df, message=FALSE}
 library(teal.modules.clinical)
-library(teal.picks)
 
 data <- within(teal_data(), {
   library(dplyr)
@@ -207,6 +206,7 @@ data <- within(data, {
 })
 join_keys(data) <- default_cdisc_join_keys[names(data)]
 
+ADTTE <- data[["ADTTE"]]
 
 ggplot_caption_decorator <- function(default_caption = "I am a good decorator") {
   teal_transform_module(
@@ -238,25 +238,34 @@ app <- init(
     tm_g_km(
       label = "tm_g_km",
       dataname = "ADTTE",
-      arm_var = choices_selected(
-        variable_choices("ADSL", c("ARM", "ARMCD", "ACTARMCD")),
-        "ARM"
+      parentname = "ADSL",
+      arm_var = variables(
+        choices = c("ARM", "ARMCD", "ACTARMCD"),
+        selected = "ARM",
+        multiple = FALSE
       ),
-      paramcd = choices_selected(
-        value_choices("ADTTE", "PARAMCD", "PARAM"),
-        "OS"
+      paramcd = picks(
+        datasets("ADTTE"),
+        variables("PARAMCD", fixed = TRUE),
+        values(
+          choices = unique(ADTTE$PARAMCD),
+          selected = "OS",
+          multiple = FALSE
+        )
       ),
       arm_ref_comp = list(
         ACTARMCD = list(ref = "ARM B", comp = c("ARM A", "ARM C")),
         ARM = list(ref = "B: Placebo", comp = c("A: Drug X", "C: Combination"))
       ),
-      strata_var = choices_selected(
-        variable_choices("ADSL", c("SEX", "BMRKR2")),
-        "SEX"
+      strata_var = variables(
+        choices = c("SEX", "BMRKR2"),
+        selected = "SEX",
+        multiple = FALSE
       ),
-      facet_var = choices_selected(
-        variable_choices("ADSL", c("SEX", "BMRKR2")),
-        NULL
+      facet_var = variables(
+        choices = c("SEX", "BMRKR2"),
+        selected = NULL,
+        multiple = FALSE
       ),
       decorators = list(plot = ggplot_caption_decorator())
     )

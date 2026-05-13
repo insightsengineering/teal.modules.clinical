@@ -664,7 +664,6 @@ ui_mmrm <- function(id, # nolint: object_name.
                     pre_output,
                     post_output) {
   ns <- NS(id)
-  fixed <- attr(method, "fixed", exact = TRUE)
 
   tagList(
     teal.widgets::standard_layout(
@@ -745,7 +744,7 @@ ui_mmrm <- function(id, # nolint: object_name.
               method$choices,
               method$selected,
               multiple = FALSE,
-              fixed = attr(method, "fixed", exact = TRUE)
+              fixed = teal.picks::is_pick_fixed(method)
             ),
             teal.widgets::optionalSelectInput(
               ns("conf_level"),
@@ -753,7 +752,7 @@ ui_mmrm <- function(id, # nolint: object_name.
               conf_level$choices,
               conf_level$selected,
               multiple = FALSE,
-              fixed = attr(conf_level, "fixed", exact = TRUE)
+              fixed = teal.picks::is_pick_fixed(conf_level)
             ),
             checkboxInput(
               ns("parallel"),

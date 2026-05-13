@@ -597,13 +597,14 @@ tm_t_shift_by_grade <- function(label,
   checkmate::assert_class(basic_table_args, "basic_table_args")
   teal::assert_decorators(decorators, "table")
 
-  arm_var <- teal.picks::picks(teal.picks::datasets(parentname, parentname), arm_var)
-  visit_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), visit_var)
-  paramcd <- teal.picks::picks(teal.picks::datasets(dataname, dataname), paramcd, values())
-  worst_flag_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), worst_flag_var)
-  anl_toxgrade_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), anl_toxgrade_var)
-  base_toxgrade_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), base_toxgrade_var)
-  id_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), id_var)
+  arm_var <- create_picks_helper(teal.picks::datasets(parentname, parentname), arm_var)
+  visit_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), visit_var)
+  # PARAMCD needs a `values()` step for level selection; `create_picks_helper` only binds datasets + variables.
+  paramcd <- teal.picks::picks(teal.picks::datasets(dataname, dataname), paramcd, teal.picks::values())
+  worst_flag_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), worst_flag_var)
+  anl_toxgrade_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), anl_toxgrade_var)
+  base_toxgrade_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), base_toxgrade_var)
+  id_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), id_var)
 
   args <- as.list(environment())
 

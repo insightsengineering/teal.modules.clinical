@@ -349,7 +349,6 @@ ui_t_logistic <- function(id,
                           post_output,
                           decorators) {
   ns <- NS(id)
-  conf_level$fixed <- conf_level$fixed %||% FALSE
   teal.widgets::standard_layout(
     output = teal.widgets::table_with_settings_ui(ns("table")),
     encoding = tags$div(
@@ -400,7 +399,7 @@ ui_t_logistic <- function(id,
         choices = conf_level$choices,
         selected = conf_level$selected,
         multiple = FALSE,
-        fixed = conf_level$fixed
+        fixed = teal.picks::is_pick_fixed(conf_level)
       ),
       teal::ui_transform_teal_data(ns("decorator"), transformators = select_decorators(decorators, "table"))
     ),

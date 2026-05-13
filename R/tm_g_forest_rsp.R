@@ -485,7 +485,7 @@ ui_g_forest_rsp <- function(id,
             choices  = conf_level$choices,
             selected = conf_level$selected,
             multiple = FALSE,
-            fixed    = conf_level$fixed %||% FALSE
+            fixed    = teal.picks::is_pick_fixed(conf_level)
           ),
           checkboxInput(ns("fixed_symbol_size"), "Fixed symbol size", value = fixed_symbol_size),
           teal.widgets::optionalSliderInputValMinMax(
