@@ -47,26 +47,32 @@ available choices and preselected option for the \code{CMDECOD} variable from \c
 \item{cmindc}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
 available choices and preselected option for the \code{CMINDC} variable from \code{dataname}.}
 
-\item{cmdose}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
-available choices and preselected option for the \code{CMDOSE} variable from \code{dataname}.}
+\item{cmdose}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+object with all available choices and preselected
+option for the \code{CMDOSE} variable from \code{dataname}.}
 
-\item{cmtrt}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
-available choices and preselected option for the \code{CMTRT} variable from \code{dataname}.}
+\item{cmtrt}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+object with all available choices and preselected
+option for the \code{CMTRT} variable from \code{dataname}.}
 
-\item{cmdosu}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
-available choices and preselected option for the \code{CMDOSU} variable from \code{dataname}.}
+\item{cmdosu}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+object with all available choices and preselected
+option for the \code{CMDOSU} variable from \code{dataname}.}
 
-\item{cmroute}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
-available choices and preselected option for the \code{CMROUTE} variable from \code{dataname}.}
+\item{cmroute}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+object with all available choices and preselected
+option for the \code{CMROUTE} variable from \code{dataname}.}
 
-\item{cmdosfrq}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
-available choices and preselected option for the \code{CMDOSFRQ} variable from \code{dataname}.}
+\item{cmdosfrq}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+object with all available choices and preselected
+option for the \code{CMDOSFRQ} variable from \code{dataname}.}
 
 \item{cmstdy}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
 available choices and preselected option for the \code{CMSTDY} variable from \code{dataname}.}
 
-\item{cmendy}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
-available choices and preselected option for the \code{CMENDY} variable from \code{dataname}.}
+\item{cmendy}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+object with all available choices and preselected
+option for the \code{CMENDY} variable from \code{dataname}.}
 
 \item{font_size}{(\code{numeric})\cr numeric vector of length 3 of current, minimum and maximum font size values.}
 
@@ -157,46 +163,16 @@ app <- init(
       parentname = "ADSL",
       patient_col = "USUBJID",
       plot_height = c(600L, 200L, 2000L),
-      atirel = choices_selected(
-        choices = variable_choices(ADCM, "ATIREL"),
-        selected = c("ATIREL")
-      ),
-      cmdecod = choices_selected(
-        choices = variable_choices(ADCM, "CMDECOD"),
-        selected = "CMDECOD"
-      ),
-      cmindc = choices_selected(
-        choices = variable_choices(ADCM, "CMINDC"),
-        selected = "CMINDC"
-      ),
-      cmdose = choices_selected(
-        choices = variable_choices(ADCM, "CMDOSE"),
-        selected = "CMDOSE"
-      ),
-      cmtrt = choices_selected(
-        choices = variable_choices(ADCM, "CMTRT"),
-        selected = "CMTRT"
-      ),
-      cmdosu = choices_selected(
-        choices = variable_choices(ADCM, "CMDOSU"),
-        selected = c("CMDOSU")
-      ),
-      cmroute = choices_selected(
-        choices = variable_choices(ADCM, "CMROUTE"),
-        selected = "CMROUTE"
-      ),
-      cmdosfrq = choices_selected(
-        choices = variable_choices(ADCM, "CMDOSFRQ"),
-        selected = "CMDOSFRQ"
-      ),
-      cmstdy = choices_selected(
-        choices = variable_choices(ADCM, "ASTDY"),
-        selected = "ASTDY"
-      ),
-      cmendy = choices_selected(
-        choices = variable_choices(ADCM, "AENDY"),
-        selected = "AENDY"
-      )
+      atirel = variables(choices = "ATIREL", selected = "ATIREL"),
+      cmdecod = variables(choices = "CMDECOD", selected = "CMDECOD"),
+      cmindc = variables(choices = "CMINDC", selected = "CMINDC"),
+      cmdose = variables(choices = "CMDOSE", selected = "CMDOSE"),
+      cmtrt = variables(choices = "CMTRT", selected = "CMTRT"),
+      cmdosu = variables(choices = "CMDOSU", selected = "CMDOSU"),
+      cmroute = variables(choices = "CMROUTE", selected = "CMROUTE"),
+      cmdosfrq = variables(choices = "CMDOSFRQ", selected = "CMDOSFRQ"),
+      cmstdy = variables(choices = "ASTDY", selected = "ASTDY"),
+      cmendy = variables(choices = "AENDY", selected = "AENDY")
     )
   )
 )
@@ -208,8 +184,8 @@ if (interactive()) {
 \section{Examples in Shinylive}{
 \describe{
   \item{example-1}{
-    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQ7sxs7Pyo1KyBrhD8UKRQ+kZc1AD68YnWSplJhjoA7rSkABa0EOEJULg6IEo6OgCCACIAwgCyyTqkMARpcAAeaVD8BDD1Tc0AygAyXT19g8P8otQ6AKQAfOsmtNTkjOwOUw4AQgBSAJLNG+U7LR0AJMdnV81BDQ-tjx2NU7bNWydfJfR5-AFAiag35OABygOBRlBjThCKUAF8gkoAFZEcppADWcFYokqiRs+X4cGMUGEpDSBH4tFEfVx+KJJOABHYCjALVmvJqvK+vLkAF0lCMxoTiaIutzef8HM0AJrXQU6XkvC7qvCavn-NF63kdKZOACKGuFtlaAEYrXybQAmB2NG0AZldNoALKKcXiIDKSWSoHJgMK2u1XZHeWKulKYEHRLF+XNKVVgOG+dMZrGJRAvl1cpmIx087E0KguuVijyIA1cjoALw6XK4CZ8IQiOUtzvCMR1hoNHppADmaXQaVKqjQHAmQ501Cg9DgaxbvNsJRnqFYgvnQ9y0Hgzf1Irw+4aqBYFFIR906+zAvP9YXOivGhvDKIa-12ree5fBdIiIekt1oUcSlIE9uQANgABjgmYaidBCkJ0FDULkdtAKHBJaEYVdoJKPECDENJRFXOB1DgfhB1fBoCGImQxBPTQWFoZcRAZJjSNJL4hUdS4sCcXMwCwi8hwokRqP4aCeUE4TRI+V9xJwhiYCpYhZJbRiSLIqSqPIWiJIYniWJbNjGA4+guN05i+MjASOmaJxWgAeWaUVsPohoDJkk8TXaFz3M8sAJNU+ixnKUYiL00RyMomS6Misyex0SzrNs1L2H4-UOkueFWi8kydD8oyArAfLCt5cLvNfMZ+CICjYvshLpKM5L6tS1j2M4uBuLinLHLyoK3LNYq1MkxLyofZyxpcMLJoi+qYFIRgoJ01K2sMmjOoXOzeJ6qy+oG+yho6Jz2nsWwJp80rppoiqOmumqlrq-aNKawQWt47akpKg7zPS3qbP6wGHIukbmjGhxbp8srHp0+S5pOP03oksZGCIQRyB+-SHuMybTLio7MrB7LcsCrA3IcWwFuW+iEe0kbqdphbaoxz7RGMRgAEc8fipm9qHcHSZO8HzvaS7oamAAxLBLTE97XyZp7RrlhXXvohmRZgURSH4VgBb+jqAe6iyQaywbKYNAEVThxmCYq8FVS1lTlfUihDeNoWzZJi3jtB07eMlgSUXhe2lZK1WH3D13Fu1-dlKCIJaGMHR2HKA4oAsbRrBsOoX1EMoIFYRp0HYStHkEWgairijGG0GIIHRJQwHRMUgA}{Open in Shinylive}
-    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQ7sxs7Pyo1KyBrhD8UKRQ+kZc1AD68YnWSplJhjoA7rSkABa0EOEJULg6IEo6OgCCACIAwgCyyTqkMARpcAAeaVD8BDD1Tc0AygAyXT19g8P8otQ6AKQAfOsmtNTkjOwOUw4AQgBSAJLNG+U7LR0AJMdnV81BDQ-tjx2NU7bNWydfJfR5-AFAiag35OABygOBRlBjThCKUAF8gkoAFZEcppADWcFYokqiRs+X4cGMUGEpDSBH4tFEfVx+KJJOABHYCjALVmvJqvK+vLkAF0lCMxoTiaIutzef8HM0AJrXQU6XkvC7qvCavn-NF63kdKZOACKGuFtlaAEYrXybQAmB2NG0AZldNoALKKcXiIDKSWSoHJgMK2u1XZHeWKulKYEHRLF+XNKVVgOG+dMZrGJRAvl1cpmIx087E0KguuVijyIA1cjoALw6XK4CZ8IQiOUtzvCMR1hoNHppADmaXQaVKqjQHAmQ501Cg9DgaxbvNsJRnqFYgvnQ9y0Hgzf1Irw+4aqBYFFIR906+zAvP9YXOivGhvDKIa-12ree5fBdIiIekt1oUcSlIE9uQANgABjgmYaidBCkJ0FDULkdtAKHBJaEYVdoJKPECDENJRFXOB1DgfhB1fBoCGImQxBPTQWFoZcRAZJjSNJL4hUdS4sCcXMwCwi8hwokRqP4aCeUE4TRI+V9xJwhiYCpYhZJbRiSLIqSqPIWiJIYniWJbNjGA4+guN05i+MjASOmaJxWgAeWaUVsPohoDJkk8TXaFz3M8sAJNU+ixnKUYiL00RyMomS6Misyex0SzrNs1L2H4-UOkueFWi8kydD8oyArAfLCt5cLvNfMZ+CICjYvshLpKM5L6tS1j2M4uBuLinLHLyoK3LNYq1MkxLyofZyxpcMLJoi+qYFIRgoJ01K2sMmjOoXOzeJ6qy+oG+yho6Jz2nsWwJp80rppoiqOmumqlrq-aNKawQWt47akpKg7zPS3qbP6wGHIukbmjGhxbp8srHp0+S5pOP03oksZGCIQRyB+-SHuMybTLio7MrB7LcsCrA3IcWwFuW+iEe0kbqdphbaoxz7RGMRgAEc8fipm9qHcHSZO8HzvaS7oamAAxLBLTE97XyZp7RrlhXXvohmRZgURSH4VgBb+jqAe6iyQaywbKYNAEVThxmCYq8FVS1lTlfUihDeNoWzZJi3jtB07eMlgSUXhe2lZK1WH3D13Fu1-dlKCIJaGMHR2HKA4oAsbRrBsOoX1EMoIFYRp0HYStHkEWgairijGG0GIIHRJQwHRMUgA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQ7sxs7Pyo1KyBrhD8UKRQ+kZc1AD68YnWSplJhjoA7rSkABa0EOEJULg6IEo6OgCCACIAwgCyyTqkMARpcAAeaVD8BDD1Tc0AygAyXT19g8P8otQ6AKQAfOsmtNTkjOwOUw4AQgBSAJLNG+U7LR0AJMdnV81BDQ-tjx2NU7bNWydfJfR5-AFAiag35OABygOBRlBjThCKUAF8gkoAFZEcppADWcFYokqiRs+X4cGMUGEpDSBH4tFEfVx+KJJOABHYCjALVmvJqvK+vLkAF0lCMxoTiaIutzef8HM0AJrXQU6XkvC7qvCavn-NF63kdKZOACKGuFtlaAEYrXybQAmB2NG0AZldNoALKKcXiIDKSWSoHJgMK2u1XZHeWKulKYEHRLF+XNKVVgOG+dMZrGJRAvl1cpmIx087E0KguuVijyIA1cjoALw6XK4CZ8IQiOUtzvCMR1hoNHppADmaXQaVKqjQHAmQ501Cg9DgaxbvNsJRnqFYgvnQ9y0Hgzf1Irw+4aqBYFFIR906+zAvP9YXOivGhvDKIa-12ree5fBdIiIekt1oUcSlIE9uQANgABjgmYaidBCkJ0FDULkdtAKHBJaEYVcT00FhaGXbt2AIEo8QIMQT2tS4sCcXM9VEVc4HUOB+Dox0GKY0VsNfHQxipYguJbYjGFI+hyMo6jaIfDpmicVoAHlmg1ViRA4sT9UU5S1P4i8hJgcpRiIkiyIHWSZHk3T2kueFWg0tjtO4joHLaQycIaYSiFY8zJMs0lrJons7OaFSzWcrTyB0k12giqKwCwoyxlIRgoPEizpKsqibLC+L7FsaL2Nitz2iKrzBN80RBACqSZLy0LysShwStchSEsitrkoE18xkYIhBHIeqgooprbPirAVIcWwXBYlyys66bZvmlLvOM-g-OMRgAEdRpy4KJoKsBFMigAxLBLQWmLOJai6rqq-qYFEUh+FYA7Grkk7wVVdqltPQ0VSehcxgod7Pty77uJReFgZu0q7ofWG-uS-cPh0IIgloYwdHYcoDigCxtGsGw6hfUQyggVhGnQdhK0eQRaBqBnWMYbQYggdElDAdExSAA}{Open in Shinylive}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQ7sxs7Pyo1KyBrhD8UKRQ+kZc1AD68YnWSplJhjoA7rSkABa0EOEJULg6IEo6OgCCACIAwgCyyTqkMARpcAAeaVD8BDD1Tc0AygAyXT19g8P8otQ6AKQAfOsmtNTkjOwOUw4AQgBSAJLNG+U7LR0AJMdnV81BDQ-tjx2NU7bNWydfJfR5-AFAiag35OABygOBRlBjThCKUAF8gkoAFZEcppADWcFYokqiRs+X4cGMUGEpDSBH4tFEfVx+KJJOABHYCjALVmvJqvK+vLkAF0lCMxoTiaIutzef8HM0AJrXQU6XkvC7qvCavn-NF63kdKZOACKGuFtlaAEYrXybQAmB2NG0AZldNoALKKcXiIDKSWSoHJgMK2u1XZHeWKulKYEHRLF+XNKVVgOG+dMZrGJRAvl1cpmIx087E0KguuVijyIA1cjoALw6XK4CZ8IQiOUtzvCMR1hoNHppADmaXQaVKqjQHAmQ501Cg9DgaxbvNsJRnqFYgvnQ9y0Hgzf1Irw+4aqBYFFIR906+zAvP9YXOivGhvDKIa-12ree5fBdIiIekt1oUcSlIE9uQANgABjgmYaidBCkJ0FDULkdtAKHBJaEYVcT00FhaGXbt2AIEo8QIMQT2tS4sCcXM9VEVc4HUOB+Dox0GKY0VsNfHQxipYguJbYjGFI+hyMo6jaIfDpmicVoAHlmg1ViRA4sT9UU5S1P4i8hJgcpRiIkiyIHWSZHk3T2kueFWg0tjtO4joHLaQycIaYSiFY8zJMs0lrJons7OaFSzWcrTyB0k12giqKwCwoyxlIRgoPEizpKsqibLC+L7FsaL2Nitz2iKrzBN80RBACqSZLy0LysShwStchSEsitrkoE18xkYIhBHIeqgooprbPirAVIcWwXBYlyys66bZvmlLvOM-g-OMRgAEdRpy4KJoKsBFMigAxLBLQWmLOJai6rqq-qYFEUh+FYA7Grkk7wVVdqltPQ0VSehcxgod7Pty77uJReFgZu0q7ofWG-uS-cPh0IIgloYwdHYcoDigCxtGsGw6hfUQyggVhGnQdhK0eQRaBqBnWMYbQYggdElDAdExSAA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
     \if{html}{\out{<a style='height: 800px; display: block;'></a>}}
   }
 }
