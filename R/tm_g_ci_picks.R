@@ -212,7 +212,7 @@ ui_g_ci.picks <- function(id,
         choices = conf_level$choices,
         selected = conf_level$selected,
         multiple = FALSE,
-        fixed = conf_level$fixed %||% FALSE
+        fixed = teal.picks::is_pick_fixed(conf_level)
       ),
       radioButtons(
         inputId = ns("stat"),
