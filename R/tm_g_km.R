@@ -792,14 +792,14 @@ srv_g_km <- function(id,
       adsl_filtered <- anl_q[[parentname]]
       anl_filtered <- anl_q[[dataname]]
 
-      vm <- anl_inputs$variables()
-      input_arm_var <- vm$arm_var[[1L]]
-      input_strata_var <- vm$strata_var[[1L]]
-      input_facet_var <- resolve_facet_cols(vm$facet_var[[1L]])
-      input_aval_var <- vm$aval_var[[1L]]
-      input_cnsr_var <- vm$cnsr_var[[1L]]
-      input_paramcd_col <- vm$paramcd[[1L]]
-      input_time_unit_var <- vm$time_unit_var[[1L]]
+      vars <- anl_inputs$variables()
+      input_arm_var <- vars$arm_var[[1L]]
+      input_strata_var <- vars$strata_var[[1L]]
+      input_facet_var <- resolve_facet_cols(vars$facet_var[[1L]])
+      input_aval_var <- vars$aval_var[[1L]]
+      input_cnsr_var <- vars$cnsr_var[[1L]]
+      input_paramcd_col <- vars$paramcd[[1L]]
+      input_time_unit_var <- vars$time_unit_var[[1L]]
 
       validate_args <- list(
         adsl = adsl_filtered,
@@ -836,29 +836,29 @@ srv_g_km <- function(id,
       ANL <- obj[["ANL"]]
       teal::validate_has_data(ANL, 2)
 
-      vm <- anl_inputs$variables()
+      vars <- anl_inputs$variables()
 
       input_xticks <- if (!is.null(input$xticks)) {
         as_numeric_from_comma_sep_str(input$xticks, sep = ";")
       }
 
-      param_col <- vm$paramcd[[1L]]
+      param_col <- vars$paramcd[[1L]]
       param_vals <- as.character(unique(ANL[[param_col]]))
       title <- paste("KM Plot of", paste(param_vals, collapse = ", "))
 
       my_calls <- template_g_km(
         dataname = "ANL",
-        arm_var = vm$arm_var[[1L]],
+        arm_var = vars$arm_var[[1L]],
         ref_arm = unlist(input$buckets$Ref),
         comp_arm = unlist(input$buckets$Comp),
         compare_arm = input$compare_arms,
         combine_comp_arms = input$combine_comp_arms,
-        aval_var = vm$aval_var[[1L]],
-        cnsr_var = vm$cnsr_var[[1L]],
-        strata_var = vm$strata_var[[1L]],
+        aval_var = vars$aval_var[[1L]],
+        cnsr_var = vars$cnsr_var[[1L]],
+        strata_var = vars$strata_var[[1L]],
         time_points = NULL,
-        time_unit_var = vm$time_unit_var[[1L]],
-        facet_var = resolve_facet_cols(vm$facet_var[[1L]]),
+        time_unit_var = vars$time_unit_var[[1L]],
+        facet_var = resolve_facet_cols(vars$facet_var[[1L]]),
         annot_surv_med = input$show_km_table,
         annot_coxph = input$compare_arms,
         control_annot_surv_med = control_annot_surv_med,
