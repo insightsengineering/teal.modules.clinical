@@ -132,6 +132,8 @@ template_a_gee <- function(output_table,
 #' @inheritParams teal::module
 #' @inheritParams template_arguments
 #' @inheritParams template_a_gee
+#' @param conf_level ([`teal.picks::values()`]; legacy [`teal.transform::choices_selected()`] is deprecated but still
+#'   accepted)\cr confidence level for model-based intervals where applicable.
 #'
 #' @inherit module_arguments return seealso
 #'
@@ -227,7 +229,7 @@ tm_a_gee <- function(label,
                      cov_var,
                      arm_ref_comp = NULL,
                      paramcd,
-                     conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+                     conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95, multiple = FALSE),
                      pre_output = NULL,
                      post_output = NULL,
                      basic_table_args = teal.widgets::basic_table_args(),
