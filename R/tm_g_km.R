@@ -251,6 +251,9 @@ template_g_km <- function(dataname = "ANL",
 #'   for the x-axis. If `NULL` (default), users can specify this interactively in the module.
 #'   If provided, the interactive input field is pre-populated with the specified values as a default.
 #'   Users can then modify these values interactively, and their changes will take precedence over the default.
+#' @param facet_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
+#'   object with all available choices and preselected option for the variable used to facet the plot
+#'   (from `parentname`). Use no selection (e.g. `NULL` selected) for no faceting.
 #'
 #' @inherit module_arguments return seealso
 #'

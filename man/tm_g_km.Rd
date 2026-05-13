@@ -57,7 +57,9 @@ available choices and preselected option for the parameter code variable from \c
 \item{strata_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr names of
 the variables for stratified analysis.}
 
-\item{facet_var}{(\code{character})\cr name of the variable to use to facet the plot.}
+\item{facet_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+object with all available choices and preselected option for the variable used to facet the plot
+(from \code{parentname}). Use no selection (e.g. \code{NULL} selected) for no faceting.}
 
 \item{time_unit_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object
 with all available choices and pre-selected option for the time unit variable.}
