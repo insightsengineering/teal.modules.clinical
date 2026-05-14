@@ -84,7 +84,10 @@ tm_t_tte_legacy_event_desc <- function(label,
                                        aval_var = teal.picks::variables(choices = "AVAL", fixed = TRUE),
                                        cnsr_var = teal.picks::variables(choices = "CNSR", fixed = TRUE),
                                        conf_level_coxph = teal.picks::values(c(0.95, 0.9, 0.8), 0.95, multiple = FALSE),
-                                       conf_level_survfit = teal.picks::values(c(0.95, 0.9, 0.8), 0.95, multiple = FALSE),
+                                       conf_level_survfit = teal.picks::values(
+                                         c(0.95, 0.9, 0.8), 0.95,
+                                         multiple = FALSE
+                                       ),
                                        time_points,
                                        time_unit_var = teal.picks::variables(choices = "AVALU", fixed = TRUE),
                                        event_desc_var,

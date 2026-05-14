@@ -170,7 +170,7 @@ tm_g_ci.variables <- function(label,
 }
 
 #' @keywords internal
-ui_g_ci.picks <- function(id,
+ui_g_ci.picks <- function(id, # nolint: object_name.
                           x_var_picks,
                           y_var_picks,
                           paramcd_picks,
@@ -228,7 +228,7 @@ ui_g_ci.picks <- function(id,
 }
 
 #' @keywords internal
-srv_g_ci.picks <- function(id,
+srv_g_ci.picks <- function(id, # nolint: object_name.
                            data,
                            x_dataname,
                            y_dataname,
