@@ -636,7 +636,7 @@ ui_ancova <- function(id,
         conf_level$choices,
         conf_level$selected,
         multiple = FALSE,
-        fixed = attr(conf_level, "fixed", exact = TRUE)
+        fixed = teal.picks::is_pick_fixed(conf_level)
       ),
       tags$div(
         bslib::input_switch(
