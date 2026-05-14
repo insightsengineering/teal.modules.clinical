@@ -523,7 +523,7 @@ tm_t_tte <- function(label,
                      decorators = list()) {
   message("Initializing tm_t_tte")
   if (inherits(event_desc_var, "choices_selected")) {
-    event_desc_var <- migrate_choices_selected_to_variables(event_desc_var, arg_name = "event_desc_var")
+    event_desc_var <- migrate_choices_selected_to_variables(event_desc_var)
   }
   UseMethod("tm_t_tte", event_desc_var)
 }

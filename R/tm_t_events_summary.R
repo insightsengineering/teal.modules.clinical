@@ -658,17 +658,17 @@ tm_t_events_summary <- function(label,
                                 transformators = list(),
                                 decorators = list()) {
   message("Initializing tm_t_events_summary")
-  arm_var <- migrate_choices_selected_to_variables(arm_var, arg_name = "arm_var")
+  arm_var <- migrate_choices_selected_to_variables(arm_var)
   if (!is.null(flag_var_anl)) {
-    flag_var_anl <- migrate_choices_selected_to_variables(flag_var_anl, arg_name = "flag_var_anl")
+    flag_var_anl <- migrate_choices_selected_to_variables(flag_var_anl)
   }
   if (!is.null(flag_var_aesi)) {
-    flag_var_aesi <- migrate_choices_selected_to_variables(flag_var_aesi, arg_name = "flag_var_aesi")
+    flag_var_aesi <- migrate_choices_selected_to_variables(flag_var_aesi)
   }
-  dthfl_var <- migrate_choices_selected_to_variables(dthfl_var, arg_name = "dthfl_var")
-  dcsreas_var <- migrate_choices_selected_to_variables(dcsreas_var, arg_name = "dcsreas_var")
-  llt <- migrate_choices_selected_to_variables(llt, arg_name = "llt")
-  aeseq_var <- migrate_choices_selected_to_variables(aeseq_var, arg_name = "aeseq_var")
+  dthfl_var <- migrate_choices_selected_to_variables(dthfl_var)
+  dcsreas_var <- migrate_choices_selected_to_variables(dcsreas_var)
+  llt <- migrate_choices_selected_to_variables(llt)
+  aeseq_var <- migrate_choices_selected_to_variables(aeseq_var)
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
