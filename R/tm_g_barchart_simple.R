@@ -1,25 +1,24 @@
-﻿#' teal Module: Simple Bar Chart and Table of Counts per Category
+#' teal Module: Simple Bar Chart and Table of Counts per Category
 #'
 #' This module produces a [ggplot2::ggplot()] type bar chart and summary table of counts per category.
 #'
-#' Categories can be defined up to four levels deep and are defined through the `x`, `fill`,
-#' `x_facet`, and `y_facet` parameters. Any parameters set to `NULL` (default) are ignored.
+#' Categories can be defined up to four levels deep through `x`, `fill`, `x_facet`, and `y_facet`.
+#' The `x` encoding is always required; `fill`, `x_facet`, and `y_facet` may be `NULL` to omit them.
 #'
 #' @inheritParams module_arguments
 #' @inheritParams teal::module
 #' @inheritParams template_arguments
-#' @param x (`NULL`, `picks`, `data_extract_spec`, or `list` of `data_extract_spec`)\cr
-#'   variable on the x-axis.
+#' @param x (`picks`, `data_extract_spec`, or `list` of `data_extract_spec`)\cr
+#'   variable on the x-axis (required).
 #' @param fill (`NULL`, `picks`, `data_extract_spec`, or `list` thereof)\cr grouping variable for bar colors.
 #' @param x_facet (`NULL`, `picks`, `data_extract_spec`, or `list` thereof)\cr column-wise faceting groups.
 #' @param y_facet (`NULL`, `picks`, `data_extract_spec`, or `list` thereof)\cr row-wise faceting groups.
 #' @param plot_options (`list`)\cr list of plot options.
 #'
 #' @details
-#' S3 dispatch uses the **first non-`NULL`** slot among `x`, `fill`, `x_facet`, and `y_facet`
-#' (`tm_g_barchart_simple.default()` for `teal.transform::data_extract_spec()` vs
-#' `tm_g_barchart_simple.picks()` for [`teal.picks::picks()`]). Do not mix `data_extract_spec` and
-#' `picks` encodings in one call.
+#' S3 dispatch uses the class of `x`: `tm_g_barchart_simple.default()` for
+#' `teal.transform::data_extract_spec()` (or `list` thereof) and `tm_g_barchart_simple.picks()` for
+#' [`teal.picks::picks()`]. Do not mix `data_extract_spec` and `picks` encodings in one call.
 #'
 #' @inherit module_arguments return seealso
 #'
@@ -175,14 +174,16 @@ tm_g_barchart_simple <- function(
     ggplot2_args = teal.widgets::ggplot2_args(),
     transformators = list(),
     decorators = list()) {
-  slots <- list(x = x, fill = fill, x_facet = x_facet, y_facet = y_facet)
-  if (!any(vapply(slots, Negate(is.null), logical(1L)))) {
-    stop("At least one of `x`, `fill`, `x_facet`, and `y_facet` must be non-NULL.", call. = FALSE)
+  if (is.null(x)) {
+    stop(
+      "`x` must be non-NULL: specify the variable used for counts on the x-axis.",
+      call. = FALSE
+    )
   }
+  slots <- list(x = x, fill = fill, x_facet = x_facet, y_facet = y_facet)
   checkmate::assert_string(label)
   .tm_encoding_slots_kind(slots)
-  enc <- .module_arg_first_encoding(slots)
-  UseMethod("tm_g_barchart_simple", enc)
+  UseMethod("tm_g_barchart_simple", x)
 }
 
 #' @describeIn tm_g_barchart_simple Legacy `teal.transform::data_extract_spec()` encodings.
@@ -203,8 +204,8 @@ tm_g_barchart_simple.default <- function(x = NULL,
   message("Initializing tm_g_barchart_simple")
   checkmate::assert_string(label)
   checkmate::assert_list(plot_options, null.ok = TRUE)
-  if (length(c(x, fill, x_facet, y_facet)) == 0) {
-    stop("at least one must be specified. 'x', 'fill', 'x_facet', 'y_facet' is NULL")
+  if (is.null(x)) {
+    stop("`x` must be non-NULL: pass a `teal.transform::data_extract_spec()` (or list thereof).", call. = FALSE)
   }
   x <- teal.transform::list_extract_spec(x, allow_null = TRUE)
   fill <- teal.transform::list_extract_spec(fill, allow_null = TRUE)
