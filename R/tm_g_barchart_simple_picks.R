@@ -16,13 +16,11 @@ tm_g_barchart_simple.picks <- function(
     decorators = list()) {
   checkmate::assert_list(plot_options, null.ok = TRUE)
 
-  checkmate::assert_class(x, "picks", null.ok = TRUE, .var.name = "x")
-  if (!is.null(x)) {
-    checkmate::assert_false(
-      teal.picks::is_pick_multiple(x$variables),
-      .var.name = "`x` must use variables(..., multiple = FALSE)"
-    )
-  }
+  checkmate::assert_class(x, "picks", .var.name = "x")
+  checkmate::assert_false(
+    teal.picks::is_pick_multiple(x$variables),
+    .var.name = "`x` must use variables(..., multiple = FALSE)"
+  )
   checkmate::assert_class(fill, "picks", null.ok = TRUE, .var.name = "fill")
   if (!is.null(fill)) {
     checkmate::assert_false(
@@ -45,30 +43,22 @@ tm_g_barchart_simple.picks <- function(
     )
   }
 
-  picks_slot_datanames <- function(p) {
-    if (is.null(p)) {
-      return(character(0L))
-    }
-    ch <- p$datasets$choices
-    if (checkmate::test_character(ch, min.len = 1L)) {
-      return(unique(as.character(ch)))
-    }
-    sel <- p$datasets$selected
-    unique(as.character(sel))
-  }
-
-  all_datanames <- unique(unlist(
-    list(
-      picks_slot_datanames(x),
-      picks_slot_datanames(fill),
-      picks_slot_datanames(x_facet),
-      picks_slot_datanames(y_facet)
-    ),
-    use.names = FALSE
-  ))
-  if (length(all_datanames) == 0L) {
-    stop("Could not infer dataset names from `x`, `fill`, `x_facet`, and `y_facet`. ", call. = FALSE)
-  }
+  pick_slots <- Filter(Negate(is.null), list(x = x, fill = fill, x_facet = x_facet, y_facet = y_facet))
+  all_datanames <- unique(
+    unlist(
+      lapply(
+        pick_slots,
+        function(p) {
+          as.character(c(
+            unlist(p$datasets$choices, recursive = FALSE, use.names = FALSE),
+            unlist(p$datasets$selected, recursive = FALSE, use.names = FALSE)
+          ))
+        }
+      ),
+      use.names = FALSE
+    )
+  )
+  all_datanames <- all_datanames[nzchar(all_datanames)]
 
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(
@@ -345,24 +335,21 @@ srv_g_barchart_simple_picks <- function(id,
 
     anl_q <- merged_anl$data
 
-    iv_r <- reactive({
-      iv <- shinyvalidate::InputValidator$new()
-      iv$enable()
-      iv
-    })
-
     merge_vars <- merged_anl$variables
 
-    count_q <- reactive({
+    validate_x_picks <- reactive({
       merged_vars <- merge_vars()
-      if (!is.null(x)) {
-        validate(
-          need(
-            length(merged_vars[["x"]]) > 0L,
-            "Please select an x-variable"
-          )
+      validate(
+        need(
+          length(merged_vars[["x"]]) > 0L,
+          "Please select an x-variable"
         )
-      }
+      )
+    })
+
+    count_q <- reactive({
+      validate_x_picks()
+      merged_vars <- merge_vars()
       cols_src <- .barchart_picks_columns_source(anl_selectors, merged_vars)
 
       anl_q_local <- anl_q()
@@ -434,7 +421,7 @@ srv_g_barchart_simple_picks <- function(id,
     })
 
     all_q <- reactive({
-      teal::validate_inputs(iv_r())
+      validate_x_picks()
       merged_vars <- merge_vars()
       groupby_vars_chr <- .barchart_picks_groupby_column_names(anl_selectors, merged_vars)
       groupby_vars <- as.list(groupby_vars_chr)
@@ -500,7 +487,7 @@ srv_g_barchart_simple_picks <- function(id,
     plot_r <- reactive(decorated_all_q_code()[["plot"]])
 
     output$table <- renderTable({
-      req(iv_r()$is_valid())
+      validate_x_picks()
       all_q()[["counts"]]
     })
 
