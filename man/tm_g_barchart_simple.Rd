@@ -56,8 +56,8 @@ tm_g_barchart_simple(
 )
 }
 \arguments{
-\item{x}{(\code{NULL}, \code{picks}, \code{data_extract_spec}, or \code{list} of \code{data_extract_spec})\cr
-variable on the x-axis.}
+\item{x}{(\code{picks}, \code{data_extract_spec}, or \code{list} of \code{data_extract_spec})\cr
+variable on the x-axis (required).}
 
 \item{fill}{(\code{NULL}, \code{picks}, \code{data_extract_spec}, or \code{list} thereof)\cr grouping variable for bar colors.}
 
@@ -103,13 +103,12 @@ a \code{teal_module} object.
 This module produces a \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}} type bar chart and summary table of counts per category.
 }
 \details{
-Categories can be defined up to four levels deep and are defined through the \code{x}, \code{fill},
-\code{x_facet}, and \code{y_facet} parameters. Any parameters set to \code{NULL} (default) are ignored.
+Categories can be defined up to four levels deep through \code{x}, \code{fill}, \code{x_facet}, and \code{y_facet}.
+The \code{x} encoding is always required; \code{fill}, \code{x_facet}, and \code{y_facet} may be \code{NULL} to omit them.
 
-S3 dispatch uses the \strong{first non-\code{NULL}} slot among \code{x}, \code{fill}, \code{x_facet}, and \code{y_facet}
-(\code{tm_g_barchart_simple.default()} for \code{teal.transform::data_extract_spec()} vs
-\code{tm_g_barchart_simple.picks()} for \code{\link[teal.picks:picks]{teal.picks::picks()}}). Do not mix \code{data_extract_spec} and
-\code{picks} encodings in one call.
+S3 dispatch uses the class of \code{x}: \code{tm_g_barchart_simple.default()} for
+\code{teal.transform::data_extract_spec()} (or \code{list} thereof) and \code{tm_g_barchart_simple.picks()} for
+\code{\link[teal.picks:picks]{teal.picks::picks()}}. Do not mix \code{data_extract_spec} and \code{picks} encodings in one call.
 }
 \section{Methods (by class)}{
 \itemize{
