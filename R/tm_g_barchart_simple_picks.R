@@ -81,21 +81,7 @@ tm_g_barchart_simple.picks <- function(
     `if`(is.null(plot_options), list(), plot_options)
   )
 
-  args <- list(
-    x = x,
-    fill = fill,
-    x_facet = x_facet,
-    y_facet = y_facet,
-    label = label,
-    plot_options = plot_options,
-    plot_height = plot_height,
-    plot_width = plot_width,
-    pre_output = pre_output,
-    post_output = post_output,
-    ggplot2_args = ggplot2_args,
-    transformators = transformators,
-    decorators = decorators
-  )
+  args <- as.list(environment())
 
   module(
     label = label,
