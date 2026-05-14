@@ -186,7 +186,7 @@ wait_until_nonempty_active_module_input <- function(app_driver, input_id) { # no
   invisible(app_driver)
 }
 # Badge label may prefix variables with dataset (e.g. "ADLB BNRIND").
-teal_picks_strip_ds_prefix_vec <- function(x) { # nolint: object_length_linter.
+.teal_picks_strip_ds_prefix_vec <- function(x) { # nolint: object_length_linter.
   vapply(
     as.character(x),
     function(s) sub("^\\S+\\s+", "", s),

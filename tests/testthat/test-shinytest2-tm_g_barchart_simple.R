@@ -118,25 +118,25 @@ testthat::test_that(
 
     testthat::expect_equal(get_teal_picks_slot(app_driver, "x", "datasets"), "ADSL")
     testthat::expect_equal(
-      teal_picks_strip_ds_prefix_vec(get_teal_picks_slot(app_driver, "x", "variables")),
+      .teal_picks_strip_ds_prefix_vec(get_teal_picks_slot(app_driver, "x", "variables")),
       "ACTARM"
     )
 
     testthat::expect_equal(get_teal_picks_slot(app_driver, "fill", "datasets"), "ADSL")
     testthat::expect_equal(
-      teal_picks_strip_ds_prefix_vec(get_teal_picks_slot(app_driver, "fill", "variables")),
+      .teal_picks_strip_ds_prefix_vec(get_teal_picks_slot(app_driver, "fill", "variables")),
       "SEX"
     )
 
     testthat::expect_equal(get_teal_picks_slot(app_driver, "x_facet", "datasets"), "ADAE")
     testthat::expect_equal(
-      teal_picks_strip_ds_prefix_vec(get_teal_picks_slot(app_driver, "x_facet", "variables")),
+      .teal_picks_strip_ds_prefix_vec(get_teal_picks_slot(app_driver, "x_facet", "variables")),
       "AETOXGR"
     )
 
     testthat::expect_equal(get_teal_picks_slot(app_driver, "y_facet", "datasets"), "ADAE")
     testthat::expect_equal(
-      teal_picks_strip_ds_prefix_vec(get_teal_picks_slot(app_driver, "y_facet", "variables")),
+      .teal_picks_strip_ds_prefix_vec(get_teal_picks_slot(app_driver, "y_facet", "variables")),
       "AESEV"
     )
 
@@ -198,7 +198,7 @@ test_dataset_selection <- function(input_id, new_dataset, new_value) {
       testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
       testthat::expect_equal(get_teal_picks_slot(app_driver, input_id, "datasets"), new_dataset)
       testthat::expect_equal(
-        teal_picks_strip_ds_prefix_vec(get_teal_picks_slot(app_driver, input_id, "variables")),
+        .teal_picks_strip_ds_prefix_vec(get_teal_picks_slot(app_driver, input_id, "variables")),
         new_value
       )
       app_driver$expect_no_validation_error()
