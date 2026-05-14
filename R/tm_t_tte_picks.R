@@ -9,8 +9,8 @@ tm_t_tte.picks <- function(label,
                            strata_var,
                            aval_var = teal.picks::variables(choices = "AVAL", fixed = TRUE),
                            cnsr_var = teal.picks::variables(choices = "CNSR", fixed = TRUE),
-                           conf_level_coxph = teal.picks::values(c(0.95, 0.9, 0.8), 0.95, multiple = FALSE),
-                           conf_level_survfit = teal.picks::values(c(0.95, 0.9, 0.8), 0.95, multiple = FALSE),
+                           conf_level_coxph = teal.picks::values(c(0.95, 0.9, 0.8), 0.95),
+                           conf_level_survfit = teal.picks::values(c(0.95, 0.9, 0.8), 0.95),
                            time_points,
                            time_unit_var = teal.picks::variables(choices = "AVALU", fixed = TRUE),
                            event_desc_var = teal.picks::variables(choices = "EVNTDESC", fixed = TRUE),
@@ -36,9 +36,6 @@ tm_t_tte.picks <- function(label,
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
-  checkmate::assert_class(conf_level_coxph, "values")
-  checkmate::assert_class(conf_level_survfit, "values")
-  checkmate::assert_class(time_points, "values")
   checkmate::assert_flag(add_total)
   checkmate::assert_string(total_label)
   checkmate::assert_string(na_level)
@@ -83,8 +80,8 @@ tm_t_tte_legacy_event_desc <- function(label,
                                        strata_var,
                                        aval_var = teal.picks::variables(choices = "AVAL", fixed = TRUE),
                                        cnsr_var = teal.picks::variables(choices = "CNSR", fixed = TRUE),
-                                       conf_level_coxph = teal.picks::values(c(0.95, 0.9, 0.8), 0.95, multiple = FALSE),
-                                       conf_level_survfit = teal.picks::values(c(0.95, 0.9, 0.8), 0.95, multiple = FALSE),
+                                       conf_level_coxph = teal.picks::values(c(0.95, 0.9, 0.8), 0.95),
+                                       conf_level_survfit = teal.picks::values(c(0.95, 0.9, 0.8), 0.95),
                                        time_points,
                                        time_unit_var = teal.picks::variables(choices = "AVALU", fixed = TRUE),
                                        event_desc_var,

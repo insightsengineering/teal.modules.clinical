@@ -366,18 +366,8 @@ tm_g_km <- function(label,
                     time_unit_var = teal.picks::variables("AVALU", "AVALU", fixed = TRUE),
                     aval_var = teal.picks::variables("AVAL", "AVAL", fixed = TRUE),
                     cnsr_var = teal.picks::variables("CNSR", "CNSR", fixed = TRUE),
-                    conf_level = teal.picks::values(
-                      c("0.95", "0.9", "0.8"),
-                      selected = "0.95",
-                      keep_order = TRUE,
-                      multiple = FALSE
-                    ),
-                    conf_type = teal.picks::values(
-                      c("plain", "log", "log-log"),
-                      selected = "plain",
-                      keep_order = TRUE,
-                      multiple = FALSE
-                    ),
+                    conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95),
+                    conf_type = teal.picks::values(c("plain", "log", "log-log"), "plain"),
                     font_size = c(11L, 1L, 30),
                     xticks = NULL,
                     control_annot_surv_med = tern::control_surv_med_annot(),

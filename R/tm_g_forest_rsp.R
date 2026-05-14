@@ -349,11 +349,7 @@ tm_g_forest_rsp <- function(label,
                             stats = c("n_tot", "n", "n_rsp", "prop", "or", "ci"),
                             riskdiff = NULL,
                             fixed_symbol_size = TRUE,
-                            conf_level = teal.picks::values(
-                              c("0.95", "0.9", "0.8"),
-                              selected = "0.95",
-                              keep_order = TRUE
-                            ),
+                            conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95),
                             default_responses = c(
                               "CR", "PR", "Y",
                               "Complete Response (CR)", "Partial Response (PR)"
@@ -374,12 +370,12 @@ tm_g_forest_rsp <- function(label,
   aval_var <- migrate_choices_selected_to_variables(aval_var)
   subgroup_var <- migrate_choices_selected_to_variables(subgroup_var, multiple = TRUE)
   strata_var <- migrate_choices_selected_to_variables(strata_var, multiple = TRUE)
+  conf_level <- migrate_choices_selected_to_values(conf_level)
 
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_flag(fixed_symbol_size)
-  checkmate::assert_class(conf_level, "values")
   checkmate::assert_character(stats, min.len = 3)
   checkmate::assert_true(all(c("n_tot", "or", "ci") %in% stats))
   checkmate::assert_list(riskdiff, null.ok = TRUE)

@@ -116,7 +116,7 @@ tm_t_glm_counts <- function(label = "Counts Module",
                             offset_var,
                             cov_var,
                             arm_ref_comp = NULL,
-                            conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95, multiple = FALSE),
+                            conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95),
                             add_total = FALSE,
                             pre_output = NULL,
                             post_output = NULL,
@@ -124,13 +124,14 @@ tm_t_glm_counts <- function(label = "Counts Module",
                             transformators = list(),
                             decorators = list()) {
   message("Initializing tm_t_glm_counts")
-  arm_var <- migrate_choices_selected_to_variables(arm_var, arg_name = "arm_var")
-  aval_var <- migrate_choices_selected_to_variables(aval_var, arg_name = "aval_var")
-  strata_var <- migrate_choices_selected_to_variables(strata_var, arg_name = "strata_var")
-  offset_var <- migrate_choices_selected_to_variables(offset_var, arg_name = "offset_var")
-  cov_var <- migrate_choices_selected_to_variables(cov_var, arg_name = "cov_var")
-  conf_level <- migrate_choices_selected_to_values(conf_level, arg_name = "conf_level")
-  checkmate::assert_false(teal.picks::is_pick_multiple(conf_level))
+
+  arm_var <- migrate_choices_selected_to_variables(arm_var)
+  aval_var <- migrate_choices_selected_to_variables(aval_var)
+  strata_var <- migrate_choices_selected_to_variables(strata_var)
+  offset_var <- migrate_choices_selected_to_variables(offset_var)
+  cov_var <- migrate_choices_selected_to_variables(cov_var)
+  conf_level <- migrate_choices_selected_to_values(conf_level)
+
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   distribution_choices <- c("negbin", "quasipoisson", "poisson")

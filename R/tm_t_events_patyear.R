@@ -315,7 +315,7 @@ tm_t_events_patyear <- function(label,
                                 add_total = TRUE,
                                 total_label = default_total_label(),
                                 na_level = tern::default_na_str(),
-                                conf_level = teal.picks::values(c("0.95", "0.9", "0.8"), "0.95", fixed = FALSE),
+                                conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95, fixed = FALSE),
                                 drop_arm_levels = TRUE,
                                 pre_output = NULL,
                                 post_output = NULL,
@@ -323,12 +323,14 @@ tm_t_events_patyear <- function(label,
                                 transformators = list(),
                                 decorators = list()) {
   message("Initializing tm_t_events_patyear")
-  arm_var <- migrate_choices_selected_to_variables(arm_var, arg_name = "arm_var")
-  events_var <- migrate_choices_selected_to_variables(events_var, arg_name = "events_var")
-  paramcd <- migrate_value_choices_to_picks(paramcd, multiple = FALSE, arg_name = "paramcd")
-  aval_var <- migrate_choices_selected_to_variables(aval_var, arg_name = "aval_var")
-  avalu_var <- migrate_choices_selected_to_variables(avalu_var, arg_name = "avalu_var")
-  conf_level <- migrate_choices_selected_to_values(conf_level, arg_name = "conf_level")
+
+  arm_var <- migrate_choices_selected_to_variables(arm_var)
+  events_var <- migrate_choices_selected_to_variables(events_var)
+  paramcd <- migrate_value_choices_to_picks(paramcd, multiple = FALSE)
+  aval_var <- migrate_choices_selected_to_variables(aval_var)
+  avalu_var <- migrate_choices_selected_to_variables(avalu_var)
+  conf_level <- migrate_choices_selected_to_values(conf_level)
+
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)

@@ -549,21 +549,21 @@ tm_t_coxreg <- function(label,
                         cnsr_var = variables(choices = "CNSR", fixed = TRUE),
                         multivariate = TRUE,
                         na_level = tern::default_na_str(),
-                        conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95, multiple = FALSE),
+                        conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95),
                         pre_output = NULL,
                         post_output = NULL,
                         basic_table_args = teal.widgets::basic_table_args(),
                         transformators = list(),
                         decorators = list()) {
   message("Initializing tm_t_coxreg")
-  arm_var <- migrate_choices_selected_to_variables(arm_var, arg_name = "arm_var")
-  paramcd <- migrate_value_choices_to_picks(paramcd, multiple = TRUE, arg_name = "paramcd")
-  cov_var <- migrate_choices_selected_to_variables(cov_var, arg_name = "cov_var")
-  strata_var <- migrate_choices_selected_to_variables(strata_var, arg_name = "strata_var")
-  aval_var <- migrate_choices_selected_to_variables(aval_var, arg_name = "aval_var")
-  cnsr_var <- migrate_choices_selected_to_variables(cnsr_var, arg_name = "cnsr_var")
-  conf_level <- migrate_choices_selected_to_values(conf_level, arg_name = "conf_level")
-  checkmate::assert_false(teal.picks::is_pick_multiple(conf_level))
+  arm_var <- migrate_choices_selected_to_variables(arm_var)
+  paramcd <- migrate_value_choices_to_picks(paramcd, multiple = TRUE)
+  cov_var <- migrate_choices_selected_to_variables(cov_var)
+  strata_var <- migrate_choices_selected_to_variables(strata_var)
+  aval_var <- migrate_choices_selected_to_variables(aval_var)
+  cnsr_var <- migrate_choices_selected_to_variables(cnsr_var)
+  conf_level <- migrate_choices_selected_to_values(conf_level)
+
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
