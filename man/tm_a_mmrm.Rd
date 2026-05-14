@@ -17,7 +17,7 @@ tm_a_mmrm(
   paramcd,
   method = teal.picks::values(c("Satterthwaite", "Kenward-Roger",
     "Kenward-Roger-Linear"), "Satterthwaite"),
-  conf_level = teal.picks::values(c("0.95", "0.9", "0.8"), "0.95"),
+  conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95),
   plot_height = c(700L, 200L, 2000L),
   plot_width = NULL,
   total_label = default_total_label(),

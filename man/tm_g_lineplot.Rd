@@ -18,8 +18,7 @@ tm_g_lineplot(
   paramcd = teal.picks::picks(teal.picks::variables("PARAMCD", fixed = TRUE),
     teal.picks::values(choices = c("ALT", "CRP", "IGA"), selected = "ALT", multiple =
     FALSE), check_dataset = FALSE),
-  conf_level = teal.picks::values(c("0.95", "0.9", "0.8"), selected = "0.95", keep_order
-    = TRUE, multiple = FALSE),
+  conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95),
   interval = "mean_ci",
   mid = "mean",
   whiskers = c("mean_ci_lwr", "mean_ci_upr"),
