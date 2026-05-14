@@ -49,16 +49,18 @@ tm_g_barchart_simple.picks <- function(
       lapply(
         pick_slots,
         function(p) {
-          as.character(c(
-            unlist(p$datasets$choices, recursive = FALSE, use.names = FALSE),
-            unlist(p$datasets$selected, recursive = FALSE, use.names = FALSE)
-          ))
+          ch <- p$datasets$choices
+          if (checkmate::test_character(ch, min.len = 1L)) {
+            return(unique(as.character(ch)))
+          }
+          sel <- p$datasets$selected
+          unique(as.character(unlist(sel, recursive = FALSE, use.names = FALSE)))
         }
       ),
       use.names = FALSE
     )
   )
-  all_datanames <- all_datanames[nzchar(all_datanames)]
+  all_datanames <- all_datanames[nzchar(all_datanames) & !is.na(all_datanames)]
 
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(
