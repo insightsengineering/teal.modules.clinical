@@ -347,30 +347,12 @@ app <- init(
       label = "tm_t_pp_laboratory",
       dataname = "ADLB",
       patient_col = "USUBJID",
-      paramcd = choices_selected(
-        choices = variable_choices("ADLB", "PARAMCD"),
-        selected = "PARAMCD"
-      ),
-      param = choices_selected(
-        choices = variable_choices("ADLB", "PARAM"),
-        selected = "PARAM"
-      ),
-      timepoints = choices_selected(
-        choices = variable_choices("ADLB", "ADY"),
-        selected = "ADY"
-      ),
-      anrind = choices_selected(
-        choices = variable_choices("ADLB", "ANRIND"),
-        selected = "ANRIND"
-      ),
-      aval_var = choices_selected(
-        choices = variable_choices("ADLB", "AVAL"),
-        selected = "AVAL"
-      ),
-      avalu_var = choices_selected(
-        choices = variable_choices("ADLB", "AVALU"),
-        selected = "AVALU"
-      ),
+      paramcd = variables("PARAMCD", fixed = TRUE),
+      param = variables("PARAM", fixed = TRUE),
+      timepoints = variables("ADY", fixed = TRUE),
+      anrind = variables("ANRIND", fixed = TRUE),
+      aval_var = variables("AVAL", fixed = TRUE),
+      avalu_var = variables("AVALU", fixed = TRUE),
       decorators = list(table = dt_table_decorator())
     )
   )
