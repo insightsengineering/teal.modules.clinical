@@ -13,7 +13,7 @@ tm_t_shift_by_grade(
   paramcd,
   worst_flag_var = teal.picks::variables(c("WGRLOVFL", "WGRLOFL", "WGRHIVFL", "WGRHIFL"),
     "WGRLOVFL"),
-  worst_flag_indicator = teal.picks::values("Y", "Y", fixed = TRUE),
+  worst_flag_indicator = teal.picks::values("Y", "Y", fixed = TRUE, multiple = FALSE),
   anl_toxgrade_var = teal.picks::variables("ATOXGR", "ATOXGR", fixed = TRUE),
   base_toxgrade_var = teal.picks::variables("BTOXGR", "BTOXGR", fixed = TRUE),
   id_var = teal.picks::variables("USUBJID", "USUBJID", fixed = TRUE),

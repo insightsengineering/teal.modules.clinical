@@ -15,7 +15,7 @@ tm_t_shift_by_arm(
   base_var = lifecycle::deprecated(),
   baseline_var,
   treatment_flag_var = teal.picks::variables("ONTRTFL", "ONTRTFL"),
-  treatment_flag = teal.picks::values("Y", "Y", fixed = TRUE),
+  treatment_flag = teal.picks::values("Y", "Y", fixed = TRUE, multiple = FALSE),
   useNA = c("ifany", "no"),
   na_level = tern::default_na_str(),
   add_total = FALSE,
