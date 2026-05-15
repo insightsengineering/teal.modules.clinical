@@ -277,7 +277,10 @@ template_logistic <- function(dataname,
 #'     tm_t_logistic(
 #'       label = "Logistic Regression",
 #'       dataname = "ADRS",
-#'       paramcd = picks(variables("PARAMCD", "PARAMCD"), values(multiple = FALSE), check_dataset = FALSE),
+#'       paramcd = picks(variables("PARAMCD", "PARAMCD"),
+#'         values(multiple = FALSE),
+#'         check_dataset = FALSE
+#'       ),
 #'       cov_var = variables(selected = NULL),
 #'       avalc_var = variables("AVALC", fixed = TRUE),
 #'       conf_level = values(c(0.95, 0.9, 0.8), 0.95)
