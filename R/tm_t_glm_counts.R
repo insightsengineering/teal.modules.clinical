@@ -108,7 +108,7 @@
 tm_t_glm_counts <- function(label = "Counts Module",
                             dataname,
                             parentname = "ADSL",
-                            aval_var = variables(choices = "AVAL", fixed = TRUE),
+                            aval_var = teal.picks::variables("AVAL", "AVAL", fixed = TRUE),
                             arm_var,
                             strata_var,
                             rate_mean_method = c("emmeans", "ppmeans"),
