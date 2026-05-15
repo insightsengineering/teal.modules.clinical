@@ -17,7 +17,7 @@ tm_t_coxreg(
   cnsr_var = variables(choices = "CNSR", fixed = TRUE),
   multivariate = TRUE,
   na_level = tern::default_na_str(),
-  conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95, multiple = FALSE),
+  conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95),
   pre_output = NULL,
   post_output = NULL,
   basic_table_args = teal.widgets::basic_table_args(),

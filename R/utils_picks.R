@@ -357,8 +357,7 @@ migrate_list_extract_spec_to_picks <- function(x, # nolint: object_length_linter
       call. = FALSE
     )
   }
-  switch(
-    as.character(legacy_any + 2L * picks_any),
+  switch(as.character(legacy_any + 2L * picks_any),
     "0" = stop(
       "Could not classify encodings: pass `data_extract_spec` / `list` thereof, or `teal.picks::picks()`.",
       call. = FALSE

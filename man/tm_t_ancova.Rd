@@ -17,7 +17,7 @@ tm_t_ancova(
   interact_y = FALSE,
   avisit,
   paramcd,
-  conf_level = teal.picks::values(c("0.95", "0.9", "0.8"), "0.95", keep_order = TRUE),
+  conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95),
   pre_output = NULL,
   post_output = NULL,
   basic_table_args = teal.widgets::basic_table_args(),

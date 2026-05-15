@@ -318,12 +318,7 @@ tm_g_lineplot <- function(label,
                             ),
                             check_dataset = FALSE
                           ),
-                          conf_level = teal.picks::values(
-                            c("0.95", "0.9", "0.8"),
-                            selected = "0.95",
-                            keep_order = TRUE,
-                            multiple = FALSE
-                          ),
+                          conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95),
                           interval = "mean_ci",
                           mid = "mean",
                           whiskers = c("mean_ci_lwr", "mean_ci_upr"),
@@ -348,18 +343,12 @@ tm_g_lineplot <- function(label,
 
   message("Initializing tm_g_lineplot")
 
-  group_var <- migrate_choices_selected_to_variables(group_var, arg_name = "group_var")
-  x <- migrate_choices_selected_to_variables(x, arg_name = "x")
-  y <- migrate_choices_selected_to_variables(y, arg_name = "y")
-  y_unit <- migrate_choices_selected_to_variables(y_unit, arg_name = "y_unit")
-
-  paramcd <- migrate_value_choices_to_picks(paramcd, multiple = FALSE, arg_name = "paramcd")
-
-  conf_level <- migrate_choices_selected_to_values(
-    conf_level,
-    arg_name = "conf_level",
-    multiple = FALSE
-  )
+  group_var <- migrate_choices_selected_to_variables(group_var)
+  x <- migrate_choices_selected_to_variables(x)
+  y <- migrate_choices_selected_to_variables(y)
+  y_unit <- migrate_choices_selected_to_variables(y_unit)
+  paramcd <- migrate_value_choices_to_picks(paramcd, multiple = FALSE)
+  conf_level <- migrate_choices_selected_to_values(conf_level)
 
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)

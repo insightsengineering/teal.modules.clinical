@@ -9,8 +9,8 @@ tm_t_tte.picks <- function(label,
                            strata_var,
                            aval_var = teal.picks::variables(choices = "AVAL", fixed = TRUE),
                            cnsr_var = teal.picks::variables(choices = "CNSR", fixed = TRUE),
-                           conf_level_coxph = teal.picks::values(c(0.95, 0.9, 0.8), 0.95, multiple = FALSE),
-                           conf_level_survfit = teal.picks::values(c(0.95, 0.9, 0.8), 0.95, multiple = FALSE),
+                           conf_level_coxph = teal.picks::values(c(0.95, 0.9, 0.8), 0.95),
+                           conf_level_survfit = teal.picks::values(c(0.95, 0.9, 0.8), 0.95),
                            time_points,
                            time_unit_var = teal.picks::variables(choices = "AVALU", fixed = TRUE),
                            event_desc_var = teal.picks::variables(choices = "EVNTDESC", fixed = TRUE),
@@ -22,23 +22,20 @@ tm_t_tte.picks <- function(label,
                            basic_table_args = teal.widgets::basic_table_args(),
                            transformators = list(),
                            decorators = list()) {
-  arm_var <- migrate_choices_selected_to_variables(arm_var, arg_name = "arm_var")
-  paramcd <- migrate_value_choices_to_picks(paramcd, multiple = FALSE, arg_name = "paramcd")
-  strata_var <- migrate_choices_selected_to_variables(strata_var, arg_name = "strata_var")
-  aval_var <- migrate_choices_selected_to_variables(aval_var, arg_name = "aval_var")
-  cnsr_var <- migrate_choices_selected_to_variables(cnsr_var, arg_name = "cnsr_var")
-  time_unit_var <- migrate_choices_selected_to_variables(time_unit_var, arg_name = "time_unit_var")
-  event_desc_var <- migrate_choices_selected_to_variables(event_desc_var, arg_name = "event_desc_var")
-  conf_level_coxph <- migrate_choices_selected_to_values(conf_level_coxph, arg_name = "conf_level_coxph")
-  conf_level_survfit <- migrate_choices_selected_to_values(conf_level_survfit, arg_name = "conf_level_survfit")
-  time_points <- migrate_choices_selected_to_values(time_points, multiple = TRUE, arg_name = "time_points")
+  arm_var <- migrate_choices_selected_to_variables(arm_var)
+  paramcd <- migrate_value_choices_to_picks(paramcd, multiple = FALSE)
+  strata_var <- migrate_choices_selected_to_variables(strata_var)
+  aval_var <- migrate_choices_selected_to_variables(aval_var)
+  cnsr_var <- migrate_choices_selected_to_variables(cnsr_var)
+  time_unit_var <- migrate_choices_selected_to_variables(time_unit_var)
+  event_desc_var <- migrate_choices_selected_to_variables(event_desc_var)
+  conf_level_coxph <- migrate_choices_selected_to_values(conf_level_coxph)
+  conf_level_survfit <- migrate_choices_selected_to_values(conf_level_survfit)
+  time_points <- migrate_choices_selected_to_values(time_points, multiple = TRUE)
 
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
-  checkmate::assert_class(conf_level_coxph, "values")
-  checkmate::assert_class(conf_level_survfit, "values")
-  checkmate::assert_class(time_points, "values")
   checkmate::assert_flag(add_total)
   checkmate::assert_string(total_label)
   checkmate::assert_string(na_level)
@@ -83,11 +80,8 @@ tm_t_tte_legacy_event_desc <- function(label,
                                        strata_var,
                                        aval_var = teal.picks::variables(choices = "AVAL", fixed = TRUE),
                                        cnsr_var = teal.picks::variables(choices = "CNSR", fixed = TRUE),
-                                       conf_level_coxph = teal.picks::values(c(0.95, 0.9, 0.8), 0.95, multiple = FALSE),
-                                       conf_level_survfit = teal.picks::values(
-                                         c(0.95, 0.9, 0.8), 0.95,
-                                         multiple = FALSE
-                                       ),
+                                       conf_level_coxph = teal.picks::values(c(0.95, 0.9, 0.8), 0.95),
+                                       conf_level_survfit = teal.picks::values(c(0.95, 0.9, 0.8), 0.95),
                                        time_points,
                                        time_unit_var = teal.picks::variables(choices = "AVALU", fixed = TRUE),
                                        event_desc_var,
@@ -99,7 +93,7 @@ tm_t_tte_legacy_event_desc <- function(label,
                                        basic_table_args = teal.widgets::basic_table_args(),
                                        transformators = list(),
                                        decorators = list()) {
-  event_desc_var <- migrate_list_extract_spec_to_picks(event_desc_var, arg_name = "event_desc_var")
+  event_desc_var <- migrate_list_extract_spec_to_picks(event_desc_var)
   tm_t_tte.picks(
     label = label,
     dataname = dataname,

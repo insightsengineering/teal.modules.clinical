@@ -40,11 +40,7 @@ tm_g_ci.picks <- function(label,
                             selected = "SCREENING",
                             multiple = FALSE
                           ),
-                          conf_level = teal.picks::values(
-                            c("0.95", "0.9", "0.8"),
-                            selected = "0.95",
-                            keep_order = TRUE
-                          ),
+                          conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95),
                           plot_height = c(700L, 200L, 2000L),
                           plot_width = NULL,
                           pre_output = NULL,
@@ -138,11 +134,7 @@ tm_g_ci.variables <- function(label,
                                 selected = "SCREENING",
                                 multiple = FALSE
                               ),
-                              conf_level = teal.picks::values(
-                                c("0.95", "0.9", "0.8"),
-                                selected = "0.95",
-                                keep_order = TRUE
-                              ),
+                              conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95),
                               plot_height = c(700L, 200L, 2000L),
                               plot_width = NULL,
                               pre_output = NULL,

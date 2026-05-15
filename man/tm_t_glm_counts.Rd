@@ -16,7 +16,7 @@ tm_t_glm_counts(
   offset_var,
   cov_var,
   arm_ref_comp = NULL,
-  conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95, multiple = FALSE),
+  conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95),
   add_total = FALSE,
   pre_output = NULL,
   post_output = NULL,

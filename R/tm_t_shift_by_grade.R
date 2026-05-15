@@ -572,13 +572,13 @@ tm_t_shift_by_grade <- function(label,
                                 transformators = list(),
                                 decorators = list()) {
   message("Initializing tm_t_shift_by_grade")
-  arm_var <- migrate_choices_selected_to_variables(arm_var, arg_name = "arm_var")
-  visit_var <- migrate_choices_selected_to_variables(visit_var, arg_name = "visit_var")
-  paramcd <- migrate_choices_selected_to_variables(paramcd, arg_name = "paramcd")
-  worst_flag_var <- migrate_choices_selected_to_variables(worst_flag_var, arg_name = "worst_flag_var")
-  anl_toxgrade_var <- migrate_choices_selected_to_variables(anl_toxgrade_var, arg_name = "anl_toxgrade_var")
-  base_toxgrade_var <- migrate_choices_selected_to_variables(base_toxgrade_var, arg_name = "base_toxgrade_var")
-  id_var <- migrate_choices_selected_to_variables(id_var, arg_name = "id_var")
+  arm_var <- migrate_choices_selected_to_variables(arm_var)
+  visit_var <- migrate_choices_selected_to_variables(visit_var)
+  paramcd <- migrate_choices_selected_to_variables(paramcd)
+  worst_flag_var <- migrate_choices_selected_to_variables(worst_flag_var)
+  anl_toxgrade_var <- migrate_choices_selected_to_variables(anl_toxgrade_var)
+  base_toxgrade_var <- migrate_choices_selected_to_variables(base_toxgrade_var)
+  id_var <- migrate_choices_selected_to_variables(id_var)
   worst_flag_indicator <- migrate_choices_selected_to_values(
     worst_flag_indicator,
     arg_name = "worst_flag_indicator",
