@@ -161,19 +161,20 @@
 #'
 #' @export
 tm_g_barchart_simple <- function(
-    x = NULL,
-    fill = NULL,
-    x_facet = NULL,
-    y_facet = NULL,
-    label = "Count Barchart",
-    plot_options = NULL,
-    plot_height = c(600L, 200L, 2000L),
-    plot_width = NULL,
-    pre_output = NULL,
-    post_output = NULL,
-    ggplot2_args = teal.widgets::ggplot2_args(),
-    transformators = list(),
-    decorators = list()) {
+  x = NULL,
+  fill = NULL,
+  x_facet = NULL,
+  y_facet = NULL,
+  label = "Count Barchart",
+  plot_options = NULL,
+  plot_height = c(600L, 200L, 2000L),
+  plot_width = NULL,
+  pre_output = NULL,
+  post_output = NULL,
+  ggplot2_args = teal.widgets::ggplot2_args(),
+  transformators = list(),
+  decorators = list()
+) {
   if (is.null(x)) {
     stop(
       "`x` must be non-NULL: specify the variable used for counts on the x-axis.",
@@ -217,7 +218,8 @@ tm_g_barchart_simple.default <- function(x = NULL,
   teal.transform::check_no_multiple_selection(y_facet)
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(
-    plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height"
+    plot_height[1],
+    lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height"
   )
   checkmate::assert_numeric(plot_width, len = 3, any.missing = FALSE, null.ok = TRUE, finite = TRUE)
   checkmate::assert_numeric(
