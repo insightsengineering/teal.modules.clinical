@@ -306,7 +306,9 @@ tm_g_ci.choices_selected <- function(label,
                                      stat = c("mean", "median"),
                                      paramcd = NULL,
                                      avisit = NULL,
-                                     conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+                                     conf_level = teal.transform::choices_selected(
+                                      c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE
+                                     ),
                                      plot_height = c(700L, 200L, 2000L),
                                      plot_width = NULL,
                                      pre_output = NULL,
