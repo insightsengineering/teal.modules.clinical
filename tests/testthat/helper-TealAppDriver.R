@@ -173,6 +173,7 @@ init_teal_app_driver <- function(...) {
 wait_until_nonempty_active_module_input <- function(app_driver, input_id) { # nolint: object_length_linter.
   checkmate::assert_string(input_id)
   full_id <- app_driver$namespaces(TRUE)$module(input_id)
+  full_id <- sub("^#", "", full_id)
   id_lit <- .teal_picks_js_id_literal(full_id)
   app_driver$wait_for_js(sprintf(
     paste0(
@@ -182,6 +183,52 @@ wait_until_nonempty_active_module_input <- function(app_driver, input_id) { # no
       "})()"
     ),
     id_lit
+  ))
+  invisible(app_driver)
+}
+
+# Wait until an active module table output is present and rendered with at least one data row.
+# nolint start: object_length_linter.
+wait_until_active_module_table_has_rows <- function(
+  # nolint end
+  app_driver,
+  output_id,
+  min_rows = 1L
+) {
+  checkmate::assert_string(output_id)
+  checkmate::assert_int(min_rows, lower = 0L)
+
+  full_id <- app_driver$namespaces(TRUE)$module(output_id)
+  full_id <- sub("^#", "", full_id)
+  id_lit <- .teal_picks_js_id_literal(full_id)
+  out_id_lit <- .teal_picks_js_id_literal(output_id)
+
+  app_driver$wait_for_js(sprintf(
+    paste0(
+      "(() => {\n",
+      "  let el = document.getElementById(%s);\n",
+      "  if (!el) {\n",
+      "    const suffix = %s;\n",
+      "    const selector = `[id='${suffix}'], [id$='-${suffix}']`;\n",
+      "    const candidates = Array.from(document.querySelectorAll(selector));\n",
+      "    el = candidates.find((node) => {\n",
+      "      if (node.classList.contains('shiny-bound-output')) return true;\n",
+      "      if (node.querySelector('table, .rtablesTable, .dataTables_wrapper')) return true;\n",
+      "      return false;\n",
+      "    }) || candidates[0] || null;\n",
+      "  }\n",
+      "  if (!el) return false;\n",
+      "  if (el.classList.contains('recalculating')) return false;\n",
+      "  if (el.querySelector('.shiny-output-error, .shiny-output-error-validation')) return false;\n",
+      "  const rowCount = el.querySelectorAll(\n",
+      "    'table tbody tr, .rtablesTable tbody tr, .dataTables_wrapper tbody tr, table tr'\n",
+      "  ).length;\n",
+      "  return rowCount >= %d;\n",
+      "})()"
+    ),
+    id_lit,
+    out_id_lit,
+    min_rows
   ))
   invisible(app_driver)
 }

@@ -206,8 +206,7 @@ testthat::test_that("e2e - tm_g_km: Deselecting {arm_var} throws validation erro
   app_driver$expect_validation_error()
   testthat::expect_match(
     app_driver$get_text(app_driver$namespaces(TRUE)$module("myplot-plot_out_main")),
-    "Treatment variable must be selected.",
-    fixed = TRUE
+    "[Tt]reatment variable must be selected.",
   )
   app_driver$stop()
 })

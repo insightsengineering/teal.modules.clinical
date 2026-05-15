@@ -115,11 +115,11 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_pp_laboratory()
+    wait_until_active_module_table_has_rows(app_driver, "lab_values_table")
     withr::defer(app_driver$stop())
-    app_driver$wait_for_idle()
     table_before <- app_driver$get_active_module_table_output("lab_values_table", which = 2)
     app_driver$set_active_module_input("patient_id", "AB12345-USA-1-id-261")
-    app_driver$wait_for_idle()
+    wait_until_active_module_table_has_rows(app_driver, "lab_values_table")
     testthat::expect_false(
       identical(
         table_before,
@@ -152,11 +152,11 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_pp_laboratory()
+    wait_until_active_module_table_has_rows(app_driver, "lab_values_table")
     withr::defer(app_driver$stop())
-    app_driver$wait_for_idle()
     table_before <- app_driver$get_active_module_table_output("lab_values_table", which = 2)
     set_teal_picks_slot(app_driver, "paramcd", "variables", "STUDYID")
-    app_driver$wait_for_idle()
+    wait_until_active_module_table_has_rows(app_driver, "lab_values_table")
     testthat::expect_false(
       identical(
         table_before,
@@ -189,11 +189,11 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_pp_laboratory()
+    wait_until_active_module_table_has_rows(app_driver, "lab_values_table")
     withr::defer(app_driver$stop())
-    app_driver$wait_for_idle()
     table_before <- app_driver$get_active_module_table_output("lab_values_table", which = 2)
     set_teal_picks_slot(app_driver, "param", "variables", "SEX")
-    app_driver$wait_for_idle()
+    wait_until_active_module_table_has_rows(app_driver, "lab_values_table")
     testthat::expect_false(
       identical(
         table_before,
@@ -229,11 +229,11 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_pp_laboratory()
+    wait_until_active_module_table_has_rows(app_driver, "lab_values_table")
     withr::defer(app_driver$stop())
-    app_driver$wait_for_idle()
     table_before <- app_driver$get_active_module_table_output("lab_values_table", which = 2)
     set_teal_picks_slot(app_driver, "timepoints", "variables", "AGE")
-    app_driver$wait_for_idle()
+    wait_until_active_module_table_has_rows(app_driver, "lab_values_table")
     testthat::expect_false(
       identical(
         table_before,
@@ -266,11 +266,11 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_pp_laboratory()
+    wait_until_active_module_table_has_rows(app_driver, "lab_values_table")
     withr::defer(app_driver$stop())
-    app_driver$wait_for_idle()
     table_before <- app_driver$get_active_module_table_output("lab_values_table", which = 2)
     set_teal_picks_slot(app_driver, "avalu_var", "variables", "SEX")
-    app_driver$wait_for_idle()
+    wait_until_active_module_table_has_rows(app_driver, "lab_values_table")
     testthat::expect_false(
       identical(
         table_before,
@@ -303,11 +303,11 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_pp_laboratory()
+    wait_until_active_module_table_has_rows(app_driver, "lab_values_table")
     withr::defer(app_driver$stop())
-    app_driver$wait_for_idle()
     table_before <- app_driver$get_active_module_table_output("lab_values_table", which = 2)
     set_teal_picks_slot(app_driver, "aval_var", "variables", "AGE")
-    app_driver$wait_for_idle()
+    wait_until_active_module_table_has_rows(app_driver, "lab_values_table")
     testthat::expect_false(
       identical(
         table_before,
@@ -340,11 +340,11 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_pp_laboratory()
+    wait_until_active_module_table_has_rows(app_driver, "lab_values_table")
     withr::defer(app_driver$stop())
-    app_driver$wait_for_idle()
     table_before <- app_driver$get_active_module_table_output("lab_values_table", which = 2)
     set_teal_picks_slot(app_driver, "anrind", "variables", "AGEU")
-    app_driver$wait_for_idle()
+    wait_until_active_module_table_has_rows(app_driver, "lab_values_table")
     testthat::expect_false(
       identical(
         table_before,
