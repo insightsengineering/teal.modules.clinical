@@ -659,12 +659,8 @@ tm_t_events_summary <- function(label,
                                 decorators = list()) {
   message("Initializing tm_t_events_summary")
   arm_var <- migrate_choices_selected_to_variables(arm_var)
-  if (!is.null(flag_var_anl)) {
-    flag_var_anl <- migrate_choices_selected_to_variables(flag_var_anl)
-  }
-  if (!is.null(flag_var_aesi)) {
-    flag_var_aesi <- migrate_choices_selected_to_variables(flag_var_aesi)
-  }
+  flag_var_anl <- migrate_choices_selected_to_variables(flag_var_anl, null.ok = TRUE)
+  flag_var_aesi <- migrate_choices_selected_to_variables(flag_var_aesi, null.ok = TRUE)
   dthfl_var <- migrate_choices_selected_to_variables(dthfl_var)
   dcsreas_var <- migrate_choices_selected_to_variables(dcsreas_var)
   llt <- migrate_choices_selected_to_variables(llt)
