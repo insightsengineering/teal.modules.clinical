@@ -551,16 +551,16 @@ tm_t_shift_by_grade <- function(label,
                                 dataname,
                                 parentname = "ADSL",
                                 arm_var,
-                                visit_var = variables(choices = "AVISIT", fixed = TRUE),
+                                visit_var = teal.picks::variables("AVISIT", "AVISIT", fixed = TRUE),
                                 paramcd,
-                                worst_flag_var = variables(
-                                  choices = c("WGRLOVFL", "WGRLOFL", "WGRHIVFL", "WGRHIFL"),
-                                  selected = "WGRLOVFL"
+                                worst_flag_var = teal.picks::variables(
+                                  c("WGRLOVFL", "WGRLOFL", "WGRHIVFL", "WGRHIFL"),
+                                  "WGRLOVFL"
                                 ),
                                 worst_flag_indicator = teal.picks::values("Y", "Y", fixed = TRUE),
-                                anl_toxgrade_var = variables(choices = "ATOXGR", fixed = TRUE),
-                                base_toxgrade_var = variables(choices = "BTOXGR", fixed = TRUE),
-                                id_var = variables(choices = "USUBJID", fixed = TRUE),
+                                anl_toxgrade_var = teal.picks::variables("ATOXGR", "ATOXGR", fixed = TRUE),
+                                base_toxgrade_var = teal.picks::variables("BTOXGR", "BTOXGR", fixed = TRUE),
+                                id_var = teal.picks::variables("USUBJID", "USUBJID", fixed = TRUE),
                                 add_total = FALSE,
                                 total_label = default_total_label(),
                                 drop_arm_levels = TRUE,
