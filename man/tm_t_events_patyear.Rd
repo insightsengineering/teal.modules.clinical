@@ -16,7 +16,7 @@ tm_t_events_patyear(
   add_total = TRUE,
   total_label = default_total_label(),
   na_level = tern::default_na_str(),
-  conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95, fixed = FALSE),
+  conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95),
   drop_arm_levels = TRUE,
   pre_output = NULL,
   post_output = NULL,
