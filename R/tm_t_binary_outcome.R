@@ -467,11 +467,7 @@ tm_t_binary_outcome <- function(label,
                                 arm_ref_comp = NULL,
                                 paramcd,
                                 strata_var,
-                                aval_var = variables(
-                                  choices = c("AVALC", "SEX"),
-                                  selected = "AVALC",
-                                  fixed = FALSE
-                                ),
+                                aval_var = teal.picks::variables(c("AVALC", "SEX"), "AVALC", fixed = FALSE),
                                 conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95),
                                 default_responses =
                                   c("CR", "PR", "Y", "Complete Response (CR)", "Partial Response (PR)", "M"),
@@ -779,25 +775,30 @@ srv_t_binary_outcome <- function(id,
       arm_var_r = arm_var_r
     )
 
-    iv_r <- reactive({
-      iv <- shinyvalidate::InputValidator$new()
+    validated_q <- reactive({
+      obj <- req(data())
+      obj <- teal.code::eval_code(obj, "library(dplyr)")
 
-      if (isTRUE(input$compare_arms)) {
-        iv$add_validator(arm_ref_comp_buckets_validator())
-      }
-
-      iv$add_rule("responders", shinyvalidate::sv_required("`Responders` field is empty"))
-      iv$add_rule("conf_level", shinyvalidate::sv_required("Please choose a confidence level between 0 and 1"))
-      iv$add_rule(
-        "conf_level",
-        shinyvalidate::sv_between(0, 1, message_fmt = "Please choose a confidence level between {left} and {right}")
+      validate_input(
+        inputId = "responders",
+        condition = !is.null(input$responders) && length(input$responders) > 0L,
+        message = "`Responders` field is empty"
       )
-      iv$enable()
-      iv
+      validate_input(
+        inputId = "conf_level",
+        condition = !is.null(input$conf_level),
+        message = "Please choose a confidence level."
+      )
+      validate_input(
+        inputId = "conf_level",
+        condition = as.numeric(input$conf_level) > 0 && as.numeric(input$conf_level) < 1,
+        message = "Confidence level must be between 0 and 1."
+      )
+      obj
     })
 
     data_with_card <- reactive({
-      obj <- data()
+      obj <- validated_q()
       teal.reporter::teal_card(obj) <-
         c(
           teal.reporter::teal_card(obj),
@@ -818,13 +819,13 @@ srv_t_binary_outcome <- function(id,
     )
     anl_q <- merged_adsl$data
 
-    # Keep responders selectInput in sync with merged ANL and all encoding picks.
-    # observeEvent(aval, paramcd) alone missed arm/strata/merge updates, leaving
-    # responders empty after picks commit and failing shinyvalidate.
-    shiny::observe(
-      {
+    observeEvent(
+      c(
+        anl_selectors$aval_var(),
+        anl_selectors$paramcd()
+      ),
+      handlerExpr = {
         anl <- anl_q()[["ANL"]]
-        shiny::req(is.data.frame(anl), nrow(anl) > 0L)
 
         aval_name <- anl_selectors$aval_var()$variables$selected
         shiny::req(length(aval_name) > 0L)
@@ -886,19 +887,10 @@ srv_t_binary_outcome <- function(id,
           choices = responder_choices,
           selected = new_sel
         )
-      },
-      priority = 1L
+      }
     )
 
     validate_check <- reactive({
-      if (isTRUE(input$compare_arms)) {
-        arm_ref_comp_iv()
-      }
-      teal::validate_inputs(iv_r())
-      validate(
-        need(length(anl_selectors$arm_var()$variables$selected) >= 1L, "A treatment variable is required"),
-        need(length(anl_selectors$aval_var()$variables$selected) >= 1L, "An analysis variable is required")
-      )
       pc <- anl_selectors$paramcd()
       pc_vals <- if (is.null(pc$values)) character(0) else pc$values$selected
       validate(need(length(pc_vals) >= 1L, "Please select a filter."))

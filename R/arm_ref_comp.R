@@ -122,34 +122,6 @@ arm_bucket_values <- function(buckets, name) {
   x[!is.na(x) & nzchar(x)]
 }
 
-#' Shiny validator for reference / comparison arm buckets only
-#'
-#' For modules using [teal.picks::picks_ui()], treatment column selection is validated via
-#' [teal.picks::picks_srv()] reactives; this validator only enforces `input$buckets` arms.
-#'
-#' @param id_ref (`character(1)`)\cr bucket name for reference arms.
-#' @param id_comp (`character(1)`)\cr bucket name for comparison arms.
-#'
-#' @return A `shinyvalidate::InputValidator`.
-#' @keywords internal
-#'
-arm_ref_comp_buckets_validator <- function(id_ref = "Ref", id_comp = "Comp") {
-  iv <- shinyvalidate::InputValidator$new()
-  iv$add_rule("buckets", function(value) {
-    if (length(arm_bucket_values(value, id_ref)) == 0L) {
-      return("A reference arm must be selected")
-    }
-    NULL
-  })
-  iv$add_rule("buckets", function(value) {
-    if (length(arm_bucket_values(value, id_comp)) == 0L) {
-      return("A comparison arm must be selected")
-    }
-    NULL
-  })
-  iv
-}
-
 #' Observer for Treatment reference variable
 #'
 #' @description
