@@ -33,13 +33,14 @@ tm_t_glm_counts(
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
 \item{aval_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
-analysis variable (\code{dataname}).}
+object with all available choices and pre-selected option for the analysis variable.}
 
 \item{arm_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
-treatment variable (\code{parentname}).}
+object with all available choices and preselected option for variable names that can be used as \code{arm_var}.
+It defines the grouping variable in the results table.}
 
 \item{strata_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
-optional stratification columns (\code{dataname}).}
+names of the variables for stratified analysis.}
 
 \item{rate_mean_method}{(\code{character}) method used to estimate the mean odds ratio. Either "emmeans" or "ppmeans"
 (as in \code{summarize_glm_count()}).}
@@ -47,19 +48,18 @@ optional stratification columns (\code{dataname}).}
 \item{distribution}{(\code{character}) value specifying the distribution used in the regression model
 (Poisson: \code{"poisson"},  Quasi-Poisson: \code{"quasipoisson"}, negative binomial: \code{"negbin"}).}
 
-\item{offset_var}{(\code{character}) a name of the numeric variable to be used as an offset?}
-
 \item{cov_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
-optional covariate columns (\code{dataname}).}
+object with all available choices and preselected option for the covariates variables.}
 
 \item{arm_ref_comp}{(\code{list}) optional,\cr if specified it must be a named list with each element corresponding to
 an arm variable in \code{ADSL} and the element must be another list (possibly
-with delayed \code{\link[teal.transform:variable_choices]{teal.transform::variable_choices()}} or delayed \code{\link[teal.transform:value_choices]{teal.transform::value_choices()}}
-with the elements named \code{ref} and \code{comp} that the defined the default
-reference and comparison arms when the arm variable is changed.}
+with delayed \code{\link[teal.picks:variables]{teal.picks::variables()}} or \code{\link[teal.picks:values]{teal.picks::values()}}; legacy
+\code{\link[teal.transform:variable_choices]{teal.transform::variable_choices()}} and \code{\link[teal.transform:value_choices]{teal.transform::value_choices()}} are deprecated but still accepted)
+with the elements named \code{ref} and \code{comp} that define the default reference and comparison arms when the arm
+variable is changed.}
 
 \item{conf_level}{(\code{\link[teal.picks:values]{teal.picks::values()}}; legacy \code{teal.transform::choices_selected()} is deprecated but still
-accepted) available confidence levels and default selection, each in the range (0, 1).}
+accepted)\cr available confidence levels and default selection, each in the range (0, 1).}
 
 \item{add_total}{(\code{logical})\cr initial value for the \dQuote{Add All Patients column} checkbox when comparing arms.}
 
@@ -68,11 +68,6 @@ For example a title.}
 
 \item{post_output}{(\code{shiny.tag}) optional,\cr with text placed after the output to put the output into context.
 For example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
-
-\item{basic_table_args}{(\code{basic_table_args}) optional\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}}
-with settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default
-module arguments (hard coded in the module body).
-For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 
 \item{transformators}{(\code{list} of \code{teal_transform_module}) that will be applied to transform module's data input.
 To learn more check \code{vignette("transform-input-data", package = "teal")}.}

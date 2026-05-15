@@ -104,14 +104,14 @@ tm_g_ci(
 
 \item{stat}{(\code{character})\cr statistic to plot. Options are \code{"mean"} and \code{"median"}.}
 
-\item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
-available choices and preselected option for the parameter code variable from \code{dataname}.}
+\item{paramcd}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+object with all available choices and preselected option for the parameter code variable from \code{dataname}.}
 
-\item{avisit}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr value of analysis
-visit \code{AVISIT} of interest.}
+\item{avisit}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+value of analysis visit \code{AVISIT} of interest.}
 
-\item{conf_level}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
-all available choices and pre-selected option for the confidence level, each within range of (0, 1).}
+\item{conf_level}{(\code{\link[teal.picks:values]{teal.picks::values()}}; legacy \code{teal.transform::choices_selected()} is deprecated but still
+accepted)\cr available confidence levels and default selection, each in the range (0, 1).}
 
 \item{plot_height}{(\code{numeric}) optional\cr vector of length three with \code{c(value, min, max)}. Specifies the
 height of the main plot and renders a slider on the plot to interactively adjust the plot height.}

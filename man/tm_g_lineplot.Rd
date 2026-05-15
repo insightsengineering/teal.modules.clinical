@@ -51,7 +51,8 @@ encodings; legacy inputs are coerced with a deprecation warning.}
 parameter code filter: a \code{picks()} chain with the \code{PARAMCD} variable and biomarker \code{values()};
 defaults to \code{ALT} / \code{CRP} / \code{IGA} with \code{ALT} selected.}
 
-\item{conf_level}{(\code{\link[teal.picks:values]{teal.picks::values()}} or legacy \code{choices_selected})\cr confidence levels shown in the UI.}
+\item{conf_level}{(\code{\link[teal.picks:values]{teal.picks::values()}}; legacy \code{teal.transform::choices_selected()} is deprecated but still
+accepted)\cr available confidence levels and default selection, each in the range (0, 1).}
 
 \item{interval}{(\code{character} or \code{NULL})\cr names of the statistics that will be plotted as intervals.
 All the statistics indicated in \code{interval} variable must be present in the object returned by \code{sfun},

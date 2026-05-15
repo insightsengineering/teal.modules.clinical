@@ -49,16 +49,16 @@ variable used to filter by parameter (\code{dataname});
 label the argument \code{paramcd}.}
 
 \item{id_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
-subject identifier (\code{dataname}).}
+object specifying the variable name for subject id.}
 
 \item{parcat}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
 parameter category column on \code{dataname}; \code{values()} is added internally.}
 
 \item{aval_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
-analysis value variable (\code{dataname}).}
+object with all available choices and pre-selected option for the analysis variable.}
 
 \item{avalu_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
-analysis value unit variable (\code{dataname}).}
+object with all available choices and preselected option for the analysis unit variable.}
 
 \item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
 

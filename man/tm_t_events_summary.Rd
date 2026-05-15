@@ -38,9 +38,7 @@ tm_t_events_summary(
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
 \item{arm_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
-object with all available choices and preselected option for variable names that can be used as \code{arm_var}.
-It defines the grouping variable(s) in the results table.
-If there are two elements selected for \code{arm_var}, second variable will be nested under the first variable.}
+If there are two elements selected for \code{arm_var}, the second variable is nested under the first.}
 
 \item{flag_var_anl}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted
 or \code{NULL})\cr
@@ -64,7 +62,7 @@ reason variable. Records with \code{"ADVERSE EVENTS"} are summarized in the tabl
 "Total number of patients withdrawn from study due to an AE".}
 
 \item{llt}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
-adverse event term / low-level term column (e.g. \code{AEDECOD}).}
+name of the variable with low level term for events.}
 
 \item{aeseq_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
 variable for adverse events sequence number from \code{dataset}. Used for counting total number of events.}
@@ -98,11 +96,6 @@ For example a title.}
 
 \item{post_output}{(\code{shiny.tag}) optional,\cr with text placed after the output to put the output into context.
 For example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
-
-\item{basic_table_args}{(\code{basic_table_args}) optional\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}}
-with settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default
-module arguments (hard coded in the module body).
-For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 
 \item{transformators}{(\code{list} of \code{teal_transform_module}) that will be applied to transform module's data input.
 To learn more check \code{vignette("transform-input-data", package = "teal")}.}

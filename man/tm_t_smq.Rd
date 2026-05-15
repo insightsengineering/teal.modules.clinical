@@ -33,17 +33,14 @@ tm_t_smq(
 
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
-available choices and preselected option for variable names that can be used as \code{arm_var}.
-It defines the grouping variable(s) in the results table.
-If there are two elements selected for \code{arm_var},
-second variable will be nested under the first variable.}
+\item{arm_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+If there are two elements selected for \code{arm_var}, the second variable is nested under the first.}
 
-\item{id_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object specifying
-the variable name for subject id.}
+\item{id_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+object specifying the variable name for subject id.}
 
-\item{llt}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr name of the variable
-with low level term for events.}
+\item{llt}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+name of the variable with low level term for events.}
 
 \item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
 
@@ -66,11 +63,11 @@ default \code{na_level} to apply in all modules, run \code{set_default_na_str("n
 
 \item{smq_varlabel}{(\code{character})\cr label to use for new column \code{SMQ} created by \code{\link[tern:h_stack_by_baskets]{tern::h_stack_by_baskets()}}.}
 
-\item{baskets}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
-available choices and preselected options for standardized/customized queries.}
+\item{baskets}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+object with all available choices and preselected options for standardized/customized queries.}
 
-\item{scopes}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
-available choices for the scopes of standardized queries.}
+\item{scopes}{(\code{\link[teal.picks:values]{teal.picks::values()}}; legacy \code{teal.transform::choices_selected()} is deprecated but still accepted)\cr
+object with all available choices for the scopes of standardized queries.}
 
 \item{pre_output}{(\code{shiny.tag}) optional,\cr with text placed before the output to put the output into context.
 For example a title.}
