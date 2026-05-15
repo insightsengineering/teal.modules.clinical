@@ -38,7 +38,7 @@ app_driver_tm_g_ci <- function() {
   )
 }
 
-app_driver_tm_g_ci_custom_filters <- function() {
+app_driver_tm_g_ci_custom_filters <- function() { # nolint object_name.
   data <- teal.data::teal_data()
   data <- within(data, {
     ADSL <- teal.data::rADSL

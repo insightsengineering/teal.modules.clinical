@@ -185,9 +185,12 @@ template_g_ci <- function(dataname,
 #' @inheritParams module_arguments
 #' @inheritParams teal::module
 #' @inheritParams template_g_ci
-#' @param x_var ([`teal.picks::variables()`], [`teal.picks::picks()`], or legacy `data_extract_spec`)\cr treatment-axis encoding.
-#' @param y_var ([`teal.picks::variables()`], [`teal.picks::picks()`], or legacy `data_extract_spec`)\cr analysis-value encoding.
-#' @param color ([`teal.picks::variables()`], [`teal.picks::picks()`], or legacy `data_extract_spec`)\cr grouping variable for colors, shapes, and line types.
+#' @param x_var ([`teal.picks::variables()`], [`teal.picks::picks()`], or legacy `data_extract_spec`)\cr
+#' treatment-axis encoding.
+#' @param y_var ([`teal.picks::variables()`], [`teal.picks::picks()`], or legacy `data_extract_spec`)\cr
+#' analysis-value encoding.
+#' @param color ([`teal.picks::variables()`], [`teal.picks::picks()`], or legacy `data_extract_spec`)\cr
+#' grouping variable for colors, shapes, and line types.
 #'
 #' @inherit module_arguments return seealso
 #'

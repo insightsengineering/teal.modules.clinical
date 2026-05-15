@@ -905,4 +905,3 @@ srv_g_km <- function(id,
     set_chunk_dims(pws, decorated_all_q)
   })
 }
-

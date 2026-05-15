@@ -49,17 +49,17 @@ variable for analysis range indicator.}
 \item{baseline_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
 variable for baseline reference range indicator.}
 
-\item{worst_flag_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
-variable for the worst post-baseline flag.}
+\item{worst_flag_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still
+accepted)\cr variable for the worst post-baseline flag.}
 
-\item{worst_flag}{(\code{\link[teal.picks:values]{teal.picks::values()}}; legacy \code{teal.transform::choices_selected()} is deprecated but still accepted)\cr
-value matching \code{worst_flag_var} for worst post-baseline records (commonly \code{"Y"}).}
+\item{worst_flag}{(\code{\link[teal.picks:values]{teal.picks::values()}}; legacy \code{teal.transform::choices_selected()} is deprecated but still
+accepted)\cr value matching \code{worst_flag_var} for worst post-baseline records (commonly \code{"Y"}).}
 
-\item{treatment_flag_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
-variable for on-treatment flag.}
+\item{treatment_flag_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still
+accepted)\cr variable for on-treatment flag.}
 
-\item{treatment_flag}{(\code{\link[teal.picks:values]{teal.picks::values()}}; legacy \code{teal.transform::choices_selected()} is deprecated but still accepted)\cr
-value matching \code{treatment_flag_var} for on-treatment records (default \code{"Y"}).}
+\item{treatment_flag}{(\code{\link[teal.picks:values]{teal.picks::values()}}; legacy \code{teal.transform::choices_selected()} is deprecated but still
+accepted)\cr value matching \code{treatment_flag_var} for on-treatment records (default \code{"Y"}).}
 
 \item{useNA}{(\code{character})\cr whether missing data (\code{NA}) should be displayed as a level.}
 
