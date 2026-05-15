@@ -15,7 +15,7 @@ tm_a_gee(
   cov_var,
   arm_ref_comp = NULL,
   paramcd,
-  conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95, multiple = FALSE),
+  conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95),
   pre_output = NULL,
   post_output = NULL,
   basic_table_args = teal.widgets::basic_table_args(),

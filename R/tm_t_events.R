@@ -551,9 +551,9 @@ tm_t_events <- function(label,
                         transformators = list(),
                         decorators = list()) {
   message("Initializing tm_t_events")
-  arm_var <- migrate_choices_selected_to_variables(arm_var, arg_name = "arm_var")
-  hlt <- migrate_choices_selected_to_variables(hlt, arg_name = "hlt")
-  llt <- migrate_choices_selected_to_variables(llt, arg_name = "llt")
+  arm_var <- migrate_choices_selected_to_variables(arm_var)
+  hlt <- migrate_choices_selected_to_variables(hlt)
+  llt <- migrate_choices_selected_to_variables(llt)
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)

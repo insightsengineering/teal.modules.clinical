@@ -283,13 +283,13 @@ tm_g_ipp <- function(label,
                      decorators = list()) {
   message("Initializing tm_g_ipp")
 
-  arm_var <- migrate_choices_selected_to_variables(arm_var, arg_name = "arm_var")
-  aval_var <- migrate_choices_selected_to_variables(aval_var, arg_name = "aval_var")
-  avalu_var <- migrate_choices_selected_to_variables(avalu_var, arg_name = "avalu_var")
-  id_var <- migrate_choices_selected_to_variables(id_var, arg_name = "id_var")
-  visit_var <- migrate_choices_selected_to_variables(visit_var, arg_name = "visit_var")
-  baseline_var <- migrate_choices_selected_to_variables(baseline_var, arg_name = "baseline_var")
-  paramcd <- migrate_value_choices_to_picks(paramcd, multiple = FALSE, arg_name = "paramcd")
+  arm_var <- migrate_choices_selected_to_variables(arm_var)
+  aval_var <- migrate_choices_selected_to_variables(aval_var)
+  avalu_var <- migrate_choices_selected_to_variables(avalu_var)
+  id_var <- migrate_choices_selected_to_variables(id_var)
+  visit_var <- migrate_choices_selected_to_variables(visit_var)
+  baseline_var <- migrate_choices_selected_to_variables(baseline_var)
+  paramcd <- migrate_value_choices_to_picks(paramcd, multiple = FALSE)
 
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)

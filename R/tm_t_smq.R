@@ -400,11 +400,11 @@ tm_t_smq <- function(label,
                      transformators = list(),
                      decorators = list()) {
   message("Initializing tm_t_smq")
-  arm_var <- migrate_choices_selected_to_variables(arm_var, arg_name = "arm_var")
-  id_var <- migrate_choices_selected_to_variables(id_var, arg_name = "id_var")
-  llt <- migrate_choices_selected_to_variables(llt, arg_name = "llt")
-  baskets <- migrate_choices_selected_to_variables(baskets, arg_name = "baskets")
-  scopes <- migrate_choices_selected_to_variables(scopes, arg_name = "scopes")
+  arm_var <- migrate_choices_selected_to_variables(arm_var)
+  id_var <- migrate_choices_selected_to_variables(id_var)
+  llt <- migrate_choices_selected_to_variables(llt)
+  baskets <- migrate_choices_selected_to_variables(baskets)
+  scopes <- migrate_choices_selected_to_variables(scopes)
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
