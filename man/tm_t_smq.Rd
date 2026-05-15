@@ -9,7 +9,7 @@ tm_t_smq(
   dataname,
   parentname = "ADSL",
   arm_var,
-  id_var = variables(choices = "USUBJID", fixed = TRUE),
+  id_var = teal.picks::variables("USUBJID", "USUBJID", fixed = TRUE),
   llt,
   add_total = TRUE,
   total_label = default_total_label(),

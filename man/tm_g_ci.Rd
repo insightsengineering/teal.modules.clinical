@@ -47,18 +47,12 @@ tm_g_ci(
 
 \method{tm_g_ci}{picks}(
   label,
-  x_var = teal.picks::picks(teal.picks::datasets("ADSL"), teal.picks::variables(choices =
-    c("ARMCD", "BMRKR2"), selected = "ARMCD", multiple = FALSE)),
-  y_var = teal.picks::picks(teal.picks::datasets("ADLB"), teal.picks::variables(choices =
-    c("AVAL", "CHG", "CHG2"), selected = "AVAL", multiple = FALSE)),
-  color = teal.picks::picks(teal.picks::datasets("ADSL"), teal.picks::variables(choices =
-    c("SEX", "STRATA1", "STRATA2"), selected = "STRATA1", multiple = FALSE)),
+  x_var,
+  y_var,
+  color,
   stat = c("mean", "median"),
-  paramcd = teal.picks::values(choices = c("ALT", "CRP", "IGA"), selected = "ALT",
-    multiple = FALSE),
-  avisit = teal.picks::values(choices = c("SCREENING", "BASELINE", "WEEK 1 DAY 8",
-    "WEEK 2 DAY 15", "WEEK 3 DAY 22", "WEEK 4 DAY 29", "WEEK 5 DAY 36"), selected =
-    "SCREENING", multiple = FALSE),
+  paramcd,
+  avisit,
   conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95),
   plot_height = c(700L, 200L, 2000L),
   plot_width = NULL,
@@ -71,15 +65,11 @@ tm_g_ci(
 
 \method{tm_g_ci}{variables}(
   label,
-  x_var = teal.picks::variables(choices = c("ARMCD", "BMRKR2"), selected = "ARMCD",
-    multiple = FALSE),
-  y_var = teal.picks::variables(choices = c("AVAL", "CHG", "CHG2"), selected = "AVAL",
-    multiple = FALSE),
-  color = teal.picks::variables(choices = c("SEX", "STRATA1", "STRATA2"), selected =
-    "STRATA1", multiple = FALSE),
+  x_var,
+  y_var,
+  color,
   stat = c("mean", "median"),
-  paramcd = teal.picks::values(choices = c("ALT", "CRP", "IGA"), selected = "ALT",
-    multiple = FALSE),
+  paramcd = NULL,
   avisit = teal.picks::values(choices = c("SCREENING", "BASELINE", "WEEK 1 DAY 8",
     "WEEK 2 DAY 15", "WEEK 3 DAY 22", "WEEK 4 DAY 29", "WEEK 5 DAY 36"), selected =
     "SCREENING", multiple = FALSE),
