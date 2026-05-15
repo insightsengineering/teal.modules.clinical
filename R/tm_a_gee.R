@@ -240,7 +240,7 @@ tm_a_gee <- function(label,
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
-  aval_var <- migrate_choices_selected_to_variables(aval_var,)
+  aval_var <- migrate_choices_selected_to_variables(aval_var)
   id_var <- migrate_choices_selected_to_variables(id_var)
   arm_var <- migrate_choices_selected_to_variables(arm_var)
   visit_var <- migrate_choices_selected_to_variables(visit_var)
