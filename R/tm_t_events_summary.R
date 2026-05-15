@@ -658,6 +658,7 @@ tm_t_events_summary <- function(label,
                                 transformators = list(),
                                 decorators = list()) {
   message("Initializing tm_t_events_summary")
+
   arm_var <- migrate_choices_selected_to_variables(arm_var)
   flag_var_anl <- migrate_choices_selected_to_variables(flag_var_anl, null.ok = TRUE)
   flag_var_aesi <- migrate_choices_selected_to_variables(flag_var_aesi, null.ok = TRUE)
@@ -665,6 +666,7 @@ tm_t_events_summary <- function(label,
   dcsreas_var <- migrate_choices_selected_to_variables(dcsreas_var)
   llt <- migrate_choices_selected_to_variables(llt)
   aeseq_var <- migrate_choices_selected_to_variables(aeseq_var)
+
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
