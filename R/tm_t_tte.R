@@ -505,8 +505,8 @@ tm_t_tte <- function(label,
                        teal.transform::variable_choices(dataname, "CNSR"), "CNSR",
                        fixed = TRUE
                      ),
-                     conf_level_coxph = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
-                     conf_level_survfit = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+                     conf_level_coxph = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95),
+                     conf_level_survfit = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95),
                      time_points,
                      time_unit_var = teal.transform::choices_selected(
                        teal.transform::variable_choices(dataname, "AVALU"), "AVALU",
@@ -523,7 +523,7 @@ tm_t_tte <- function(label,
                      decorators = list()) {
   message("Initializing tm_t_tte")
   if (inherits(event_desc_var, "choices_selected")) {
-    event_desc_var <- migrate_choices_selected_to_variables(event_desc_var, arg_name = "event_desc_var")
+    event_desc_var <- migrate_choices_selected_to_variables(event_desc_var)
   }
   UseMethod("tm_t_tte", event_desc_var)
 }

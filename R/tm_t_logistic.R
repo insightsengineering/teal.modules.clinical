@@ -283,7 +283,7 @@ template_logistic <- function(dataname,
 #'       ),
 #'       cov_var = variables(selected = NULL),
 #'       avalc_var = variables("AVALC", fixed = TRUE),
-#'       conf_level = values(c("0.95", "0.9", "0.8"), "0.95", keep_order = TRUE)
+#'       conf_level = values(c(0.95, 0.9, 0.8), 0.95)
 #'     )
 #'   )
 #' )
@@ -300,7 +300,7 @@ tm_t_logistic <- function(label,
                           paramcd,
                           cov_var = NULL,
                           avalc_var = teal.picks::variables("AVALC", fixed = TRUE),
-                          conf_level = teal.picks::values(c("0.95", "0.9", "0.8"), "0.95", keep_order = TRUE),
+                          conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95),
                           pre_output = NULL,
                           post_output = NULL,
                           basic_table_args = teal.widgets::basic_table_args(),
@@ -311,8 +311,8 @@ tm_t_logistic <- function(label,
   arm_var <- migrate_choices_selected_to_variables(arm_var, null.ok = TRUE, multiple = FALSE)
   cov_var <- migrate_choices_selected_to_variables(cov_var, null.ok = TRUE)
   avalc_var <- migrate_choices_selected_to_variables(avalc_var)
-  conf_level <- migrate_choices_selected_to_values(conf_level)
   paramcd <- migrate_value_choices_to_picks(paramcd, multiple = FALSE)
+  conf_level <- migrate_choices_selected_to_values(conf_level)
 
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)

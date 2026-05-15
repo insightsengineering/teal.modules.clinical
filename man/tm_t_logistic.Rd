@@ -13,7 +13,7 @@ tm_t_logistic(
   paramcd,
   cov_var = NULL,
   avalc_var = teal.picks::variables("AVALC", fixed = TRUE),
-  conf_level = teal.picks::values(c("0.95", "0.9", "0.8"), "0.95", keep_order = TRUE),
+  conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95),
   pre_output = NULL,
   post_output = NULL,
   basic_table_args = teal.widgets::basic_table_args(),
@@ -160,7 +160,7 @@ app <- init(
       ),
       cov_var = variables(selected = NULL),
       avalc_var = variables("AVALC", fixed = TRUE),
-      conf_level = values(c("0.95", "0.9", "0.8"), "0.95", keep_order = TRUE)
+      conf_level = values(c(0.95, 0.9, 0.8), 0.95)
     )
   )
 )

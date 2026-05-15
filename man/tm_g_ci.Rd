@@ -59,8 +59,7 @@ tm_g_ci(
   avisit = teal.picks::values(choices = c("SCREENING", "BASELINE", "WEEK 1 DAY 8",
     "WEEK 2 DAY 15", "WEEK 3 DAY 22", "WEEK 4 DAY 29", "WEEK 5 DAY 36"), selected =
     "SCREENING", multiple = FALSE),
-  conf_level = teal.picks::values(c("0.95", "0.9", "0.8"), selected = "0.95", keep_order
-    = TRUE),
+  conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95),
   plot_height = c(700L, 200L, 2000L),
   plot_width = NULL,
   pre_output = NULL,
@@ -84,8 +83,7 @@ tm_g_ci(
   avisit = teal.picks::values(choices = c("SCREENING", "BASELINE", "WEEK 1 DAY 8",
     "WEEK 2 DAY 15", "WEEK 3 DAY 22", "WEEK 4 DAY 29", "WEEK 5 DAY 36"), selected =
     "SCREENING", multiple = FALSE),
-  conf_level = teal.picks::values(c("0.95", "0.9", "0.8"), selected = "0.95", keep_order
-    = TRUE),
+  conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95),
   plot_height = c(700L, 200L, 2000L),
   plot_width = NULL,
   pre_output = NULL,

@@ -229,7 +229,7 @@ tm_a_gee <- function(label,
                      cov_var,
                      arm_ref_comp = NULL,
                      paramcd,
-                     conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95, multiple = FALSE),
+                     conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95),
                      pre_output = NULL,
                      post_output = NULL,
                      basic_table_args = teal.widgets::basic_table_args(),
@@ -240,13 +240,13 @@ tm_a_gee <- function(label,
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
-  aval_var <- migrate_choices_selected_to_variables(aval_var, "aval_var")
-  id_var <- migrate_choices_selected_to_variables(id_var, "id_var")
-  arm_var <- migrate_choices_selected_to_variables(arm_var, "arm_var")
-  visit_var <- migrate_choices_selected_to_variables(visit_var, "visit_var")
-  cov_var <- migrate_choices_selected_to_variables(cov_var, "cov_var")
-  paramcd <- migrate_value_choices_to_picks(paramcd, arg_name = "paramcd")
-  conf_level <- migrate_choices_selected_to_values(conf_level, "conf_level")
+  aval_var <- migrate_choices_selected_to_variables(aval_var)
+  id_var <- migrate_choices_selected_to_variables(id_var)
+  arm_var <- migrate_choices_selected_to_variables(arm_var)
+  visit_var <- migrate_choices_selected_to_variables(visit_var)
+  cov_var <- migrate_choices_selected_to_variables(cov_var)
+  paramcd <- migrate_value_choices_to_picks(paramcd)
+  conf_level <- migrate_choices_selected_to_values(conf_level)
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")

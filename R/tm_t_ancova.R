@@ -529,7 +529,7 @@ tm_t_ancova <- function(label,
                         interact_y = FALSE,
                         avisit,
                         paramcd,
-                        conf_level = teal.picks::values(c("0.95", "0.9", "0.8"), "0.95", keep_order = TRUE),
+                        conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95),
                         pre_output = NULL,
                         post_output = NULL,
                         basic_table_args = teal.widgets::basic_table_args(),
@@ -540,9 +540,9 @@ tm_t_ancova <- function(label,
   arm_var <- migrate_choices_selected_to_variables(arm_var, multiple = FALSE)
   aval_var <- migrate_choices_selected_to_variables(aval_var, multiple = FALSE)
   cov_var <- migrate_choices_selected_to_variables(cov_var, null.ok = TRUE)
-  conf_level <- migrate_choices_selected_to_values(conf_level)
   avisit <- migrate_value_choices_to_picks(avisit, multiple = TRUE)
   paramcd <- migrate_value_choices_to_picks(paramcd, multiple = TRUE)
+  conf_level <- migrate_choices_selected_to_values(conf_level)
 
   if (is.null(interact_var)) {
     interact_var <- cov_var

@@ -472,7 +472,7 @@ tm_t_binary_outcome <- function(label,
                                   selected = "AVALC",
                                   fixed = FALSE
                                 ),
-                                conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95, multiple = FALSE),
+                                conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95),
                                 default_responses =
                                   c("CR", "PR", "Y", "Complete Response (CR)", "Partial Response (PR)", "M"),
                                 rsp_table = FALSE,
@@ -498,12 +498,12 @@ tm_t_binary_outcome <- function(label,
                                 transformators = list(),
                                 decorators = list()) {
   message("Initializing tm_t_binary_outcome")
-  arm_var <- migrate_choices_selected_to_variables(arm_var, arg_name = "arm_var")
-  paramcd <- migrate_value_choices_to_picks(paramcd, multiple = FALSE, arg_name = "paramcd")
-  strata_var <- migrate_choices_selected_to_variables(strata_var, arg_name = "strata_var")
-  aval_var <- migrate_choices_selected_to_variables(aval_var, arg_name = "aval_var")
-  conf_level <- migrate_choices_selected_to_values(conf_level, arg_name = "conf_level")
-  checkmate::assert_false(teal.picks::is_pick_multiple(conf_level))
+  arm_var <- migrate_choices_selected_to_variables(arm_var)
+  paramcd <- migrate_value_choices_to_picks(paramcd, multiple = FALSE)
+  strata_var <- migrate_choices_selected_to_variables(strata_var)
+  aval_var <- migrate_choices_selected_to_variables(aval_var)
+  conf_level <- migrate_choices_selected_to_values(conf_level)
+
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)

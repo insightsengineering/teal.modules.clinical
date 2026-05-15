@@ -327,7 +327,7 @@ tm_g_ci.default <- function(label,
   teal.transform::check_no_multiple_selection(y_var)
   teal.transform::check_no_multiple_selection(color)
 
-  conf_level <- migrate_choices_selected_to_values(conf_level, multiple = FALSE, arg_name = "conf_level")
+  conf_level <- migrate_choices_selected_to_values(conf_level)
 
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")

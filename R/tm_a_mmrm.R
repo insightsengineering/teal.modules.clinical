@@ -566,7 +566,7 @@ tm_a_mmrm <- function(label,
                         c("Satterthwaite", "Kenward-Roger", "Kenward-Roger-Linear"),
                         "Satterthwaite"
                       ),
-                      conf_level = teal.picks::values(c("0.95", "0.9", "0.8"), "0.95"),
+                      conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95),
                       plot_height = c(700L, 200L, 2000L),
                       plot_width = NULL,
                       total_label = default_total_label(),
@@ -585,12 +585,12 @@ tm_a_mmrm <- function(label,
   cov_var <- migrate_choices_selected_to_variables(cov_var)
   method <- migrate_choices_selected_to_values(method)
   paramcd <- migrate_value_choices_to_picks(paramcd, multiple = FALSE)
+  conf_level <- migrate_choices_selected_to_values(conf_level)
+  method <- migrate_choices_selected_to_values(method)
 
   checkmate::assert_string(label)
   checkmate::assert_string(total_label)
   checkmate::assert_string(dataname)
-  checkmate::assert_class(method, "values")
-  checkmate::assert_class(conf_level, "values")
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(
     plot_height[1],

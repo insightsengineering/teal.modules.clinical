@@ -17,8 +17,7 @@ tm_g_forest_rsp(
   stats = c("n_tot", "n", "n_rsp", "prop", "or", "ci"),
   riskdiff = NULL,
   fixed_symbol_size = TRUE,
-  conf_level = teal.picks::values(c("0.95", "0.9", "0.8"), selected = "0.95", keep_order
-    = TRUE),
+  conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95),
   default_responses = c("CR", "PR", "Y", "Complete Response (CR)",
     "Partial Response (PR)"),
   plot_height = c(500L, 200L, 2000L),
