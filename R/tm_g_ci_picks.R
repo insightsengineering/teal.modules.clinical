@@ -353,3 +353,7 @@ srv_g_ci.picks <- function(id, # nolint: object_name.
     set_chunk_dims(pws, decorated_plot_q)
   })
 }
+
+#' @describeIn tm_g_ci teal.picks encodings via \code{picks} objects for \code{x_var}, \code{y_var}, and \code{color}
+#' @export
+tm_g_ci.default <- tm_g_ci.picks

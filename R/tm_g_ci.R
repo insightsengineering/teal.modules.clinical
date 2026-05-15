@@ -299,21 +299,21 @@ tm_g_ci <- function(label,
 
 #' @describeIn tm_g_ci Legacy encodings via `data_extract_spec` (merge-based UI).
 #' @export
-tm_g_ci.default <- function(label,
-                            x_var,
-                            y_var,
-                            color,
-                            stat = c("mean", "median"),
-                            paramcd = NULL,
-                            avisit = NULL,
-                            conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
-                            plot_height = c(700L, 200L, 2000L),
-                            plot_width = NULL,
-                            pre_output = NULL,
-                            post_output = NULL,
-                            ggplot2_args = teal.widgets::ggplot2_args(),
-                            transformators = list(),
-                            decorators = list()) {
+tm_g_ci.choices_selected <- function(label,
+                                     x_var,
+                                     y_var,
+                                     color,
+                                     stat = c("mean", "median"),
+                                     paramcd = NULL,
+                                     avisit = NULL,
+                                     conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+                                     plot_height = c(700L, 200L, 2000L),
+                                     plot_width = NULL,
+                                     pre_output = NULL,
+                                     post_output = NULL,
+                                     ggplot2_args = teal.widgets::ggplot2_args(),
+                                     transformators = list(),
+                                     decorators = list()) {
   stat <- match.arg(stat)
   checkmate::assert_null(paramcd, .var.name = "paramcd")
   checkmate::assert_null(avisit, .var.name = "avisit")
@@ -535,3 +535,7 @@ srv_g_ci <- function(id,
     set_chunk_dims(pws, decorated_plot_q)
   })
 }
+
+#' @describeIn tm_g_ci Legacy encodings via `data_extract_spec` (merge-based UI).
+#' @export
+tm_g_ci.data_extract_spec <- tm_g_ci.choices_selected

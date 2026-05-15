@@ -2,9 +2,11 @@
 % Please edit documentation in R/tm_g_ci.R, R/tm_g_ci_picks.R
 \name{tm_g_ci}
 \alias{tm_g_ci}
-\alias{tm_g_ci.default}
+\alias{tm_g_ci.choices_selected}
+\alias{tm_g_ci.data_extract_spec}
 \alias{tm_g_ci.picks}
 \alias{tm_g_ci.variables}
+\alias{tm_g_ci.default}
 \title{teal Module: Confidence Interval Plot}
 \usage{
 tm_g_ci(
@@ -26,7 +28,26 @@ tm_g_ci(
   decorators = list()
 )
 
-\method{tm_g_ci}{default}(
+\method{tm_g_ci}{choices_selected}(
+  label,
+  x_var,
+  y_var,
+  color,
+  stat = c("mean", "median"),
+  paramcd = NULL,
+  avisit = NULL,
+  conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order =
+    TRUE),
+  plot_height = c(700L, 200L, 2000L),
+  plot_width = NULL,
+  pre_output = NULL,
+  post_output = NULL,
+  ggplot2_args = teal.widgets::ggplot2_args(),
+  transformators = list(),
+  decorators = list()
+)
+
+\method{tm_g_ci}{data_extract_spec}(
   label,
   x_var,
   y_var,
@@ -73,6 +94,24 @@ tm_g_ci(
   avisit = teal.picks::values(choices = c("SCREENING", "BASELINE", "WEEK 1 DAY 8",
     "WEEK 2 DAY 15", "WEEK 3 DAY 22", "WEEK 4 DAY 29", "WEEK 5 DAY 36"), selected =
     "SCREENING", multiple = FALSE),
+  conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95),
+  plot_height = c(700L, 200L, 2000L),
+  plot_width = NULL,
+  pre_output = NULL,
+  post_output = NULL,
+  ggplot2_args = teal.widgets::ggplot2_args(),
+  transformators = list(),
+  decorators = list()
+)
+
+\method{tm_g_ci}{default}(
+  label,
+  x_var,
+  y_var,
+  color,
+  stat = c("mean", "median"),
+  paramcd,
+  avisit,
   conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95),
   plot_height = c(700L, 200L, 2000L),
   plot_width = NULL,
@@ -142,12 +181,16 @@ This module produces a \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}} type conf
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{tm_g_ci(default)}: Legacy encodings via \code{data_extract_spec} (merge-based UI).
+\item \code{tm_g_ci(choices_selected)}: Legacy encodings via \code{data_extract_spec} (merge-based UI).
+
+\item \code{tm_g_ci(data_extract_spec)}: Legacy encodings via \code{data_extract_spec} (merge-based UI).
 
 \item \code{tm_g_ci(picks)}: teal.picks encodings via \code{picks} objects for \code{x_var}, \code{y_var}, and \code{color}
 (use \code{\link[=tm_g_ci.variables]{tm_g_ci.variables()}} to pass \code{\link[teal.picks:variables]{teal.picks::variables()}} objects; they are wrapped into \code{picks}).
 
 \item \code{tm_g_ci(variables)}: teal.picks encodings via \code{variables} (recommended entry point).
+
+\item \code{tm_g_ci(default)}: teal.picks encodings via \code{picks} objects for \code{x_var}, \code{y_var}, and \code{color}
 
 }}
 \section{Decorating Module}{
