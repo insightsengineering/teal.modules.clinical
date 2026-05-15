@@ -477,7 +477,7 @@ template_tte <- function(dataname = "ANL",
 #'       arm_ref_comp = arm_ref_comp,
 #'       paramcd = variables(c("PARAMCD", "PARAM")),
 #'       strata_var = variables(choices = c("SEX", "BMRKR2"), selected = "SEX"),
-#'       time_points = teal.transform::choices_selected(c(182, 243), 182)
+#'       time_points = teal.picks::values(c(182, 243), 182, multiple = FALSE)
 #'     )
 #'   )
 #' )
