@@ -488,31 +488,18 @@ template_tte <- function(dataname = "ANL",
 #' @export
 tm_t_tte <- function(label,
                      dataname,
-                     parentname = ifelse(
-                       inherits(arm_var, "data_extract_spec"),
-                       teal.transform::datanames_input(arm_var),
-                       "ADSL"
-                     ),
+                     parentname = "ADSL",
                      arm_var,
                      arm_ref_comp = NULL,
                      paramcd,
                      strata_var,
-                     aval_var = teal.transform::choices_selected(
-                       teal.transform::variable_choices(dataname, "AVAL"), "AVAL",
-                       fixed = TRUE
-                     ),
-                     cnsr_var = teal.transform::choices_selected(
-                       teal.transform::variable_choices(dataname, "CNSR"), "CNSR",
-                       fixed = TRUE
-                     ),
-                     conf_level_coxph = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95),
-                     conf_level_survfit = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95),
+                     aval_var = teal.picks::variables("AVAL", "AVAL", fixed = TRUE),
+                     cnsr_var = teal.picks::variables("CNSR", "CNSR", fixed = TRUE),
+                     conf_level_coxph = teal.picks::values(c(0.95, 0.9, 0.8), 0.95),
+                     conf_level_survfit = teal.picks::values(c(0.95, 0.9, 0.8), 0.95),
                      time_points,
-                     time_unit_var = teal.transform::choices_selected(
-                       teal.transform::variable_choices(dataname, "AVALU"), "AVALU",
-                       fixed = TRUE
-                     ),
-                     event_desc_var = teal.transform::choices_selected("EVNTDESC", "EVNTDESC", fixed = TRUE),
+                     time_unit_var = teal.picks::variables("AVALU", "AVALU", fixed = TRUE),
+                     event_desc_var = teal.picks::variables("EVNTDESC", "EVNTDESC", fixed = TRUE),
                      add_total = FALSE,
                      total_label = default_total_label(),
                      na_level = tern::default_na_str(),
@@ -522,8 +509,5 @@ tm_t_tte <- function(label,
                      transformators = list(),
                      decorators = list()) {
   message("Initializing tm_t_tte")
-  if (inherits(event_desc_var, "choices_selected")) {
-    event_desc_var <- migrate_choices_selected_to_variables(event_desc_var)
-  }
-  UseMethod("tm_t_tte", event_desc_var)
+  UseMethod("tm_t_tte", arm_var)
 }
