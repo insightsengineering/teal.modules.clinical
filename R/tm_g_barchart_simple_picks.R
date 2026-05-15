@@ -1,19 +1,20 @@
-#' @describeIn tm_g_barchart_simple [teal.picks]-based encodings (`picks`).
+#' @describeIn tm_g_barchart_simple [teal.picks::picks()]-based encodings (`picks`).
 #' @export
 tm_g_barchart_simple.picks <- function(
-    x = NULL,
-    fill = NULL,
-    x_facet = NULL,
-    y_facet = NULL,
-    label = "Count Barchart",
-    plot_options = NULL,
-    plot_height = c(600L, 200L, 2000L),
-    plot_width = NULL,
-    pre_output = NULL,
-    post_output = NULL,
-    ggplot2_args = teal.widgets::ggplot2_args(),
-    transformators = list(),
-    decorators = list()) {
+  x = NULL,
+  fill = NULL,
+  x_facet = NULL,
+  y_facet = NULL,
+  label = "Count Barchart",
+  plot_options = NULL,
+  plot_height = c(600L, 200L, 2000L),
+  plot_width = NULL,
+  pre_output = NULL,
+  post_output = NULL,
+  ggplot2_args = teal.widgets::ggplot2_args(),
+  transformators = list(),
+  decorators = list()
+) {
   checkmate::assert_list(plot_options, null.ok = TRUE)
 
   checkmate::assert_class(x, "picks", .var.name = "x")
@@ -64,7 +65,8 @@ tm_g_barchart_simple.picks <- function(
 
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(
-    plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height"
+    plot_height[1],
+    lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height"
   )
   checkmate::assert_numeric(plot_width, len = 3, any.missing = FALSE, null.ok = TRUE, finite = TRUE)
   checkmate::assert_numeric(
@@ -101,7 +103,7 @@ tm_g_barchart_simple.picks <- function(
 #'
 #' @keywords internal
 #' @noRd
-.barchart_picks_groupby_column_names <- function(analysis_selectors, merged_variables) {
+.barchart_picks_groupby_column_names <- function(analysis_selectors, merged_variables) { # nolint: object_length.
   first_merged_column <- function(slot_name) {
     if (is.null(analysis_selectors[[slot_name]])) {
       return(NULL)
@@ -128,7 +130,13 @@ tm_g_barchart_simple.picks <- function(
 #'
 #' @keywords internal
 #' @noRd
-.barchart_picks_slot_columns_source <- function(slot_name, analysis_selectors, merged_variables) {
+# nolint start: object_length.
+.barchart_picks_slot_columns_source <- function(
+  # nolint end
+  slot_name,
+  analysis_selectors,
+  merged_variables
+) {
   if (is.null(analysis_selectors[[slot_name]])) {
     return(NULL)
   }
