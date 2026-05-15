@@ -342,7 +342,7 @@ tm_t_abnormality_by_worst_grade <- function(label, # nolint: object_length.
                                             worst_low_flag_var = teal.picks::variables(
                                               "WGRLOFL", "WGRLOFL", fixed = TRUE
                                             ),
-                                            worst_flag_indicator = teal.picks::values("Y", "Y", multiple = FALSE),
+                                            worst_flag_indicator = teal.picks::values("Y", "Y", fixed = FALSE),
                                             add_total = TRUE,
                                             total_label = default_total_label(),
                                             drop_arm_levels = TRUE,

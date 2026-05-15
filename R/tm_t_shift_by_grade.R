@@ -557,7 +557,7 @@ tm_t_shift_by_grade <- function(label,
                                   choices = c("WGRLOVFL", "WGRLOFL", "WGRHIVFL", "WGRHIFL"),
                                   selected = "WGRLOVFL"
                                 ),
-                                worst_flag_indicator = teal.picks::values(c("Y", "N"), "Y", fixed = TRUE),
+                                worst_flag_indicator = teal.picks::values("Y", "Y", fixed = TRUE),
                                 anl_toxgrade_var = variables(choices = "ATOXGR", fixed = TRUE),
                                 base_toxgrade_var = variables(choices = "BTOXGR", fixed = TRUE),
                                 id_var = variables(choices = "USUBJID", fixed = TRUE),
