@@ -1,4 +1,4 @@
-#' @describeIn tm_g_barchart_simple [teal.picks]-based encodings (`picks`).
+#' @describeIn tm_g_barchart_simple [teal.picks::picks()]-based encodings (`picks`).
 #' @export
 tm_g_barchart_simple.picks <- function(
     x = NULL,

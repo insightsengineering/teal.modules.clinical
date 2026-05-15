@@ -114,7 +114,7 @@ S3 dispatch uses the class of \code{x}: \code{tm_g_barchart_simple.default()} fo
 \itemize{
 \item \code{tm_g_barchart_simple(default)}: Legacy \code{teal.transform::data_extract_spec()} encodings.
 
-\item \code{tm_g_barchart_simple(picks)}: \link{teal.picks}-based encodings (\code{picks}).
+\item \code{tm_g_barchart_simple(picks)}: \code{\link[teal.picks:picks]{teal.picks::picks()}}-based encodings (\code{picks}).
 
 }}
 \section{Decorating Module}{
