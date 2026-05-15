@@ -271,7 +271,7 @@ tm_t_shift_by_arm <- function(label,
                               base_var = lifecycle::deprecated(),
                               baseline_var,
                               treatment_flag_var = teal.picks::variables("ONTRTFL", "ONTRTFL"),
-                              treatment_flag = teal.picks::values("Y", "Y", fixed = TRUE),
+                              treatment_flag = teal.picks::values("Y", "Y", fixed = TRUE, multiple = FALSE),
                               useNA = c("ifany", "no"), # nolint: object_name.
                               na_level = tern::default_na_str(),
                               add_total = FALSE,

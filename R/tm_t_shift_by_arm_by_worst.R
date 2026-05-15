@@ -278,7 +278,7 @@ tm_t_shift_by_arm_by_worst <- function(label,
                                        worst_flag_var,
                                        worst_flag,
                                        treatment_flag_var = teal.picks::variables("ONTRTFL", "ONTRTFL"),
-                                       treatment_flag = teal.picks::values("Y", "Y", fixed = TRUE),
+                                       treatment_flag = teal.picks::values("Y", "Y", fixed = TRUE, multiple = FALSE),
                                        useNA = c("ifany", "no"), # nolint: object_name.
                                        na_level = tern::default_na_str(),
                                        add_total = FALSE,
@@ -297,16 +297,16 @@ tm_t_shift_by_arm_by_worst <- function(label,
   }
 
   message("Initializing tm_t_shift_by_arm_by_worst")
+
   arm_var <- migrate_choices_selected_to_variables(arm_var)
   paramcd <- migrate_value_choices_to_picks(paramcd, multiple = FALSE)
   aval_var <- migrate_choices_selected_to_variables(aval_var)
   baseline_var <- migrate_choices_selected_to_variables(baseline_var)
   worst_flag_var <- migrate_choices_selected_to_variables(worst_flag_var)
   treatment_flag_var <- migrate_choices_selected_to_variables(treatment_flag_var)
-  treatment_flag <- migrate_choices_selected_to_values(treatment_flag)
+  treatment_flag <- migrate_choices_selected_to_values(treatment_flag, multiple = FALSE)
   worst_flag <- migrate_choices_selected_to_values(worst_flag, multiple = FALSE)
-  checkmate::assert_false(teal.picks::is_pick_multiple(treatment_flag))
-  checkmate::assert_false(teal.picks::is_pick_multiple(worst_flag))
+
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)

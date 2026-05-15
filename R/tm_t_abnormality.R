@@ -364,7 +364,10 @@ tm_t_abnormality <- function(label,
                              id_var = teal.picks::variables("USUBJID", "USUBJID", fixed = TRUE),
                              baseline_var = teal.picks::variables("BNRIND", "BNRIND", fixed = TRUE),
                              treatment_flag_var = teal.picks::variables("ONTRTFL", "ONTRTFL", fixed = TRUE),
-                             treatment_flag = teal.picks::values("Y", "Y", fixed = TRUE),
+                             treatment_flag = teal.picks::values(
+                               "Y", "Y",
+                               fixed = TRUE, multiple = FALSE
+                             ),
                              add_total = TRUE,
                              total_label = default_total_label(),
                              exclude_base_abn = FALSE,
