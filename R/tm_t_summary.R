@@ -221,14 +221,7 @@ template_summary <- function(dataname,
 #' @inheritParams teal::module
 #' @inheritParams template_summary
 #' @param arm_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
-#'   object with all available choices and preselected
-#'   option for variable names that can be used as `arm_var`.
-#'   It defines the grouping variable(s) in the results table.
-#'   If there are two elements selected for `arm_var`,
-#'   second variable will be nested under the first variable.
-#' @param summarize_vars ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but
-#'   still accepted)\cr
-#'   variable(s) to summarize.
+#'   If there are two elements selected for `arm_var`, the second variable is nested under the first.
 #' @param show_arm_var_labels (`flag`)\cr whether arm variable label(s) should be displayed. Defaults to `TRUE`.
 #'
 #' @inherit module_arguments return seealso

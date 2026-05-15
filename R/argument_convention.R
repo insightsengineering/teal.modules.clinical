@@ -117,36 +117,37 @@ NULL
 #'
 #' @param arm_ref_comp (`list`) optional,\cr if specified it must be a named list with each element corresponding to
 #'   an arm variable in `ADSL` and the element must be another list (possibly
-#'   with delayed [teal.transform::variable_choices()] or delayed [teal.transform::value_choices()]
-#'   with the elements named `ref` and `comp` that the defined the default
-#'   reference and comparison arms when the arm variable is changed.
-#' @param arm_var ([teal.transform::choices_selected()])\cr object with all
-#'   available choices and preselected option for variable names that can be used as `arm_var`.
+#'   with delayed [teal.picks::variables()] or [teal.picks::values()]; legacy
+#'   [teal.transform::variable_choices()] and [teal.transform::value_choices()] are deprecated but still accepted)
+#'   with the elements named `ref` and `comp` that define the default reference and comparison arms when the arm
+#'   variable is changed.
+#' @param arm_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
+#'   object with all available choices and preselected option for variable names that can be used as `arm_var`.
 #'   It defines the grouping variable in the results table.
-#' @param atirel ([teal.transform::choices_selected()])\cr object with all
-#'   available choices and preselected option for the `ATIREL` variable from `dataname`.
-#' @param aval_var ([teal.transform::choices_selected()])\cr object with
-#'   all available choices and pre-selected option for the analysis variable.
-#' @param avalu_var ([teal.transform::choices_selected()])\cr object with
-#'   all available choices and preselected option for the analysis unit variable.
-#' @param avisit ([teal.transform::choices_selected()])\cr value of analysis
-#'   visit `AVISIT` of interest.
-#' @param baseline_var ([teal.transform::choices_selected()])\cr object with
-#'   all available choices and preselected option for variable values that can be used as `baseline_var`.
-#' @param by_vars ([teal.transform::choices_selected()])\cr object with all
-#'   available choices and preselected option for variable names used to split the summary by rows.
-#' @param cmdecod ([teal.transform::choices_selected()])\cr object with all
-#'   available choices and preselected option for the `CMDECOD` variable from `dataname`.
-#' @param cmindc ([teal.transform::choices_selected()])\cr object with all
-#'   available choices and preselected option for the `CMINDC` variable from `dataname`.
-#' @param cmstdy ([teal.transform::choices_selected()])\cr object with all
-#'   available choices and preselected option for the `CMSTDY` variable from `dataname`.
-#' @param cnsr_var ([teal.transform::choices_selected()])\cr object with all
-#'   available choices and preselected option for the censoring variable.
-#' @param conf_level ([teal.transform::choices_selected()])\cr object with
-#'   all available choices and pre-selected option for the confidence level, each within range of (0, 1).
-#' @param cov_var ([teal.transform::choices_selected()])\cr object with all
-#'   available choices and preselected option for the covariates variables.
+#' @param atirel ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
+#'   object with all available choices and preselected option for the `ATIREL` variable from `dataname`.
+#' @param aval_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
+#'   object with all available choices and pre-selected option for the analysis variable.
+#' @param avalu_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
+#'   object with all available choices and preselected option for the analysis unit variable.
+#' @param avisit ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
+#'   value of analysis visit `AVISIT` of interest.
+#' @param baseline_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
+#'   object with all available choices and preselected option for variable values that can be used as `baseline_var`.
+#' @param by_vars ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
+#'   object with all available choices and preselected option for variable names used to split the summary by rows.
+#' @param cmdecod ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
+#'   object with all available choices and preselected option for the `CMDECOD` variable from `dataname`.
+#' @param cmindc ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
+#'   object with all available choices and preselected option for the `CMINDC` variable from `dataname`.
+#' @param cmstdy ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
+#'   object with all available choices and preselected option for the `CMSTDY` variable from `dataname`.
+#' @param cnsr_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
+#'   object with all available choices and preselected option for the censoring variable.
+#' @param conf_level ([teal.picks::values()]; legacy `teal.transform::choices_selected()` is deprecated but still
+#'   accepted)\cr available confidence levels and default selection, each in the range (0, 1).
+#' @param cov_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
+#'   object with all available choices and preselected option for the covariates variables.
 #' @param dataname (`character`)\cr analysis data used in teal module.
 #' @param default_responses (`list` or `character`)\cr defines
 #'   the default codes for the response variable in the module per value of `paramcd`.
@@ -157,20 +158,20 @@ NULL
 #' @param fixed_symbol_size (`logical`)\cr When (`TRUE`), the same symbol size is used for plotting each estimate.
 #'   Otherwise, the symbol size will be proportional to the sample size in each each subgroup.
 #' @param font_size (`numeric`)\cr numeric vector of length 3 of current, minimum and maximum font size values.
-#' @param hlt ([teal.transform::choices_selected()])\cr name of the variable
-#'   with high level term for events.
-#' @param id_var ([teal.transform::choices_selected()])\cr object specifying
-#'   the variable name for subject id.
+#' @param hlt ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
+#'   name of the variable with high level term for events.
+#' @param id_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
+#'   object specifying the variable name for subject id.
 #' @param interact_var (`character`)\cr name of the variable that should have interactions
 #'   with arm. If the interaction is not needed, the default option is `NULL`.
 #' @param interact_y (`character`)\cr a selected item from the interact_var column which will be used
 #'   to select the specific `ANCOVA` results when interact_var is discrete. If the interaction is not
 #'   needed, the default option is `FALSE`.
 #' @param label (`character`)\cr menu item label of the module in the teal app.
-#' @param llt ([teal.transform::choices_selected()])\cr name of the variable
-#'   with low level term for events.
-#' @param paramcd ([teal.transform::choices_selected()])\cr object with all
-#'   available choices and preselected option for the parameter code variable from `dataname`.
+#' @param llt ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
+#'   name of the variable with low level term for events.
+#' @param paramcd ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
+#'   object with all available choices and preselected option for the parameter code variable from `dataname`.
 #' @param parentname (`character`)\cr parent analysis data used in teal module, usually this refers to `ADSL`.
 #' @param patient_col (`character`)\cr name of patient ID variable.
 #' @param plot_height (`numeric`) optional\cr vector of length three with `c(value, min, max)`. Specifies the
@@ -181,28 +182,30 @@ NULL
 #'   For example the [shiny::helpText()] elements are useful.
 #' @param pre_output (`shiny.tag`) optional,\cr with text placed before the output to put the output into context.
 #'   For example a title.
-#' @param strata_var ([teal.transform::choices_selected()])\cr names of
-#'   the variables for stratified analysis.
-#' @param summarize_vars ([teal.transform::choices_selected()])\cr names of
-#'   the variables that should be summarized.
-#' @param subgroup_var ([teal.transform::choices_selected()])\cr object with
-#'   all available choices and preselected option for variable names that can be used as the default subgroups.
-#' @param time_points ([teal.transform::choices_selected()])\cr object with all available choices and preselected option
-#'   for time points that can be used in [tern::surv_timepoint()].
-#' @param time_unit_var ([teal.transform::choices_selected()])\cr object
-#'   with all available choices and pre-selected option for the time unit variable.
-#' @param treatment_flag ([teal.transform::choices_selected()])\cr value
-#'   indicating on treatment records in `treatment_flag_var`.
-#' @param treatment_flag_var ([teal.transform::choices_selected()])\cr on
-#'   treatment flag variable.
+#' @param strata_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
+#'   names of the variables for stratified analysis.
+#' @param summarize_vars ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still
+#'   accepted)\cr names of the variables that should be summarized.
+#' @param subgroup_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
+#'   object with all available choices and preselected option for variable names that can be used as the default
+#'   subgroups.
+#' @param time_points ([teal.picks::values()]; legacy `teal.transform::choices_selected()` is deprecated but still
+#'   accepted)\cr object with all available choices and preselected option for time points that can be used in
+#'   [tern::surv_timepoint()].
+#' @param time_unit_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
+#'   object with all available choices and pre-selected option for the time unit variable.
+#' @param treatment_flag ([teal.picks::values()]; legacy `teal.transform::choices_selected()` is deprecated but still
+#'   accepted)\cr value indicating on treatment records in `treatment_flag_var`.
+#' @param treatment_flag_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still
+#'   accepted)\cr on treatment flag variable.
 #' @param useNA (`character`)\cr whether missing data (`NA`) should be displayed as a level.
-#' @param visit_var ([teal.transform::choices_selected()])\cr object with
-#'   all available choices and preselected option for variable names that can be used as `visit` variable.
+#' @param visit_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
+#'   object with all available choices and preselected option for variable names that can be used as `visit` variable.
 #'   Must be a factor in `dataname`.
-#' @param worst_flag_indicator ([teal.picks::values()])\cr
-#'   value indicating worst grade.
-#' @param worst_flag_var ([teal.transform::choices_selected()])\cr object
-#'   with all available choices and preselected option for variable names that can be used as worst flag variable.
+#' @param worst_flag_indicator ([teal.picks::values()]; legacy `teal.transform::choices_selected()` is deprecated but
+#'   still accepted)\cr value indicating worst grade.
+#' @param worst_flag_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
+#'   object with all available choices and preselected option for variable names that can be used as worst flag variable.
 #' @param categorical_stats (`character`)\cr names of statistics to display for non-numeric summary variables. Available
 #'   statistics are `n`, `count`, `count_fraction`, `count_fraction_fixed_dp`, `fraction` and `n_blq`.
 #' @param decorators `r lifecycle::badge("experimental")`

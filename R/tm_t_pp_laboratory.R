@@ -113,7 +113,6 @@ template_laboratory <- function(dataname = "ANL",
 #' @inheritParams module_arguments
 #' @inheritParams teal::module
 #' @inheritParams template_laboratory
-#' @inheritParams template_arguments
 #' @param param ([teal.picks::variables] or [teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `PARAM` variable from `dataname`.
 #' @param timepoints ([teal.picks::variables] or [teal.transform::choices_selected()])\cr object with all

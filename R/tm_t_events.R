@@ -449,13 +449,7 @@ template_events <- function(dataname,
 #' @inheritParams teal::module
 #' @inheritParams template_events
 #' @param arm_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
-#'   specification of variable names that can be used as `arm_var`.
-#'   It defines the grouping variable(s) in the results table.
-#'   If there are two elements selected for `arm_var`, second variable will be nested under the first variable.
-#' @param hlt ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
-#'   specification of the analysis variable used as the high level term for event grouping.
-#' @param llt ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
-#'   specification of the analysis variable used as the low level term for event grouping.
+#'   If there are two elements selected for `arm_var`, the second variable is nested under the first.
 #'
 #' @inherit module_arguments return seealso
 #'

@@ -250,8 +250,6 @@ template_abnormality <- function(parentname,
 #' @inheritParams module_arguments
 #' @inheritParams teal::module
 #' @inheritParams template_abnormality
-#' @param arm_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
-#'   object with all available choices and preselected option for the treatment variable.
 #' @param by_vars ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
 #'   object with all available choices and preselected
 #'   option(s) for row-by variables (`multiple = TRUE`, `ordered = TRUE` recommended).
@@ -259,17 +257,12 @@ template_abnormality <- function(parentname,
 #'   object with all available choices and preselected
 #'   option for the abnormality grade variable. Variable must be factor.
 #' @param abnormal (`named list`)\cr defined by user to indicate what abnormalities are to be displayed.
-#' @param id_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
-#'   subject identifier variable.
 #' @param baseline_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still
 #'   accepted)\cr
 #'   variable for baseline abnormality grade.
-#' @param treatment_flag_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still
-#'   accepted)\cr on-treatment flag variable.
 #' @param treatment_flag ([teal.picks::values()]; legacy `teal.transform::choices_selected()` is deprecated but still
 #'   accepted)\cr
 #'   value(s) indicating on-treatment records in `treatment_flag_var` (e.g. `"Y"`).
-#' @param na_level (`character`)\cr the NA level in the input dataset, default to `"<Missing>"`.
 #'
 #' @inherit module_arguments return seealso
 #'

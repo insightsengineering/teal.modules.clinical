@@ -380,29 +380,18 @@ template_tte <- function(dataname = "ANL",
 #' @inheritParams module_arguments
 #' @inheritParams teal::module
 #' @inheritParams template_tte
-#' @param arm_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
-#'   variable for treatment arm.
 #' @param paramcd ([`teal.picks::variables()`] for the parameter column, full [`teal.picks::picks()`] including
 #'   [`teal.picks::values()`], or legacy `teal.transform` objects; deprecated inputs still accepted)\cr
 #'   endpoint filter (parameter codes such as `OS`, `PFS`). [`teal.picks::variables()`] alone is enough; levels come
 #'   from data.
-#' @param strata_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
-#'   variable(s) for stratification.
-#' @param aval_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
-#'   variable for analysis value (time-to-event).
-#' @param cnsr_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
-#'   variable for censoring indicator.
-#' @param time_unit_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still
-#'   accepted)\cr
-#'   variable for time unit.
 #' @param event_desc_var ([`teal.picks::variables()`], [`teal.picks::picks()`], legacy
 #'   [`teal.transform::choices_selected()`], [`teal.transform::data_extract_spec()`], or a `list` of
 #'   `data_extract_spec`) variable for event description. S3 dispatch uses the class of `event_desc_var`
 #'   ([`tm_t_tte.picks()`] / [`tm_t_tte.variables()`] vs legacy [`tm_t_tte.default()`] / [`tm_t_tte.list()`]).
-#' @param conf_level_coxph ([teal.transform::choices_selected()])\cr object with all available choices and
-#'   pre-selected option for confidence level, each within range of (0, 1).
-#' @param conf_level_survfit ([teal.transform::choices_selected()])\cr object with all available choices and
-#'   pre-selected option for confidence level, each within range of (0, 1).
+#' @param conf_level_coxph ([teal.picks::values()]; legacy `teal.transform::choices_selected()` is deprecated but still
+#'   accepted)\cr confidence level for Cox PH summaries, each in the range (0, 1).
+#' @param conf_level_survfit ([teal.picks::values()]; legacy `teal.transform::choices_selected()` is deprecated but still
+#'   accepted)\cr confidence level for survival fit summaries, each in the range (0, 1).
 #'
 #' @section Decorating Module:
 #'

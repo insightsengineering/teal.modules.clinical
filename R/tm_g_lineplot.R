@@ -206,7 +206,6 @@ template_g_lineplot <- function(dataname = "ANL",
 #' @param paramcd ([`teal.picks::picks()`] or legacy `choices_selected` from `value_choices()`)\cr
 #'   parameter code filter: a `picks()` chain with the `PARAMCD` variable and biomarker `values()`;
 #'   defaults to `ALT` / `CRP` / `IGA` with `ALT` selected.
-#' @param conf_level ([`teal.picks::values()`] or legacy `choices_selected`)\cr confidence levels shown in the UI.
 #' @param strata `r lifecycle::badge("deprecated")` Please use the `group_var` argument instead.
 #'
 #' @inherit module_arguments return seealso

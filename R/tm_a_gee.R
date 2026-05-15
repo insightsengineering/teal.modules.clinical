@@ -130,10 +130,7 @@ template_a_gee <- function(output_table,
 #'
 #' @inheritParams module_arguments
 #' @inheritParams teal::module
-#' @inheritParams template_arguments
 #' @inheritParams template_a_gee
-#' @param conf_level ([`teal.picks::values()`]; legacy [`teal.transform::choices_selected()`] is deprecated but still
-#'   accepted)\cr confidence level for model-based intervals where applicable.
 #'
 #' @inherit module_arguments return seealso
 #'

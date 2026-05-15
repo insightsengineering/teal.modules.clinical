@@ -497,12 +497,9 @@ template_events_summary <- function(anl_name,
 #'
 #' @inheritParams module_arguments
 #' @inheritParams teal::module
-#' @inheritParams template_arguments
 #' @inheritParams template_events_summary
 #' @param arm_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
-#'   object with all available choices and preselected option for variable names that can be used as `arm_var`.
-#'   It defines the grouping variable(s) in the results table.
-#'   If there are two elements selected for `arm_var`, second variable will be nested under the first variable.
+#'   If there are two elements selected for `arm_var`, the second variable is nested under the first.
 #' @param dthfl_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
 #'   object with all available choices and preselected option for variable names that can be used as
 #' death flag variable.
@@ -522,8 +519,6 @@ template_events_summary <- function(anl_name,
 #'   variables must be of type `logical`. Variable labels are used as table row names if they exist.
 #' @param aeseq_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
 #'   variable for adverse events sequence number from `dataset`. Used for counting total number of events.
-#' @param llt ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
-#'   adverse event term / low-level term column (e.g. `AEDECOD`).
 #'
 #' @inherit module_arguments return seealso
 #'

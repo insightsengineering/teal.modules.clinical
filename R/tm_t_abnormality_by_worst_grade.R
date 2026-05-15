@@ -236,11 +236,6 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint: object_len
 #' @inheritParams module_arguments
 #' @inheritParams teal::module
 #' @inheritParams template_abnormality_by_worst_grade
-#' @param arm_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
-#'   object with all available choices and preselected
-#'   option for the treatment variable.
-#' @param id_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
-#'   subject identifier variable.
 #' @param paramcd ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
 #'   variable used to filter the analysis dataset
 #'   (typically `PARAMCD`). The `values()` element is added internally to allow users to pick

@@ -346,15 +346,7 @@ template_summary_by <- function(parentname,
 #' @inheritParams teal::module
 #' @inheritParams template_summary_by
 #' @param arm_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
-#'   variable(s) for treatment arm.
-#'   It defines the grouping variable(s) in the results table.
-#'   If there are two elements selected for `arm_var`, second variable will be nested under the first variable.
-#' @param by_vars ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
-#'   variable(s) for row grouping.
-#' @param summarize_vars ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still
-#'   accepted)\cr variable(s) to summarize.
-#' @param id_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
-#'   variable for subject identifier.
+#'   If there are two elements selected for `arm_var`, the second variable is nested under the first.
 #' @param paramcd ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
 #'   optional variable for parameter code filter.
 #'   When provided, a `values()` selector is added with `multiple = FALSE`, so one parameter
