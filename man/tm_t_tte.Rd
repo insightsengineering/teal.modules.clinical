@@ -47,10 +47,8 @@ with delayed \code{\link[teal.picks:variables]{teal.picks::variables()}} or \cod
 with the elements named \code{ref} and \code{comp} that define the default reference and comparison arms when the arm
 variable is changed.}
 
-\item{paramcd}{(\code{\link[teal.picks:variables]{teal.picks::variables()}} for the parameter column, full \code{\link[teal.picks:picks]{teal.picks::picks()}} including
-\code{\link[teal.picks:values]{teal.picks::values()}}, or legacy \code{teal.transform} objects; deprecated inputs still accepted)\cr
-endpoint filter (parameter codes such as \code{OS}, \code{PFS}). \code{\link[teal.picks:variables]{teal.picks::variables()}} alone is enough; levels come
-from data.}
+\item{paramcd}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+object with all available choices and preselected option for the parameter code variable from \code{dataname}.}
 
 \item{strata_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
 names of the variables for stratified analysis.}
@@ -61,11 +59,11 @@ object with all available choices and pre-selected option for the analysis varia
 \item{cnsr_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
 object with all available choices and preselected option for the censoring variable.}
 
-\item{conf_level_coxph}{(\code{\link[teal.picks:values]{teal.picks::values()}}; legacy \code{teal.transform::choices_selected()} is deprecated but still
-accepted)\cr confidence level for Cox PH summaries, each in the range (0, 1).}
+\item{conf_level_coxph}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all available choices and
+pre-selected option for confidence level, each within range of (0, 1).}
 
-\item{conf_level_survfit}{(\code{\link[teal.picks:values]{teal.picks::values()}}; legacy \code{teal.transform::choices_selected()}
-is deprecated but still accepted)\cr confidence level for survival fit summaries, each in the range (0, 1).}
+\item{conf_level_survfit}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all available choices and
+pre-selected option for confidence level, each within range of (0, 1).}
 
 \item{time_points}{(\code{\link[teal.picks:values]{teal.picks::values()}}; legacy \code{teal.transform::choices_selected()} is deprecated but still
 accepted)\cr object with all available choices and preselected option for time points that can be used in
