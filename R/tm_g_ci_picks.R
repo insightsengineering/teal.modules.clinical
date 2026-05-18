@@ -2,44 +2,12 @@
 #' (use [`tm_g_ci.variables()`] to pass [`teal.picks::variables()`] objects; they are wrapped into \code{picks}).
 #' @export
 tm_g_ci.picks <- function(label,
-                          x_var = teal.picks::picks(
-                            teal.picks::datasets("ADSL"),
-                            teal.picks::variables(
-                              choices = c("ARMCD", "BMRKR2"),
-                              selected = "ARMCD",
-                              multiple = FALSE
-                            )
-                          ),
-                          y_var = teal.picks::picks(
-                            teal.picks::datasets("ADLB"),
-                            teal.picks::variables(
-                              choices = c("AVAL", "CHG", "CHG2"),
-                              selected = "AVAL",
-                              multiple = FALSE
-                            )
-                          ),
-                          color = teal.picks::picks(
-                            teal.picks::datasets("ADSL"),
-                            teal.picks::variables(
-                              choices = c("SEX", "STRATA1", "STRATA2"),
-                              selected = "STRATA1",
-                              multiple = FALSE
-                            )
-                          ),
+                          x_var,
+                          y_var,
+                          color,
                           stat = c("mean", "median"),
-                          paramcd = teal.picks::values(
-                            choices = c("ALT", "CRP", "IGA"),
-                            selected = "ALT",
-                            multiple = FALSE
-                          ),
-                          avisit = teal.picks::values(
-                            choices = c(
-                              "SCREENING", "BASELINE", "WEEK 1 DAY 8", "WEEK 2 DAY 15",
-                              "WEEK 3 DAY 22", "WEEK 4 DAY 29", "WEEK 5 DAY 36"
-                            ),
-                            selected = "SCREENING",
-                            multiple = FALSE
-                          ),
+                          paramcd,
+                          avisit,
                           conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95),
                           plot_height = c(700L, 200L, 2000L),
                           plot_width = NULL,
@@ -76,12 +44,12 @@ tm_g_ci.picks <- function(label,
 
   paramcd_picks <- teal.picks::picks(
     teal.picks::datasets(y_dataname, y_dataname),
-    teal.picks::variables("PARAMCD"),
+    teal.picks::variables("PARAMCD", "PARAMCD"),
     paramcd
   )
   avisit_picks <- teal.picks::picks(
     teal.picks::datasets(y_dataname, y_dataname),
-    teal.picks::variables("AVISIT"),
+    teal.picks::variables("AVISIT", "AVISIT"),
     avisit
   )
 
@@ -105,35 +73,12 @@ tm_g_ci.picks <- function(label,
 #' @describeIn tm_g_ci teal.picks encodings via \code{variables} (recommended entry point).
 #' @export
 tm_g_ci.variables <- function(label,
-                              x_var = teal.picks::variables(
-                                choices = c("ARMCD", "BMRKR2"),
-                                selected = "ARMCD",
-                                multiple = FALSE
-                              ),
-                              y_var = teal.picks::variables(
-                                choices = c("AVAL", "CHG", "CHG2"),
-                                selected = "AVAL",
-                                multiple = FALSE
-                              ),
-                              color = teal.picks::variables(
-                                choices = c("SEX", "STRATA1", "STRATA2"),
-                                selected = "STRATA1",
-                                multiple = FALSE
-                              ),
+                              x_var,
+                              y_var,
+                              color,
                               stat = c("mean", "median"),
-                              paramcd = teal.picks::values(
-                                choices = c("ALT", "CRP", "IGA"),
-                                selected = "ALT",
-                                multiple = FALSE
-                              ),
-                              avisit = teal.picks::values(
-                                choices = c(
-                                  "SCREENING", "BASELINE", "WEEK 1 DAY 8", "WEEK 2 DAY 15",
-                                  "WEEK 3 DAY 22", "WEEK 4 DAY 29", "WEEK 5 DAY 36"
-                                ),
-                                selected = "SCREENING",
-                                multiple = FALSE
-                              ),
+                              paramcd,
+                              avisit,
                               conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95),
                               plot_height = c(700L, 200L, 2000L),
                               plot_width = NULL,
@@ -144,9 +89,9 @@ tm_g_ci.variables <- function(label,
                               decorators = list()) {
   tm_g_ci.picks(
     label = label,
-    x_var = teal.picks::picks(teal.picks::datasets("ADSL"), x_var),
-    y_var = teal.picks::picks(teal.picks::datasets("ADLB"), y_var),
-    color = teal.picks::picks(teal.picks::datasets("ADSL"), color),
+    x_var = teal.picks::picks(teal.picks::datasets("ADSL", "ADSL"), x_var),
+    y_var = teal.picks::picks(teal.picks::datasets("ADLB", "ADLB"), y_var),
+    color = teal.picks::picks(teal.picks::datasets("ADSL", "ADSL"), color),
     stat = stat,
     paramcd = paramcd,
     avisit = avisit,
@@ -401,3 +346,7 @@ srv_g_ci.picks <- function(id, # nolint: object_name.
     set_chunk_dims(pws, decorated_plot_q)
   })
 }
+
+#' @describeIn tm_g_ci teal.picks encodings via \code{picks} objects for \code{x_var}, \code{y_var}, and \code{color}
+#' @export
+tm_g_ci.default <- tm_g_ci.picks

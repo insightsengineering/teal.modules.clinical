@@ -640,10 +640,10 @@ tm_t_events_summary <- function(label,
                                 arm_var,
                                 flag_var_anl = NULL,
                                 flag_var_aesi = NULL,
-                                dthfl_var = variables(choices = "DTHFL", fixed = TRUE),
-                                dcsreas_var = variables(choices = "DCSREAS", fixed = TRUE),
-                                llt = variables(choices = "AEDECOD", fixed = TRUE),
-                                aeseq_var = variables(choices = "AESEQ", fixed = TRUE),
+                                dthfl_var = teal.picks::variables("DTHFL", "DTHFL", fixed = TRUE),
+                                dcsreas_var = teal.picks::variables("DCSREAS", "DCSREAS", fixed = TRUE),
+                                llt = teal.picks::variables("AEDECOD", "AEDECOD", fixed = TRUE),
+                                aeseq_var = teal.picks::variables("AESEQ", "AESEQ", fixed = TRUE),
                                 add_total = TRUE,
                                 total_label = default_total_label(),
                                 na_level = tern::default_na_str(),
@@ -658,6 +658,7 @@ tm_t_events_summary <- function(label,
                                 transformators = list(),
                                 decorators = list()) {
   message("Initializing tm_t_events_summary")
+
   arm_var <- migrate_choices_selected_to_variables(arm_var)
   flag_var_anl <- migrate_choices_selected_to_variables(flag_var_anl, null.ok = TRUE)
   flag_var_aesi <- migrate_choices_selected_to_variables(flag_var_aesi, null.ok = TRUE)
@@ -665,6 +666,7 @@ tm_t_events_summary <- function(label,
   dcsreas_var <- migrate_choices_selected_to_variables(dcsreas_var)
   llt <- migrate_choices_selected_to_variables(llt)
   aeseq_var <- migrate_choices_selected_to_variables(aeseq_var)
+
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)

@@ -12,7 +12,7 @@ tm_t_logistic(
   arm_ref_comp = NULL,
   paramcd,
   cov_var = NULL,
-  avalc_var = teal.picks::variables("AVALC", fixed = TRUE),
+  avalc_var = teal.picks::variables("AVALC", "AVALC", fixed = TRUE),
   conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95),
   pre_output = NULL,
   post_output = NULL,
