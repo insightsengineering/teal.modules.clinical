@@ -72,10 +72,8 @@ for time points that can be used in \code{\link[tern:surv_timepoint]{tern::surv_
 accepted)\cr
 variable for time unit.}
 
-\item{event_desc_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}, \code{\link[teal.picks:picks]{teal.picks::picks()}}, legacy
-\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}}, \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}}, or a \code{list} of
-\code{data_extract_spec}) variable for event description. S3 dispatch uses the class of \code{event_desc_var}
-(\code{\link[=tm_t_tte.picks]{tm_t_tte.picks()}} / \code{\link[=tm_t_tte.variables]{tm_t_tte.variables()}} vs legacy \code{\link[=tm_t_tte.default]{tm_t_tte.default()}} / \code{\link[=tm_t_tte.list]{tm_t_tte.list()}}).}
+\item{event_desc_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}, legacy \code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} objects
+are deprecated but still accepted\cr variable for event description.}
 
 \item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
 

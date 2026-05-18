@@ -395,10 +395,8 @@ template_tte <- function(dataname = "ANL",
 #' @param time_unit_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still
 #'   accepted)\cr
 #'   variable for time unit.
-#' @param event_desc_var ([`teal.picks::variables()`], [`teal.picks::picks()`], legacy
-#'   [`teal.transform::choices_selected()`], [`teal.transform::data_extract_spec()`], or a `list` of
-#'   `data_extract_spec`) variable for event description. S3 dispatch uses the class of `event_desc_var`
-#'   ([`tm_t_tte.picks()`] / [`tm_t_tte.variables()`] vs legacy [`tm_t_tte.default()`] / [`tm_t_tte.list()`]).
+#' @param event_desc_var ([`teal.picks::variables()`], legacy [`teal.transform::choices_selected()`] objects
+#' are deprecated but still accepted\cr variable for event description.
 #' @param conf_level_coxph ([teal.transform::choices_selected()])\cr object with all available choices and
 #'   pre-selected option for confidence level, each within range of (0, 1).
 #' @param conf_level_survfit ([teal.transform::choices_selected()])\cr object with all available choices and
