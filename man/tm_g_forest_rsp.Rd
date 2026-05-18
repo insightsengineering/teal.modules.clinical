@@ -11,7 +11,7 @@ tm_g_forest_rsp(
   arm_var,
   arm_ref_comp = NULL,
   paramcd,
-  aval_var = teal.picks::variables("AVALC", fixed = TRUE),
+  aval_var = teal.picks::variables("AVALC", "AVALC", fixed = TRUE),
   subgroup_var,
   strata_var,
   stats = c("n_tot", "n", "n_rsp", "prop", "or", "ci"),

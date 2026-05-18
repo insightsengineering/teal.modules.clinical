@@ -354,10 +354,13 @@ tm_t_abnormality <- function(label,
                              by_vars,
                              grade,
                              abnormal = list(low = c("LOW", "LOW LOW"), high = c("HIGH", "HIGH HIGH")),
-                             id_var = teal.picks::variables(choices = "USUBJID", fixed = TRUE),
-                             baseline_var = teal.picks::variables(choices = "BNRIND", fixed = TRUE),
-                             treatment_flag_var = teal.picks::variables(choices = "ONTRTFL", fixed = TRUE),
-                             treatment_flag = teal.picks::values("Y", "Y", multiple = TRUE),
+                             id_var = teal.picks::variables("USUBJID", "USUBJID", fixed = TRUE),
+                             baseline_var = teal.picks::variables("BNRIND", "BNRIND", fixed = TRUE),
+                             treatment_flag_var = teal.picks::variables("ONTRTFL", "ONTRTFL", fixed = TRUE),
+                             treatment_flag = teal.picks::values(
+                               "Y", "Y",
+                               fixed = TRUE, multiple = FALSE
+                             ),
                              add_total = TRUE,
                              total_label = default_total_label(),
                              exclude_base_abn = FALSE,
@@ -369,13 +372,15 @@ tm_t_abnormality <- function(label,
                              transformators = list(),
                              decorators = list()) {
   message("Initializing tm_t_abnormality")
+
   arm_var <- migrate_choices_selected_to_variables(arm_var)
-  by_vars <- migrate_choices_selected_to_variables(by_vars)
+  by_vars <- migrate_choices_selected_to_variables(by_vars, multiple = TRUE)
   grade <- migrate_choices_selected_to_variables(grade)
   id_var <- migrate_choices_selected_to_variables(id_var)
   baseline_var <- migrate_choices_selected_to_variables(baseline_var)
   treatment_flag_var <- migrate_choices_selected_to_variables(treatment_flag_var)
-  treatment_flag <- migrate_choices_selected_to_values(treatment_flag)
+  treatment_flag <- migrate_choices_selected_to_values(treatment_flag, multiple = TRUE)
+
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
@@ -400,9 +405,6 @@ tm_t_abnormality <- function(label,
     treatment_flag_var,
     treatment_flag
   )
-
-  checkmate::assert_true(teal.picks::is_pick_multiple(by_vars$variables))
-  checkmate::assert_true(teal.picks::is_pick_multiple(treatment_flag_var$values))
 
   args <- as.list(environment())
 

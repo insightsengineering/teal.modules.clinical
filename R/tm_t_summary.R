@@ -474,7 +474,7 @@ srv_summary <- function(id,
     anl_selectors$usubjid <- reactive(
       teal.picks::picks(
         teal.picks::datasets(parentname, parentname),
-        variables("USUBJID", "USUBJID")
+        teal.picks::variables("USUBJID", "USUBJID")
       )
     )
     adsl_selectors <- selectors["arm_var"]

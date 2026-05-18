@@ -12,7 +12,7 @@ tm_t_binary_outcome(
   arm_ref_comp = NULL,
   paramcd,
   strata_var,
-  aval_var = variables(choices = c("AVALC", "SEX"), selected = "AVALC", fixed = FALSE),
+  aval_var = teal.picks::variables(c("AVALC", "SEX"), "AVALC", fixed = FALSE),
   conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95),
   default_responses = c("CR", "PR", "Y", "Complete Response (CR)",
     "Partial Response (PR)", "M"),

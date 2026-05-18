@@ -298,18 +298,16 @@ tm_g_lineplot <- function(label,
                           strata = lifecycle::deprecated(),
                           group_var = teal.picks::variables(
                             choices = c("ARM", "ARMCD", "ACTARMCD"),
-                            selected = "ARM",
-                            multiple = FALSE
+                            selected = "ARM"
                           ),
-                          x = teal.picks::variables("AVISIT", fixed = TRUE),
+                          x = teal.picks::variables("AVISIT", "AVISIT", fixed = TRUE),
                           y = teal.picks::variables(
                             choices = c("AVAL", "BASE", "CHG", "PCHG"),
-                            selected = "AVAL",
-                            multiple = FALSE
+                            selected = "AVAL"
                           ),
-                          y_unit = teal.picks::variables("AVALU", fixed = TRUE),
+                          y_unit = teal.picks::variables("AVALU", "AVALU", fixed = TRUE),
                           paramcd = teal.picks::picks(
-                            teal.picks::variables("PARAMCD", fixed = TRUE),
+                            teal.picks::variables("PARAMCD", "PARAMCD", fixed = TRUE),
                             teal.picks::values(
                               choices = c("ALT", "CRP", "IGA"),
                               selected = "ALT",
