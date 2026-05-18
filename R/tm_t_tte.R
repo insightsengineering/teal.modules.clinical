@@ -390,8 +390,8 @@ template_tte <- function(dataname = "ANL",
 #'   ([`tm_t_tte.picks()`] / [`tm_t_tte.variables()`] vs legacy [`tm_t_tte.default()`] / [`tm_t_tte.list()`]).
 #' @param conf_level_coxph ([teal.picks::values()]; legacy `teal.transform::choices_selected()` is deprecated but still
 #'   accepted)\cr confidence level for Cox PH summaries, each in the range (0, 1).
-#' @param conf_level_survfit ([teal.picks::values()]; legacy `teal.transform::choices_selected()` is deprecated but still
-#'   accepted)\cr confidence level for survival fit summaries, each in the range (0, 1).
+#' @param conf_level_survfit ([teal.picks::values()]; legacy `teal.transform::choices_selected()`
+#' is deprecated but still accepted)\cr confidence level for survival fit summaries, each in the range (0, 1).
 #'
 #' @section Decorating Module:
 #'

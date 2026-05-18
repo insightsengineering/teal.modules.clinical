@@ -192,8 +192,8 @@ NULL
 #' @param time_points ([teal.picks::values()]; legacy `teal.transform::choices_selected()` is deprecated but still
 #'   accepted)\cr object with all available choices and preselected option for time points that can be used in
 #'   [tern::surv_timepoint()].
-#' @param time_unit_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
-#'   object with all available choices and pre-selected option for the time unit variable.
+#' @param time_unit_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated
+#' but still accepted)\cr object with all available choices and pre-selected option for the time unit variable.
 #' @param treatment_flag ([teal.picks::values()]; legacy `teal.transform::choices_selected()` is deprecated but still
 #'   accepted)\cr value indicating on treatment records in `treatment_flag_var`.
 #' @param treatment_flag_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still
@@ -204,8 +204,9 @@ NULL
 #'   Must be a factor in `dataname`.
 #' @param worst_flag_indicator ([teal.picks::values()]; legacy `teal.transform::choices_selected()` is deprecated but
 #'   still accepted)\cr value indicating worst grade.
-#' @param worst_flag_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
-#'   object with all available choices and preselected option for variable names that can be used as worst flag variable.
+#' @param worst_flag_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated
+#' but still accepted)\cr object with all available choices and preselected option for variable
+#' names that can be used as worst flag variable.
 #' @param categorical_stats (`character`)\cr names of statistics to display for non-numeric summary variables. Available
 #'   statistics are `n`, `count`, `count_fraction`, `count_fraction_fixed_dp`, `fraction` and `n_blq`.
 #' @param decorators `r lifecycle::badge("experimental")`

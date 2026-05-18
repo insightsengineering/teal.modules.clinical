@@ -35,7 +35,7 @@ app_driver_tm_t_pp_laboratory <- function() {
         patient_col = "USUBJID",
         paramcd = teal.picks::variables(c("PARAMCD", "STUDYID"), multiple = FALSE),
         param = teal.picks::variables(c("PARAM", "SEX"), multiple = FALSE),
-        timepoints = teal.picks::variables(c("ADY", "AGE"), multiple = FALSE),
+        time_points = teal.picks::variables(c("ADY", "AGE"), multiple = FALSE),
         anrind = teal.picks::variables(c("ANRIND", "AGEU"), multiple = FALSE),
         aval_var = teal.picks::variables(c("AVAL", "AGE"), multiple = FALSE),
         avalu_var = teal.picks::variables(c("AVALU", "SEX"), multiple = FALSE),
@@ -58,7 +58,7 @@ testthat::test_that("e2e - tm_t_pp_laboratory: Module initializes in teal withou
 
 testthat::test_that(
   "e2e - tm_t_pp_laboratory: Starts with specified label, patient_id, paramcd, param,
-  timepoints, aval_var, avalu_var, anrind, round_value.",
+  time_points, aval_var, avalu_var, anrind, round_value.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_pp_laboratory()
@@ -88,7 +88,7 @@ testthat::test_that(
       "PARAM"
     )
     testthat::expect_equal(
-      exported_values[["timepoints-picks_resolved"]]$variables$selected,
+      exported_values[["time_points-picks_resolved"]]$variables$selected,
       "ADY"
     )
     testthat::expect_equal(
@@ -225,14 +225,14 @@ testthat::test_that(
 )
 
 testthat::test_that(
-  "e2e - tm_t_pp_laboratory: Selecting timepoints changes the table and does not throw validation errors.",
+  "e2e - tm_t_pp_laboratory: Selecting time_points changes the table and does not throw validation errors.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_pp_laboratory()
     withr::defer(app_driver$stop())
     app_driver$wait_for_idle()
     table_before <- app_driver$get_active_module_table_output("lab_values_table", which = 2)
-    set_teal_picks_slot(app_driver, "timepoints", "variables", "AGE")
+    set_teal_picks_slot(app_driver, "time_points", "variables", "AGE")
     app_driver$wait_for_idle()
     testthat::expect_false(
       identical(
@@ -244,11 +244,11 @@ testthat::test_that(
   }
 )
 
-testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of timepoints throws validation error.", {
+testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of time_points throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_pp_laboratory()
   withr::defer(app_driver$stop())
-  set_teal_picks_slot(app_driver, "timepoints", "variables", character(0L))
+  set_teal_picks_slot(app_driver, "time_points", "variables", character(0L))
   app_driver$expect_hidden(
     app_driver$namespaces(TRUE)$module("lab_values_table"),
     visibility_property = TRUE
@@ -256,7 +256,7 @@ testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of timepoints throws 
   app_driver$expect_validation_error()
   testthat::expect_match(
     app_driver$get_text(".standard-layout-output .shiny-output-error"),
-    "Please select timepoints variable.",
+    "Please select time_points variable.",
     fixed = TRUE
   )
 })

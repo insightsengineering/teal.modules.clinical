@@ -308,8 +308,8 @@ template_smq <- function(dataname,
 #'   If there are two elements selected for `arm_var`, the second variable is nested under the first.
 #' @param baskets ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
 #'   object with all available choices and preselected options for standardized/customized queries.
-#' @param scopes ([teal.picks::values()]; legacy `teal.transform::choices_selected()` is deprecated but still accepted)\cr
-#'   object with all available choices for the scopes of standardized queries.
+#' @param scopes ([teal.picks::values()]; legacy `teal.transform::choices_selected()` is deprecated but
+#' still accepted)\cr object with all available choices for the scopes of standardized queries.
 #'
 #' @inherit module_arguments return seealso
 #'

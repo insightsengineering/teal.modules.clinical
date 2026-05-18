@@ -85,8 +85,8 @@ within the column. See \code{\link[tern:control_riskdiff]{tern::control_riskdiff
 \item{conf_level}{(\code{\link[teal.picks:values]{teal.picks::values()}}; legacy \code{teal.transform::choices_selected()} is deprecated but still
 accepted)\cr available confidence levels and default selection, each in the range (0, 1).}
 
-\item{time_unit_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
-object with all available choices and pre-selected option for the time unit variable.}
+\item{time_unit_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated
+but still accepted)\cr object with all available choices and pre-selected option for the time unit variable.}
 
 \item{fixed_symbol_size}{(\code{logical})\cr When (\code{TRUE}), the same symbol size is used for plotting each estimate.
 Otherwise, the symbol size will be proportional to the sample size in each each subgroup.}

@@ -41,7 +41,8 @@ object with all available choices and preselected option for variable names that
 It defines the grouping variable in the results table.}
 
 \item{visit_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
-variable for analysis visit.}
+object with all available choices and preselected option for variable names that can be used as \code{visit} variable.
+Must be a factor in \code{dataname}.}
 
 \item{paramcd}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
 variable for lab parameter code. The \code{values()} element is added internally to allow

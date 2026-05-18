@@ -173,15 +173,15 @@ object with all available choices and preselected option for the censoring varia
 \item{conf_level_coxph}{(\code{\link[teal.picks:values]{teal.picks::values()}}; legacy \code{teal.transform::choices_selected()} is deprecated but still
 accepted)\cr confidence level for Cox PH summaries, each in the range (0, 1).}
 
-\item{conf_level_survfit}{(\code{\link[teal.picks:values]{teal.picks::values()}}; legacy \code{teal.transform::choices_selected()} is deprecated but still
-accepted)\cr confidence level for survival fit summaries, each in the range (0, 1).}
+\item{conf_level_survfit}{(\code{\link[teal.picks:values]{teal.picks::values()}}; legacy \code{teal.transform::choices_selected()}
+is deprecated but still accepted)\cr confidence level for survival fit summaries, each in the range (0, 1).}
 
 \item{time_points}{(\code{\link[teal.picks:values]{teal.picks::values()}}; legacy \code{teal.transform::choices_selected()} is deprecated but still
 accepted)\cr object with all available choices and preselected option for time points that can be used in
 \code{\link[tern:surv_timepoint]{tern::surv_timepoint()}}.}
 
-\item{time_unit_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
-object with all available choices and pre-selected option for the time unit variable.}
+\item{time_unit_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated
+but still accepted)\cr object with all available choices and pre-selected option for the time unit variable.}
 
 \item{event_desc_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}, \code{\link[teal.picks:picks]{teal.picks::picks()}}, legacy
 \code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}}, \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}}, or a \code{list} of

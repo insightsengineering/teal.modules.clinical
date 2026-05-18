@@ -349,7 +349,7 @@ app <- init(
       patient_col = "USUBJID",
       paramcd = variables("PARAMCD", fixed = TRUE),
       param = variables("PARAM", fixed = TRUE),
-      timepoints = variables("ADY", fixed = TRUE),
+      time_points = variables("ADY", fixed = TRUE),
       anrind = variables("ANRIND", fixed = TRUE),
       aval_var = variables("AVAL", fixed = TRUE),
       avalu_var = variables("AVALU", fixed = TRUE),

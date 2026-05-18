@@ -9,7 +9,7 @@ tm_t_pp_laboratory(
   dataname = "ADLB",
   parentname = "ADSL",
   patient_col = "USUBJID",
-  timepoints = NULL,
+  time_points = NULL,
   aval = lifecycle::deprecated(),
   aval_var = NULL,
   avalu = lifecycle::deprecated(),
@@ -32,11 +32,15 @@ tm_t_pp_laboratory(
 
 \item{patient_col}{(\code{character})\cr name of patient ID variable.}
 
-\item{timepoints}{(\link[teal.picks:variables]{teal.picks::variables} or \code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
+\item{time_points}{(\link[teal.picks:variables]{teal.picks::variables} or \code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
 available choices and preselected option for the time variable from \code{dataname}.}
+
+\item{aval}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use the \code{aval_var} argument instead.}
 
 \item{aval_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
 object with all available choices and pre-selected option for the analysis variable.}
+
+\item{avalu}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use the \code{avalu_var} argument instead.}
 
 \item{avalu_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
 object with all available choices and preselected option for the analysis unit variable.}
@@ -107,7 +111,7 @@ app <- init(
       label = "Vitals",
       dataname = "ADLB",
       patient_col = "USUBJID",
-      timepoints = variables("ADY", fixed = TRUE),
+      time_points = variables("ADY", fixed = TRUE),
       aval_var = variables("AVAL", fixed = TRUE),
       avalu_var = variables("AVALU", fixed = TRUE),
       param = variables("PARAM", fixed = TRUE),
@@ -124,8 +128,8 @@ if (interactive()) {
 \section{Examples in Shinylive}{
 \describe{
   \item{example-1}{
-    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOz8gCEikrLK6v5qeiUAX0UIACsieL8AazhWUUTQm3D+OGMoYVI-An5aUTKRscnp4Gh4GaS5AF1XCByCoqTgYAUwa-zHs4urptaF0PvHnJbXu8lGhUEV4tF2A0kjoALw6JK4Bp8IQiUSwnTI4RiSEQDIZEp+NboPzUKD0IjMUgUjgNPE6Un0ODUdGPABq0W4okeiNxdPhoSOujhf0+3NpeNQHloFDWxGZwrADlyDmaACkAJLZMW8ukaeCoUZkNFwzQsWhk1GQp7ZACa3JMtAqcH46PszjkPL5Oigpv8psY6P95volr+rMyLzwDqdLrhbqcHvFGR93EEfn9gbNFuxYYjDntxkdztdjgTnr5kuYMEzjGDobAAAVMlhMgBZAtF2N2UuJnUSliwDY1us5xvNtsAYS1UcLMZL7vLdKgEFrEC7QezMz+ADksOrt9OUrPi3Ge4udIMMoNBrRjDp2PFyGoNNprDY0rzRHEIKxMuh2CCAAkgi0CkQGiKo2iMIMfRKGAfRnEAA}{Open in Shinylive}
-    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOz8gCEikrLK6v5qeiUAX0UIACsieL8AazhWUUTQm3D+OGMoYVI-An5aUTKRscnp4Gh4GaS5AF1XCByCoqTgYAUwa-zHs4urptaF0PvHnJbXu8lGhUEV4tF2A0kjoALw6JK4Bp8IQiUSwnTI4RiSEQDIZEp+NboPzUKD0IjMUgUjgNPE6Un0ODUdGPABq0W4okeiNxdPhoSOujhf0+3NpeNQHloFDWxGZwrADlyDmaACkAJLZMW8ukaeCoUZkNFwzQsWhk1GQp7ZACa3JMtAqcH46PszjkPL5Oigpv8psY6P95volr+rMyLzwDqdLrhbqcHvFGR93EEfn9gbNFuxYYjDntxkdztdjgTnr5kuYMEzjGDobAAAVMlhMgBZAtF2N2UuJnUSliwDY1us5xvNtsAYS1UcLMZL7vLdKgEFrEC7QezMz+ADksOrt9OUrPi3Ge4udIMMoNBrRjDp2PFyGoNNprDY0rzRHEIKxMuh2CCAAkgi0CkQGiKo2iMIMfRKGAfRnEAA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOz8gCEikrLK6v5qeiUAX0UIACsieL8AazhWUUTQm3D+OGMoYVI-An5aUTKRscnp4Gh4GaS5AF1XCByCoqTgYAUwa-zHs4urptaF0PvHnJbXu8lGhUEV4tF2A0kjoALw6JK4Bp8IQiUSwnTI4RiSEQDIZEp+NboPzUKD0IjMUgUjgNPE6Un0ODUdGPABq0W4okeiNxdPhoSOujhf0+3NpeNQHloFDWxGZwrADlyDmaACkAJLZMW8ukaeB+VCjMhouGaFi0MmoyFPbIATW5JloFTg-HR9mcch5fJ0UDN-jNjHRAYt9Ctf1ZmReeEdztdcPdTk94oyvu4gj8AaD5st2PDkYcDuMTpdbscia9fMlzBgWcYIbDYAACpksJkALKF4txuxlpM6iUsWAbWv13NNlvtgDCWujRdjpY9FbpUAgdYg3eDOZmfwAclh1TuZyk5yX472lzpBhlBoNaMYdOx4uQ1BptNYbGleaI4hBWJl0OwIIACSCLQKTAaIqjaIwgx9EoYB9GcQA}{Open in Shinylive}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOz8gCEikrLK6v5qeiUAX0UIACsieL8AazhWUUTQm3D+OGMoYVI-An5aUTKRscnp4Gh4GaS5AF1XCByCoqTgYAUwa-zHs4urptaF0PvHnJbXu8lGhUEV4tF2A0kjoALw6JK4Bp8IQiUSwnTI4RiSEQDIZEp+NboPzUKD0IjMUgUjgNPE6Un0ODUdGPABq0W4okeiNxdPhoSOujhf0+3NpeNQHloFDWxGZwrADlyDmaACkAJLZMW8ukaeB+VCjMhouGaFi0MmoyFPbIATW5JloFTg-HR9mcch5fJ0UDN-jNjHRAYt9Ctf1ZmReeEdztdcPdTk94oyvu4gj8AaD5st2PDkYcDuMTpdbscia9fMlzBgWcYIbDYAACpksJkALKF4txuxlpM6iUsWAbWv13NNlvtgDCWujRdjpY9FbpUAgdYg3eDOZmfwAclh1TuZyk5yX472lzpBhlBoNaMYdOx4uQ1BptNYbGleaI4hBWJl0OwIIACSCLQKTAaIqjaIwgx9EoYB9GcQA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
     \if{html}{\out{<a style='height: 800px; display: block;'></a>}}
   }
 }

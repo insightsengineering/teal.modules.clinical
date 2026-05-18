@@ -496,6 +496,7 @@ template_events_summary <- function(anl_name,
 #' This module produces an adverse events summary table.
 #'
 #' @inheritParams module_arguments
+#' @inheritParams template_arguments
 #' @inheritParams teal::module
 #' @inheritParams template_events_summary
 #' @param arm_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr

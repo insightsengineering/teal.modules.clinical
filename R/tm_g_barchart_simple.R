@@ -7,6 +7,7 @@
 #'
 #' @inheritParams module_arguments
 #' @inheritParams teal::module
+#' @inheritParams template_arguments
 #' @param x (`picks`, `data_extract_spec`, or `list` of `data_extract_spec`)\cr
 #'   variable on the x-axis (required).
 #' @param fill (`NULL`, `picks`, `data_extract_spec`, or `list` thereof)\cr grouping variable for bar colors.

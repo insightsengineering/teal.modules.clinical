@@ -116,8 +116,8 @@ subgroups.}
 accepted)\cr object with all available choices and preselected option for time points that can be used in
 \code{\link[tern:surv_timepoint]{tern::surv_timepoint()}}.}
 
-\item{time_unit_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
-object with all available choices and pre-selected option for the time unit variable.}
+\item{time_unit_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated
+but still accepted)\cr object with all available choices and pre-selected option for the time unit variable.}
 
 \item{treatment_flag}{(\code{\link[teal.picks:values]{teal.picks::values()}}; legacy \code{teal.transform::choices_selected()} is deprecated but still
 accepted)\cr value indicating on treatment records in \code{treatment_flag_var}.}
@@ -134,8 +134,9 @@ Must be a factor in \code{dataname}.}
 \item{worst_flag_indicator}{(\code{\link[teal.picks:values]{teal.picks::values()}}; legacy \code{teal.transform::choices_selected()} is deprecated but
 still accepted)\cr value indicating worst grade.}
 
-\item{worst_flag_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
-object with all available choices and preselected option for variable names that can be used as worst flag variable.}
+\item{worst_flag_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated
+but still accepted)\cr object with all available choices and preselected option for variable
+names that can be used as worst flag variable.}
 
 \item{categorical_stats}{(\code{character})\cr names of statistics to display for non-numeric summary variables. Available
 statistics are \code{n}, \code{count}, \code{count_fraction}, \code{count_fraction_fixed_dp}, \code{fraction} and \code{n_blq}.}

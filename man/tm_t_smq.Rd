@@ -66,8 +66,8 @@ default \code{na_level} to apply in all modules, run \code{set_default_na_str("n
 \item{baskets}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
 object with all available choices and preselected options for standardized/customized queries.}
 
-\item{scopes}{(\code{\link[teal.picks:values]{teal.picks::values()}}; legacy \code{teal.transform::choices_selected()} is deprecated but still accepted)\cr
-object with all available choices for the scopes of standardized queries.}
+\item{scopes}{(\code{\link[teal.picks:values]{teal.picks::values()}}; legacy \code{teal.transform::choices_selected()} is deprecated but
+still accepted)\cr object with all available choices for the scopes of standardized queries.}
 
 \item{pre_output}{(\code{shiny.tag}) optional,\cr with text placed before the output to put the output into context.
 For example a title.}
