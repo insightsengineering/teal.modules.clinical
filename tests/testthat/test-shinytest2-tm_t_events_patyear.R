@@ -11,6 +11,7 @@ app_driver_tm_t_events_patyear <- function() {
   teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
 
   app_driver <- init_teal_app_driver(
+  withr::defer(app_driver$stop())
     teal::init(
       data = data,
       modules = tm_t_events_patyear(
@@ -43,10 +44,10 @@ app_driver_tm_t_events_patyear <- function() {
 testthat::test_that("e2e - tm_t_events_patyear: Module initializes in teal without errors and produces table output.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_events_patyear()
+  withr::defer(app_driver$stop())
   app_driver$expect_no_shiny_error()
   app_driver$expect_no_validation_error()
   app_driver$expect_visible(app_driver$namespaces(TRUE)$module("patyear_table-table-with-settings"))
-  app_driver$stop()
 })
 
 testthat::test_that(
@@ -55,6 +56,7 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events_patyear()
+    withr::defer(app_driver$stop())
     wait_until_nonempty_active_module_input(app_driver, "input_time_unit")
     testthat::expect_equal(
       app_driver$get_text(".teal-modules-tree a.module-button.active"),
@@ -90,7 +92,6 @@ testthat::test_that(
     )
     testthat::expect_true(app_driver$get_active_module_input("add_total"))
     testthat::expect_true(app_driver$get_active_module_input("drop_arm_levels"))
-    app_driver$stop()
   }
 )
 
@@ -99,6 +100,7 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events_patyear()
+    withr::defer(app_driver$stop())
     table_before <- app_driver$get_active_module_table_output("patyear_table-table-with-settings")
     set_teal_picks_slot(app_driver, "paramcd", "values", "AETTE2")
     testthat::expect_false(
@@ -108,20 +110,19 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
   }
 )
 
 testthat::test_that("e2e - tm_t_events_patyear: Deselection of paramcd throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_events_patyear()
+  withr::defer(app_driver$stop())
   set_teal_picks_slot(app_driver, "paramcd", "values", NULL)
   testthat::expect_identical(
     app_driver$get_active_module_table_output("patyear_table-table-with-settings"),
     data.frame()
   )
   app_driver$expect_validation_error()
-  app_driver$stop()
 })
 
 testthat::test_that(
@@ -129,6 +130,7 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events_patyear()
+    withr::defer(app_driver$stop())
     table_before <- app_driver$get_active_module_table_output("patyear_table-table-with-settings")
     set_teal_picks_slot(app_driver, "arm_var", "variables", "SEX")
     app_driver$wait_for_idle()
@@ -139,20 +141,19 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
   }
 )
 
 testthat::test_that("e2e - tm_t_events_patyear: Deselection of arm_var throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_events_patyear()
+  withr::defer(app_driver$stop())
   set_teal_picks_slot(app_driver, "arm_var", "variables", NULL)
   testthat::expect_identical(
     app_driver$get_active_module_table_output("patyear_table-table-with-settings"),
     data.frame()
   )
   app_driver$expect_validation_error()
-  app_driver$stop()
 })
 
 testthat::test_that(
@@ -160,6 +161,7 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events_patyear()
+    withr::defer(app_driver$stop())
     table_before <- app_driver$get_active_module_table_output("patyear_table-table-with-settings")
     set_teal_picks_slot(app_driver, "arm_var", "variables", c("ARM", "SEX"))
     app_driver$wait_for_idle()
@@ -170,6 +172,5 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
   }
 )

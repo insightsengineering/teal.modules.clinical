@@ -89,6 +89,7 @@ testthat::test_that("e2e - tm_g_barchart_simple: Module initializes in teal with
   skip_if_too_deep(5)
 
   app_driver <- app_driver_tm_g_barchart_simple()
+  withr::defer(app_driver$stop())
   app_driver$wait_for_idle()
   app_driver$expect_no_shiny_error()
   app_driver$expect_no_validation_error()
@@ -101,7 +102,6 @@ testthat::test_that("e2e - tm_g_barchart_simple: Module initializes in teal with
   app_driver$wait_for_idle()
   app_driver$expect_visible(app_driver$namespaces(TRUE)$module("table > table"))
 
-  app_driver$stop()
 })
 
 testthat::test_that(
@@ -109,6 +109,7 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_barchart_simple()
+    withr::defer(app_driver$stop())
     app_driver$wait_for_idle()
 
     testthat::expect_equal(
@@ -151,7 +152,6 @@ testthat::test_that(
     testthat::expect_true(app_driver$get_active_module_input("flip_axis"))
     testthat::expect_false(app_driver$get_active_module_input("show_n"))
 
-    app_driver$stop()
   }
 )
 
@@ -162,22 +162,22 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_barchart_simple()
+    withr::defer(app_driver$stop())
     app_driver$wait_for_idle()
     plot_before <- app_driver$get_active_module_plot_output("myplot")
     set_teal_picks_slot(app_driver, "x", "variables", "RACE")
     testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
     app_driver$expect_no_validation_error()
-    app_driver$stop()
   }
 )
 
 testthat::test_that("e2e - tm_g_barchart_simple: Deselection of 'x' throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_barchart_simple()
+  withr::defer(app_driver$stop())
   app_driver$wait_for_idle()
   set_teal_picks_slot(app_driver, "x", "variables", character(0L))
   app_driver$expect_validation_error()
-  app_driver$stop()
 })
 
 # Test pairs of dataset selection ---------------------------------------------
@@ -191,6 +191,7 @@ test_dataset_selection <- function(input_id, new_dataset, new_value) {
     {
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_g_barchart_simple()
+      withr::defer(app_driver$stop())
       app_driver$wait_for_idle()
       plot_before <- app_driver$get_active_module_plot_output("myplot")
       set_teal_picks_slot(app_driver, input_id, "datasets", new_dataset)
@@ -202,7 +203,6 @@ test_dataset_selection <- function(input_id, new_dataset, new_value) {
         new_value
       )
       app_driver$expect_no_validation_error()
-      app_driver$stop()
     }
   )
 
@@ -215,13 +215,13 @@ test_dataset_selection <- function(input_id, new_dataset, new_value) {
     {
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_g_barchart_simple()
+      withr::defer(app_driver$stop())
       app_driver$wait_for_idle()
       plot_before <- app_driver$get_active_module_plot_output("myplot")
       set_teal_picks_slot(app_driver, input_id, "datasets", character(0L))
       app_driver$wait_for_idle()
       testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
       app_driver$expect_no_validation_error()
-      app_driver$stop()
     }
   )
 }
@@ -241,6 +241,7 @@ for (input_id in c("fill", "x_facet", "y_facet")) {
     {
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_g_barchart_simple()
+      withr::defer(app_driver$stop())
       app_driver$wait_for_idle()
       # Align x with ADSL + ACTARM, then pick the same column on another encoding (also on ADSL).
       set_teal_picks_slot(app_driver, "x", "datasets", "ADSL", wait = FALSE)
@@ -249,7 +250,6 @@ for (input_id in c("fill", "x_facet", "y_facet")) {
       set_teal_picks_slot(app_driver, input_id, "variables", "ACTARM", wait = TRUE)
 
       app_driver$expect_validation_error()
-      app_driver$stop()
     }
   )
 }
@@ -265,6 +265,7 @@ test_that_plot_settings <- function(input_id, new_value, setup_fun = function(ap
     {
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_g_barchart_simple()
+      withr::defer(app_driver$stop())
       app_driver$wait_for_idle()
       setup_fun(app_driver)
       app_driver$wait_for_idle()
@@ -273,7 +274,6 @@ test_that_plot_settings <- function(input_id, new_value, setup_fun = function(ap
       app_driver$wait_for_idle()
       testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
       app_driver$expect_no_validation_error()
-      app_driver$stop()
     }
   )
 }

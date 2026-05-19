@@ -52,10 +52,10 @@ testthat::test_that("e2e - tm_a_gee: Module initializes in teal without errors a
   skip_if_too_deep(5)
 
   app_driver <- app_driver_tm_a_gee()
+  withr::defer(app_driver$stop())
   app_driver$expect_no_shiny_error()
   app_driver$expect_no_validation_error()
   app_driver$expect_visible(app_driver$namespaces(TRUE)$module("table-table-with-settings"))
-  app_driver$stop()
 })
 
 testthat::test_that(
@@ -64,6 +64,7 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_a_gee()
+    withr::defer(app_driver$stop())
     app_driver$wait_for_idle()
 
     testthat::expect_equal(
@@ -116,7 +117,6 @@ testthat::test_that(
       "Output Type.*LS means.*Covariance.*Coefficients",
       fixed = FALSE
     )
-    app_driver$stop()
   }
 )
 
@@ -125,6 +125,7 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_a_gee()
+    withr::defer(app_driver$stop())
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
     set_teal_picks_slot(app_driver, "id_var", "variables", "SUBJID")
     testthat::expect_true(
@@ -134,13 +135,13 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
   }
 )
 
 testthat::test_that("e2e - tm_a_gee: Deselection of id_var throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_a_gee()
+  withr::defer(app_driver$stop())
   set_teal_picks_slot(app_driver, "id_var", "variables", character(0))
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
@@ -152,12 +153,12 @@ testthat::test_that("e2e - tm_a_gee: Deselection of id_var throws validation err
     ),
     "A subject identifier is required"
   )
-  app_driver$stop()
 })
 
 testthat::test_that("e2e - tm_a_gee: Change in arm_var changes the table and does not throw validation errors.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_a_gee()
+  withr::defer(app_driver$stop())
 
   table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
   set_teal_picks_slot(app_driver, "arm_var", "variables", "ARMCD")
@@ -168,12 +169,12 @@ testthat::test_that("e2e - tm_a_gee: Change in arm_var changes the table and doe
     )
   )
   app_driver$expect_no_validation_error()
-  app_driver$stop()
 })
 
 testthat::test_that("e2e - tm_a_gee: Deselection of arm_var throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_a_gee()
+  withr::defer(app_driver$stop())
   set_teal_picks_slot(app_driver, "arm_var", "variables", character(0))
   testthat::expect_identical(
     app_driver$get_active_module_table_output("table-table-with-settings"), data.frame()
@@ -185,7 +186,6 @@ testthat::test_that("e2e - tm_a_gee: Deselection of arm_var throws validation er
     ),
     "A treatment variable is required"
   )
-  app_driver$stop()
 })
 
 testthat::test_that(
@@ -193,6 +193,7 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_a_gee()
+    withr::defer(app_driver$stop())
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
     set_teal_picks_slot(app_driver, "visit_var", "variables", "AVISITN")
     testthat::expect_true(
@@ -202,13 +203,13 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
   }
 )
 
 testthat::test_that("e2e - tm_a_gee: Deselection of visit_var throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_a_gee()
+  withr::defer(app_driver$stop())
   set_teal_picks_slot(app_driver, "visit_var", "variables", character(0))
   app_driver$wait_for_idle()
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
@@ -219,12 +220,12 @@ testthat::test_that("e2e - tm_a_gee: Deselection of visit_var throws validation 
     ),
     "A visit variable is required"
   )
-  app_driver$stop()
 })
 
 testthat::test_that("e2e - tm_a_gee: Selection of paramcd changes the table and does not throw validation errors.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_a_gee()
+  withr::defer(app_driver$stop())
   table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
   set_teal_picks_slot(app_driver, "paramcd", "values", "FATIGI")
   testthat::expect_false(
@@ -234,12 +235,12 @@ testthat::test_that("e2e - tm_a_gee: Selection of paramcd changes the table and 
     )
   )
   app_driver$expect_no_validation_error()
-  app_driver$stop()
 })
 
 testthat::test_that("e2e - tm_a_gee: Deselection of paramcd throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_a_gee()
+  withr::defer(app_driver$stop())
   set_teal_picks_slot(app_driver, "paramcd", "variables", character(0))
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
@@ -249,12 +250,12 @@ testthat::test_that("e2e - tm_a_gee: Deselection of paramcd throws validation er
     ),
     "An endpoint is required"
   )
-  app_driver$stop()
 })
 
 testthat::test_that("e2e - tm_a_gee: Selection of cov_var changes the table and does not throw validation errors.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_a_gee()
+  withr::defer(app_driver$stop())
   table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
   set_teal_picks_slot(app_driver, "cov_var", "variables", "AGE")
   testthat::expect_false(
@@ -264,12 +265,12 @@ testthat::test_that("e2e - tm_a_gee: Selection of cov_var changes the table and 
     )
   )
   app_driver$expect_no_validation_error()
-  app_driver$stop()
 })
 
 testthat::test_that("e2e - tm_a_gee: Selection of conf_level changes the table and does not throw validation errors.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_a_gee()
+  withr::defer(app_driver$stop())
   table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
   app_driver$set_active_module_input("conf_level", 0.90)
   testthat::expect_false(
@@ -279,12 +280,12 @@ testthat::test_that("e2e - tm_a_gee: Selection of conf_level changes the table a
     )
   )
   app_driver$expect_no_validation_error()
-  app_driver$stop()
 })
 
 testthat::test_that("e2e - tm_a_gee: Selection of conf_level out of [0,1] range throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_a_gee()
+  withr::defer(app_driver$stop())
   table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
   app_driver$set_active_module_input("conf_level", -1)
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
@@ -293,12 +294,12 @@ testthat::test_that("e2e - tm_a_gee: Selection of conf_level out of [0,1] range 
     app_driver$get_text(app_driver$namespaces(TRUE)$module("table-table_out_main")),
     "Confidence level must be between 0 and 1"
   )
-  app_driver$stop()
 })
 
 testthat::test_that("e2e - tm_a_gee: Deselection of conf_level throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_a_gee()
+  withr::defer(app_driver$stop())
   app_driver$set_active_module_input("conf_level", character(0))
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
@@ -306,12 +307,12 @@ testthat::test_that("e2e - tm_a_gee: Deselection of conf_level throws validation
     app_driver$get_text(app_driver$namespaces(TRUE)$module("table-table_out_main")),
     "Please choose a confidence level\nConfidence level must be between 0 and 1"
   )
-  app_driver$stop()
 })
 
 testthat::test_that("e2e - tm_a_gee: Selection of cor_struct changes the table and does not throw validation errors.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_a_gee()
+  withr::defer(app_driver$stop())
   table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
   app_driver$set_active_module_input("cor_struct", "auto-regressive")
   testthat::expect_false(
@@ -321,20 +322,20 @@ testthat::test_that("e2e - tm_a_gee: Selection of cor_struct changes the table a
     )
   )
   app_driver$expect_no_validation_error()
-  app_driver$stop()
 })
 
 testthat::test_that("e2e - tm_a_gee: Deselection of cor_struct does not throw validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_a_gee()
+  withr::defer(app_driver$stop())
   app_driver$set_active_module_input("cor_struct", character(0), wait_ = FALSE) # not waiting because of a warning
   app_driver$expect_no_validation_error()
-  app_driver$stop()
 })
 
 testthat::test_that("e2e - tm_a_gee: Selection of output_table changes the table and doesn't throw validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_a_gee()
+  withr::defer(app_driver$stop())
   table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
   app_driver$set_active_module_input("output_table", "t_gee_cov")
   testthat::expect_false(
@@ -344,5 +345,4 @@ testthat::test_that("e2e - tm_a_gee: Selection of output_table changes the table
     )
   )
   app_driver$expect_no_validation_error()
-  app_driver$stop()
 })
