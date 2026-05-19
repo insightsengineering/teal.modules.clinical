@@ -184,20 +184,13 @@ template_events_patyear <- function(dataname,
 #' @inheritParams teal::module
 #' @inheritParams template_events_patyear
 #' @param arm_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
-#'   object with all available choices and preselected option for variable names that can be used as `arm_var`.
-#'   It defines the grouping variable(s) in the results table.
-#'   If there are two elements selected for `arm_var`,
-#'   second variable will be nested under the first variable.
+#'   If there are two elements selected for `arm_var`, the second variable is nested under the first.
 #' @param events_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
 #'   object with all available choices and preselected option for the variable with all event counts.
 #' @param paramcd ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
 #'   variable used to filter the analysis dataset (typically `PARAMCD`).
 #'   The `values()` element is added internally to allow users to pick
 #'   parameter value(s) interactively.
-#' @param aval_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
-#'   analysis variable (typically `AVAL`).
-#' @param avalu_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
-#'   analysis unit variable (typically `AVALU`).
 #'
 #' @inherit module_arguments return seealso
 #'

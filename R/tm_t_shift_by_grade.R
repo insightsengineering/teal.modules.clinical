@@ -465,10 +465,6 @@ template_shift_by_grade <- function(parentname,
 #' @inheritParams module_arguments
 #' @inheritParams teal::module
 #' @inheritParams template_shift_by_grade
-#' @param arm_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
-#'   variable for treatment arm.
-#' @param visit_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
-#'   variable for analysis visit.
 #' @param paramcd ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
 #'   variable for lab parameter code. The `values()` element is added internally to allow
 #'   users to filter the parameter values interactively.
@@ -481,8 +477,6 @@ template_shift_by_grade <- function(parentname,
 #'   accepted) variable for analysis toxicity grade.
 #' @param base_toxgrade_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still
 #'   accepted) variable for baseline toxicity grade.
-#' @param id_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
-#'   variable for subject identifier.
 #'
 #' @inherit module_arguments return seealso
 #'

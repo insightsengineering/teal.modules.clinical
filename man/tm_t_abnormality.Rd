@@ -36,7 +36,8 @@ tm_t_abnormality(
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
 \item{arm_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
-object with all available choices and preselected option for the treatment variable.}
+object with all available choices and preselected option for variable names that can be used as \code{arm_var}.
+It defines the grouping variable in the results table.}
 
 \item{by_vars}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
 object with all available choices and preselected
@@ -49,14 +50,14 @@ option for the abnormality grade variable. Variable must be factor.}
 \item{abnormal}{(\verb{named list})\cr defined by user to indicate what abnormalities are to be displayed.}
 
 \item{id_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
-subject identifier variable.}
+object specifying the variable name for subject id.}
 
 \item{baseline_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still
 accepted)\cr
 variable for baseline abnormality grade.}
 
 \item{treatment_flag_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still
-accepted)\cr on-treatment flag variable.}
+accepted)\cr on treatment flag variable.}
 
 \item{treatment_flag}{(\code{\link[teal.picks:values]{teal.picks::values()}}; legacy \code{teal.transform::choices_selected()} is deprecated but still
 accepted)\cr
@@ -81,7 +82,7 @@ For example a title.}
 \item{post_output}{(\code{shiny.tag}) optional,\cr with text placed after the output to put the output into context.
 For example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 
-\item{na_level}{(\code{character})\cr the NA level in the input dataset, default to \code{"<Missing>"}.}
+\item{na_level}{(\code{character})\cr the NA level in the input dataset, defaults to \code{"<Missing>"}.}
 
 \item{basic_table_args}{(\code{basic_table_args}) optional\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}}
 with settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default

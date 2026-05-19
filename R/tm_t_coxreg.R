@@ -175,8 +175,8 @@ template_coxreg_u <- function(dataname,
 #'
 #' Creates a valid expression to generate a multi-variable Cox regression analysis.
 #'
-#' @inheritParams template_coxreg_u
 #' @inheritParams template_arguments
+#' @inheritParams template_coxreg_u
 #'
 #' @inherit template_arguments return
 #'
@@ -337,8 +337,8 @@ template_coxreg_m <- function(dataname,
 #'
 #' @inheritParams module_arguments
 #' @inheritParams teal::module
-#' @inheritParams template_coxreg_u
 #' @inheritParams template_coxreg_m
+#' @inheritParams template_coxreg_u
 #' @param multivariate (`logical`)\cr if `FALSE`, the univariable approach is used instead of the
 #'   multi-variable model.
 #' @param conf_level ([teal.picks::values()]; legacy `teal.transform::choices_selected()` is deprecated but still

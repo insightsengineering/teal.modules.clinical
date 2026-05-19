@@ -36,15 +36,13 @@ tm_t_events(
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
 \item{arm_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
-specification of variable names that can be used as \code{arm_var}.
-It defines the grouping variable(s) in the results table.
-If there are two elements selected for \code{arm_var}, second variable will be nested under the first variable.}
+If there are two elements selected for \code{arm_var}, the second variable is nested under the first.}
 
 \item{hlt}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
-specification of the analysis variable used as the high level term for event grouping.}
+name of the variable with high level term for events.}
 
 \item{llt}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
-specification of the analysis variable used as the low level term for event grouping.}
+name of the variable with low level term for events.}
 
 \item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
 

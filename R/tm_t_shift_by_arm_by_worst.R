@@ -2,8 +2,8 @@
 #'
 #' Creates a valid expression to generate a summary table of worst analysis indicator variable level per subject by arm.
 #'
-#' @inheritParams template_shift_by_arm
 #' @inheritParams template_arguments
+#' @inheritParams template_shift_by_arm
 #' @param worst_flag (`character`)\cr value indicating worst analysis indicator level.
 #'
 #' @inherit template_arguments return
@@ -182,23 +182,11 @@ template_shift_by_arm_by_worst <- function(dataname,
 #'
 #' @inheritParams module_arguments
 #' @inheritParams teal::module
-#' @inheritParams template_shift_by_arm_by_worst
 #' @inheritParams template_arguments
-#' @param arm_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
-#'   variable for treatment arm.
+#' @inheritParams template_shift_by_arm_by_worst
 #' @param paramcd ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
 #'   variable for lab parameter code. The `values()` element is added internally to allow
 #'   users to filter the parameter values interactively.
-#' @param aval_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
-#'   variable for analysis range indicator.
-#' @param baseline_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
-#'   variable for baseline reference range indicator.
-#' @param worst_flag_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still
-#' accepted)\cr variable for the worst post-baseline flag.
-#' @param worst_flag ([teal.picks::values()]; legacy `teal.transform::choices_selected()` is deprecated but still
-#' accepted)\cr value matching `worst_flag_var` for worst post-baseline records (commonly `"Y"`).
-#' @param treatment_flag_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still
-#' accepted)\cr variable for on-treatment flag.
 #' @param treatment_flag ([teal.picks::values()]; legacy `teal.transform::choices_selected()` is deprecated but still
 #' accepted)\cr value matching `treatment_flag_var` for on-treatment records (default `"Y"`).
 #'

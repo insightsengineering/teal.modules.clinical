@@ -380,21 +380,6 @@ template_tte <- function(dataname = "ANL",
 #' @inheritParams module_arguments
 #' @inheritParams teal::module
 #' @inheritParams template_tte
-#' @param arm_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
-#'   variable for treatment arm.
-#' @param paramcd ([`teal.picks::variables()`] for the parameter column, full [`teal.picks::picks()`] including
-#'   [`teal.picks::values()`], or legacy `teal.transform` objects; deprecated inputs still accepted)\cr
-#'   endpoint filter (parameter codes such as `OS`, `PFS`). [`teal.picks::variables()`] alone is enough; levels come
-#'   from data.
-#' @param strata_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
-#'   variable(s) for stratification.
-#' @param aval_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
-#'   variable for analysis value (time-to-event).
-#' @param cnsr_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
-#'   variable for censoring indicator.
-#' @param time_unit_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still
-#'   accepted)\cr
-#'   variable for time unit.
 #' @param event_desc_var ([`teal.picks::variables()`], legacy [`teal.transform::choices_selected()`] objects
 #' are deprecated but still accepted\cr variable for event description.
 #' @param conf_level_coxph ([teal.transform::choices_selected()])\cr object with all available choices and

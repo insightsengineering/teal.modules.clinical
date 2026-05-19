@@ -38,9 +38,7 @@ tm_t_events_summary(
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
 \item{arm_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
-object with all available choices and preselected option for variable names that can be used as \code{arm_var}.
-It defines the grouping variable(s) in the results table.
-If there are two elements selected for \code{arm_var}, second variable will be nested under the first variable.}
+If there are two elements selected for \code{arm_var}, the second variable is nested under the first.}
 
 \item{flag_var_anl}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted
 or \code{NULL})\cr
@@ -64,7 +62,7 @@ reason variable. Records with \code{"ADVERSE EVENTS"} are summarized in the tabl
 "Total number of patients withdrawn from study due to an AE".}
 
 \item{llt}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
-adverse event term / low-level term column (e.g. \code{AEDECOD}).}
+name of the variable with low level term for events.}
 
 \item{aeseq_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
 variable for adverse events sequence number from \code{dataset}. Used for counting total number of events.}

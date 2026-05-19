@@ -32,19 +32,19 @@ tm_t_mult_events(
 
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
-available choices and preselected option for variable names that can be used as \code{arm_var}.
+\item{arm_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+object with all available choices and preselected option for variable names that can be used as \code{arm_var}.
 It defines the grouping variable in the results table.}
 
 \item{seq_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
 object with all available choices and preselected option for variable names that can be used as analysis
 sequence number variable. Used for counting the unique number of events.}
 
-\item{hlt}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr name of the variable
-with high level term for events.}
+\item{hlt}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+name of the variable with high level term for events.}
 
-\item{llt}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr name of the variable
-with low level term for events.}
+\item{llt}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+name of the variable with low level term for events.}
 
 \item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
 

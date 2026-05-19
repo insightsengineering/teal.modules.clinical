@@ -30,34 +30,35 @@ tm_a_gee(
 
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{aval_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
-all available choices and pre-selected option for the analysis variable.}
+\item{aval_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+object with all available choices and pre-selected option for the analysis variable.}
 
-\item{id_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object specifying
-the variable name for subject id.}
+\item{id_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+object specifying the variable name for subject id.}
 
-\item{arm_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
-available choices and preselected option for variable names that can be used as \code{arm_var}.
+\item{arm_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+object with all available choices and preselected option for variable names that can be used as \code{arm_var}.
 It defines the grouping variable in the results table.}
 
-\item{visit_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
-all available choices and preselected option for variable names that can be used as \code{visit} variable.
+\item{visit_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+object with all available choices and preselected option for variable names that can be used as \code{visit} variable.
 Must be a factor in \code{dataname}.}
 
-\item{cov_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
-available choices and preselected option for the covariates variables.}
+\item{cov_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+object with all available choices and preselected option for the covariates variables.}
 
 \item{arm_ref_comp}{(\code{list}) optional,\cr if specified it must be a named list with each element corresponding to
 an arm variable in \code{ADSL} and the element must be another list (possibly
-with delayed \code{\link[teal.transform:variable_choices]{teal.transform::variable_choices()}} or delayed \code{\link[teal.transform:value_choices]{teal.transform::value_choices()}}
-with the elements named \code{ref} and \code{comp} that the defined the default
-reference and comparison arms when the arm variable is changed.}
+with delayed \code{\link[teal.picks:variables]{teal.picks::variables()}} or \code{\link[teal.picks:values]{teal.picks::values()}}; legacy
+\code{\link[teal.transform:variable_choices]{teal.transform::variable_choices()}} and \code{\link[teal.transform:value_choices]{teal.transform::value_choices()}} are deprecated but still accepted)
+with the elements named \code{ref} and \code{comp} that define the default reference and comparison arms when the arm
+variable is changed.}
 
-\item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
-available choices and preselected option for the parameter code variable from \code{dataname}.}
+\item{paramcd}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+object with all available choices and preselected option for the parameter code variable from \code{dataname}.}
 
-\item{conf_level}{(\code{\link[teal.picks:values]{teal.picks::values()}}; legacy \code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} is deprecated but still
-accepted)\cr confidence level for model-based intervals where applicable.}
+\item{conf_level}{(\code{\link[teal.picks:values]{teal.picks::values()}}; legacy \code{teal.transform::choices_selected()} is deprecated but still
+accepted)\cr available confidence levels and default selection, each in the range (0, 1).}
 
 \item{pre_output}{(\code{shiny.tag}) optional,\cr with text placed before the output to put the output into context.
 For example a title.}
