@@ -4,8 +4,8 @@
 #' of a generalized linear model of one (e.g. arm) or more covariates.
 #'
 #' @inheritParams module_arguments
-#' @inheritParams template_arguments
 #' @inheritParams teal::module
+#' @inheritParams template_arguments
 #' @param add_total (`logical`)\cr initial value for the \dQuote{Add All Patients column} checkbox when comparing arms.
 #' @param rate_mean_method (`character`) method used to estimate the mean odds ratio. Either "emmeans" or "ppmeans"
 #' (as in `summarize_glm_count()`).

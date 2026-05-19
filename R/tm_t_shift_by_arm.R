@@ -180,8 +180,8 @@ template_shift_by_arm <- function(dataname,
 #' This module produces a summary table of analysis indicator levels by arm.
 #'
 #' @inheritParams module_arguments
-#' @inheritParams template_arguments
 #' @inheritParams teal::module
+#' @inheritParams template_arguments
 #' @inheritParams template_shift_by_arm
 #' @param paramcd ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
 #'   variable for lab parameter code. The `values()` element is added internally to allow

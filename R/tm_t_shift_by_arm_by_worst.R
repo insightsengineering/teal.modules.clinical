@@ -2,8 +2,8 @@
 #'
 #' Creates a valid expression to generate a summary table of worst analysis indicator variable level per subject by arm.
 #'
-#' @inheritParams template_shift_by_arm
 #' @inheritParams template_arguments
+#' @inheritParams template_shift_by_arm
 #' @param worst_flag (`character`)\cr value indicating worst analysis indicator level.
 #'
 #' @inherit template_arguments return
@@ -181,8 +181,8 @@ template_shift_by_arm_by_worst <- function(dataname,
 #' This module produces a summary table of worst analysis indicator variable level per subject by arm.
 #'
 #' @inheritParams module_arguments
-#' @inheritParams template_arguments
 #' @inheritParams teal::module
+#' @inheritParams template_arguments
 #' @inheritParams template_shift_by_arm_by_worst
 #' @param paramcd ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
 #'   variable for lab parameter code. The `values()` element is added internally to allow

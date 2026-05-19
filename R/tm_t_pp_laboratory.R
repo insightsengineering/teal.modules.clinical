@@ -111,8 +111,8 @@ template_laboratory <- function(dataname = "ANL",
 #' This module produces a patient profile laboratory table using ADaM datasets.
 #'
 #' @inheritParams module_arguments
-#' @inheritParams template_arguments
 #' @inheritParams teal::module
+#' @inheritParams template_arguments
 #' @inheritParams template_laboratory
 #' @param param ([teal.picks::variables] or [teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `PARAM` variable from `dataname`.
