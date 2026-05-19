@@ -2,9 +2,11 @@
 % Please edit documentation in R/tm_g_ci.R, R/tm_g_ci_picks.R
 \name{tm_g_ci}
 \alias{tm_g_ci}
-\alias{tm_g_ci.default}
+\alias{tm_g_ci.choices_selected}
+\alias{tm_g_ci.data_extract_spec}
 \alias{tm_g_ci.picks}
 \alias{tm_g_ci.variables}
+\alias{tm_g_ci.default}
 \title{teal Module: Confidence Interval Plot}
 \usage{
 tm_g_ci(
@@ -26,7 +28,26 @@ tm_g_ci(
   decorators = list()
 )
 
-\method{tm_g_ci}{default}(
+\method{tm_g_ci}{choices_selected}(
+  label,
+  x_var,
+  y_var,
+  color,
+  stat = c("mean", "median"),
+  paramcd = NULL,
+  avisit = NULL,
+  conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order =
+    TRUE),
+  plot_height = c(700L, 200L, 2000L),
+  plot_width = NULL,
+  pre_output = NULL,
+  post_output = NULL,
+  ggplot2_args = teal.widgets::ggplot2_args(),
+  transformators = list(),
+  decorators = list()
+)
+
+\method{tm_g_ci}{data_extract_spec}(
   label,
   x_var,
   y_var,
@@ -47,18 +68,12 @@ tm_g_ci(
 
 \method{tm_g_ci}{picks}(
   label,
-  x_var = teal.picks::picks(teal.picks::datasets("ADSL"), teal.picks::variables(choices =
-    c("ARMCD", "BMRKR2"), selected = "ARMCD", multiple = FALSE)),
-  y_var = teal.picks::picks(teal.picks::datasets("ADLB"), teal.picks::variables(choices =
-    c("AVAL", "CHG", "CHG2"), selected = "AVAL", multiple = FALSE)),
-  color = teal.picks::picks(teal.picks::datasets("ADSL"), teal.picks::variables(choices =
-    c("SEX", "STRATA1", "STRATA2"), selected = "STRATA1", multiple = FALSE)),
+  x_var,
+  y_var,
+  color,
   stat = c("mean", "median"),
-  paramcd = teal.picks::values(choices = c("ALT", "CRP", "IGA"), selected = "ALT",
-    multiple = FALSE),
-  avisit = teal.picks::values(choices = c("SCREENING", "BASELINE", "WEEK 1 DAY 8",
-    "WEEK 2 DAY 15", "WEEK 3 DAY 22", "WEEK 4 DAY 29", "WEEK 5 DAY 36"), selected =
-    "SCREENING", multiple = FALSE),
+  paramcd,
+  avisit,
   conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95),
   plot_height = c(700L, 200L, 2000L),
   plot_width = NULL,
@@ -71,18 +86,30 @@ tm_g_ci(
 
 \method{tm_g_ci}{variables}(
   label,
-  x_var = teal.picks::variables(choices = c("ARMCD", "BMRKR2"), selected = "ARMCD",
-    multiple = FALSE),
-  y_var = teal.picks::variables(choices = c("AVAL", "CHG", "CHG2"), selected = "AVAL",
-    multiple = FALSE),
-  color = teal.picks::variables(choices = c("SEX", "STRATA1", "STRATA2"), selected =
-    "STRATA1", multiple = FALSE),
+  x_var,
+  y_var,
+  color,
   stat = c("mean", "median"),
-  paramcd = teal.picks::values(choices = c("ALT", "CRP", "IGA"), selected = "ALT",
-    multiple = FALSE),
-  avisit = teal.picks::values(choices = c("SCREENING", "BASELINE", "WEEK 1 DAY 8",
-    "WEEK 2 DAY 15", "WEEK 3 DAY 22", "WEEK 4 DAY 29", "WEEK 5 DAY 36"), selected =
-    "SCREENING", multiple = FALSE),
+  paramcd,
+  avisit,
+  conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95),
+  plot_height = c(700L, 200L, 2000L),
+  plot_width = NULL,
+  pre_output = NULL,
+  post_output = NULL,
+  ggplot2_args = teal.widgets::ggplot2_args(),
+  transformators = list(),
+  decorators = list()
+)
+
+\method{tm_g_ci}{default}(
+  label,
+  x_var,
+  y_var,
+  color,
+  stat = c("mean", "median"),
+  paramcd,
+  avisit,
   conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95),
   plot_height = c(700L, 200L, 2000L),
   plot_width = NULL,
@@ -107,14 +134,14 @@ grouping variable for colors, shapes, and line types.}
 
 \item{stat}{(\code{character})\cr statistic to plot. Options are \code{"mean"} and \code{"median"}.}
 
-\item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
-available choices and preselected option for the parameter code variable from \code{dataname}.}
+\item{paramcd}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+object with all available choices and preselected option for the parameter code variable from \code{dataname}.}
 
-\item{avisit}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr value of analysis
-visit \code{AVISIT} of interest.}
+\item{avisit}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+value of analysis visit \code{AVISIT} of interest.}
 
-\item{conf_level}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
-all available choices and pre-selected option for the confidence level, each within range of (0, 1).}
+\item{conf_level}{(\code{\link[teal.picks:values]{teal.picks::values()}}; legacy \code{teal.transform::choices_selected()} is deprecated but still
+accepted)\cr available confidence levels and default selection, each in the range (0, 1).}
 
 \item{plot_height}{(\code{numeric}) optional\cr vector of length three with \code{c(value, min, max)}. Specifies the
 height of the main plot and renders a slider on the plot to interactively adjust the plot height.}
@@ -152,12 +179,16 @@ This module produces a \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}} type conf
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{tm_g_ci(default)}: Legacy encodings via \code{data_extract_spec} (merge-based UI).
+\item \code{tm_g_ci(choices_selected)}: Legacy encodings via \code{data_extract_spec} (merge-based UI).
+
+\item \code{tm_g_ci(data_extract_spec)}: Legacy encodings via \code{data_extract_spec} (merge-based UI).
 
 \item \code{tm_g_ci(picks)}: teal.picks encodings via \code{picks} objects for \code{x_var}, \code{y_var}, and \code{color}
 (use \code{\link[=tm_g_ci.variables]{tm_g_ci.variables()}} to pass \code{\link[teal.picks:variables]{teal.picks::variables()}} objects; they are wrapped into \code{picks}).
 
 \item \code{tm_g_ci(variables)}: teal.picks encodings via \code{variables} (recommended entry point).
+
+\item \code{tm_g_ci(default)}: teal.picks encodings via \code{picks} objects for \code{x_var}, \code{y_var}, and \code{color}
 
 }}
 \section{Decorating Module}{

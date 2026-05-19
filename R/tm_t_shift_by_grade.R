@@ -465,10 +465,6 @@ template_shift_by_grade <- function(parentname,
 #' @inheritParams module_arguments
 #' @inheritParams teal::module
 #' @inheritParams template_shift_by_grade
-#' @param arm_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
-#'   variable for treatment arm.
-#' @param visit_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
-#'   variable for analysis visit.
 #' @param paramcd ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
 #'   variable for lab parameter code. The `values()` element is added internally to allow
 #'   users to filter the parameter values interactively.
@@ -481,8 +477,6 @@ template_shift_by_grade <- function(parentname,
 #'   accepted) variable for analysis toxicity grade.
 #' @param base_toxgrade_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still
 #'   accepted) variable for baseline toxicity grade.
-#' @param id_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
-#'   variable for subject identifier.
 #'
 #' @inherit module_arguments return seealso
 #'
@@ -551,16 +545,16 @@ tm_t_shift_by_grade <- function(label,
                                 dataname,
                                 parentname = "ADSL",
                                 arm_var,
-                                visit_var = variables(choices = "AVISIT", fixed = TRUE),
+                                visit_var = teal.picks::variables("AVISIT", "AVISIT", fixed = TRUE),
                                 paramcd,
-                                worst_flag_var = variables(
-                                  choices = c("WGRLOVFL", "WGRLOFL", "WGRHIVFL", "WGRHIFL"),
-                                  selected = "WGRLOVFL"
+                                worst_flag_var = teal.picks::variables(
+                                  c("WGRLOVFL", "WGRLOFL", "WGRHIVFL", "WGRHIFL"),
+                                  "WGRLOVFL"
                                 ),
-                                worst_flag_indicator = teal.picks::values(c("Y", "N"), "Y", fixed = TRUE),
-                                anl_toxgrade_var = variables(choices = "ATOXGR", fixed = TRUE),
-                                base_toxgrade_var = variables(choices = "BTOXGR", fixed = TRUE),
-                                id_var = variables(choices = "USUBJID", fixed = TRUE),
+                                worst_flag_indicator = teal.picks::values("Y", "Y", fixed = TRUE, multiple = FALSE),
+                                anl_toxgrade_var = teal.picks::variables("ATOXGR", "ATOXGR", fixed = TRUE),
+                                base_toxgrade_var = teal.picks::variables("BTOXGR", "BTOXGR", fixed = TRUE),
+                                id_var = teal.picks::variables("USUBJID", "USUBJID", fixed = TRUE),
                                 add_total = FALSE,
                                 total_label = default_total_label(),
                                 drop_arm_levels = TRUE,

@@ -2,8 +2,8 @@
 #'
 #' Creates a valid expression to generate a summary table of worst analysis indicator variable level per subject by arm.
 #'
-#' @inheritParams template_shift_by_arm
 #' @inheritParams template_arguments
+#' @inheritParams template_shift_by_arm
 #' @param worst_flag (`character`)\cr value indicating worst analysis indicator level.
 #'
 #' @inherit template_arguments return
@@ -182,23 +182,11 @@ template_shift_by_arm_by_worst <- function(dataname,
 #'
 #' @inheritParams module_arguments
 #' @inheritParams teal::module
-#' @inheritParams template_shift_by_arm_by_worst
 #' @inheritParams template_arguments
-#' @param arm_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
-#'   variable for treatment arm.
+#' @inheritParams template_shift_by_arm_by_worst
 #' @param paramcd ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
 #'   variable for lab parameter code. The `values()` element is added internally to allow
 #'   users to filter the parameter values interactively.
-#' @param aval_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
-#'   variable for analysis range indicator.
-#' @param baseline_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
-#'   variable for baseline reference range indicator.
-#' @param worst_flag_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still
-#' accepted)\cr variable for the worst post-baseline flag.
-#' @param worst_flag ([teal.picks::values()]; legacy `teal.transform::choices_selected()` is deprecated but still
-#' accepted)\cr value matching `worst_flag_var` for worst post-baseline records (commonly `"Y"`).
-#' @param treatment_flag_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still
-#' accepted)\cr variable for on-treatment flag.
 #' @param treatment_flag ([teal.picks::values()]; legacy `teal.transform::choices_selected()` is deprecated but still
 #' accepted)\cr value matching `treatment_flag_var` for on-treatment records (default `"Y"`).
 #'
@@ -255,7 +243,7 @@ template_shift_by_arm_by_worst <- function(dataname,
 #'         choices = c("WORS01FL", "WORS02FL"),
 #'         selected = "WORS02FL"
 #'       ),
-#'       worst_flag = values(c("Y", "N", ""), "Y", multiple = FALSE),
+#'       worst_flag = values("Y", "Y", fixed = TRUE),
 #'       aval_var = variables(choices = c("AVALC", "ANRIND"), selected = "ANRIND"),
 #'       baseline_var = variables(choices = c("BASEC", "BNRIND"), selected = "BNRIND"),
 #'       useNA = "ifany"
@@ -277,8 +265,8 @@ tm_t_shift_by_arm_by_worst <- function(label,
                                        baseline_var,
                                        worst_flag_var,
                                        worst_flag,
-                                       treatment_flag_var = variables(choices = "ONTRTFL"),
-                                       treatment_flag = teal.picks::values(c("Y", "N", ""), "Y", multiple = FALSE),
+                                       treatment_flag_var = teal.picks::variables("ONTRTFL", "ONTRTFL"),
+                                       treatment_flag = teal.picks::values("Y", "Y", fixed = TRUE, multiple = FALSE),
                                        useNA = c("ifany", "no"), # nolint: object_name.
                                        na_level = tern::default_na_str(),
                                        add_total = FALSE,
@@ -297,16 +285,16 @@ tm_t_shift_by_arm_by_worst <- function(label,
   }
 
   message("Initializing tm_t_shift_by_arm_by_worst")
+
   arm_var <- migrate_choices_selected_to_variables(arm_var)
   paramcd <- migrate_value_choices_to_picks(paramcd, multiple = FALSE)
   aval_var <- migrate_choices_selected_to_variables(aval_var)
   baseline_var <- migrate_choices_selected_to_variables(baseline_var)
   worst_flag_var <- migrate_choices_selected_to_variables(worst_flag_var)
   treatment_flag_var <- migrate_choices_selected_to_variables(treatment_flag_var)
-  treatment_flag <- migrate_choices_selected_to_values(treatment_flag)
+  treatment_flag <- migrate_choices_selected_to_values(treatment_flag, multiple = FALSE)
   worst_flag <- migrate_choices_selected_to_values(worst_flag, multiple = FALSE)
-  checkmate::assert_false(teal.picks::is_pick_multiple(treatment_flag))
-  checkmate::assert_false(teal.picks::is_pick_multiple(worst_flag))
+
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)

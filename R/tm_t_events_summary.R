@@ -500,9 +500,7 @@ template_events_summary <- function(anl_name,
 #' @inheritParams template_arguments
 #' @inheritParams template_events_summary
 #' @param arm_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
-#'   object with all available choices and preselected option for variable names that can be used as `arm_var`.
-#'   It defines the grouping variable(s) in the results table.
-#'   If there are two elements selected for `arm_var`, second variable will be nested under the first variable.
+#'   If there are two elements selected for `arm_var`, the second variable is nested under the first.
 #' @param dthfl_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
 #'   object with all available choices and preselected option for variable names that can be used as
 #' death flag variable.
@@ -522,8 +520,6 @@ template_events_summary <- function(anl_name,
 #'   variables must be of type `logical`. Variable labels are used as table row names if they exist.
 #' @param aeseq_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
 #'   variable for adverse events sequence number from `dataset`. Used for counting total number of events.
-#' @param llt ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
-#'   adverse event term / low-level term column (e.g. `AEDECOD`).
 #'
 #' @inherit module_arguments return seealso
 #'
@@ -640,10 +636,10 @@ tm_t_events_summary <- function(label,
                                 arm_var,
                                 flag_var_anl = NULL,
                                 flag_var_aesi = NULL,
-                                dthfl_var = variables(choices = "DTHFL", fixed = TRUE),
-                                dcsreas_var = variables(choices = "DCSREAS", fixed = TRUE),
-                                llt = variables(choices = "AEDECOD", fixed = TRUE),
-                                aeseq_var = variables(choices = "AESEQ", fixed = TRUE),
+                                dthfl_var = teal.picks::variables("DTHFL", "DTHFL", fixed = TRUE),
+                                dcsreas_var = teal.picks::variables("DCSREAS", "DCSREAS", fixed = TRUE),
+                                llt = teal.picks::variables("AEDECOD", "AEDECOD", fixed = TRUE),
+                                aeseq_var = teal.picks::variables("AESEQ", "AESEQ", fixed = TRUE),
                                 add_total = TRUE,
                                 total_label = default_total_label(),
                                 na_level = tern::default_na_str(),
@@ -658,6 +654,7 @@ tm_t_events_summary <- function(label,
                                 transformators = list(),
                                 decorators = list()) {
   message("Initializing tm_t_events_summary")
+
   arm_var <- migrate_choices_selected_to_variables(arm_var)
   flag_var_anl <- migrate_choices_selected_to_variables(flag_var_anl, null.ok = TRUE)
   flag_var_aesi <- migrate_choices_selected_to_variables(flag_var_aesi, null.ok = TRUE)
@@ -665,6 +662,7 @@ tm_t_events_summary <- function(label,
   dcsreas_var <- migrate_choices_selected_to_variables(dcsreas_var)
   llt <- migrate_choices_selected_to_variables(llt)
   aeseq_var <- migrate_choices_selected_to_variables(aeseq_var)
+
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)

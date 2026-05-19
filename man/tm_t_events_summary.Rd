@@ -11,10 +11,10 @@ tm_t_events_summary(
   arm_var,
   flag_var_anl = NULL,
   flag_var_aesi = NULL,
-  dthfl_var = variables(choices = "DTHFL", fixed = TRUE),
-  dcsreas_var = variables(choices = "DCSREAS", fixed = TRUE),
-  llt = variables(choices = "AEDECOD", fixed = TRUE),
-  aeseq_var = variables(choices = "AESEQ", fixed = TRUE),
+  dthfl_var = teal.picks::variables("DTHFL", "DTHFL", fixed = TRUE),
+  dcsreas_var = teal.picks::variables("DCSREAS", "DCSREAS", fixed = TRUE),
+  llt = teal.picks::variables("AEDECOD", "AEDECOD", fixed = TRUE),
+  aeseq_var = teal.picks::variables("AESEQ", "AESEQ", fixed = TRUE),
   add_total = TRUE,
   total_label = default_total_label(),
   na_level = tern::default_na_str(),
@@ -38,9 +38,7 @@ tm_t_events_summary(
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
 \item{arm_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
-object with all available choices and preselected option for variable names that can be used as \code{arm_var}.
-It defines the grouping variable(s) in the results table.
-If there are two elements selected for \code{arm_var}, second variable will be nested under the first variable.}
+If there are two elements selected for \code{arm_var}, the second variable is nested under the first.}
 
 \item{flag_var_anl}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted
 or \code{NULL})\cr
@@ -64,7 +62,7 @@ reason variable. Records with \code{"ADVERSE EVENTS"} are summarized in the tabl
 "Total number of patients withdrawn from study due to an AE".}
 
 \item{llt}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
-adverse event term / low-level term column (e.g. \code{AEDECOD}).}
+name of the variable with low level term for events.}
 
 \item{aeseq_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
 variable for adverse events sequence number from \code{dataset}. Used for counting total number of events.}

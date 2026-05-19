@@ -9,12 +9,12 @@ tm_t_abnormality_by_worst_grade(
   dataname,
   parentname = "ADSL",
   arm_var,
-  id_var = teal.picks::variables(choices = "USUBJID", fixed = TRUE),
+  id_var = teal.picks::variables("USUBJID", "USUBJID", fixed = TRUE),
   paramcd,
-  atoxgr_var = teal.picks::variables(choices = "ATOXGR", fixed = TRUE),
-  worst_high_flag_var = teal.picks::variables("WGRHIFL", fixed = TRUE),
-  worst_low_flag_var = teal.picks::variables("WGRLOFL", fixed = TRUE),
-  worst_flag_indicator = teal.picks::values(c("Y", "N", ""), "Y", multiple = FALSE),
+  atoxgr_var = teal.picks::variables("ATOXGR", "ATOXGR", fixed = TRUE),
+  worst_high_flag_var = teal.picks::variables("WGRHIFL", "WGRHIFL", fixed = TRUE),
+  worst_low_flag_var = teal.picks::variables("WGRLOFL", "WGRLOFL", fixed = TRUE),
+  worst_flag_indicator = teal.picks::values("Y", "Y", fixed = FALSE, multiple = FALSE),
   add_total = TRUE,
   total_label = default_total_label(),
   drop_arm_levels = TRUE,
@@ -33,11 +33,11 @@ tm_t_abnormality_by_worst_grade(
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
 \item{arm_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
-object with all available choices and preselected
-option for the treatment variable.}
+object with all available choices and preselected option for variable names that can be used as \code{arm_var}.
+It defines the grouping variable in the results table.}
 
 \item{id_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
-subject identifier variable.}
+object specifying the variable name for subject id.}
 
 \item{paramcd}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
 variable used to filter the analysis dataset
