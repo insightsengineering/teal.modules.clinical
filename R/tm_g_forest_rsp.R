@@ -559,29 +559,29 @@ srv_g_forest_rsp <- function(id,
     validated_q <- reactive({
       obj <- req(data())
 
-      teal:::validate_input(
+      teal::validate_input(
         inputId   = "paramcd-values-selected",
         condition = !is.null(selectors$paramcd()$values$selected),
         message   = "Please select an endpoint (PARAMCD)."
       )
-      teal:::validate_input(
+      teal::validate_input(
         inputId   = "aval_var-variables-selected",
         condition = !is.null(selectors$aval_var()$variables$selected),
         message   = "An analysis variable is required."
       )
       if (!is.null(arm_var)) {
-        teal:::validate_input(
+        teal::validate_input(
           inputId   = "arm_var-variables-selected",
           condition = !is.null(selectors$arm_var()$variables$selected),
           message   = "A treatment variable is required."
         )
       }
-      teal:::validate_input(
+      teal::validate_input(
         inputId   = "conf_level",
         condition = !is.null(input$conf_level),
         message   = "Please choose a confidence level."
       )
-      teal:::validate_input(
+      teal::validate_input(
         inputId = "conf_level",
         condition = {
           cv <- suppressWarnings(as.numeric(input$conf_level))
@@ -589,7 +589,7 @@ srv_g_forest_rsp <- function(id,
         },
         message = "Confidence level must be between 0 and 1."
       )
-      teal:::validate_input(
+      teal::validate_input(
         inputId   = "responders",
         condition = !is.null(input$responders) && length(input$responders) > 0,
         message   = "`Responders` field is empty."
