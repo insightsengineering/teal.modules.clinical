@@ -24,7 +24,6 @@ app_driver_tm_a_mmrm <- function(fit_model = TRUE) {
   )
 
   app_driver <- init_teal_app_driver(
-  withr::defer(app_driver$stop())
     teal::init(
       data = data,
       modules = tm_a_mmrm(

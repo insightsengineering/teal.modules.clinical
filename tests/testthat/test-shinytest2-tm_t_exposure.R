@@ -21,7 +21,6 @@ app_driver_tm_t_exposure <- function() {
   teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
 
   app_driver <- suppressWarnings(init_teal_app_driver(
-  withr::defer(app_driver$stop())
     teal::init(
       data = data,
       modules = tm_t_exposure(

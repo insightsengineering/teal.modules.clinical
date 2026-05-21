@@ -126,7 +126,6 @@ testthat::test_that(
     testthat::expect_equal(exported_values[["arm_var-picks_resolved"]]$variables$selected, "ARM")
     testthat::expect_true(app_driver$get_active_module_input("compare_arms"))
     testthat::expect_equal(exported_values[["strata_var-picks_resolved"]]$variables$selected, "SEX")
-
   }
 )
 
@@ -245,7 +244,6 @@ testthat::test_that("e2e - tm_g_km: Starts with specified groups.", {
   )
 
   testthat::expect_false(app_driver$get_active_module_input("combine_comp_arms"))
-
 })
 
 # comparison settings ---------------------------------------------------------------------------------------------
@@ -268,7 +266,6 @@ testthat::test_that("e2e - tm_g_km: Starts with specified collapsed comparison s
     app_driver$get_text(app_driver$namespaces(TRUE)$module("ties_coxph-label")),
     "Ties for Coxph (Hazard Ratio)"
   )
-
 })
 
 testthat::test_that("e2e - tm_g_km: Changing {pval_method_coxph} changes the plot without errors.", {
@@ -351,7 +348,6 @@ testthat::test_that("e2e - tm_g_km: Starts with collapsed additional plot settin
     app_driver$get_text(app_driver$namespaces(TRUE)$module("rel_height_plot-label")), "Relative Height of Plot (%)"
   )
   testthat::expect_equal(app_driver$get_text(app_driver$namespaces(TRUE)$module("xlab-label")), "X-axis label")
-
 })
 
 test_that_plot_settings <- function(input_id, new_value) {
