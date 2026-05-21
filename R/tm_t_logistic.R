@@ -430,7 +430,6 @@ srv_t_logistic <- function(id,
   moduleServer(id, function(input, output, session) {
     teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
     # Observer to update reference and comparison arm input options.
-
     selectors <- teal.picks::picks_srv(
       picks = list(
         arm_var = arm_var,
@@ -441,7 +440,11 @@ srv_t_logistic <- function(id,
       data = data
     )
 
-    arm_var_r <- reactive(selectors$arm_var()$variables$selected)
+    arm_var_r <- if (!is.null(arm_var)) {
+      reactive(selectors$arm_var()$variables$selected)
+    } else {
+      reactive(NULL)
+    }
 
     iv_arco <- arm_ref_comp_observer_picks(
       session,
@@ -456,11 +459,13 @@ srv_t_logistic <- function(id,
 
     validated_q <- reactive({
       obj <- req(data())
-      validate_input(
-        inputId = "arm_var-variables-selected",
-        condition = !is.null(selectors$arm_var()$variables$selected),
-        message = "Treatment Variable is empty."
-      )
+      if (!is.null(arm_var)) {
+        validate_input(
+          inputId = "arm_var-variables-selected",
+          condition = !is.null(selectors$arm_var()$variables$selected),
+          message = "Treatment Variable is empty."
+        )
+      }
       validate_input(
         inputId = "avalc_var-variables-selected",
         condition = !is.null(selectors$avalc_var()$variables$selected),
