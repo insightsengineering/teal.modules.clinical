@@ -1,6 +1,6 @@
+# nolint start: object_length_linter.
 create_tm_t_pp_laboratory_module <- function(
-  # nolint: object_length_linter.
-  # nolint: object_length.
+  # nolint end: object_length_linter.
   paramcd = "PARAMCD",
   param = "PARAM",
   time_points = "ADY",
