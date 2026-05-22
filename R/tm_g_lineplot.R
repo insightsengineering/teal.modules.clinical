@@ -544,32 +544,32 @@ srv_g_lineplot <- function(id,
     validated_q <- reactive({
       obj <- req(data())
 
-      teal:::validate_input(
+      teal::validate_input(
         inputId = "group_var-variables-selected",
         condition = !is.null(selectors$group_var()$variables$selected),
         message = "Please select a treatment variable."
       )
-      teal:::validate_input(
+      teal::validate_input(
         inputId = "y-variables-selected",
         condition = !is.null(selectors$y()$variables$selected),
         message = "Please select an analysis variable."
       )
-      teal:::validate_input(
+      teal::validate_input(
         inputId = "x-variables-selected",
         condition = !is.null(selectors$x()$variables$selected),
         message = "Please select a time variable."
       )
-      teal:::validate_input(
+      teal::validate_input(
         inputId = "paramcd-values-selected",
         condition = !is.null(selectors$paramcd()$values$selected),
         message = "Please select a Biomarker filter."
       )
-      teal:::validate_input(
+      teal::validate_input(
         inputId = "conf_level",
         condition = !is.null(input$conf_level),
         message = "Please choose a confidence level."
       )
-      teal:::validate_input(
+      teal::validate_input(
         inputId = "conf_level",
         condition = as.numeric(input$conf_level) > 0 && as.numeric(input$conf_level) < 1,
         message = "Confidence level must be a number strictly between 0 and 1."

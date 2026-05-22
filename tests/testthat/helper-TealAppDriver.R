@@ -173,6 +173,7 @@ init_teal_app_driver <- function(...) {
 wait_until_nonempty_active_module_input <- function(app_driver, input_id) { # nolint: object_length_linter.
   checkmate::assert_string(input_id)
   full_id <- app_driver$namespaces(TRUE)$module(input_id)
+  full_id <- sub("^#", "", full_id)
   id_lit <- .teal_picks_js_id_literal(full_id)
   app_driver$wait_for_js(sprintf(
     paste0(
@@ -185,6 +186,7 @@ wait_until_nonempty_active_module_input <- function(app_driver, input_id) { # no
   ))
   invisible(app_driver)
 }
+
 # Badge label may prefix variables with dataset (e.g. "ADLB BNRIND").
 .teal_picks_strip_ds_prefix_vec <- function(x) { # nolint: object_length_linter.
   vapply(

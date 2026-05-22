@@ -294,22 +294,22 @@ srv_t_medical_history <- function(id,
     validated_q <- reactive({
       obj <- req(data())
 
-      teal:::validate_input(
+      teal::validate_input(
         inputId = "mhterm-variables-selected",
         condition = !is.null(selectors$mhterm()$variables$selected),
         message = "Please select MHTERM variable."
       )
-      teal:::validate_input(
+      teal::validate_input(
         inputId = "mhbodsys-variables-selected",
         condition = !is.null(selectors$mhbodsys()$variables$selected),
         message = "Please select MHBODSYS variable."
       )
-      teal:::validate_input(
+      teal::validate_input(
         inputId = "mhdistat-variables-selected",
         condition = !is.null(selectors$mhdistat()$variables$selected),
         message = "Please select MHDISTAT variable."
       )
-      teal:::validate_input(
+      teal::validate_input(
         inputId = "patient_id",
         condition = !is.null(input$patient_id) && length(input$patient_id) > 0,
         message = "Please select a patient"

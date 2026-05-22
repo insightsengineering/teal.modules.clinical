@@ -46,10 +46,10 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_glm_counts()
+    withr::defer(app_driver$stop())
     app_driver$expect_no_shiny_error()
     app_driver$expect_no_validation_error()
     app_driver$expect_visible(app_driver$namespaces(TRUE)$module("table-table-with-settings"))
-    app_driver$stop()
   }
 )
 
@@ -59,6 +59,7 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_glm_counts()
+    withr::defer(app_driver$stop())
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
     set_teal_picks_slot(app_driver, "arm_var", "variables", "ACTARMCD")
     testthat::expect_false(
@@ -68,6 +69,5 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
   }
 )
