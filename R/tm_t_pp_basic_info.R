@@ -206,12 +206,12 @@ srv_t_basic_info <- function(id, data, dataname, patient_col, vars, label) {
     validated_q <- reactive({
       obj <- req(data())
 
-      teal:::validate_input(
+      teal::validate_input(
         inputId = "vars-variables-selected",
         condition = !is.null(selectors$vars()$variables$selected),
         message = "Please select basic info variables"
       )
-      teal:::validate_input(
+      teal::validate_input(
         inputId = "patient_id",
         condition = !is.null(input$patient_id) && length(input$patient_id) > 0,
         message = "Please select a patient"

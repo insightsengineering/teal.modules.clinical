@@ -201,37 +201,37 @@ srv_g_ci.picks <- function(id, # nolint: object_name.
     validated_q <- reactive({
       obj <- req(data())
 
-      teal:::validate_input(
+      teal::validate_input(
         inputId = "x_var_picks-variables-selected",
         condition = length(selectors$x_var_picks()$variables$selected) > 0L,
         message = "Please select a treatment variable (x axis)."
       )
-      teal:::validate_input(
+      teal::validate_input(
         inputId = "paramcd_picks-values-selected",
         condition = length(selectors$paramcd_picks()$values$selected) > 0L,
         message = "Please select a lab parameter (PARAMCD)."
       )
-      teal:::validate_input(
+      teal::validate_input(
         inputId = "avisit_picks-values-selected",
         condition = length(selectors$avisit_picks()$values$selected) > 0L,
         message = "Please select a visit (AVISIT)."
       )
-      teal:::validate_input(
+      teal::validate_input(
         inputId = "y_var_picks-variables-selected",
         condition = length(selectors$y_var_picks()$variables$selected) > 0L,
         message = "Please select an analysis value variable (y axis)."
       )
-      teal:::validate_input(
+      teal::validate_input(
         inputId = "color_picks-variables-selected",
         condition = length(selectors$color_picks()$variables$selected) > 0L,
         message = "Please select a grouping variable (color)."
       )
-      teal:::validate_input(
+      teal::validate_input(
         inputId = "conf_level",
         condition = !is.null(input$conf_level),
         message = "Please choose a confidence level."
       )
-      teal:::validate_input(
+      teal::validate_input(
         inputId = "conf_level",
         condition = {
           cv <- suppressWarnings(as.numeric(input$conf_level))

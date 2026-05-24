@@ -388,37 +388,37 @@ srv_g_laboratory <- function(id,
     validated_q <- reactive({
       obj <- req(data())
 
-      teal:::validate_input(
+      teal::validate_input(
         inputId = "time_points-variables-selected",
         condition = !is.null(selectors$time_points()$variables$selected),
         message = "Please select time_points variable."
       )
-      teal:::validate_input(
+      teal::validate_input(
         inputId = "aval_var-variables-selected",
         condition = !is.null(selectors$aval_var()$variables$selected),
         message = "Please select AVAL variable."
       )
-      teal:::validate_input(
+      teal::validate_input(
         inputId = "avalu_var-variables-selected",
         condition = !is.null(selectors$avalu_var()$variables$selected),
         message = "Please select AVALU variable."
       )
-      teal:::validate_input(
+      teal::validate_input(
         inputId = "param-variables-selected",
         condition = !is.null(selectors$param()$variables$selected),
         message = "Please select PARAM variable."
       )
-      teal:::validate_input(
+      teal::validate_input(
         inputId = "paramcd-variables-selected",
         condition = !is.null(selectors$paramcd()$variables$selected),
         message = "Please select PARAMCD variable."
       )
-      teal:::validate_input(
+      teal::validate_input(
         inputId = "anrind-variables-selected",
         condition = !is.null(selectors$anrind()$variables$selected),
         message = "Please select ANRIND variable."
       )
-      teal:::validate_input(
+      teal::validate_input(
         inputId = "patient_id",
         condition = !is.null(input$patient_id) && length(input$patient_id) > 0,
         message = "Please select a patient"
