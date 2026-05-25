@@ -281,7 +281,7 @@ template_logistic <- function(dataname,
 #'         values(multiple = FALSE),
 #'         check_dataset = FALSE
 #'       ),
-#'       cov_var = variables(selected = NULL),
+#'       cov_var = variables(selected = "ARM"),
 #'       avalc_var = variables("AVALC", fixed = TRUE),
 #'       conf_level = values(c(0.95, 0.9, 0.8), 0.95)
 #'     )
