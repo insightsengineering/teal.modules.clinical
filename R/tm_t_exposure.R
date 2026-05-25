@@ -296,7 +296,7 @@ template_exposure <- function(parentname,
 #'         choices = c("RACE", "REGION1", "STRATA1", "SEX"),
 #'         selected = "RACE"
 #'       ),
-#'       parcat = variables(choices = "PARCAT2"),
+#'       parcat = picks(variables(choices = "PARCAT2"), values(), check_dataset = FALSE),
 #'       add_total = FALSE
 #'     )
 #'   ),
