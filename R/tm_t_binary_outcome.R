@@ -814,76 +814,57 @@ srv_t_binary_outcome <- function(id,
     )
     anl_q <- merged_adsl$data
 
-    # Keep responders selectInput in sync with merged ANL and all encoding picks.
-    # observeEvent(aval, paramcd) alone missed arm/strata/merge updates, leaving
-    # responders empty after picks commit and failing shinyvalidate.
-    shiny::observe(
+    # Update responders when merged ANL or encoding picks change (see tm_g_forest_rsp).
+    observeEvent(
+      anl_q(),
       {
         anl <- anl_q()[["ANL"]]
-        shiny::req(is.data.frame(anl), nrow(anl) > 0L)
+        aval_var <- anl_selectors$aval_var()$variables$selected
+        paramcd_pick <- anl_selectors$paramcd()
+        paramcd_sel <- if (is.null(paramcd_pick$values)) {
+          character(0)
+        } else {
+          paramcd_pick$values$selected
+        }
 
-        aval_name <- anl_selectors$aval_var()$variables$selected
-        shiny::req(length(aval_name) > 0L)
+        if (!is.data.frame(anl) || nrow(anl) == 0L || length(aval_var) == 0L || length(paramcd_sel) == 0L) {
+          return(invisible(NULL))
+        }
 
-        pc <- anl_selectors$paramcd()
-        paramcd_sel <- if (is.null(pc$values)) character(0) else pc$values$selected
-        shiny::req(length(paramcd_sel) > 0L)
-
-        invisible(anl_selectors$arm_var()$variables$selected)
-        invisible(anl_selectors$strata_var()$variables$selected)
-
-        sel_param <- if (is.list(default_responses) && length(paramcd_sel) > 0L) {
-          default_responses[[paramcd_sel[[1]]]]
+        sel_param <- if (is.list(default_responses)) {
+          default_responses[[paramcd_sel[[1L]]]]
         } else {
           default_responses
         }
-        common_rsp <- if (is.list(sel_param)) {
-          sel_param$rsp
-        } else {
-          sel_param
-        }
-        responder_choices <- if (length(aval_name) == 0L) {
-          character(0)
-        } else {
-          av <- aval_name[[1]]
-          if (is.list(sel_param) && "levels" %in% names(sel_param)) {
-            if (length(intersect(unique(anl[[av]]), sel_param$levels)) > 1) {
-              sel_param$levels
-            } else {
-              unique(anl[[av]])
-            }
+        common_rsp <- if (is.list(sel_param)) sel_param$rsp else sel_param
+
+        responder_choices <- if (is.list(sel_param) && "levels" %in% names(sel_param)) {
+          if (length(intersect(unique(anl[[aval_var]]), sel_param$levels)) > 1L) {
+            sel_param$levels
           } else {
-            unique(anl[[av]])
+            unique(anl[[aval_var]])
           }
+        } else {
+          unique(anl[[aval_var]])
         }
         if (length(responder_choices) == 0L) {
           return(invisible(NULL))
         }
-        default_sel <- intersect(responder_choices, common_rsp)
-        prev <- as.character(
-          unlist(shiny::isolate(input$responders), use.names = FALSE)
-        )
-        new_sel <- if (
-          length(prev) > 0L &&
-            all(prev %in% responder_choices)
-        ) {
-          intersect(prev, responder_choices)
-        } else {
-          default_sel
+
+        responder_sel <- intersect(responder_choices, shiny::isolate(input$responders))
+        if (length(responder_sel) == 0L) {
+          responder_sel <- intersect(responder_choices, common_rsp)
         }
-        if (length(new_sel) == 0L) {
-          new_sel <- default_sel
-        }
-        if (length(new_sel) == 0L) {
+        if (length(responder_sel) == 0L) {
           return(invisible(NULL))
         }
+
         shiny::updateSelectInput(
           session, "responders",
           choices = responder_choices,
-          selected = new_sel
+          selected = responder_sel
         )
-      },
-      priority = 1L
+      }
     )
 
     validate_check <- reactive({
