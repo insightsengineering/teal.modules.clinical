@@ -359,9 +359,6 @@ tm_t_abnormality_by_worst_grade <- function(label, # nolint: object_length.
   worst_high_flag_var <- migrate_choices_selected_to_variables(worst_high_flag_var)
   worst_low_flag_var <- migrate_choices_selected_to_variables(worst_low_flag_var)
   worst_flag_indicator <- migrate_choices_selected_to_values(worst_flag_indicator)
-  worst_flag_value <- as.character(worst_flag_indicator$selected)
-  checkmate::assert_character(worst_flag_value, min.len = 1L, .var.name = "worst_flag_indicator$selected")
-  worst_flag_value <- worst_flag_value[[1]]
 
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
@@ -399,7 +396,7 @@ ui_t_abnormality_by_worst_grade <- function(id, # nolint: object_length.
                                             atoxgr_var,
                                             worst_high_flag_var,
                                             worst_low_flag_var,
-                                            worst_flag_value,
+                                            worst_flag_indicator,
                                             add_total,
                                             drop_arm_levels,
                                             id_var,
@@ -444,9 +441,13 @@ ui_t_abnormality_by_worst_grade <- function(id, # nolint: object_length.
           ),
           tags$div(
             tags$label("Value Indicating Worst Grade"),
-            tags$p(
-              class = "tm-abnormality-worst-grade-worst-flag-value text-muted mb-0",
-              worst_flag_value
+            teal.widgets::optionalSelectInput(
+              ns("worst_flag_indicator"),
+              label = NULL,
+              choices = worst_flag_indicator$choices,
+              selected = if (is.function(worst_flag_indicator$selected)) NULL else worst_flag_indicator$selected,
+              multiple = FALSE,
+              fixed = teal.picks::is_pick_fixed(worst_flag_indicator)
             )
           ),
           checkboxInput(
@@ -471,7 +472,6 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint: object_length.
                                              arm_var,
                                              paramcd,
                                              atoxgr_var,
-                                             worst_flag_value,
                                              worst_low_flag_var,
                                              worst_high_flag_var,
                                              add_total,
@@ -542,6 +542,12 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint: object_length.
         need(
           length(anl_selectors$worst_high_flag_var()$variables$selected) >= 1L,
           "Please select the Worst High Grade flag variable."
+        )
+      )
+      validate(
+        need(
+          !is.null(input$worst_flag_indicator) && nzchar(input$worst_flag_indicator),
+          "Please select a value indicating the worst grade."
         )
       )
 
@@ -632,7 +638,7 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint: object_length.
         atoxgr_var = as.vector(anl_selectors$atoxgr_var()$variables$selected),
         worst_high_flag_var = as.vector(anl_selectors$worst_high_flag_var()$variables$selected),
         worst_low_flag_var = as.vector(anl_selectors$worst_low_flag_var()$variables$selected),
-        worst_flag_indicator = worst_flag_value,
+        worst_flag_indicator = input$worst_flag_indicator,
         add_total = input$add_total,
         total_label = total_label,
         drop_arm_levels = input$drop_arm_levels,
