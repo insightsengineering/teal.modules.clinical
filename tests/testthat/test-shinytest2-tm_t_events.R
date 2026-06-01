@@ -32,6 +32,8 @@ app_driver_tm_t_events <- function() {
         prune_diff = 0,
         drop_arm_levels = TRUE,
         incl_overall_sum = TRUE,
+        incl_num_patients_hlt = TRUE,
+        incl_num_events_hlt = TRUE,
         pre_output = NULL,
         post_output = NULL,
         basic_table_args = teal.widgets::basic_table_args()
@@ -51,7 +53,7 @@ testthat::test_that("e2e - tm_t_events: Module initializes in teal without error
 
 testthat::test_that(
   "e2e - tm_t_events: Starts with specified label, arm_var, hlt, llt, sort_criteria,
-  prune_freq, prune_diff, add_total, drop_arm_levels.",
+  prune_freq, prune_diff, add_total, drop_arm_levels, incl_num_patients_hlt, incl_num_events_hlt.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events()
@@ -86,6 +88,8 @@ testthat::test_that(
     )
     testthat::expect_true(app_driver$get_active_module_input("add_total"))
     testthat::expect_true(app_driver$get_active_module_input("drop_arm_levels"))
+    testthat::expect_true(app_driver$get_active_module_input("incl_num_patients_hlt"))
+    testthat::expect_true(app_driver$get_active_module_input("incl_num_events_hlt"))
     app_driver$stop()
   }
 )
@@ -183,6 +187,42 @@ testthat::test_that(
     app_driver <- app_driver_tm_t_events()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
     app_driver$set_active_module_input("llt-dataset_ADAE_singleextract-select", NULL)
+    testthat::expect_false(
+      identical(
+        table_before,
+        app_driver$get_active_module_table_output("table-table-with-settings")
+      )
+    )
+    app_driver$expect_no_validation_error()
+    app_driver$stop()
+  }
+)
+
+testthat::test_that(
+  "e2e - tm_t_events: Deselecting incl_num_patients_hlt changes the table and does not throw validation errors.",
+  {
+    skip_if_too_deep(5)
+    app_driver <- app_driver_tm_t_events()
+    table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
+    app_driver$set_active_module_input("incl_num_patients_hlt", FALSE)
+    testthat::expect_false(
+      identical(
+        table_before,
+        app_driver$get_active_module_table_output("table-table-with-settings")
+      )
+    )
+    app_driver$expect_no_validation_error()
+    app_driver$stop()
+  }
+)
+
+testthat::test_that(
+  "e2e - tm_t_events: Deselecting incl_num_events_hlt changes the table and does not throw validation errors.",
+  {
+    skip_if_too_deep(5)
+    app_driver <- app_driver_tm_t_events()
+    table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
+    app_driver$set_active_module_input("incl_num_events_hlt", FALSE)
     testthat::expect_false(
       identical(
         table_before,
