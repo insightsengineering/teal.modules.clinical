@@ -94,7 +94,7 @@ testthat::test_that(
       "WGRLOFL"
     )
     testthat::expect_equal(
-      app_driver$get_text(".tm-abnormality-worst-grade-worst-flag-value"),
+      app_driver$get_active_module_input("worst_flag_indicator"),
       "Y"
     )
   }
