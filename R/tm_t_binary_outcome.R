@@ -780,11 +780,6 @@ srv_t_binary_outcome <- function(id,
       obj <- teal.code::eval_code(obj, "library(dplyr)")
 
       validate_input(
-        inputId = "responders",
-        condition = !is.null(input$responders) && length(input$responders) > 0L,
-        message = "`Responders` field is empty"
-      )
-      validate_input(
         inputId = "conf_level",
         condition = !is.null(input$conf_level),
         message = "Please choose a confidence level."
@@ -827,70 +822,50 @@ srv_t_binary_outcome <- function(id,
       handlerExpr = {
         anl <- anl_q()[["ANL"]]
 
-        aval_name <- anl_selectors$aval_var()$variables$selected
-        shiny::req(length(aval_name) > 0L)
+        aval_var <- anl_selectors$aval_var()$variables$selected
+        paramcd <- anl_selectors$paramcd()$values$selected
 
-        pc <- anl_selectors$paramcd()
-        paramcd_sel <- if (is.null(pc$values)) character(0) else pc$values$selected
-        shiny::req(length(paramcd_sel) > 0L)
-
-        invisible(anl_selectors$arm_var()$variables$selected)
-        invisible(anl_selectors$strata_var()$variables$selected)
-
-        sel_param <- if (is.list(default_responses) && length(paramcd_sel) > 0L) {
-          default_responses[[paramcd_sel[[1]]]]
+        sel_param <- if (is.list(default_responses) && !is.null(paramcd)) {
+          default_responses[[paramcd]]
         } else {
           default_responses
         }
+
         common_rsp <- if (is.list(sel_param)) {
           sel_param$rsp
         } else {
           sel_param
         }
-        responder_choices <- if (length(aval_name) == 0L) {
-          character(0)
+
+        responder_choices <- if (length(aval_var) == 0L) {
+          character(0L)
         } else {
-          av <- aval_name[[1]]
-          if (is.list(sel_param) && "levels" %in% names(sel_param)) {
-            if (length(intersect(unique(anl[[av]]), sel_param$levels)) > 1) {
+          if ("levels" %in% names(sel_param)) {
+            if (length(intersect(unique(anl[[aval_var]]), sel_param$levels)) > 1L) {
               sel_param$levels
             } else {
-              unique(anl[[av]])
+              unique(anl[[aval_var]])
             }
           } else {
-            unique(anl[[av]])
+            unique(anl[[aval_var]])
           }
         }
-        if (length(responder_choices) == 0L) {
-          return(invisible(NULL))
-        }
-        default_sel <- intersect(responder_choices, common_rsp)
-        prev <- as.character(
-          unlist(shiny::isolate(input$responders), use.names = FALSE)
-        )
-        new_sel <- if (
-          length(prev) > 0L &&
-            all(prev %in% responder_choices)
-        ) {
-          intersect(prev, responder_choices)
-        } else {
-          default_sel
-        }
-        if (length(new_sel) == 0L) {
-          new_sel <- default_sel
-        }
-        if (length(new_sel) == 0L) {
-          return(invisible(NULL))
-        }
-        shiny::updateSelectInput(
+
+        updateSelectInput(
           session, "responders",
           choices = responder_choices,
-          selected = new_sel
+          selected = intersect(responder_choices, common_rsp)
         )
       }
     )
 
     validate_check <- reactive({
+      validate_input( # delayed validation for responders until after choices are updated based on PARAMCD selection
+        inputId = "responders",
+        condition = !is.null(input$responders) && length(input$responders) > 0L,
+        message = "`Responders` field is empty"
+      )
+
       pc <- anl_selectors$paramcd()
       pc_vals <- if (is.null(pc$values)) character(0) else pc$values$selected
       validate(need(length(pc_vals) >= 1L, "Please select a filter."))
