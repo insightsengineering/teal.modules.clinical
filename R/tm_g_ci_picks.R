@@ -1,5 +1,5 @@
 #' @describeIn tm_g_ci teal.picks encodings via \code{picks} objects for \code{x_var}, \code{y_var}, and \code{color}
-#' (use [`tm_g_ci.variables()`] to pass [`teal.picks::variables()`] objects; they are wrapped into \code{picks}).
+#' (use [`tm_g_ci()`] to pass [`teal.picks::variables()`] objects; they are wrapped into \code{picks}).
 #' @export
 tm_g_ci.default <- function(label,
                             x_var,

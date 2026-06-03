@@ -181,22 +181,14 @@ template_shift_by_arm <- function(dataname,
 #'
 #' @inheritParams module_arguments
 #' @inheritParams teal::module
-#' @inheritParams template_shift_by_arm
 #' @inheritParams template_arguments
-#' @param arm_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
-#'   variable for treatment arm.
+#' @inheritParams template_shift_by_arm
 #' @param paramcd ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
 #'   variable for lab parameter code. The `values()` element is added internally to allow
 #'   users to filter the parameter values interactively.
 #' @param visit_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
 #'   variable for analysis visit. The `values()` element is added internally to allow
 #'   users to filter the visit values interactively.
-#' @param aval_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
-#'   variable for analysis range indicator.
-#' @param baseline_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
-#'   variable for baseline reference range indicator.
-#' @param treatment_flag_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still
-#'   accepted)\cr variable for on-treatment flag.
 #' @param treatment_flag ([teal.picks::values()]; legacy `teal.transform::choices_selected()` is deprecated but still
 #'   accepted) value matching `treatment_flag_var` for on-treatment records (default `"Y"`).
 #'
@@ -270,8 +262,8 @@ tm_t_shift_by_arm <- function(label,
                               aval_var,
                               base_var = lifecycle::deprecated(),
                               baseline_var,
-                              treatment_flag_var = variables(choices = "ONTRTFL"),
-                              treatment_flag = teal.picks::values(c("Y", "N", ""), "Y", multiple = FALSE),
+                              treatment_flag_var = teal.picks::variables("ONTRTFL", "ONTRTFL"),
+                              treatment_flag = teal.picks::values("Y", "Y", fixed = TRUE, multiple = FALSE),
                               useNA = c("ifany", "no"), # nolint: object_name.
                               na_level = tern::default_na_str(),
                               add_total = FALSE,

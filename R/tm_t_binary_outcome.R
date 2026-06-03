@@ -815,10 +815,7 @@ srv_t_binary_outcome <- function(id,
     anl_q <- merged_adsl$data
 
     observeEvent(
-      c(
-        anl_selectors$aval_var(),
-        anl_selectors$paramcd()
-      ),
+      anl_q(),
       handlerExpr = {
         anl <- anl_q()[["ANL"]]
 

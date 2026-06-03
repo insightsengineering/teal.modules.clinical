@@ -38,14 +38,14 @@ tm_g_pp_therapy(
 
 \item{patient_col}{(\code{character})\cr name of patient ID variable.}
 
-\item{atirel}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
-available choices and preselected option for the \code{ATIREL} variable from \code{dataname}.}
+\item{atirel}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+object with all available choices and preselected option for the \code{ATIREL} variable from \code{dataname}.}
 
-\item{cmdecod}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
-available choices and preselected option for the \code{CMDECOD} variable from \code{dataname}.}
+\item{cmdecod}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+object with all available choices and preselected option for the \code{CMDECOD} variable from \code{dataname}.}
 
-\item{cmindc}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
-available choices and preselected option for the \code{CMINDC} variable from \code{dataname}.}
+\item{cmindc}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+object with all available choices and preselected option for the \code{CMINDC} variable from \code{dataname}.}
 
 \item{cmdose}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
 object with all available choices and preselected
@@ -67,8 +67,8 @@ option for the \code{CMROUTE} variable from \code{dataname}.}
 object with all available choices and preselected
 option for the \code{CMDOSFRQ} variable from \code{dataname}.}
 
-\item{cmstdy}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
-available choices and preselected option for the \code{CMSTDY} variable from \code{dataname}.}
+\item{cmstdy}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+object with all available choices and preselected option for the \code{CMSTDY} variable from \code{dataname}.}
 
 \item{cmendy}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
 object with all available choices and preselected

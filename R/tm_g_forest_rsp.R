@@ -20,7 +20,6 @@
 #' @param col_symbol_size (`integer` or `NULL`)\cr column index to be used to determine relative size for
 #'  estimator plot symbol. Typically, the symbol size is proportional to the sample size used
 #'  to calculate the estimator. If `NULL`, the same symbol size is used for all subgroups.
-#' @param strata_var (`character`)\cr names of the variables for stratified analysis.
 #' @param ggplot2_args (`ggplot2_args`) optional\cr
 #'   object created by [teal.widgets::ggplot2_args()] with settings for the module plot. For this
 #'   module, this argument will only accept `ggplot2_args` object with `labs` list of following child
@@ -343,7 +342,7 @@ tm_g_forest_rsp <- function(label,
                             arm_var,
                             arm_ref_comp = NULL,
                             paramcd,
-                            aval_var = teal.picks::variables("AVALC", fixed = TRUE),
+                            aval_var = teal.picks::variables("AVALC", "AVALC", fixed = TRUE),
                             subgroup_var,
                             strata_var,
                             stats = c("n_tot", "n", "n_rsp", "prop", "or", "ci"),
@@ -560,29 +559,29 @@ srv_g_forest_rsp <- function(id,
     validated_q <- reactive({
       obj <- req(data())
 
-      teal:::validate_input(
+      teal::validate_input(
         inputId   = "paramcd-values-selected",
         condition = !is.null(selectors$paramcd()$values$selected),
         message   = "Please select an endpoint (PARAMCD)."
       )
-      teal:::validate_input(
+      teal::validate_input(
         inputId   = "aval_var-variables-selected",
         condition = !is.null(selectors$aval_var()$variables$selected),
         message   = "An analysis variable is required."
       )
       if (!is.null(arm_var)) {
-        teal:::validate_input(
+        teal::validate_input(
           inputId   = "arm_var-variables-selected",
           condition = !is.null(selectors$arm_var()$variables$selected),
           message   = "A treatment variable is required."
         )
       }
-      teal:::validate_input(
+      teal::validate_input(
         inputId   = "conf_level",
         condition = !is.null(input$conf_level),
         message   = "Please choose a confidence level."
       )
-      teal:::validate_input(
+      teal::validate_input(
         inputId = "conf_level",
         condition = {
           cv <- suppressWarnings(as.numeric(input$conf_level))
@@ -590,7 +589,7 @@ srv_g_forest_rsp <- function(id,
         },
         message = "Confidence level must be between 0 and 1."
       )
-      teal:::validate_input(
+      teal::validate_input(
         inputId   = "responders",
         condition = !is.null(input$responders) && length(input$responders) > 0,
         message   = "`Responders` field is empty."

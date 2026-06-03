@@ -236,11 +236,6 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint: object_len
 #' @inheritParams module_arguments
 #' @inheritParams teal::module
 #' @inheritParams template_abnormality_by_worst_grade
-#' @param arm_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
-#'   object with all available choices and preselected
-#'   option for the treatment variable.
-#' @param id_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
-#'   subject identifier variable.
 #' @param paramcd ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
 #'   variable used to filter the analysis dataset
 #'   (typically `PARAMCD`). The `values()` element is added internally to allow users to pick
@@ -333,14 +328,20 @@ tm_t_abnormality_by_worst_grade <- function(label, # nolint: object_length.
                                             dataname,
                                             parentname = "ADSL",
                                             arm_var,
-                                            id_var = teal.picks::variables(choices = "USUBJID", fixed = TRUE),
+                                            id_var = teal.picks::variables("USUBJID", "USUBJID", fixed = TRUE),
                                             paramcd,
-                                            atoxgr_var = teal.picks::variables(choices = "ATOXGR", fixed = TRUE),
-                                            worst_high_flag_var = teal.picks::variables("WGRHIFL", fixed = TRUE),
-                                            worst_low_flag_var = teal.picks::variables("WGRLOFL", fixed = TRUE),
+                                            atoxgr_var = teal.picks::variables("ATOXGR", "ATOXGR", fixed = TRUE),
+                                            worst_high_flag_var = teal.picks::variables(
+                                              "WGRHIFL", "WGRHIFL",
+                                              fixed = TRUE
+                                            ),
+                                            worst_low_flag_var = teal.picks::variables(
+                                              "WGRLOFL", "WGRLOFL",
+                                              fixed = TRUE
+                                            ),
                                             worst_flag_indicator = teal.picks::values(
-                                              c("Y", "N", ""), "Y",
-                                              multiple = FALSE
+                                              "Y", "Y",
+                                              fixed = FALSE, multiple = FALSE
                                             ),
                                             add_total = TRUE,
                                             total_label = default_total_label(),

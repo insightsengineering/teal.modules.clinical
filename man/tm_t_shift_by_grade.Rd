@@ -9,14 +9,14 @@ tm_t_shift_by_grade(
   dataname,
   parentname = "ADSL",
   arm_var,
-  visit_var = variables(choices = "AVISIT", fixed = TRUE),
+  visit_var = teal.picks::variables("AVISIT", "AVISIT", fixed = TRUE),
   paramcd,
-  worst_flag_var = variables(choices = c("WGRLOVFL", "WGRLOFL", "WGRHIVFL", "WGRHIFL"),
-    selected = "WGRLOVFL"),
-  worst_flag_indicator = teal.picks::values(c("Y", "N"), "Y", fixed = TRUE),
-  anl_toxgrade_var = variables(choices = "ATOXGR", fixed = TRUE),
-  base_toxgrade_var = variables(choices = "BTOXGR", fixed = TRUE),
-  id_var = variables(choices = "USUBJID", fixed = TRUE),
+  worst_flag_var = teal.picks::variables(c("WGRLOVFL", "WGRLOFL", "WGRHIVFL", "WGRHIFL"),
+    "WGRLOVFL"),
+  worst_flag_indicator = teal.picks::values("Y", "Y", fixed = TRUE, multiple = FALSE),
+  anl_toxgrade_var = teal.picks::variables("ATOXGR", "ATOXGR", fixed = TRUE),
+  base_toxgrade_var = teal.picks::variables("BTOXGR", "BTOXGR", fixed = TRUE),
+  id_var = teal.picks::variables("USUBJID", "USUBJID", fixed = TRUE),
   add_total = FALSE,
   total_label = default_total_label(),
   drop_arm_levels = TRUE,
@@ -37,10 +37,12 @@ tm_t_shift_by_grade(
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
 \item{arm_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
-variable for treatment arm.}
+object with all available choices and preselected option for variable names that can be used as \code{arm_var}.
+It defines the grouping variable in the results table.}
 
 \item{visit_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
-variable for analysis visit.}
+object with all available choices and preselected option for variable names that can be used as \code{visit} variable.
+Must be a factor in \code{dataname}.}
 
 \item{paramcd}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
 variable for lab parameter code. The \code{values()} element is added internally to allow
@@ -60,7 +62,7 @@ accepted) variable for analysis toxicity grade.}
 accepted) variable for baseline toxicity grade.}
 
 \item{id_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
-variable for subject identifier.}
+object specifying the variable name for subject id.}
 
 \item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
 

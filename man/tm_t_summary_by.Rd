@@ -11,7 +11,7 @@ tm_t_summary_by(
   arm_var,
   by_vars,
   summarize_vars,
-  id_var = variables(choices = "USUBJID", fixed = TRUE),
+  id_var = teal.picks::variables("USUBJID", "USUBJID", fixed = TRUE),
   paramcd = NULL,
   add_total = TRUE,
   total_label = default_total_label(),
@@ -39,18 +39,16 @@ tm_t_summary_by(
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
 \item{arm_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
-variable(s) for treatment arm.
-It defines the grouping variable(s) in the results table.
-If there are two elements selected for \code{arm_var}, second variable will be nested under the first variable.}
+If there are two elements selected for \code{arm_var}, the second variable is nested under the first.}
 
 \item{by_vars}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
-variable(s) for row grouping.}
+object with all available choices and preselected option for variable names used to split the summary by rows.}
 
 \item{summarize_vars}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still
-accepted)\cr variable(s) to summarize.}
+accepted)\cr names of the variables that should be summarized.}
 
 \item{id_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
-variable for subject identifier.}
+object specifying the variable name for subject id.}
 
 \item{paramcd}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
 optional variable for parameter code filter.

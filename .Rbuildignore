@@ -50,3 +50,4 @@ coverage.*
 ^scripts$
 ^\.covrignore$
 ^.cursor
+^.copilot

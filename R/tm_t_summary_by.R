@@ -346,15 +346,7 @@ template_summary_by <- function(parentname,
 #' @inheritParams teal::module
 #' @inheritParams template_summary_by
 #' @param arm_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
-#'   variable(s) for treatment arm.
-#'   It defines the grouping variable(s) in the results table.
-#'   If there are two elements selected for `arm_var`, second variable will be nested under the first variable.
-#' @param by_vars ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
-#'   variable(s) for row grouping.
-#' @param summarize_vars ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still
-#'   accepted)\cr variable(s) to summarize.
-#' @param id_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
-#'   variable for subject identifier.
+#'   If there are two elements selected for `arm_var`, the second variable is nested under the first.
 #' @param paramcd ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
 #'   optional variable for parameter code filter.
 #'   When provided, a `values()` selector is added with `multiple = FALSE`, so one parameter
@@ -427,7 +419,7 @@ tm_t_summary_by <- function(label,
                             arm_var,
                             by_vars,
                             summarize_vars,
-                            id_var = variables(choices = "USUBJID", fixed = TRUE),
+                            id_var = teal.picks::variables("USUBJID", "USUBJID", fixed = TRUE),
                             paramcd = NULL,
                             add_total = TRUE,
                             total_label = default_total_label(),
@@ -446,12 +438,14 @@ tm_t_summary_by <- function(label,
                             transformators = list(),
                             decorators = list()) {
   message("Initializing tm_t_summary_by")
+
   arm_var <- migrate_choices_selected_to_variables(arm_var)
   by_vars <- migrate_choices_selected_to_variables(by_vars)
   summarize_vars <- migrate_choices_selected_to_variables(summarize_vars)
   id_var <- migrate_choices_selected_to_variables(id_var)
   denominator <- migrate_choices_selected_to_values(denominator)
   if (!is.null(paramcd)) paramcd <- migrate_value_choices_to_picks(paramcd, multiple = FALSE)
+
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)

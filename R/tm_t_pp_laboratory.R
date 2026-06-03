@@ -5,7 +5,7 @@
 #' @inheritParams template_arguments
 #' @param paramcd (`character`)\cr name of the parameter code variable.
 #' @param param (`character`)\cr name of the parameter variable.
-#' @param timepoints (`character`)\cr name of time variable.
+#' @param time_points (`character`)\cr name of time variable.
 #' @param anrind (`character`)\cr name of the analysis reference range indicator variable.
 #' @param round_value (`numeric`)\cr number of decimal places to round to.
 #'
@@ -18,7 +18,7 @@ template_laboratory <- function(dataname = "ANL",
                                 paramcd = "PARAMCD",
                                 param = "PARAM",
                                 anrind = "ANRIND",
-                                timepoints = "ADY",
+                                time_points = "ADY",
                                 aval_var = "AVAL",
                                 avalu_var = "AVALU",
                                 patient_id = NULL,
@@ -27,7 +27,7 @@ template_laboratory <- function(dataname = "ANL",
   checkmate::assert_string(paramcd)
   checkmate::assert_string(param)
   checkmate::assert_string(anrind)
-  checkmate::assert_string(timepoints)
+  checkmate::assert_string(time_points)
   checkmate::assert_string(aval_var)
   checkmate::assert_string(avalu_var)
   checkmate::assert_integer(round_value, lower = 0)
@@ -41,9 +41,9 @@ template_laboratory <- function(dataname = "ANL",
       expr = {
         dataname[, aval_char] <- round(dataname[, aval_char], round_value)
         labor_table_base <- dataname %>%
-          dplyr::select(timepoints, paramcd, param, aval_var, avalu_var, anrind) %>%
-          dplyr::arrange(timepoints) %>%
-          dplyr::select(-timepoints) %>%
+          dplyr::select(time_points, paramcd, param, aval_var, avalu_var, anrind) %>%
+          dplyr::arrange(time_points) %>%
+          dplyr::select(-time_points) %>%
           dplyr::group_by(paramcd, param) %>%
           dplyr::mutate(INDEX = dplyr::row_number()) %>%
           dplyr::ungroup() %>%
@@ -94,7 +94,7 @@ template_laboratory <- function(dataname = "ANL",
         aval_char = aval_var,
         avalu_var = as.name(avalu_var),
         avalu_char = avalu_var,
-        timepoints = as.name(timepoints),
+        time_points = as.name(time_points),
         anrind = as.name(anrind),
         patient_id = patient_id,
         round_value = round_value
@@ -112,11 +112,11 @@ template_laboratory <- function(dataname = "ANL",
 #'
 #' @inheritParams module_arguments
 #' @inheritParams teal::module
-#' @inheritParams template_laboratory
 #' @inheritParams template_arguments
+#' @inheritParams template_laboratory
 #' @param param ([teal.picks::variables] or [teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `PARAM` variable from `dataname`.
-#' @param timepoints ([teal.picks::variables] or [teal.transform::choices_selected()])\cr object with all
+#' @param time_points ([teal.picks::variables] or [teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the time variable from `dataname`.
 #' @param anrind ([teal.picks::variables] or [teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `ANRIND` variable from `dataname`. Variable should have the
@@ -149,7 +149,7 @@ template_laboratory <- function(dataname = "ANL",
 #'       label = "Vitals",
 #'       dataname = "ADLB",
 #'       patient_col = "USUBJID",
-#'       timepoints = variables("ADY", fixed = TRUE),
+#'       time_points = variables("ADY", fixed = TRUE),
 #'       aval_var = variables("AVAL", fixed = TRUE),
 #'       avalu_var = variables("AVALU", fixed = TRUE),
 #'       param = variables("PARAM", fixed = TRUE),
@@ -167,7 +167,7 @@ tm_t_pp_laboratory <- function(label,
                                dataname = "ADLB",
                                parentname = "ADSL",
                                patient_col = "USUBJID",
-                               timepoints = NULL,
+                               time_points = NULL,
                                aval = lifecycle::deprecated(),
                                aval_var = NULL,
                                avalu = lifecycle::deprecated(),
@@ -205,7 +205,7 @@ tm_t_pp_laboratory <- function(label,
     )
   }
 
-  timepoints <- migrate_choices_selected_to_variables(timepoints, null.ok = TRUE, multiple = FALSE)
+  time_points <- migrate_choices_selected_to_variables(time_points, null.ok = TRUE, multiple = FALSE)
   aval_var <- migrate_choices_selected_to_variables(aval_var, null.ok = TRUE, multiple = FALSE)
   avalu_var <- migrate_choices_selected_to_variables(avalu_var, null.ok = TRUE, multiple = FALSE)
   param <- migrate_choices_selected_to_variables(param, null.ok = TRUE, multiple = FALSE)
@@ -219,7 +219,7 @@ tm_t_pp_laboratory <- function(label,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
 
-  if (!is.null(timepoints)) timepoints <- create_picks_helper(teal.picks::datasets(dataname, dataname), timepoints)
+  if (!is.null(time_points)) time_points <- create_picks_helper(teal.picks::datasets(dataname, dataname), time_points)
   if (!is.null(aval_var)) aval_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), aval_var)
   if (!is.null(avalu_var)) avalu_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), avalu_var)
   if (!is.null(param)) param <- create_picks_helper(teal.picks::datasets(dataname, dataname), param)
@@ -241,7 +241,7 @@ tm_t_pp_laboratory <- function(label,
 
 #' @keywords internal
 ui_g_laboratory <- function(id,
-                            timepoints,
+                            time_points,
                             aval_var,
                             avalu_var,
                             param,
@@ -275,10 +275,10 @@ ui_g_laboratory <- function(id,
           teal.picks::picks_ui(ns("param"), param)
         )
       },
-      if (!is.null(timepoints)) {
+      if (!is.null(time_points)) {
         tags$div(
-          tags$label("Select timepoints variable:"),
-          teal.picks::picks_ui(ns("timepoints"), timepoints)
+          tags$label("Select time_points variable:"),
+          teal.picks::picks_ui(ns("time_points"), time_points)
         )
       },
       if (!is.null(aval_var)) {
@@ -316,7 +316,7 @@ srv_g_laboratory <- function(id,
                              dataname,
                              parentname,
                              patient_col,
-                             timepoints,
+                             time_points,
                              aval_var,
                              avalu_var,
                              param,
@@ -357,12 +357,12 @@ srv_g_laboratory <- function(id,
 
     # Build selector list — only include non-NULL picks
     picks_list <- Filter(Negate(is.null), list(
-      timepoints = timepoints,
-      aval_var   = aval_var,
-      avalu_var  = avalu_var,
-      param      = param,
-      paramcd    = paramcd,
-      anrind     = anrind
+      time_points = time_points,
+      aval_var = aval_var,
+      avalu_var = avalu_var,
+      param = param,
+      paramcd = paramcd,
+      anrind = anrind
     ))
 
     selectors <- teal.picks::picks_srv(
@@ -388,37 +388,37 @@ srv_g_laboratory <- function(id,
     validated_q <- reactive({
       obj <- req(data())
 
-      teal:::validate_input(
-        inputId = "timepoints-variables-selected",
-        condition = !is.null(selectors$timepoints()$variables$selected),
-        message = "Please select timepoints variable."
+      teal::validate_input(
+        inputId = "time_points-variables-selected",
+        condition = !is.null(selectors$time_points()$variables$selected),
+        message = "Please select time_points variable."
       )
-      teal:::validate_input(
+      teal::validate_input(
         inputId = "aval_var-variables-selected",
         condition = !is.null(selectors$aval_var()$variables$selected),
         message = "Please select AVAL variable."
       )
-      teal:::validate_input(
+      teal::validate_input(
         inputId = "avalu_var-variables-selected",
         condition = !is.null(selectors$avalu_var()$variables$selected),
         message = "Please select AVALU variable."
       )
-      teal:::validate_input(
+      teal::validate_input(
         inputId = "param-variables-selected",
         condition = !is.null(selectors$param()$variables$selected),
         message = "Please select PARAM variable."
       )
-      teal:::validate_input(
+      teal::validate_input(
         inputId = "paramcd-variables-selected",
         condition = !is.null(selectors$paramcd()$variables$selected),
         message = "Please select PARAMCD variable."
       )
-      teal:::validate_input(
+      teal::validate_input(
         inputId = "anrind-variables-selected",
         condition = !is.null(selectors$anrind()$variables$selected),
         message = "Please select ANRIND variable."
       )
-      teal:::validate_input(
+      teal::validate_input(
         inputId = "patient_id",
         condition = !is.null(input$patient_id) && length(input$patient_id) > 0,
         message = "Please select a patient"
@@ -444,7 +444,7 @@ srv_g_laboratory <- function(id,
 
       labor_calls <- template_laboratory(
         dataname = "ANL",
-        timepoints = anl_inputs$variables()$timepoints,
+        time_points = anl_inputs$variables()$time_points,
         aval_var = anl_inputs$variables()$aval_var,
         avalu_var = anl_inputs$variables()$avalu_var,
         param = anl_inputs$variables()$param,

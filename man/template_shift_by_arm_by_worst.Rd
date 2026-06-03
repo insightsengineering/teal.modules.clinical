@@ -40,9 +40,9 @@ template_shift_by_arm_by_worst(
 \item{treatment_flag}{(\code{character})\cr name of the value indicating on treatment
 records in \code{treatment_flag_var}.}
 
-\item{aval_var}{(\code{character})\cr name of the analysis reference range indicator variable.}
+\item{aval_var}{(\code{character})\cr name of the analysis value variable.}
 
-\item{baseline_var}{(\code{character})\cr name of the baseline reference range indicator variable.}
+\item{baseline_var}{(\code{character})\cr name of the variable for baseline values of the analysis variable.}
 
 \item{na.rm}{(\code{logical})\cr whether \code{NA} values should be removed prior to analysis.}
 
@@ -50,7 +50,7 @@ records in \code{treatment_flag_var}.}
 in character or factor variables in the data. Defaults to \code{"<Missing>"}. To set a
 default \code{na_level} to apply in all modules, run \code{set_default_na_str("new_default")}.}
 
-\item{add_total}{(\code{logical})\cr whether to include row with total number of patients.}
+\item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
 
 \item{total_label}{(\code{string})\cr string to display as total column/row label if column/row is
 enabled (see \code{add_total}). Defaults to \code{"All Patients"}. To set a new default \code{total_label} to

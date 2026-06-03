@@ -305,10 +305,10 @@ tm_g_ci <- function(label,
 tm_g_ci.data_extract_spec <- function(label,
                                       x_var,
                                       y_var,
-                                      color,
-                                      stat = c("mean", "median"),
                                       paramcd = NULL,
                                       avisit = NULL,
+                                      color,
+                                      stat = c("mean", "median"),
                                       conf_level = teal.transform::choices_selected(
                                         c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE
                                       ),

@@ -83,10 +83,10 @@ app_driver_tm_t_events_summary <- function() {
 testthat::test_that("e2e - tm_t_events_summary: Module initializes in teal without errors and produces table output.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_events_summary()
+  withr::defer(app_driver$stop())
   app_driver$expect_no_shiny_error()
   app_driver$expect_no_validation_error()
   app_driver$expect_visible(app_driver$namespaces(TRUE)$module("table-table-with-settings"))
-  app_driver$stop()
 })
 
 testthat::test_that(
@@ -95,6 +95,7 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events_summary()
+    withr::defer(app_driver$stop())
     testthat::expect_equal(
       app_driver$get_text(".teal-modules-tree a.module-button.active"),
       "Adverse Events Summary"
@@ -115,7 +116,6 @@ testthat::test_that(
     testthat::expect_true(app_driver$get_active_module_input("count_subj"))
     testthat::expect_true(app_driver$get_active_module_input("count_pt"))
     testthat::expect_true(app_driver$get_active_module_input("count_events"))
-    app_driver$stop()
   }
 )
 
@@ -124,6 +124,7 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events_summary()
+    withr::defer(app_driver$stop())
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
     set_teal_picks_slot(app_driver, "arm_var", "variables", "ARMCD")
     testthat::expect_false(
@@ -133,17 +134,16 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
   }
 )
 
 testthat::test_that("e2e - tm_t_events_summary: Deselection of arm_var throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_events_summary()
+  withr::defer(app_driver$stop())
   set_teal_picks_slot(app_driver, "arm_var", "variables", NULL)
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
-  app_driver$stop()
 })
 
 testthat::test_that(
@@ -151,6 +151,7 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events_summary()
+    withr::defer(app_driver$stop())
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
     set_teal_picks_slot(app_driver, "flag_var_anl", "variables", c("TMPFL_REL", "TMPFL_GR5"))
     testthat::expect_false(
@@ -160,7 +161,6 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
   }
 )
 
@@ -170,6 +170,7 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events_summary()
+    withr::defer(app_driver$stop())
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
     set_teal_picks_slot(app_driver, "flag_var_anl", "variables", NULL)
     testthat::expect_false(
@@ -179,7 +180,6 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
   }
 )
 
@@ -189,6 +189,7 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events_summary()
+    withr::defer(app_driver$stop())
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
     set_teal_picks_slot(app_driver, "flag_var_aesi", "variables", c("TMP_SMQ02", "TMP_CQ01"))
     testthat::expect_false(
@@ -198,7 +199,6 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
   }
 )
 
@@ -208,6 +208,7 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events_summary()
+    withr::defer(app_driver$stop())
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
     set_teal_picks_slot(app_driver, "flag_var_aesi", "variables", NULL)
     testthat::expect_false(
@@ -217,6 +218,5 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
   }
 )

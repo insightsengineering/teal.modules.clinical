@@ -276,27 +276,27 @@ srv_t_prior_medication <- function(id,
     validated_q <- reactive({
       obj <- req(data())
 
-      teal:::validate_input(
+      teal::validate_input(
         inputId = "cmdecod-variables-selected",
         condition = !is.null(selectors$cmdecod()$variables$selected),
         message = "A medication decoding variable is required"
       )
-      teal:::validate_input(
+      teal::validate_input(
         inputId = "atirel-variables-selected",
         condition = !is.null(selectors$atirel()$variables$selected),
         message = "An ATIREL variable is required"
       )
-      teal:::validate_input(
+      teal::validate_input(
         inputId = "cmindc-variables-selected",
         condition = !is.null(selectors$cmindc()$variables$selected),
         message = "A CMINDC variable is required"
       )
-      teal:::validate_input(
+      teal::validate_input(
         inputId = "cmstdy-variables-selected",
         condition = !is.null(selectors$cmstdy()$variables$selected),
         message = "A CMSTDY variable is required"
       )
-      teal:::validate_input(
+      teal::validate_input(
         inputId = "patient_id",
         condition = !is.null(input$patient_id) && length(input$patient_id) > 0,
         message = "Please select patient id"

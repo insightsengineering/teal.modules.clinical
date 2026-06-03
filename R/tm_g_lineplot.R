@@ -206,7 +206,6 @@ template_g_lineplot <- function(dataname = "ANL",
 #' @param paramcd ([`teal.picks::picks()`] or legacy `choices_selected` from `value_choices()`)\cr
 #'   parameter code filter: a `picks()` chain with the `PARAMCD` variable and biomarker `values()`;
 #'   defaults to `ALT` / `CRP` / `IGA` with `ALT` selected.
-#' @param conf_level ([`teal.picks::values()`] or legacy `choices_selected`)\cr confidence levels shown in the UI.
 #' @param strata `r lifecycle::badge("deprecated")` Please use the `group_var` argument instead.
 #'
 #' @inherit module_arguments return seealso
@@ -299,18 +298,16 @@ tm_g_lineplot <- function(label,
                           strata = lifecycle::deprecated(),
                           group_var = teal.picks::variables(
                             choices = c("ARM", "ARMCD", "ACTARMCD"),
-                            selected = "ARM",
-                            multiple = FALSE
+                            selected = "ARM"
                           ),
-                          x = teal.picks::variables("AVISIT", fixed = TRUE),
+                          x = teal.picks::variables("AVISIT", "AVISIT", fixed = TRUE),
                           y = teal.picks::variables(
                             choices = c("AVAL", "BASE", "CHG", "PCHG"),
-                            selected = "AVAL",
-                            multiple = FALSE
+                            selected = "AVAL"
                           ),
-                          y_unit = teal.picks::variables("AVALU", fixed = TRUE),
+                          y_unit = teal.picks::variables("AVALU", "AVALU", fixed = TRUE),
                           paramcd = teal.picks::picks(
-                            teal.picks::variables("PARAMCD", fixed = TRUE),
+                            teal.picks::variables("PARAMCD", "PARAMCD", fixed = TRUE),
                             teal.picks::values(
                               choices = c("ALT", "CRP", "IGA"),
                               selected = "ALT",
@@ -547,32 +544,32 @@ srv_g_lineplot <- function(id,
     validated_q <- reactive({
       obj <- req(data())
 
-      teal:::validate_input(
+      teal::validate_input(
         inputId = "group_var-variables-selected",
         condition = !is.null(selectors$group_var()$variables$selected),
         message = "Please select a treatment variable."
       )
-      teal:::validate_input(
+      teal::validate_input(
         inputId = "y-variables-selected",
         condition = !is.null(selectors$y()$variables$selected),
         message = "Please select an analysis variable."
       )
-      teal:::validate_input(
+      teal::validate_input(
         inputId = "x-variables-selected",
         condition = !is.null(selectors$x()$variables$selected),
         message = "Please select a time variable."
       )
-      teal:::validate_input(
+      teal::validate_input(
         inputId = "paramcd-values-selected",
         condition = !is.null(selectors$paramcd()$values$selected),
         message = "Please select a Biomarker filter."
       )
-      teal:::validate_input(
+      teal::validate_input(
         inputId = "conf_level",
         condition = !is.null(input$conf_level),
         message = "Please choose a confidence level."
       )
-      teal:::validate_input(
+      teal::validate_input(
         inputId = "conf_level",
         condition = as.numeric(input$conf_level) > 0 && as.numeric(input$conf_level) < 1,
         message = "Confidence level must be a number strictly between 0 and 1."

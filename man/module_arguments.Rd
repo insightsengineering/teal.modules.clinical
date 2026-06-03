@@ -6,49 +6,50 @@
 \arguments{
 \item{arm_ref_comp}{(\code{list}) optional,\cr if specified it must be a named list with each element corresponding to
 an arm variable in \code{ADSL} and the element must be another list (possibly
-with delayed \code{\link[teal.transform:variable_choices]{teal.transform::variable_choices()}} or delayed \code{\link[teal.transform:value_choices]{teal.transform::value_choices()}}
-with the elements named \code{ref} and \code{comp} that the defined the default
-reference and comparison arms when the arm variable is changed.}
+with delayed \code{\link[teal.picks:variables]{teal.picks::variables()}} or \code{\link[teal.picks:values]{teal.picks::values()}}; legacy
+\code{\link[teal.transform:variable_choices]{teal.transform::variable_choices()}} and \code{\link[teal.transform:value_choices]{teal.transform::value_choices()}} are deprecated but still accepted)
+with the elements named \code{ref} and \code{comp} that define the default reference and comparison arms when the arm
+variable is changed.}
 
-\item{arm_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
-available choices and preselected option for variable names that can be used as \code{arm_var}.
+\item{arm_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+object with all available choices and preselected option for variable names that can be used as \code{arm_var}.
 It defines the grouping variable in the results table.}
 
-\item{atirel}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
-available choices and preselected option for the \code{ATIREL} variable from \code{dataname}.}
+\item{atirel}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+object with all available choices and preselected option for the \code{ATIREL} variable from \code{dataname}.}
 
-\item{aval_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
-all available choices and pre-selected option for the analysis variable.}
+\item{aval_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+object with all available choices and pre-selected option for the analysis variable.}
 
-\item{avalu_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
-all available choices and preselected option for the analysis unit variable.}
+\item{avalu_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+object with all available choices and preselected option for the analysis unit variable.}
 
-\item{avisit}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr value of analysis
-visit \code{AVISIT} of interest.}
+\item{avisit}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+value of analysis visit \code{AVISIT} of interest.}
 
-\item{baseline_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
-all available choices and preselected option for variable values that can be used as \code{baseline_var}.}
+\item{baseline_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+object with all available choices and preselected option for variable values that can be used as \code{baseline_var}.}
 
-\item{by_vars}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
-available choices and preselected option for variable names used to split the summary by rows.}
+\item{by_vars}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+object with all available choices and preselected option for variable names used to split the summary by rows.}
 
-\item{cmdecod}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
-available choices and preselected option for the \code{CMDECOD} variable from \code{dataname}.}
+\item{cmdecod}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+object with all available choices and preselected option for the \code{CMDECOD} variable from \code{dataname}.}
 
-\item{cmindc}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
-available choices and preselected option for the \code{CMINDC} variable from \code{dataname}.}
+\item{cmindc}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+object with all available choices and preselected option for the \code{CMINDC} variable from \code{dataname}.}
 
-\item{cmstdy}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
-available choices and preselected option for the \code{CMSTDY} variable from \code{dataname}.}
+\item{cmstdy}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+object with all available choices and preselected option for the \code{CMSTDY} variable from \code{dataname}.}
 
-\item{cnsr_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
-available choices and preselected option for the censoring variable.}
+\item{cnsr_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+object with all available choices and preselected option for the censoring variable.}
 
-\item{conf_level}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
-all available choices and pre-selected option for the confidence level, each within range of (0, 1).}
+\item{conf_level}{(\code{\link[teal.picks:values]{teal.picks::values()}}; legacy \code{teal.transform::choices_selected()} is deprecated but still
+accepted)\cr available confidence levels and default selection, each in the range (0, 1).}
 
-\item{cov_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
-available choices and preselected option for the covariates variables.}
+\item{cov_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+object with all available choices and preselected option for the covariates variables.}
 
 \item{dataname}{(\code{character})\cr analysis data used in teal module.}
 
@@ -64,11 +65,11 @@ Otherwise, the symbol size will be proportional to the sample size in each each 
 
 \item{font_size}{(\code{numeric})\cr numeric vector of length 3 of current, minimum and maximum font size values.}
 
-\item{hlt}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr name of the variable
-with high level term for events.}
+\item{hlt}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+name of the variable with high level term for events.}
 
-\item{id_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object specifying
-the variable name for subject id.}
+\item{id_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+object specifying the variable name for subject id.}
 
 \item{interact_var}{(\code{character})\cr name of the variable that should have interactions
 with arm. If the interaction is not needed, the default option is \code{NULL}.}
@@ -79,11 +80,11 @@ needed, the default option is \code{FALSE}.}
 
 \item{label}{(\code{character})\cr menu item label of the module in the teal app.}
 
-\item{llt}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr name of the variable
-with low level term for events.}
+\item{llt}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+name of the variable with low level term for events.}
 
-\item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
-available choices and preselected option for the parameter code variable from \code{dataname}.}
+\item{paramcd}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+object with all available choices and preselected option for the parameter code variable from \code{dataname}.}
 
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
@@ -101,38 +102,41 @@ For example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are use
 \item{pre_output}{(\code{shiny.tag}) optional,\cr with text placed before the output to put the output into context.
 For example a title.}
 
-\item{strata_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr names of
-the variables for stratified analysis.}
+\item{strata_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+names of the variables for stratified analysis.}
 
-\item{summarize_vars}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr names of
-the variables that should be summarized.}
+\item{summarize_vars}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still
+accepted)\cr names of the variables that should be summarized.}
 
-\item{subgroup_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
-all available choices and preselected option for variable names that can be used as the default subgroups.}
+\item{subgroup_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+object with all available choices and preselected option for variable names that can be used as the default
+subgroups.}
 
-\item{time_points}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all available choices and preselected option
-for time points that can be used in \code{\link[tern:surv_timepoint]{tern::surv_timepoint()}}.}
+\item{time_points}{(\code{\link[teal.picks:values]{teal.picks::values()}}; legacy \code{teal.transform::choices_selected()} is deprecated but still
+accepted)\cr object with all available choices and preselected option for time points that can be used in
+\code{\link[tern:surv_timepoint]{tern::surv_timepoint()}}.}
 
-\item{time_unit_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object
-with all available choices and pre-selected option for the time unit variable.}
+\item{time_unit_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated
+but still accepted)\cr object with all available choices and pre-selected option for the time unit variable.}
 
-\item{treatment_flag}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr value
-indicating on treatment records in \code{treatment_flag_var}.}
+\item{treatment_flag}{(\code{\link[teal.picks:values]{teal.picks::values()}}; legacy \code{teal.transform::choices_selected()} is deprecated but still
+accepted)\cr value indicating on treatment records in \code{treatment_flag_var}.}
 
-\item{treatment_flag_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr on
-treatment flag variable.}
+\item{treatment_flag_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still
+accepted)\cr on treatment flag variable.}
 
 \item{useNA}{(\code{character})\cr whether missing data (\code{NA}) should be displayed as a level.}
 
-\item{visit_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
-all available choices and preselected option for variable names that can be used as \code{visit} variable.
+\item{visit_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+object with all available choices and preselected option for variable names that can be used as \code{visit} variable.
 Must be a factor in \code{dataname}.}
 
-\item{worst_flag_indicator}{(\code{\link[teal.picks:values]{teal.picks::values()}})\cr
-value indicating worst grade.}
+\item{worst_flag_indicator}{(\code{\link[teal.picks:values]{teal.picks::values()}}; legacy \code{teal.transform::choices_selected()} is deprecated but
+still accepted)\cr value indicating worst grade.}
 
-\item{worst_flag_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object
-with all available choices and preselected option for variable names that can be used as worst flag variable.}
+\item{worst_flag_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated
+but still accepted)\cr object with all available choices and preselected option for variable
+names that can be used as worst flag variable.}
 
 \item{categorical_stats}{(\code{character})\cr names of statistics to display for non-numeric summary variables. Available
 statistics are \code{n}, \code{count}, \code{count_fraction}, \code{count_fraction_fixed_dp}, \code{fraction} and \code{n_blq}.}

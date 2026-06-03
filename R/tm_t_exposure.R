@@ -220,14 +220,8 @@ template_exposure <- function(parentname,
 #' @param paramcd ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
 #'   variable used to filter by parameter (`dataname`);
 #'   `values()` is added internally.
-#' @param id_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
-#'   subject identifier (`dataname`).
 #' @param parcat ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
 #'   parameter category column on `dataname`; `values()` is added internally.
-#' @param aval_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
-#'   analysis value variable (`dataname`).
-#' @param avalu_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
-#'   analysis value unit variable (`dataname`).
 #' @param paramcd_label (`character`) the column from the dataset where the value will be used to
 #'   label the argument `paramcd`.
 #'
@@ -302,7 +296,7 @@ template_exposure <- function(parentname,
 #'         choices = c("RACE", "REGION1", "STRATA1", "SEX"),
 #'         selected = "RACE"
 #'       ),
-#'       parcat = variables(choices = "PARCAT2"),
+#'       parcat = picks(variables(choices = "PARCAT2"), values(), check_dataset = FALSE),
 #'       add_total = FALSE
 #'     )
 #'   ),
@@ -318,12 +312,12 @@ tm_t_exposure <- function(label,
                           parentname = "ADSL",
                           row_by_var,
                           col_by_var,
-                          paramcd = variables(choices = "PARAMCD"),
+                          paramcd = teal.picks::variables("PARAMCD"),
                           paramcd_label = "PARAM",
-                          id_var = variables(choices = "USUBJID", fixed = TRUE),
+                          id_var = teal.picks::variables("USUBJID", "USUBJID", fixed = TRUE),
                           parcat,
-                          aval_var = variables(choices = "AVAL", fixed = TRUE),
-                          avalu_var = variables(choices = "AVALU", fixed = TRUE),
+                          aval_var = teal.picks::variables("AVAL", "AVAL", fixed = TRUE),
+                          avalu_var = teal.picks::variables("AVALU", "AVALU", fixed = TRUE),
                           add_total,
                           total_label = default_total_label(),
                           add_total_row = TRUE,

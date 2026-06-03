@@ -10,12 +10,12 @@ tm_g_lineplot(
   parentname = "ADSL",
   strata = lifecycle::deprecated(),
   group_var = teal.picks::variables(choices = c("ARM", "ARMCD", "ACTARMCD"), selected =
-    "ARM", multiple = FALSE),
-  x = teal.picks::variables("AVISIT", fixed = TRUE),
+    "ARM"),
+  x = teal.picks::variables("AVISIT", "AVISIT", fixed = TRUE),
   y = teal.picks::variables(choices = c("AVAL", "BASE", "CHG", "PCHG"), selected =
-    "AVAL", multiple = FALSE),
-  y_unit = teal.picks::variables("AVALU", fixed = TRUE),
-  paramcd = teal.picks::picks(teal.picks::variables("PARAMCD", fixed = TRUE),
+    "AVAL"),
+  y_unit = teal.picks::variables("AVALU", "AVALU", fixed = TRUE),
+  paramcd = teal.picks::picks(teal.picks::variables("PARAMCD", "PARAMCD", fixed = TRUE),
     teal.picks::values(choices = c("ALT", "CRP", "IGA"), selected = "ALT", multiple =
     FALSE), check_dataset = FALSE),
   conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95),
@@ -51,7 +51,8 @@ encodings; legacy inputs are coerced with a deprecation warning.}
 parameter code filter: a \code{picks()} chain with the \code{PARAMCD} variable and biomarker \code{values()};
 defaults to \code{ALT} / \code{CRP} / \code{IGA} with \code{ALT} selected.}
 
-\item{conf_level}{(\code{\link[teal.picks:values]{teal.picks::values()}} or legacy \code{choices_selected})\cr confidence levels shown in the UI.}
+\item{conf_level}{(\code{\link[teal.picks:values]{teal.picks::values()}}; legacy \code{teal.transform::choices_selected()} is deprecated but still
+accepted)\cr available confidence levels and default selection, each in the range (0, 1).}
 
 \item{interval}{(\code{character} or \code{NULL})\cr names of the statistics that will be plotted as intervals.
 All the statistics indicated in \code{interval} variable must be present in the object returned by \code{sfun},

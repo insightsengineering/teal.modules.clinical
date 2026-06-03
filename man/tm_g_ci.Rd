@@ -29,10 +29,10 @@ tm_g_ci(
   label,
   x_var,
   y_var,
-  color,
-  stat = c("mean", "median"),
   paramcd = NULL,
   avisit = NULL,
+  color,
+  stat = c("mean", "median"),
   conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order =
     TRUE),
   plot_height = c(700L, 200L, 2000L),
@@ -76,14 +76,14 @@ grouping variable for colors, shapes, and line types.}
 
 \item{stat}{(\code{character})\cr statistic to plot. Options are \code{"mean"} and \code{"median"}.}
 
-\item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
-available choices and preselected option for the parameter code variable from \code{dataname}.}
+\item{paramcd}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+object with all available choices and preselected option for the parameter code variable from \code{dataname}.}
 
-\item{avisit}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr value of analysis
-visit \code{AVISIT} of interest.}
+\item{avisit}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+value of analysis visit \code{AVISIT} of interest.}
 
-\item{conf_level}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
-all available choices and pre-selected option for the confidence level, each within range of (0, 1).}
+\item{conf_level}{(\code{\link[teal.picks:values]{teal.picks::values()}}; legacy \code{teal.transform::choices_selected()} is deprecated but still
+accepted)\cr available confidence levels and default selection, each in the range (0, 1).}
 
 \item{plot_height}{(\code{numeric}) optional\cr vector of length three with \code{c(value, min, max)}. Specifies the
 height of the main plot and renders a slider on the plot to interactively adjust the plot height.}
@@ -124,7 +124,7 @@ This module produces a \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}} type conf
 \item \code{tm_g_ci(data_extract_spec)}: Legacy encodings via \code{data_extract_spec} (merge-based UI).
 
 \item \code{tm_g_ci(default)}: teal.picks encodings via \code{picks} objects for \code{x_var}, \code{y_var}, and \code{color}
-(use \code{\link[=tm_g_ci.variables]{tm_g_ci.variables()}} to pass \code{\link[teal.picks:variables]{teal.picks::variables()}} objects; they are wrapped into \code{picks}).
+(use \code{\link[=tm_g_ci]{tm_g_ci()}} to pass \code{\link[teal.picks:variables]{teal.picks::variables()}} objects; they are wrapped into \code{picks}).
 
 }}
 \section{Decorating Module}{
@@ -196,10 +196,13 @@ app <- init(
         selected = "AVAL",
         multiple = FALSE
       ),
-      color = variables(
-        choices = c("SEX", "STRATA1", "STRATA2"),
-        selected = "STRATA1",
-        multiple = FALSE
+      color = picks(
+        datasets("ADSL", "ADSL"),
+        variables(
+          choices = c("SEX", "STRATA1", "STRATA2"),
+          selected = "STRATA1",
+          multiple = FALSE
+        )
       ),
       paramcd = values(
         choices = levels(data[["ADLB"]]$PARAMCD),
@@ -226,8 +229,8 @@ apps implementing this module can be found.
 \section{Examples in Shinylive}{
 \describe{
   \item{example-1}{
-    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo67sxs+ajUrIGlOgCCACIAygAykTqkMAQxcAAeMVD8otQNLe0AQl09fYPD-NT0SgC+QQBWRLkxANZwrKL5yTap-HDGUMKkMQT8tKJ9Wzv7h8DQ8EcFcgC6rtDoLq5TLsBoFHQAXh0BVwDT4QhEokhOnhwjEoIgZTKPRiAHNbrQMVisdQoPQ4NRkQowABhEjGWjncy6ACSKkYmm4OgACv5SNTYZjiTohpzGMixbQyYiicKygQstsCGJkQRQWBGlgALI05oCnTUqZarAAaSwACZqXJBXKyqIKXB1HB+FSNdrdQKGnKYNdaDVdFCAGKNdqtFxC4nWr1Y1gxMUSlhS+gy6PEhVKlVQtXUxoANRD+upNIAEgBxK02232kROl1QnP59qeiPCn3UDT+5HB0PhuVRlvyoj+cVQyXS9GprHpmSZnTZsBhgAahYX9katkaAEYV601xvLWB+7adNXHeQ6wbV1h11vm8e2x2RF2Q2HJ0fhagWLA7gnqIIJwOU6KjOSJQiI2jUF8yTAMAObNNM1I-D8AAk3Kao0OrNO+cqnrWyLgRSUHhDBcEIWASGoehmFyDBm5IZW3q+p2QYvr2wrYViUCaA8mS-v+RyTvKwHKqB5RwBBRFQCRGrwVMiEoXmLKtCytgccSuHnvh4mEccxGwTJZEUYpymqbR9GCSiTFPixPZvtGQRlEEQS0MYOjsLk5BqBo2jWDYJRCqIOQQKwjToOwaCoMhgi0EUEXIfaHKqEEqxKGAqw-EAA}{Open in Shinylive}
-    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo67sxs+ajUrIGlOgCCACIAygAykTqkMAQxcAAeMVD8otQNLe0AQl09fYPD-NT0SgC+QQBWRLkxANZwrKL5yTap-HDGUMKkMQT8tKJ9Wzv7h8DQ8EcFcgC6rtDoLq5TLsBoFHQAXh0BVwDT4QhEokhOnhwjEoIgZTKPRiAHNbrQMVisdQoPQ4NRkQowABhEjGWjncy6ACSKkYmm4OgACv5SNTYZjiTohpzGMixbQyYiicKygQstsCGJkQRQWBGlgALI05oCnTUqZarAAaSwACZqXJBXKyqIKXB1HB+FSNdrdQKGnKYNdaDVdFCAGKNdqtFxC4nWr1Y1gxMUSlhS+gy6PEhVKlVQtXUxoANRD+upNIAEgBxK02232kROl1QnP59qeiPCn3UDT+5HB0PhuVRlvyoj+cVQyXS9GprHpmSZnTZsBhgAahYX9katkaAEYV601xvLWB+7adNXHeQ6wbV1h11vm8e2x2RF2Q2HJ0fhagWLA7gnqIIJwOU6KjOSJQiI2jUF8yTAMAObNNM1I-D8AAk3Kao0OrNO+cqnrWyLgRSUHhDBcEIWASGoehmFyDBm5IZW3q+p2QYvr2wrYViUCaA8mS-v+RyTvKwHKqB5RwBBRFQCRGrwVMiEoXmLKtCytgccSuHnvh4mEccxGwTJZEUYpymqbR9GCSiTFPixPZvtGQRlEEQS0MYOjsLk5BqBo2jWDYJRCqIOQQKwjToOwaCoMhgi0EUEXIfaHKqEEqxKGAqw-EAA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo67sxs+ajUrIGlOgCCACIAygAykTqkMAQxcAAeMVD8otQNLe0AQl09fYPD-NT0SgC+QQBWRLkxANZwrKL5yTap-HDGUMKkMQT8tKJ9Wzv7h8DQ8EcFcgC6rtDoLq5TLsBoFHQAXh0BVwDT4QhEokhOnhwjEoIgZTKPRiAHNbrQMVisdQoPQ4NRkQowABhEjGWjncy6ACSKkYmm4OgACv5SNTYZjiTohpzGMixbQyYiicKygQstsCGJkQRQWBGlgALI05oCnTUqZarAAaSwACZqXJBXKyqIKXB1HB+FSNdrdQKGnKYNdaDVdFCAGKNdqtFxC4nWr1Y1gxMUSlhS+gy6PEhVKlVQtXUxoANRD+upNIAEgBxK02232kROl1QnP59qeiPCn3UDT+5HB0PhuVRlvyoj+cVQ1AyXZHVNYgr20iTjVtJt4A0LjoVqdlSXS9EbrHpmSZnTZsBhgAahZP9katkaAEYL60rzfLWB+7asdXHeQ6yvH1hr3ezbvmUbYdiIXYhmGu5BH2lbEqgLCwHcCbUIIO4DnuioHkiUIiNo1BfMkwDADmzTTNSPw-AAJNymqNDqzRvlWDq1sieEUoR4TEaR5FgJRNF0QxcjEbelFwa2vqdkGkG9sKTHElAmgPJkKFoZOGHylhyo4eUcD4ZxUDcQuvH8XmLKtCytjycKn6sbhekcccXEkcZUwUdRZkWVZIlibuoF+uB0k9lOMFYqFQRBLQxg6OwuTkGoGjaNYNglEKog5BArCNOg7BoKgVGCLQRR5VR9ocqoQSrEoYCrD8QA}{Open in Shinylive}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo67sxs+ajUrIGlOgCCACIAygAykTqkMAQxcAAeMVD8otQNLe0AQl09fYPD-NT0SgC+QQBWRLkxANZwrKL5yTap-HDGUMKkMQT8tKJ9Wzv7h8DQ8EcFcgC6rtDoLq5TLsBoFHQAXh0BVwDT4QhEokhOnhwjEoIgZTKPRiAHNbrQMVisdQoPQ4NRkQowABhEjGWjncy6ACSKkYmm4OgACv5SNTYZjiTohpzGMixbQyYiicKygQstsCGJkQRQWBGlgALI05oCnTUqZarAAaSwACZqXJBXKyqIKXB1HB+FSNdrdQKGnKYNdaDVdFCAGKNdqtFxC4nWr1Y1gxMUSlhS+gy6PEhVKlVQtXUxoANRD+upNIAEgBxK02232kROl1QnP59qeiPCn3UDT+5HB0PhuVRlvyoj+cVQ1AyXZHVNYgr20iTjVtJt4A0LjoVqdlSXS9EbrHpmSZnTZsBhgAahZP9katkaAEYL60rzfLWB+7asdXHeQ6yvH1hr3ezbvmUbYdiIXYhmGu5BH2lbEqgLCwHcCbUIIO4DnuioHkiUIiNo1BfMkwDADmzTTNSPw-AAJNymqNDqzRvlWDq1sieEUoR4TEaR5FgJRNF0QxcjEbelFwa2vqdkGkG9sKTHElAmgPJkKFoZOGHylhyo4eUcD4ZxUDcQuvH8XmLKtCytjycKn6sbhekcccXEkcZUwUdRZkWVZIlibuoF+uB0k9lOMFYqFQRBLQxg6OwuTkGoGjaNYNglEKog5BArCNOg7BoKgVGCLQRR5VR9ocqoQSrEoYCrD8QA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
     \if{html}{\out{<a style='height: 800px; display: block;'></a>}}
   }
 }
