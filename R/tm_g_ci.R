@@ -251,10 +251,13 @@ template_g_ci <- function(dataname,
 #'         selected = "AVAL",
 #'         multiple = FALSE
 #'       ),
-#'       color = variables(
-#'         choices = c("SEX", "STRATA1", "STRATA2"),
-#'         selected = "STRATA1",
-#'         multiple = FALSE
+#'       color = picks(
+#'         datasets("ADSL", "ADSL"),
+#'         variables(
+#'           choices = c("SEX", "STRATA1", "STRATA2"),
+#'           selected = "STRATA1",
+#'           multiple = FALSE
+#'         )
 #'       ),
 #'       paramcd = values(
 #'         choices = levels(data[["ADLB"]]$PARAMCD),
@@ -291,29 +294,31 @@ tm_g_ci <- function(label,
                     decorators = list()) {
   message("Initializing tm_g_ci")
   checkmate::assert_string(label)
-  if (is.null(x_var)) {
-    stop("`x_var` must not be NULL.", call. = FALSE)
+  if (missing(x_var) ||is.null(x_var)) {
+    stop("`x_var` must be provided.", call. = FALSE)
   }
   UseMethod("tm_g_ci", x_var)
 }
 
 #' @describeIn tm_g_ci Legacy encodings via `data_extract_spec` (merge-based UI).
 #' @export
-tm_g_ci.default <- function(label,
-                            x_var,
-                            y_var,
-                            color,
-                            stat = c("mean", "median"),
-                            paramcd = NULL,
-                            avisit = NULL,
-                            conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
-                            plot_height = c(700L, 200L, 2000L),
-                            plot_width = NULL,
-                            pre_output = NULL,
-                            post_output = NULL,
-                            ggplot2_args = teal.widgets::ggplot2_args(),
-                            transformators = list(),
-                            decorators = list()) {
+tm_g_ci.data_extract_spec <- function(label,
+                                      x_var,
+                                      y_var,
+                                      color,
+                                      stat = c("mean", "median"),
+                                      paramcd = NULL,
+                                      avisit = NULL,
+                                      conf_level = teal.transform::choices_selected(
+                                        c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE
+                                      ),
+                                      plot_height = c(700L, 200L, 2000L),
+                                      plot_width = NULL,
+                                      pre_output = NULL,
+                                      post_output = NULL,
+                                      ggplot2_args = teal.widgets::ggplot2_args(),
+                                      transformators = list(),
+                                      decorators = list()) {
   stat <- match.arg(stat)
   checkmate::assert_null(paramcd, .var.name = "paramcd")
   checkmate::assert_null(avisit, .var.name = "avisit")
@@ -347,7 +352,7 @@ tm_g_ci.default <- function(label,
 
   module(
     label = label,
-    server = srv_g_ci,
+    server = srv_g_ci.data_extract_spec,
     server_args = list(
       x_var = x_var,
       y_var = y_var,
@@ -359,14 +364,14 @@ tm_g_ci.default <- function(label,
       decorators = decorators
     ),
     transformators = transformators,
-    ui = ui_g_ci,
+    ui = ui_g_ci.data_extract_spec,
     ui_args = args,
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
 }
 
 #' @keywords internal
-ui_g_ci <- function(id, ...) {
+ui_g_ci.data_extract_spec <- function(id, ...) {
   ns <- NS(id)
   args <- list(...)
 
@@ -412,16 +417,16 @@ ui_g_ci <- function(id, ...) {
 }
 
 #' @keywords internal
-srv_g_ci <- function(id,
-                     data,
-                     x_var,
-                     y_var,
-                     color,
-                     label,
-                     plot_height,
-                     plot_width,
-                     ggplot2_args,
-                     decorators) {
+srv_g_ci.data_extract_spec <- function(id,
+                                       data,
+                                       x_var,
+                                       y_var,
+                                       color,
+                                       label,
+                                       plot_height,
+                                       plot_width,
+                                       ggplot2_args,
+                                       decorators) {
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(isolate(data()), "teal_data")
 
