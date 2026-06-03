@@ -51,14 +51,14 @@ template_events <- function(dataname,
   checkmate::assert_scalar(prune_diff)
   checkmate::assert_flag(incl_num_patients_hlt)
   checkmate::assert_flag(incl_num_events_hlt)
-  
+
   sort_criteria <- match.arg(sort_criteria)
-  
+
   y <- list()
-  
+
   # Start data steps.
   data_list <- list()
-  
+
   data_list <- add_expr(
     data_list,
     substitute(
@@ -66,7 +66,7 @@ template_events <- function(dataname,
       env = list(df = as.name(dataname))
     )
   )
-  
+
   data_list <- add_expr(
     data_list,
     prepare_arm_levels(
@@ -87,7 +87,7 @@ template_events <- function(dataname,
       )
     )
   }
-  
+
   data_list <- add_expr(
     data_list,
     substitute(
@@ -95,7 +95,7 @@ template_events <- function(dataname,
       env = list(parentname = as.name(parentname), na_lvl = na_level)
     )
   )
-  
+
   if (sort_criteria == "alpha") {
     if (!is.null(hlt)) {
       data_list <- add_expr(
@@ -106,7 +106,7 @@ template_events <- function(dataname,
         )
       )
     }
-    
+
     if (!is.null(llt)) {
       data_list <- add_expr(
         data_list,
@@ -117,9 +117,9 @@ template_events <- function(dataname,
       )
     }
   }
-  
+
   term_vars <- c(hlt, llt)
-  
+
   data_list <- add_expr(
     data_list,
     substitute(
@@ -131,10 +131,10 @@ template_events <- function(dataname,
     )
   )
   y$data <- bracket_expr(data_list)
-  
+
   # Start layout steps.
   layout_list <- list()
-  
+
   basic_title <- if (is.null(hlt) && !is.null(llt)) {
     paste0("Event Summary by Term : ", label_llt)
   } else if (!is.null(hlt) && is.null(llt)) {
@@ -144,14 +144,14 @@ template_events <- function(dataname,
   } else {
     "Event Summary by Term"
   }
-  
+
   parsed_basic_table_args <- teal.widgets::parse_basic_table_args(
     teal.widgets::resolve_basic_table_args(
       user_table = basic_table_args,
       module_table = teal.widgets::basic_table_args(show_colcounts = TRUE, title = basic_title)
     )
   )
-  
+
   layout_list <- add_expr(layout_list, parsed_basic_table_args)
   layout_list <- add_expr(
     layout_list,
@@ -176,7 +176,7 @@ template_events <- function(dataname,
       }
     )
   }
-  
+
   if (add_total) {
     layout_list <- add_expr(
       layout_list,
@@ -186,10 +186,10 @@ template_events <- function(dataname,
       )
     )
   }
-  
+
   unique_label <- paste0("Total number of patients with at least one ", event_type)
   nonunique_label <- paste0("Overall total number of ", event_type, "s")
-  
+
   if (incl_overall_sum) {
     layout_list <- add_expr(
       layout_list,
@@ -207,12 +207,12 @@ template_events <- function(dataname,
       )
     )
   }
-  
+
   one_term <- is.null(hlt) || is.null(llt)
-  
+
   if (one_term) {
     term_var <- ifelse(is.null(hlt), llt, hlt)
-    
+
     layout_list <- add_expr(
       layout_list,
       substitute(
@@ -227,14 +227,14 @@ template_events <- function(dataname,
   } else {
     # Case when both hlt and llt are used.
     y$layout_prep <- quote(split_fun <- rtables::drop_split_levels)
-    
+
     # Determine if any nested summary rows should be included
     has_hlt_sum <- incl_num_patients_hlt || incl_num_events_hlt
-    
+
     if (has_hlt_sum) {
       hlt_stats <- character(0)
       hlt_labels <- character(0)
-      
+
       # Dynamically configure which summary stats to display based on UI inputs
       if (incl_num_patients_hlt) {
         hlt_stats <- c(hlt_stats, "unique")
@@ -244,7 +244,7 @@ template_events <- function(dataname,
         hlt_stats <- c(hlt_stats, "nonunique")
         hlt_labels <- c(hlt_labels, nonunique = nonunique_label)
       }
-      
+
       layout_list <- add_expr(
         layout_list,
         substitute(
@@ -299,18 +299,18 @@ template_events <- function(dataname,
       )
     }
   }
-  
+
   y$layout <- substitute(
     expr = lyt <- layout_pipe,
     env = list(layout_pipe = pipe_expr(layout_list))
   )
-  
+
   # Full table.
   y$table <- substitute(
     expr = table <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = parent),
     env = list(parent = as.name(parentname))
   )
-  
+
   # Start pruning table.
   prune_list <- list()
   prune_list <- add_expr(
@@ -319,7 +319,7 @@ template_events <- function(dataname,
       pruned_result <- rtables::prune_table(table)
     )
   )
-  
+
   if (prune_freq > 0 || prune_diff > 0) {
     # Do not use "All Patients" column for pruning conditions.
     prune_list <- add_expr(
@@ -329,7 +329,7 @@ template_events <- function(dataname,
         env = list(add_total = add_total)
       )
     )
-    
+
     if (prune_freq > 0 && prune_diff == 0) {
       prune_list <- add_expr(
         prune_list,
@@ -356,7 +356,7 @@ template_events <- function(dataname,
         )
       )
     }
-    
+
     # Apply pruning conditions.
     prune_list <- add_expr(
       prune_list,
@@ -365,12 +365,12 @@ template_events <- function(dataname,
       )
     )
   }
-  
+
   y$prune <- bracket_expr(prune_list)
-  
+
   # Start sorting pruned table.
   sort_list <- list()
-  
+
   if (sort_criteria == "alpha") {
     if (prune_freq == 0 && prune_diff == 0) {
       # This is just a dummy step to get the right variable result.
@@ -392,7 +392,7 @@ template_events <- function(dataname,
           }
         )
       )
-      
+
       sort_list <- add_expr(
         sort_list,
         quote({
@@ -411,7 +411,7 @@ template_events <- function(dataname,
         )
       )
     }
-    
+
     # When the "All Patients" column is present we only use that for scoring.
     scorefun_hlt <- if (add_total) {
       quote(rtables::cont_n_onecol(idx_split_col))
@@ -423,10 +423,10 @@ template_events <- function(dataname,
     } else {
       quote(tern::score_occurrences)
     }
-    
+
     if (one_term) {
       term_var <- ifelse(is.null(hlt), llt, hlt)
-      
+
       sort_list <- add_expr(
         sort_list,
         substitute(
@@ -458,7 +458,7 @@ template_events <- function(dataname,
             )
           )
         )
-        
+
         if (prune_freq > 0 || prune_diff > 0) {
           sort_list <- add_expr(
             sort_list,
@@ -468,7 +468,7 @@ template_events <- function(dataname,
               }
             )
           )
-          
+
           sort_list <- add_expr(
             sort_list,
             quote(
@@ -490,10 +490,12 @@ template_events <- function(dataname,
                 }
                 leaves <- get_leaves(cb)
                 leaves <- leaves[vapply(leaves, function(x) inherits(x, "DataRow") || inherits(x, "ContentRow"), logical(1))]
-                if (length(leaves) == 0) return(0)
+                if (length(leaves) == 0) {
+                  return(0)
+                }
                 sum(vapply(leaves, SCORE_FUN, numeric(1)))
               }
-              
+
               pruned_and_sorted_result <- pruned_result %>%
                 rtables::sort_at_path(path = c(hlt), scorefun = scorefun_hlt_no_sum) %>%
                 rtables::sort_at_path(path = c(hlt, "*", llt), scorefun = SCORE_FUN)
@@ -509,7 +511,7 @@ template_events <- function(dataname,
     }
   }
   y$sort <- bracket_expr(sort_list)
-  
+
   y
 }
 
@@ -596,32 +598,32 @@ template_events <- function(dataname,
 #'
 #' @export
 tm_t_events <- function(label,
-                            dataname,
-                            parentname = ifelse(
-                              inherits(arm_var, "data_extract_spec"),
-                              teal.transform::datanames_input(arm_var),
-                              "ADSL"
-                            ),
-                            arm_var,
-                            hlt,
-                            llt,
-                            add_total = TRUE,
-                            total_label = default_total_label(),
-                            na_level = tern::default_na_str(),
-                            event_type = "event",
-                            sort_criteria = c("freq_desc", "alpha"),
-                            sort_freq_col = total_label,
-                            prune_freq = 0,
-                            prune_diff = 0,
-                            drop_arm_levels = TRUE,
-                            incl_overall_sum = TRUE,
-                            incl_num_patients_hlt = TRUE,
-                            incl_num_events_hlt = TRUE,
-                            pre_output = NULL,
-                            post_output = NULL,
-                            basic_table_args = teal.widgets::basic_table_args(),
-                            transformators = list(),
-                            decorators = list()) {
+                        dataname,
+                        parentname = ifelse(
+                          inherits(arm_var, "data_extract_spec"),
+                          teal.transform::datanames_input(arm_var),
+                          "ADSL"
+                        ),
+                        arm_var,
+                        hlt,
+                        llt,
+                        add_total = TRUE,
+                        total_label = default_total_label(),
+                        na_level = tern::default_na_str(),
+                        event_type = "event",
+                        sort_criteria = c("freq_desc", "alpha"),
+                        sort_freq_col = total_label,
+                        prune_freq = 0,
+                        prune_diff = 0,
+                        drop_arm_levels = TRUE,
+                        incl_overall_sum = TRUE,
+                        incl_num_patients_hlt = TRUE,
+                        incl_num_events_hlt = TRUE,
+                        pre_output = NULL,
+                        post_output = NULL,
+                        basic_table_args = teal.widgets::basic_table_args(),
+                        transformators = list(),
+                        decorators = list()) {
   message("Initializing tm_t_events")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
@@ -645,9 +647,9 @@ tm_t_events <- function(label,
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
   # assert_decorators(decorators, "table")
-  
+
   args <- as.list(environment())
-  
+
   data_extract_list <- list(
     arm_var = cs_to_des_select(arm_var, dataname = parentname, multiple = TRUE, ordered = TRUE),
     hlt = teal.transform::data_extract_spec(
@@ -662,7 +664,7 @@ tm_t_events <- function(label,
     ),
     llt = cs_to_des_select(llt, dataname = dataname)
   )
-  
+
   module(
     label = label,
     ui = ui_t_events_byterm,
@@ -695,7 +697,7 @@ ui_t_events_byterm <- function(id, ...) {
   ns <- NS(id)
   a <- list(...)
   is_single_dataset_value <- teal.transform::is_single_dataset(a$arm_var, a$hlt, a$llt)
-  
+
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(
       teal.widgets::table_with_settings_ui(ns("table"))
@@ -800,7 +802,7 @@ srv_t_events_byterm <- function(id,
                                 decorators) {
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
-  
+
   moduleServer(id, function(input, output, session) {
     teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
     selector_list <- teal.transform::data_extract_multiple_srv(
@@ -815,7 +817,7 @@ srv_t_events_byterm <- function(id,
         }
       )
     )
-    
+
     iv_r <- reactive({
       iv <- shinyvalidate::InputValidator$new()
       iv$add_rule("prune_freq", shinyvalidate::sv_required("Please provide an Incidence Rate between 0 and 100 (%)."))
@@ -830,19 +832,19 @@ srv_t_events_byterm <- function(id,
       )
       teal.transform::compose_and_enable_validators(iv, selector_list)
     })
-    
+
     anl_inputs <- teal.transform::merge_expression_srv(
       datasets = data,
       selector_list = selector_list,
       merge_function = "dplyr::inner_join"
     )
-    
+
     adsl_inputs <- teal.transform::merge_expression_module(
       datasets = data,
       data_extract = list(arm_var = arm_var),
       anl_name = "ANL_ADSL"
     )
-    
+
     anl_q <- reactive({
       obj <- data()
       teal.reporter::teal_card(obj) <-
@@ -854,25 +856,25 @@ srv_t_events_byterm <- function(id,
         teal.code::eval_code(as.expression(anl_inputs()$expr)) %>%
         teal.code::eval_code(as.expression(adsl_inputs()$expr))
     })
-    
+
     merged <- list(
       anl_input_r = anl_inputs,
       adsl_input_r = adsl_inputs,
       anl_q = anl_q
     )
-    
+
     validate_checks <- reactive({
       teal::validate_inputs(iv_r())
-      
+
       adsl_filtered <- merged$anl_q()[[parentname]]
       anl_filtered <- merged$anl_q()[[dataname]]
-      
+
       input_arm_var <- as.vector(merged$anl_input_r()$columns_source$arm_var)
       input_level_term <- c(
         as.vector(merged$anl_input_r()$columns_source$hlt),
         as.vector(merged$anl_input_r()$columns_source$llt)
       )
-      
+
       validate(
         if (length(input_arm_var) >= 1) {
           need(is.factor(adsl_filtered[[input_arm_var[[1]]]]), "Treatment variable is not a factor.")
@@ -886,7 +888,7 @@ srv_t_events_byterm <- function(id,
           )
         }
       )
-      
+
       # validate inputs
       teal.modules.clinical:::validate_standard_inputs(
         adsl = adsl_filtered,
@@ -896,17 +898,17 @@ srv_t_events_byterm <- function(id,
         arm_var = input_arm_var[[1]]
       )
     })
-    
+
     # The R-code corresponding to the analysis.
     table_q <- reactive({
       validate_checks()
       ANL <- merged$anl_q()[["ANL"]]
-      
+
       input_hlt <- as.vector(merged$anl_input_r()$columns_source$hlt)
       input_llt <- as.vector(merged$anl_input_r()$columns_source$llt)
       label_hlt <- if (length(input_hlt) != 0) attributes(ANL[[input_hlt[1]]])$label else NULL
       label_llt <- if (length(input_llt) != 0) attributes(ANL[[input_llt]])$label else NULL
-      
+
       my_calls <- template_events(
         dataname = "ANL",
         parentname = "ANL_ADSL",
@@ -929,12 +931,12 @@ srv_t_events_byterm <- function(id,
         incl_num_events_hlt = isTRUE(input$incl_num_events_hlt),
         basic_table_args = basic_table_args
       )
-      
+
       obj <- merged$anl_q()
       teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "### Table")
       teal.code::eval_code(obj, as.expression(unlist(my_calls)))
     })
-    
+
     table_renamed_q <- reactive({
       req(table_q())
       within(table_q(), {
@@ -947,15 +949,15 @@ srv_t_events_byterm <- function(id,
       decorators = teal.modules.clinical:::select_decorators(decorators, "table"),
       expr = table
     )
-    
+
     # Outputs to render.
     table_r <- reactive(decorated_table_q()[["table"]])
-    
+
     teal.widgets::table_with_settings_srv(
       id = "table",
       table_r = table_r
     )
-    
+
     decorated_table_q
   })
 }
