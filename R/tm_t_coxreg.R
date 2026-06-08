@@ -557,12 +557,11 @@ tm_t_coxreg <- function(label,
                         decorators = list()) {
   message("Initializing tm_t_coxreg")
   arm_var <- migrate_choices_selected_to_variables(arm_var)
-  paramcd <- migrate_value_choices_to_picks(paramcd, multiple = TRUE)
+  paramcd <- migrate_value_choices_to_picks(paramcd, multiple = FALSE)
   cov_var <- migrate_choices_selected_to_variables(cov_var)
   strata_var <- migrate_choices_selected_to_variables(strata_var)
   aval_var <- migrate_choices_selected_to_variables(aval_var)
   cnsr_var <- migrate_choices_selected_to_variables(cnsr_var)
-  conf_level <- migrate_choices_selected_to_values(conf_level)
 
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
@@ -751,19 +750,83 @@ srv_t_coxreg <- function(id,
 
     merged_input_r <- reactive({
       list(
-        columns_source = list(
-          arm_var = anl_selectors$arm_var()$variables$selected,
-          strata_var = anl_selectors$strata_var()$variables$selected,
-          aval_var = anl_selectors$aval_var()$variables$selected,
-          cnsr_var = anl_selectors$cnsr_var()$variables$selected,
-          cov_var = anl_selectors$cov_var()$variables$selected,
-          paramcd = anl_selectors$paramcd()$variables$selected
-        )
+        arm_var = anl_selectors$arm_var()$variables$selected,
+        strata_var = anl_selectors$strata_var()$variables$selected,
+        aval_var = anl_selectors$aval_var()$variables$selected,
+        cnsr_var = anl_selectors$cnsr_var()$variables$selected,
+        cov_var = anl_selectors$cov_var()$variables$selected,
+        paramcd = anl_selectors$paramcd()$variables$selected
       )
     })
 
-    data_with_card <- reactive({
+    validated_q <- reactive({
       obj <- data()
+
+      validate(
+        teal::need_input(
+          inputId = "aval_var-variables-selected",
+          condition = length(anl_selectors$aval_var()$variables$selected) > 0L,
+          message = "An analysis variable is required."
+        ),
+        teal::need_input(
+          inputId = "arm_var-variables-selected",
+          condition = length(anl_selectors$arm_var()$variables$selected) > 0L,
+          message = "A treatment variable is required."
+        ),
+        teal::need_input(
+          inputId = "cnsr_var-variables-selected",
+          condition = length(anl_selectors$cnsr_var()$variables$selected) > 0L,
+          message = "A censor variable is required."
+        ),
+        teal::need_input(
+          inputId = c("arm_var-variables-selected", "strata_var-variables-selected"),
+          condition = length(intersect(
+            anl_selectors$arm_var()$variables$selected,
+            anl_selectors$strata_var()$variables$selected
+          )) == 0L,
+          message = "`Treatment` and `Strata` variables should not overlap."
+        ),
+        teal::need_input(
+          inputId = c("arm_var-variables-selected", "cov_var-variables-selected"),
+          condition = length(intersect(
+            anl_selectors$arm_var()$variables$selected,
+            anl_selectors$cov_var()$variables$selected
+          )) == 0L,
+          message = "`Treatment` and `Covariate` variables should not overlap."
+        ),
+        teal::need_input(
+          inputId = c("strata_var-variables-selected", "cov_var-variables-selected"),
+          condition = length(intersect(
+            anl_selectors$strata_var()$variables$selected,
+            anl_selectors$cov_var()$variables$selected
+          )) == 0L,
+          message = "`Covariate` and `Strata` variables should not overlap."
+        )
+      )
+      validate(
+        teal::need_input(
+          inputId = "conf_level",
+          condition = !is.null(input$conf_level),
+          message = "Please choose a confidence level."
+        ),
+        teal::need_input(
+          inputId = "conf_level",
+          condition = !is.null(input$conf_level) && input$conf_level > 0 && input$conf_level < 1,
+          message = "Confidence level must be between 0 and 1."
+        ),
+        teal::need_input(
+          inputId = "pval_method",
+          condition = !(
+            length(anl_selectors$strata_var()$variables$selected) > 0L && !identical(input$pval_method, "wald")
+          ),
+          message = "Only Wald tests are supported for models with strata."
+        )
+      )
+      obj
+    })
+
+    data_with_card <- reactive({
+      obj <- validated_q()
       teal.reporter::teal_card(obj) <-
         c(
           teal.reporter::teal_card(obj),
@@ -773,16 +836,6 @@ srv_t_coxreg <- function(id,
     })
     merged_anl <- merge_srv("merge_anl", data = data_with_card, selectors = anl_selectors, output_name = "ANL")
     anl_q <- merged_anl$data
-
-    numeric_level_validation <- function(val) {
-      # need to explicitly evaluate 'val' here to ensure
-      # the correct label is shown - if this is not done
-      # then the last value of "val" is the label for all cases
-      v <- val
-      ~ if (anyNA(as_numeric_from_comma_sep_str(.))) {
-        paste("Numeric interaction level(s) should be specified for", v)
-      }
-    }
 
     ## render conditional strata levels input UI  ----
     open_textinput <- function(x, dataset) {
@@ -800,7 +853,7 @@ srv_t_coxreg <- function(id,
       # exclude cases when increments are not necessary and
       # finally accessing the UI-rendering function defined above.
       if (use_interactions()) {
-        input_cov_var <- as.vector(merged_input_r()$columns_source$cov_var)
+        input_cov_var <- as.vector(merged_input_r()$cov_var)
         dataset <- anl_q()[[dataname]]
         cov_is_numeric <- vapply(dataset[input_cov_var], is.numeric, logical(1))
         input_cov_var[cov_is_numeric]
@@ -815,44 +868,23 @@ srv_t_coxreg <- function(id,
       }
     })
 
-    iv_r <- reactive({
-      iv <- shinyvalidate::InputValidator$new()
-      iv$add_validator(arm_ref_comp_buckets_validator())
-      iv$add_rule("conf_level", shinyvalidate::sv_required("Please choose a confidence level"))
-      iv$add_rule(
-        "conf_level",
-        shinyvalidate::sv_between(0, 1, message_fmt = "Confidence level must be between 0 and 1")
-      )
-      iv$add_rule("pval_method", function(value) {
-        if (length(anl_selectors$strata_var()$variables$selected) > 0L && !identical(value, "wald")) {
-          return("Only Wald tests are supported for models with strata.")
-        }
-        NULL
-      })
-
-      for (val in interaction_var_r()) {
-        iv$add_rule(
-          paste0("interact_", val),
-          shinyvalidate::sv_required(paste("Interaction level(s) should be specified for", val))
-        )
-        iv$add_rule(
-          paste0("interact_", val), numeric_level_validation(val)
-        )
-      }
-      iv$enable()
-      iv
-    })
-
     ## Prepare the call evaluation environment ----
     validate_checks <- reactive({
       arm_ref_comp_iv()
-      teal::validate_inputs(iv_r())
 
-      validate(
-        need(length(anl_selectors$arm_var()$variables$selected) >= 1L, "A treatment variable is required"),
-        need(length(anl_selectors$aval_var()$variables$selected) >= 1L, "An analysis variable is required"),
-        need(length(anl_selectors$cnsr_var()$variables$selected) >= 1L, "A censor variable is required")
-      )
+      for (val in interaction_var_r()) {
+        teal::validate_input(
+          inputId = paste0("interact_", val),
+          condition = input[[paste0("interact_", val)]] != "",
+          message = paste("Interaction level(s) should be specified for", val)
+        )
+        teal::validate_input(
+          inputId = paste0("interact_", val),
+          condition = !anyNA(as_numeric_from_comma_sep_str(input[[paste0("interact_", val)]])),
+          message = paste("Numeric interaction level(s) should be specified for", val)
+        )
+      }
+
       pc <- anl_selectors$paramcd()
       pc_vals <- if (is.null(pc$values)) character(0) else pc$values$selected
       validate(need(length(pc_vals) >= 1L, "An endpoint is required"))
@@ -860,38 +892,23 @@ srv_t_coxreg <- function(id,
       adsl_filtered <- anl_q()[[parentname]]
       anl_filtered <- anl_q()[[dataname]]
 
-      input_arm_var <- as.vector(merged_input_r()$columns_source$arm_var)
-      input_strata_var <- as.vector(merged_input_r()$columns_source$strata_var)
-      input_aval_var <- as.vector(merged_input_r()$columns_source$aval_var)
-      input_cnsr_var <- as.vector(merged_input_r()$columns_source$cnsr_var)
-      input_paramcd <- as.vector(anl_selectors$paramcd()$variables$selected)
-      input_cov_var <- as.vector(merged_input_r()$columns_source$cov_var)
+      input_arm_var <- as.vector(merged_input_r()$arm_var)
+      input_strata_var <- as.vector(merged_input_r()$strata_var)
+      input_aval_var <- as.vector(merged_input_r()$aval_var)
+      input_cnsr_var <- as.vector(merged_input_r()$cnsr_var)
+      input_paramcd <- as.vector(merged_input_r()$paramcd)
+      input_cov_var <- as.vector(merged_input_r()$cov_var)
 
-      validate(
-        need(
-          length(intersect(input_arm_var, input_strata_var)) == 0L,
-          "`Treatment` and `Strata` variables should not overlap"
-        ),
-        need(
-          length(intersect(input_arm_var, input_cov_var)) == 0L,
-          "`Treatment` and `Covariate` variables should not overlap"
-        ),
-        need(
-          length(intersect(input_strata_var, input_cov_var)) == 0L,
-          "`Covariate` and `Strata` variables should not overlap"
-        )
-      )
-      validate(
-        need(
-          !isTRUE(use_interactions()) || length(input_cov_var) > 0L,
-          "If interactions are selected at least one covariate should be specified."
-        )
+      teal::validate_input(
+        inputId = "cov_var-variables-selected",
+        condition = !isTRUE(use_interactions()) || length(input_cov_var) > 0L,
+        message = "If interactions are selected at least one covariate should be specified."
       )
 
       cov_is_numeric <- if (length(input_cov_var) > 0L) {
-        vapply(anl_filtered[input_cov_var], is.numeric, logical(1))
+        vapply(anl_filtered[input_cov_var], is.numeric, logical(1L))
       } else {
-        logical(0)
+        logical(0L)
       }
       interaction_var <- input_cov_var[cov_is_numeric]
 
@@ -912,7 +929,7 @@ srv_t_coxreg <- function(id,
         validate_args <- append(validate_args, list(min_n_levels_armvar = NULL))
       }
 
-      do.call(what = "validate_standard_inputs", validate_args)
+      do.call(what = validate_standard_inputs, validate_args)
 
       arm_n <- base::table(anl_filtered[[input_arm_var]])
       anl_arm_n <- if (input$combine_comp_arms) {
@@ -927,21 +944,20 @@ srv_t_coxreg <- function(id,
 
       # validate covariate has at least two levels
       if (length(input_cov_var) > 0L) {
-        validate(
-          need(
-            all(vapply(anl_filtered[input_cov_var], FUN = function(x) {
-              length(unique(x)) > 1
-            }, logical(1))),
-            "All covariates needs to have at least two levels"
-          )
+        teal::validate_input(
+          inputId = "cov_var-variables-selected",
+          condition = all(vapply(anl_filtered[input_cov_var], FUN = function(x) {
+            length(unique(x)) > 1
+          }, logical(1))),
+          message = "All covariates needs to have at least two levels"
         )
       }
 
       NULL
-    })
+      })
 
     at <- reactive({
-      input_cov_var <- as.vector(merged_input_r()$columns_source$cov_var)
+      input_cov_var <- as.vector(merged_input_r()$cov_var)
       cov_is_numeric <- vapply(anl_q()[[dataname]][input_cov_var], is.numeric, logical(1))
       interaction_var <- input_cov_var[cov_is_numeric]
       if (length(interaction_var) > 0 && length(input_cov_var) > 0) {
@@ -960,32 +976,28 @@ srv_t_coxreg <- function(id,
 
 
     call_template <- function(comp_arm, anl, paramcd, multivariate, basic_table_args = NULL) {
-      strata_var <- as.vector(anl$columns_source$strata_var)
+      strata_var <- as.vector(anl$strata_var)
       strata_var <- if (length(strata_var) != 0) strata_var else NULL
-      cov_var <- as.vector(anl$columns_source$cov_var)
+      cov_var <- anl$cov_var
       cov_var <- if (length(cov_var) > 0) cov_var else NULL
 
       at <- if (use_interactions()) at() else list()
-      arm_var <- as.vector(anl$columns_source$arm_var)
-      cnsr_var <- as.vector(anl$columns_source$cnsr_var)
-      aval_var <- as.vector(anl$columns_source$aval_var)
       ref_arm <- unlist(input$buckets$Ref)
       combine_comp_arms <- input$combine_comp_arms
       control <- control_coxreg(
         pval_method = input$pval_method,
         ties = input$ties,
         conf_level = as.numeric(input$conf_level),
-        interaction = `if`(!use_interactions(), FALSE, input$interactions)
+        interaction = if (!use_interactions()) FALSE else input$interactions
       )
-
       if (multivariate) {
         template_coxreg_m(
           dataname = "ANL",
           cov_var = cov_var,
           at = at,
-          arm_var = arm_var,
-          cnsr_var = cnsr_var,
-          aval_var = aval_var,
+          arm_var = anl$arm_var,
+          cnsr_var = anl$cnsr_var,
+          aval_var = anl$aval_var,
           ref_arm = ref_arm,
           comp_arm = comp_arm,
           paramcd = paramcd,
@@ -1000,9 +1012,9 @@ srv_t_coxreg <- function(id,
           dataname = "ANL",
           cov_var = cov_var,
           at = at,
-          arm_var = arm_var,
-          cnsr_var = cnsr_var,
-          aval_var = aval_var,
+          arm_var = anl$arm_var,
+          cnsr_var = anl$cnsr_var,
+          aval_var = anl$aval_var,
           ref_arm = ref_arm,
           comp_arm = comp_arm,
           paramcd = paramcd,
@@ -1024,7 +1036,7 @@ srv_t_coxreg <- function(id,
       paramcd_col <- as.vector(anl_selectors$paramcd()$variables$selected)[[1]]
       paramcd_vals <- as.character(unique(ANL[[paramcd_col]]))
       multivariate <- input$type == "Multivariate"
-      strata_var <- as.vector(merged_input_r()$columns_source$strata_var)
+      strata_var <- as.vector(merged_input_r()$strata_var)
 
       if (input$type == "Multivariate") {
         main_title <- paste("Multi-Variable Cox Regression for", paramcd_vals)
