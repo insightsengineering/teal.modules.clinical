@@ -145,8 +145,7 @@ arm_bucket_values <- function(buckets, name) {
 #' @param input_id (`character`)\cr unique id that the buckets will be referenced with.
 #' @param output_id (`character`)\cr name of the UI id that the output will be written to.
 #' @param arm_var_r (`reactive`)\cr reactive expression that returns the selected Treatment variable.
-#' @return A `shiny::reactive` that runs arm/bucket validation (call inside other reactives before
-#'   `teal::validate_inputs()`).
+#' @return A `shiny::reactive` that runs arm/bucket validation and returns `NULL`.
 #' @keywords internal
 #'
 arm_ref_comp_observer_picks <- function(session, # nolint: object_name.
@@ -207,7 +206,7 @@ arm_ref_comp_observer_picks <- function(session, # nolint: object_name.
 
   reactive({
     if (!isTRUE(on_off())) {
-      return(invisible(NULL))
+      return(NULL)
     }
     validate_input(
       inputId = id_arm_var,
@@ -228,6 +227,7 @@ arm_ref_comp_observer_picks <- function(session, # nolint: object_name.
       message = "A comparison arm must be selected.",
       session = session
     )
+    NULL
   })
 }
 
