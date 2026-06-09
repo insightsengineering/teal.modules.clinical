@@ -730,6 +730,14 @@ prepare_arm_levels <- function(dataname,
 
     data_list <- add_expr(
       data_list,
+      substitute(
+        expr = stopifnot("No common arm levels in data, please check input." = nrow(parentname) > 0),
+        env = list(parentname = as.name(parentname))
+      )
+    )
+
+    data_list <- add_expr(
+      data_list,
       substitute_names(
         expr = parentname <- parentname %>% dplyr::mutate(
           arm_var = droplevels(arm_var)

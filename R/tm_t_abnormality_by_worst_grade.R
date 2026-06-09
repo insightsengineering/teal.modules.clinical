@@ -522,32 +522,40 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint: object_length.
     anl_q <- merged_adsl_anl$data
 
     validate_checks <- reactive({
-      input_arm <- anl_selectors$arm_var()$variables$selected
       validate(
-        need(length(input_arm) == 1L, "Please select a treatment variable.")
-      )
-      validate(
-        need(
-          length(anl_selectors$id_var()$variables$selected) >= 1L,
-          "Please select a Subject Identifier."
-        ),
-        need(
-          length(anl_selectors$atoxgr_var()$variables$selected) >= 1L,
-          "Please select Analysis Toxicity Grade variable."
-        ),
-        need(
-          length(anl_selectors$worst_low_flag_var()$variables$selected) >= 1L,
-          "Please select the Worst Low Grade flag variable."
-        ),
-        need(
-          length(anl_selectors$worst_high_flag_var()$variables$selected) >= 1L,
-          "Please select the Worst High Grade flag variable."
+        teal::need_input(
+          inputId = "arm_var-variables-selected",
+          condition = length(anl_selectors$arm_var()$variables$selected) == 1L,
+          message = "Please select a treatment variable."
         )
       )
       validate(
-        need(
-          !is.null(input$worst_flag_indicator) && nzchar(input$worst_flag_indicator),
-          "Please select a value indicating the worst grade."
+        teal::need_input(
+          inputId = "id_var-variables-selected",
+          condition = length(anl_selectors$id_var()$variables$selected) >= 1L,
+          message = "Please select a Subject Identifier."
+        ),
+        teal::need_input(
+          inputId = "atoxgr_var-variables-selected",
+          condition = length(anl_selectors$atoxgr_var()$variables$selected) >= 1L,
+          message = "Please select Analysis Toxicity Grade variable."
+        ),
+        teal::need_input(
+          inputId = "worst_low_flag_var-variables-selected",
+          condition = length(anl_selectors$worst_low_flag_var()$variables$selected) >= 1L,
+          message = "Please select the Worst Low Grade flag variable."
+        ),
+        teal::need_input(
+          inputId = "worst_high_flag_var-variables-selected",
+          condition = length(anl_selectors$worst_high_flag_var()$variables$selected) >= 1L,
+          message = "Please select the Worst High Grade flag variable."
+        )
+      )
+      validate(
+        teal::need_input(
+          inputId = "worst_flag_indicator",
+          condition = !is.null(input$worst_flag_indicator),
+          message = "Please select a value indicating the worst grade."
         )
       )
 
@@ -558,9 +566,10 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint: object_length.
         pcd$values$selected
       }
       validate(
-        need(
-          length(pcd_vals) >= 1L,
-          "Please select at least one Laboratory parameter."
+        teal::need_input(
+          inputId = "paramcd-values-selected",
+          condition = length(pcd_vals) >= 1L,
+          message = "Please select at least one Laboratory parameter."
         )
       )
 
@@ -647,7 +656,9 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint: object_length.
 
       obj <- anl_q()
       teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "### Table")
-      teal.code::eval_code(obj, as.expression(unlist(my_calls)))
+      obj <- teal.code::eval_code(obj, as.expression(unlist(my_calls)))
+      validate(need(!inherits(obj, "qenv.error"), obj$message))
+      obj
     })
 
     decorated_table_q <- teal::srv_transform_teal_data(
