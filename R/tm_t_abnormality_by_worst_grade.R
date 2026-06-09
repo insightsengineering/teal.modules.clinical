@@ -221,6 +221,7 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint: object_len
 
   y$table <- substitute(
     expr = {
+      stopifnot("No common arm levels in data, please check input." = nrow(parent) > 0)
       table <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = parent)
     },
     env = list(parent = as.name(parentname))
