@@ -179,7 +179,11 @@ app <- init(
       by_vars = variables(choices = c("PARAM", "AVISIT"), selected = "AVISIT"),
       summarize_vars = variables(choices = c("AVAL", "CHG"), selected = "AVAL"),
       useNA = "ifany",
-      paramcd = variables(choices = "PARAMCD")
+      paramcd = picks(
+        variables(choices = "PARAMCD")
+        values(selected = "ALT", multiple = FALSE),
+        check_dataset = FALSE
+      )
     )
   )
 )
@@ -195,8 +199,8 @@ apps implementing this module can be found.
 \section{Examples in Shinylive}{
 \describe{
   \item{example-1}{
-    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOz8gCEikrLK6v5qeiUAX0UIACsieL8AazhWUUTQm3D+OGMoYVI-An5aUTKRscnp4Gh4GaS5AF1XaHQi+Oj2BqSdAF4dJNwGviERUWedT+ExPcIBkMiU-GtRIIYDAWKw-PQOA0QTpqFB6HBqL8FGBclCYWwdAidFgiBEdABxRhEQSoH62NEibHvYHI16hI66F7YnItJlIkEsGB+TQsX4ixi0BmAggxUYEMS-Aj3MCZLAAWSZOm56oAwtlsXI5MzWToavxwURPJiXvZnMbWQjhSwfi9xZL6N92DK5QqXkrsQAFVWZDV4LUqgBqAElclHbAaUqIMXB1HB+FjIzG4wn+RlIdCWLQAF5wJ2MF06N1SmbemS+nT+yOZfKa7E6gAS5ITOiTIlT6a5TZbYCNuZ0giTADlMhnaMsIKw+SzkagWLANmLC9WvbK6xXA8G1XqDfzBhlBoM5zp2PFyGoNNprDY0izRHEF5l0Ow0KgACSCWgUh-X8k0YbRGEGPolDAPoziAA}{Open in Shinylive}
-    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOz8gCEikrLK6v5qeiUAX0UIACsieL8AazhWUUTQm3D+OGMoYVI-An5aUTKRscnp4Gh4GaS5AF1XaHQi+Oj2BqSdAF4dJNwGviERUWedT+ExPcIBkMiU-GtRIIYDAWKw-PQOA0QTpqFB6HBqL8FGBclCYWwdAidFgiBEdABxRhEQSoH62NEibHvYHI16hI66F7YnItJlIkEsGB+TQsX4ixi0BmAggxUYEMS-Aj3MCZLAAWSZOm56oAwtlsXI5MzWToavxwURPJiXvZnMbWQjhSwfi9xZL6N92DK5QqXkrsQAFVWZDV4LUqgBqAElclHbAaUqIMXB1HB+FjIzG4wn+RlIdCWLQAF5wJ2MF06N1SmbemS+nT+yOZfKa7E6gAS5ITOiTIlT6a5TZbYCNuZ0giTADlMhnaMsIKw+SzkagWLANmLC9WvbK6xXA8G1XqDfzBhlBoM5zp2PFyGoNNprDY0izRHEF5l0Ow0KgACSCWgUh-X8k0YbRGEGPolDAPoziAA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOz8gCEikrLK6v5qeiUAX0UIACsieL8AazhWUUTQm3D+OGMoYVI-An5aUTKRscnp4Gh4GaS5AF1XaHQi+Oj2BqSdAF4dJNwGviERUWedT+ExPcIBkMiU-GtRIIYDAWKw-PQOA0QTpqFB6HBqL8FGBclCYWwdAidFgiBEdABxRhEQSoH62NEibHvYHI16hI66F7YnItJlIkEsGB+TQsX4ixi0BmAggxUYEMS-Aj3MCZLAAWSZOm56oAwtlsXI5MzWToavxwURPJiXvZnMbWQjhSwfi9xZL6N92DK5QqXkrsQAFVWZDV4LUqgBqAElclHbAaUqIMXB1HB+FjIzG4wn+RlIdCWLQAF5wJ2MF06N1SmbemS+nT+yOZfKa7E6gAS5ITOiTIlT6a5TZbYCNuZ0giTADlMhnaMsIKw+SzkagWLANr9UDJxjMxxkqx7pbK6xXA8G1XqDXvK9xBIDeynyAPw8342GYKtaKgRL8AGLN3InFHZdWRlFNxgCUIk1IP8AJcECMkGZEkJ0QZBjnHR2Hicg1A0bRrBsNIWVEOIF0ydB2DQVAABJBFoFIqOopNGG0RhBj6JQwD6M4gA}{Open in Shinylive}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOz8gCEikrLK6v5qeiUAX0UIACsieL8AazhWUUTQm3D+OGMoYVI-An5aUTKRscnp4Gh4GaS5AF1XaHQi+Oj2BqSdAF4dJNwGviERUWedT+ExPcIBkMiU-GtRIIYDAWKw-PQOA0QTpqFB6HBqL8FGBclCYWwdAidFgiBEdABxRhEQSoH62NEibHvYHI16hI66F7YnItJlIkEsGB+TQsX4ixi0BmAggxUYEMS-Aj3MCZLAAWSZOm56oAwtlsXI5MzWToavxwURPJiXvZnMbWQjhSwfi9xZL6N92DK5QqXkrsQAFVWZDV4LUqgBqAElclHbAaUqIMXB1HB+FjIzG4wn+RlIdCWLQAF5wJ2MF06N1SmbemS+nT+yOZfKa7E6gAS5ITOiTIlT6a5TZbYCNuZ0giTADlMhnaMsIKw+SzkagWLANr9UDJxjMxxkqx7pbK6xXA8G1XqDXvK9xBIDeynyAPw8342GYKtaKgRL8AGLN3InFHZdWRlFNxgCUIk1IP8AJcECMkGZEkJ0QZBjnHR2Hicg1A0bRrBsNIWVEOIF0ydB2DQVAABJBFoFIqOopNGG0RhBj6JQwD6M4gA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
     \if{html}{\out{<a style='height: 800px; display: block;'></a>}}
   }
 }
