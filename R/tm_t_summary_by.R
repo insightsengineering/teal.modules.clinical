@@ -404,7 +404,11 @@ template_summary_by <- function(parentname,
 #'       by_vars = variables(choices = c("PARAM", "AVISIT"), selected = "AVISIT"),
 #'       summarize_vars = variables(choices = c("AVAL", "CHG"), selected = "AVAL"),
 #'       useNA = "ifany",
-#'       paramcd = variables(choices = "PARAMCD")
+#'       paramcd = picks(
+#'         variables(choices = "PARAMCD")
+#'         values(selected = "ALT", multiple = FALSE),
+#'         check_dataset = FALSE
+#'       )
 #'     )
 #'   )
 #' )

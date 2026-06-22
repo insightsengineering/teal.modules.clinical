@@ -41,6 +41,8 @@
       
       $table
       {
+          stopifnot(`No common arm levels in data, please check input.` = nrow(adsl) > 
+              0)
           table <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
       }
       
@@ -88,6 +90,8 @@
       
       $table
       {
+          stopifnot(`No common arm levels in data, please check input.` = nrow(myadsl) > 
+              0)
           table <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = myadsl)
       }
       
