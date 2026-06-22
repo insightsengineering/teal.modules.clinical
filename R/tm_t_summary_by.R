@@ -448,7 +448,7 @@ tm_t_summary_by <- function(label,
   summarize_vars <- migrate_choices_selected_to_variables(summarize_vars)
   id_var <- migrate_choices_selected_to_variables(id_var)
   denominator <- migrate_choices_selected_to_values(denominator)
-  if (!is.null(paramcd)) paramcd <- migrate_value_choices_to_picks(paramcd, multiple = FALSE)
+  if (!is.null(paramcd)) paramcd <- migrate_value_choices_to_picks(paramcd, multiple = TRUE)
 
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
