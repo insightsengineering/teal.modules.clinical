@@ -406,7 +406,7 @@ template_summary_by <- function(parentname,
 #'       useNA = "ifany",
 #'       paramcd = picks(
 #'         variables(choices = "PARAMCD"),
-#'         values(selected = "ALT", multiple = FALSE),
+#'         values(selected = "ALT"),
 #'         check_dataset = FALSE
 #'       )
 #'     )
