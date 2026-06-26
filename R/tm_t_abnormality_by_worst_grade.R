@@ -221,6 +221,7 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint: object_len
 
   y$table <- substitute(
     expr = {
+      stopifnot("No common arm levels in data, please check input." = nrow(parent) > 0)
       table <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = parent)
     },
     env = list(parent = as.name(parentname))
@@ -359,9 +360,6 @@ tm_t_abnormality_by_worst_grade <- function(label, # nolint: object_length.
   worst_high_flag_var <- migrate_choices_selected_to_variables(worst_high_flag_var)
   worst_low_flag_var <- migrate_choices_selected_to_variables(worst_low_flag_var)
   worst_flag_indicator <- migrate_choices_selected_to_values(worst_flag_indicator)
-  worst_flag_value <- as.character(worst_flag_indicator$selected)
-  checkmate::assert_character(worst_flag_value, min.len = 1L, .var.name = "worst_flag_indicator$selected")
-  worst_flag_value <- worst_flag_value[[1]]
 
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
@@ -399,7 +397,7 @@ ui_t_abnormality_by_worst_grade <- function(id, # nolint: object_length.
                                             atoxgr_var,
                                             worst_high_flag_var,
                                             worst_low_flag_var,
-                                            worst_flag_value,
+                                            worst_flag_indicator,
                                             add_total,
                                             drop_arm_levels,
                                             id_var,
@@ -444,9 +442,13 @@ ui_t_abnormality_by_worst_grade <- function(id, # nolint: object_length.
           ),
           tags$div(
             tags$label("Value Indicating Worst Grade"),
-            tags$p(
-              class = "tm-abnormality-worst-grade-worst-flag-value text-muted mb-0",
-              worst_flag_value
+            teal.widgets::optionalSelectInput(
+              ns("worst_flag_indicator"),
+              label = NULL,
+              choices = worst_flag_indicator$choices,
+              selected = if (is.function(worst_flag_indicator$selected)) NULL else worst_flag_indicator$selected,
+              multiple = FALSE,
+              fixed = teal.picks::is_pick_fixed(worst_flag_indicator)
             )
           ),
           checkboxInput(
@@ -471,7 +473,6 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint: object_length.
                                              arm_var,
                                              paramcd,
                                              atoxgr_var,
-                                             worst_flag_value,
                                              worst_low_flag_var,
                                              worst_high_flag_var,
                                              add_total,
@@ -522,26 +523,40 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint: object_length.
     anl_q <- merged_adsl_anl$data
 
     validate_checks <- reactive({
-      input_arm <- anl_selectors$arm_var()$variables$selected
       validate(
-        need(length(input_arm) == 1L, "Please select a treatment variable.")
+        teal::need_input(
+          inputId = "arm_var-variables-selected",
+          condition = length(anl_selectors$arm_var()$variables$selected) == 1L,
+          message = "Please select a treatment variable."
+        )
       )
       validate(
-        need(
-          length(anl_selectors$id_var()$variables$selected) >= 1L,
-          "Please select a Subject Identifier."
+        teal::need_input(
+          inputId = "id_var-variables-selected",
+          condition = length(anl_selectors$id_var()$variables$selected) >= 1L,
+          message = "Please select a Subject Identifier."
         ),
-        need(
-          length(anl_selectors$atoxgr_var()$variables$selected) >= 1L,
-          "Please select Analysis Toxicity Grade variable."
+        teal::need_input(
+          inputId = "atoxgr_var-variables-selected",
+          condition = length(anl_selectors$atoxgr_var()$variables$selected) >= 1L,
+          message = "Please select Analysis Toxicity Grade variable."
         ),
-        need(
-          length(anl_selectors$worst_low_flag_var()$variables$selected) >= 1L,
-          "Please select the Worst Low Grade flag variable."
+        teal::need_input(
+          inputId = "worst_low_flag_var-variables-selected",
+          condition = length(anl_selectors$worst_low_flag_var()$variables$selected) >= 1L,
+          message = "Please select the Worst Low Grade flag variable."
         ),
-        need(
-          length(anl_selectors$worst_high_flag_var()$variables$selected) >= 1L,
-          "Please select the Worst High Grade flag variable."
+        teal::need_input(
+          inputId = "worst_high_flag_var-variables-selected",
+          condition = length(anl_selectors$worst_high_flag_var()$variables$selected) >= 1L,
+          message = "Please select the Worst High Grade flag variable."
+        )
+      )
+      validate(
+        teal::need_input(
+          inputId = "worst_flag_indicator",
+          condition = !is.null(input$worst_flag_indicator),
+          message = "Please select a value indicating the worst grade."
         )
       )
 
@@ -552,9 +567,10 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint: object_length.
         pcd$values$selected
       }
       validate(
-        need(
-          length(pcd_vals) >= 1L,
-          "Please select at least one Laboratory parameter."
+        teal::need_input(
+          inputId = "paramcd-values-selected",
+          condition = length(pcd_vals) >= 1L,
+          message = "Please select at least one Laboratory parameter."
         )
       )
 
@@ -632,7 +648,7 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint: object_length.
         atoxgr_var = as.vector(anl_selectors$atoxgr_var()$variables$selected),
         worst_high_flag_var = as.vector(anl_selectors$worst_high_flag_var()$variables$selected),
         worst_low_flag_var = as.vector(anl_selectors$worst_low_flag_var()$variables$selected),
-        worst_flag_indicator = worst_flag_value,
+        worst_flag_indicator = input$worst_flag_indicator,
         add_total = input$add_total,
         total_label = total_label,
         drop_arm_levels = input$drop_arm_levels,
@@ -641,7 +657,9 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint: object_length.
 
       obj <- anl_q()
       teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "### Table")
-      teal.code::eval_code(obj, as.expression(unlist(my_calls)))
+      obj <- teal.code::eval_code(obj, as.expression(unlist(my_calls)))
+      validate(need(!inherits(obj, "qenv.error"), obj$message))
+      obj
     })
 
     decorated_table_q <- teal::srv_transform_teal_data(

@@ -112,9 +112,16 @@ testthat::describe("template_summary_by rtables output for different statistics"
     parentname = "ADSL",
     arm_var = teal.picks::variables(choices = "ARM", selected = "ARM", fixed = TRUE),
     by_vars = teal.picks::variables(choices = "AVISIT", selected = "AVISIT", fixed = TRUE),
-    summarize_vars = teal.picks::variables(choices = "AVALC", selected = "AVALC", fixed = TRUE),
+    summarize_vars = teal.picks::variables(choices = "AVALC", selected = "AVALC", fixed = TRUE, multiple = TRUE),
     categorical_stats = "count",
-    paramcd = teal.picks::variables(choices = "PARAMCD")
+    paramcd = suppressWarnings(
+      teal.picks::picks(
+        teal.picks::variables(choices = "PARAMCD", selected = "PARAMCD"),
+        teal.picks::values(selected = "ALT", multiple = TRUE),
+        check_dataset = FALSE
+      ),
+      classes = "pick_delayed"
+    )
   )
 
   it("adds 'fraction' to the statistics", {
