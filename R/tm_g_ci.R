@@ -294,7 +294,7 @@ tm_g_ci <- function(label,
                     decorators = list()) {
   message("Initializing tm_g_ci")
   checkmate::assert_string(label)
-  if (missing(x_var) ||is.null(x_var)) {
+  if (missing(x_var) || is.null(x_var)) {
     stop("`x_var` must be provided.", call. = FALSE)
   }
   UseMethod("tm_g_ci", x_var)
@@ -371,7 +371,7 @@ tm_g_ci.data_extract_spec <- function(label,
 }
 
 #' @keywords internal
-ui_g_ci.data_extract_spec <- function(id, ...) {
+ui_g_ci.data_extract_spec <- function(id, ...) { # nolint: object_name_linter.
   ns <- NS(id)
   args <- list(...)
 
@@ -417,7 +417,7 @@ ui_g_ci.data_extract_spec <- function(id, ...) {
 }
 
 #' @keywords internal
-srv_g_ci.data_extract_spec <- function(id,
+srv_g_ci.data_extract_spec <- function(id, # nolint: object_name_linter.
                                        data,
                                        x_var,
                                        y_var,
