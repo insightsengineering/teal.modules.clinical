@@ -827,7 +827,7 @@ srv_t_binary_outcome <- function(id,
           paramcd_pick$values$selected
         }
 
-        if (c(any(!is.data.frame(anl), nrow(anl) == 0L, length(aval_var) == 0L, length(paramcd_sel) == 0L))){
+        if (c(any(!is.data.frame(anl), nrow(anl) == 0L, length(aval_var) == 0L, length(paramcd_sel) == 0L))) {
           return(invisible(NULL))
         }
 
