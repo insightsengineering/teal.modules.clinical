@@ -19,8 +19,8 @@ tm_g_ci.default <- function(label,
   stat <- match.arg(stat)
 
   checkmate::assert_string(label)
-  checkmate::assert_multi_class(x_var, c("picks", "variables"))
-  checkmate::assert_multi_class(y_var, c("picks", "variables"))
+  checkmate::assert_multi_class(x_var, c("picks"))
+  checkmate::assert_multi_class(y_var, c("picks"))
   checkmate::assert_multi_class(color, c("picks"))
   checkmate::assert_multi_class(paramcd, c("picks"))
   checkmate::assert_multi_class(avisit, c("picks"))
@@ -37,20 +37,8 @@ tm_g_ci.default <- function(label,
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
   teal::assert_decorators(decorators, "plot")
 
-  x_var <- create_picks_helper(teal.picks::datasets("ADSL"), x_var)
-  y_var <- create_picks_helper(teal.picks::datasets("ADLB"), y_var)
-  x_dataname <- if (inherits(x_var, "picks")) x_var$datasets$selected else "ADSL"
-  y_dataname <- if (inherits(y_var, "picks")) y_var$datasets$selected else "ADLB"
-
-  paramcd <- create_picks_helper(teal.picks::datasets(y_dataname, y_dataname), paramcd)
-  avisit <- create_picks_helper(teal.picks::datasets(y_dataname, y_dataname), avisit)
-  if (y_dataname != paramcd$datasets$selected) {
-    stop("y_var and paramcd must be from the same dataset.")
-  }
-  if (y_dataname != avisit$datasets$selected) {
-    stop("y_var and avisit must be from the same dataset.")
-  }
-
+  paramcd <- create_picks_helper(y_var$datasets, paramcd)
+  avisit <- create_picks_helper(y_var$datasets, avisit)
   args <- as.list(environment())
 
   module(
@@ -59,8 +47,7 @@ tm_g_ci.default <- function(label,
     ui = ui_g_ci,
     ui_args = args[names(args) %in% names(formals(ui_g_ci))],
     server_args = args[names(args) %in% names(formals(srv_g_ci))],
-    transformators = transformators,
-    datanames = c(x_dataname, y_dataname)
+    transformators = transformators
   )
 }
 
@@ -191,6 +178,25 @@ srv_g_ci <- function(id, # nolint: object_name.
           !is.na(cv) && cv > 0 && cv < 1
         },
         message = "Confidence level must be between 0 and 1."
+      )
+
+      validate(
+        teal::need_input(
+          inputId = c("y_var-datasets-selected", "paramcd-datasets-selected"),
+          condition = identical(
+            selectors$y_var()$datasets$selected,
+            selectors$paramcd()$datasets$selected,
+          ),
+          message = "Analysis and Treatment variables must be from the same dataset."
+        ),
+        teal::need_input(
+          inputId = c("y_var-datasets-selected", "avisit-datasets-selected"),
+          condition = identical(
+            selectors$y_var()$datasets$selected,
+            selectors$avisit()$datasets$selected,
+          ),
+          message = "Analysis and visit variables must be from the same dataset."
+        )
       )
 
       teal.reporter::teal_card(obj) <- c(

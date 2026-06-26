@@ -186,33 +186,27 @@ app <- init(
   modules = modules(
     tm_g_ci(
       label = "Confidence Interval Plot",
-      x_var = variables(
-        choices = c("ARMCD", "BMRKR2"),
-        selected = "ARMCD",
-        multiple = FALSE
+      x_var = picks(
+        datasets("ADSL", "ADSL"),
+        variables(c("ARMCD", "BMRKR2"), "ARMCD")
       ),
-      y_var = variables(
-        choices = c("AVAL", "CHG"),
-        selected = "AVAL",
-        multiple = FALSE
+      y_var = picks(
+        datasets("ADLB", "ADLB"),
+        variables(c("AVAL", "CHG"), "AVAL")
       ),
       color = picks(
         datasets("ADSL", "ADSL"),
-        variables(
-          choices = c("SEX", "STRATA1", "STRATA2"),
-          selected = "STRATA1",
-          multiple = FALSE
-        )
+        variables(c("SEX", "STRATA1", "STRATA2"), "STRATA1")
       ),
-      paramcd = values(
-        choices = levels(data[["ADLB"]]$PARAMCD),
-        selected = levels(data[["ADLB"]]$PARAMCD)[[1]],
-        multiple = FALSE
+      paramcd = picks(
+        datasets("ADLB", "ADLB"),
+        variables("PARAMCD", "PARAMCD"),
+        values(selected = "ALT", multiple = FALSE)
       ),
-      avisit = values(
-        choices = levels(data[["ADLB"]]$AVISIT),
-        selected = levels(data[["ADLB"]]$AVISIT)[[1]],
-        multiple = FALSE
+      avisit = picks(
+        datasets("ADLB", "ADLB"),
+        variables("AVISIT", "AVISIT"),
+        values(selected = "SCREENING", multiple = FALSE)
       )
     )
   )
@@ -229,8 +223,8 @@ apps implementing this module can be found.
 \section{Examples in Shinylive}{
 \describe{
   \item{example-1}{
-    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo67sxs+ajUrIGlOgCCACIAygAykTqkMAQxcAAeMVD8otQNLe0AQl09fYPD-NT0SgC+QQBWRLkxANZwrKL5yTap-HDGUMKkMQT8tKJ9Wzv7h8DQ8EcFcgC6rtDoLq5TLsBoFHQAXh0BVwDT4QhEokhOnhwjEoIgZTKPRiAHNbrQMVisdQoPQ4NRkQowABhEjGWjncy6ACSKkYmm4OgACv5SNTYZjiTohpzGMixbQyYiicKygQstsCGJkQRQWBGlgALI05oCnTUqZarAAaSwACZqXJBXKyqIKXB1HB+FSNdrdQKGnKYNdaDVdFCAGKNdqtFxC4nWr1Y1gxMUSlhS+gy6PEhVKlVQtXUxoANRD+upNIAEgBxK02232kROl1QnP59qeiPCn3UDT+5HB0PhuVRlvyoj+cVQ1AyXZHVNYgr20iTjVtJt4A0LjoVqdlSXS9EbrHpmSZnTZsBhgAahZP9katkaAEYL60rzfLWB+7asdXHeQ6yvH1hr3ezbvmUbYdiIXYhmGu5BH2lbEqgLCwHcCbUIIO4DnuioHkiUIiNo1BfMkwDADmzTTNSPw-AAJNymqNDqzRvlWDq1sieEUoR4TEaR5FgJRNF0QxcjEbelFwa2vqdkGkG9sKTHElAmgPJkKFoZOGHylhyo4eUcD4ZxUDcQuvH8XmLKtCytjycKn6sbhekcccXEkcZUwUdRZkWVZIlibuoF+uB0k9lOMFYqFQRBLQxg6OwuTkGoGjaNYNglEKog5BArCNOg7BoKgVGCLQRR5VR9ocqoQSrEoYCrD8QA}{Open in Shinylive}
-    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo67sxs+ajUrIGlOgCCACIAygAykTqkMAQxcAAeMVD8otQNLe0AQl09fYPD-NT0SgC+QQBWRLkxANZwrKL5yTap-HDGUMKkMQT8tKJ9Wzv7h8DQ8EcFcgC6rtDoLq5TLsBoFHQAXh0BVwDT4QhEokhOnhwjEoIgZTKPRiAHNbrQMVisdQoPQ4NRkQowABhEjGWjncy6ACSKkYmm4OgACv5SNTYZjiTohpzGMixbQyYiicKygQstsCGJkQRQWBGlgALI05oCnTUqZarAAaSwACZqXJBXKyqIKXB1HB+FSNdrdQKGnKYNdaDVdFCAGKNdqtFxC4nWr1Y1gxMUSlhS+gy6PEhVKlVQtXUxoANRD+upNIAEgBxK02232kROl1QnP59qeiPCn3UDT+5HB0PhuVRlvyoj+cVQ1AyXZHVNYgr20iTjVtJt4A0LjoVqdlSXS9EbrHpmSZnTZsBhgAahZP9katkaAEYL60rzfLWB+7asdXHeQ6yvH1hr3ezbvmUbYdiIXYhmGu5BH2lbEqgLCwHcCbUIIO4DnuioHkiUIiNo1BfMkwDADmzTTNSPw-AAJNymqNDqzRvlWDq1sieEUoR4TEaR5FgJRNF0QxcjEbelFwa2vqdkGkG9sKTHElAmgPJkKFoZOGHylhyo4eUcD4ZxUDcQuvH8XmLKtCytjycKn6sbhekcccXEkcZUwUdRZkWVZIlibuoF+uB0k9lOMFYqFQRBLQxg6OwuTkGoGjaNYNglEKog5BArCNOg7BoKgVGCLQRR5VR9ocqoQSrEoYCrD8QA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo67sxs+ajUrIGlOgCCACIAygAykTqkMAQxcAAeMVD8otQNLe0AQl09fYPD-NT0SgC+QQBWRLkxANZwrKL5yTap-HDGUMKkMQT8tKJ9Wzv7h8DQ8EcFcgC6rtDoLq5TLsBoFHQAXh0BVwDT4QhEokhOnhwjEoIgZTKPRiAHNbrQMVisdQoPQ4NRkQowABhEjGWjncy6ACSKkYmm4OgACv5SNTYZjiTohpzGMjUDJdkcGsLoclRHBSDKwC0OgKdNS1e1qXJBXKymLaGTEewCKDVVgALI05oa6lTK1YADSWAATLqilrrbbdbKsXr-WVWDExRKpTKhXKCorlRbJlN7armtNPUGsUaTejzVqAGqNHV4TW0gASAHFPcXGvnC0E5YGo1i-AFwwRpUSDTGlSrtUne2AGwadJn6Kac2BWk4ABpJ1r2Rq2RoARln88XHoHXona+XfsbZUHwtQLFgd1b7fTZS7ca1KcTRdvqc3l+HLGNo-R1O5jSwjRtdofMBv1-f8033DNuEEdFFREdQ4H4KlVXaWwNRga5aBqXQoQAMQLSc62FQ9iSgTQHkyc9IyHa8ezvPtaOfcDDTfLMe1zFlWhZFDAOrdjOLAodOWoKCjhguA4IQqFqVaGksCcJwADkWXkisizQ6gNEw5FcPafD0wIg8GiCIJaGMHR2Fycg1A0bRrBsEohVEHIIFYRp0HYNBUAAEkEWgig8zzFQ5VQglWJQwFWH4gA}{Open in Shinylive}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo67sxs+ajUrIGlOgCCACIAygAykTqkMAQxcAAeMVD8otQNLe0AQl09fYPD-NT0SgC+QQBWRLkxANZwrKL5yTap-HDGUMKkMQT8tKJ9Wzv7h8DQ8EcFcgC6rtDoLq5TLsBoFHQAXh0BVwDT4QhEokhOnhwjEoIgZTKPRiAHNbrQMVisdQoPQ4NRkQowABhEjGWjncy6ACSKkYmm4OgACv5SNTYZjiTohpzGMjUDJdkcGsLoclRHBSDKwC0OgKdNS1e1qXJBXKymLaGTEewCKDVVgALI05oa6lTK1YADSWAATLqilrrbbdbKsXr-WVWDExRKpTKhXKCorlRbJlN7armtNPUGsUaTejzVqAGqNHV4TW0gASAHFPcXGvnC0E5YGo1i-AFwwRpUSDTGlSrtUne2AGwadJn6Kac2BWk4ABpJ1r2Rq2RoARln88XHoHXona+XfsbZUHwtQLFgd1b7fTZS7ca1KcTRdvqc3l+HLGNo-R1O5jSwjRtdofMBv1-f8033DNuEEdFFREdQ4H4KlVXaWwNRga5aBqXQoQAMQLSc62FQ9iSgTQHkyc9IyHa8ezvPtaOfcDDTfLMe1zFlWhZFDAOrdjOLAodOWoKCjhguA4IQqFqVaGksCcJwADkWXkisizQ6gNEw5FcPafD0wIg8GiCIJaGMHR2Fycg1A0bRrBsEohVEHIIFYRp0HYNBUAAEkEWgig8zzFQ5VQglWJQwFWH4gA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
     \if{html}{\out{<a style='height: 800px; display: block;'></a>}}
   }
 }

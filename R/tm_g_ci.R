@@ -241,33 +241,27 @@ template_g_ci <- function(dataname,
 #'   modules = modules(
 #'     tm_g_ci(
 #'       label = "Confidence Interval Plot",
-#'       x_var = variables(
-#'         choices = c("ARMCD", "BMRKR2"),
-#'         selected = "ARMCD",
-#'         multiple = FALSE
+#'       x_var = picks(
+#'         datasets("ADSL", "ADSL"),
+#'         variables(c("ARMCD", "BMRKR2"), "ARMCD")
 #'       ),
-#'       y_var = variables(
-#'         choices = c("AVAL", "CHG"),
-#'         selected = "AVAL",
-#'         multiple = FALSE
+#'       y_var = picks(
+#'         datasets("ADLB", "ADLB"),
+#'         variables(c("AVAL", "CHG"), "AVAL")
 #'       ),
 #'       color = picks(
 #'         datasets("ADSL", "ADSL"),
-#'         variables(
-#'           choices = c("SEX", "STRATA1", "STRATA2"),
-#'           selected = "STRATA1",
-#'           multiple = FALSE
-#'         )
+#'         variables(c("SEX", "STRATA1", "STRATA2"), "STRATA1")
 #'       ),
-#'       paramcd = values(
-#'         choices = levels(data[["ADLB"]]$PARAMCD),
-#'         selected = levels(data[["ADLB"]]$PARAMCD)[[1]],
-#'         multiple = FALSE
+#'       paramcd = picks(
+#'         datasets("ADLB", "ADLB"),
+#'         variables("PARAMCD", "PARAMCD"),
+#'         values(selected = "ALT", multiple = FALSE)
 #'       ),
-#'       avisit = values(
-#'         choices = levels(data[["ADLB"]]$AVISIT),
-#'         selected = levels(data[["ADLB"]]$AVISIT)[[1]],
-#'         multiple = FALSE
+#'       avisit = picks(
+#'         datasets("ADLB", "ADLB"),
+#'         variables("AVISIT", "AVISIT"),
+#'         values(selected = "SCREENING", multiple = FALSE)
 #'       )
 #'     )
 #'   )
