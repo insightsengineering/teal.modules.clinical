@@ -404,7 +404,11 @@ template_summary_by <- function(parentname,
 #'       by_vars = variables(choices = c("PARAM", "AVISIT"), selected = "AVISIT"),
 #'       summarize_vars = variables(choices = c("AVAL", "CHG"), selected = "AVAL"),
 #'       useNA = "ifany",
-#'       paramcd = variables(choices = "PARAMCD")
+#'       paramcd = picks(
+#'         variables(choices = "PARAMCD"),
+#'         values(selected = "ALT"),
+#'         check_dataset = FALSE
+#'       )
 #'     )
 #'   )
 #' )
@@ -444,7 +448,7 @@ tm_t_summary_by <- function(label,
   summarize_vars <- migrate_choices_selected_to_variables(summarize_vars)
   id_var <- migrate_choices_selected_to_variables(id_var)
   denominator <- migrate_choices_selected_to_values(denominator)
-  if (!is.null(paramcd)) paramcd <- migrate_value_choices_to_picks(paramcd, multiple = FALSE)
+  if (!is.null(paramcd)) paramcd <- migrate_value_choices_to_picks(paramcd, multiple = TRUE)
 
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
