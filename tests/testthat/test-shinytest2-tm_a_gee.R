@@ -18,9 +18,6 @@ app_driver_tm_a_gee <- function() {
 
   teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
 
-  all_values <- function(x) unique(x)
-  class(all_values) <- append(class(all_values), "des-delayed")
-
   init_teal_app_driver(
     teal::init(
       data = data,
@@ -33,8 +30,8 @@ app_driver_tm_a_gee <- function() {
         arm_var = teal.picks::variables(choices = c("ARM", "ARMCD"), selected = "ARM"),
         visit_var = teal.picks::variables(choices = c("AVISIT", "AVISITN"), selected = "AVISIT"),
         paramcd = picks(
-          variables(choices = c("PARAMCD", "PARAM")),
-          values(all_values, "FKSI-FWB"),
+          variables(choices = c("PARAMCD")),
+          suppressWarnings(values(selected = "FKSI-FWB"), classes = "pick_delayed"),
           check_dataset = FALSE
         ),
         cov_var = teal.picks::variables(choices = c("BASE", "AGE", "SEX", "BASE:AVISIT"), selected = NULL),

@@ -252,7 +252,7 @@ tm_a_gee <- function(label,
   aval_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), aval_var)
   id_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), id_var)
   arm_var <- create_picks_helper(teal.picks::datasets(parentname, parentname), arm_var)
-  visit_var <- create_picks_helper(teal.picks::datasets(dataname), visit_var)
+  visit_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), visit_var)
   split_covariates <- create_picks_helper(
     teal.picks::datasets(dataname, dataname),
     split_choices_variables(cov_var)

@@ -18,7 +18,7 @@ app_driver_tm_g_barchart_simple <- function() { # nolint: object_length.
       modules = tm_g_barchart_simple(
         label = "ADAE Analysis (e-2-e)",
         x = teal.picks::picks(
-          teal.picks::datasets("ADSL"),
+          teal.picks::datasets("ADSL", "ADSL"),
           teal.picks::variables(
             choices = c(
               "ARM", "ACTARM", "SEX",
@@ -29,7 +29,7 @@ app_driver_tm_g_barchart_simple <- function() { # nolint: object_length.
           )
         ),
         fill = teal.picks::picks(
-          teal.picks::datasets(choices = c("ADSL", "ADAE")),
+          teal.picks::datasets(c("ADSL", "ADAE"), "ADSL"),
           teal.picks::variables(
             choices = c(
               "ARM", "ACTARM", "SEX",
@@ -41,7 +41,7 @@ app_driver_tm_g_barchart_simple <- function() { # nolint: object_length.
           )
         ),
         x_facet = teal.picks::picks(
-          teal.picks::datasets(choices = c("ADAE", "ADSL")),
+          teal.picks::datasets(c("ADAE", "ADSL"), "ADAE"),
           teal.picks::variables(
             choices = c(
               "AETOXGR", "AESEV", "AESER",
@@ -53,7 +53,7 @@ app_driver_tm_g_barchart_simple <- function() { # nolint: object_length.
           )
         ),
         y_facet = teal.picks::picks(
-          teal.picks::datasets(choices = c("ADAE", "ADSL")),
+          teal.picks::datasets(c("ADAE", "ADSL"), "ADAE"),
           teal.picks::variables(
             choices = c(
               "AETOXGR", "AESEV", "AESER",
