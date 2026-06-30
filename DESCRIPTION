@@ -3,7 +3,7 @@ Title: 'teal' Modules for Standard Clinical Outputs
 Version: 0.13.0
 Date: 2026-06-29
 Authors@R: c(
-    person("Dony", "Unardi", , "andre.verissimo@external.roche.com", role = c("aut", "cre")),
+    person("Dony", "Unardi", , "unardid@gene.com", role = c("aut", "cre")),
     person("Joe", "Zhu", , "joe.zhu@roche.com", role = "aut",
            comment = c(ORCID = "0000-0001-7566-2787")),
     person("Jana", "Stoilova", , "jana.stoilova@roche.com", role = "aut"),
