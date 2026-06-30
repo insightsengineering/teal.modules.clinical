@@ -27,77 +27,77 @@ make_barchart_simple_call(
 
 - y_name:
 
-  (`character` or `NULL`)  
+  (`character` or `NULL`)\
   name of the y-axis variable.
 
 - x_name:
 
-  (`character` or `NULL`)  
+  (`character` or `NULL`)\
   name of the x-axis variable. Defaults to `NULL` because it is
   dependent on extract input which can be empty.
 
 - fill_name:
 
-  (`character` or `NULL`)  
+  (`character` or `NULL`)\
   name of the variable to determine the bar fill color.
 
 - x_facet_name:
 
-  (`character` or `NULL`)  
+  (`character` or `NULL`)\
   name of the variable to use for horizontal plot faceting.
 
 - y_facet_name:
 
-  (`character` or `NULL`)  
+  (`character` or `NULL`)\
   name of the variable to use for vertical plot faceting.
 
 - label_bars:
 
-  (`logical` or `NULL`)  
+  (`logical` or `NULL`)\
   whether bars should be labeled. If `TRUE`, label bar numbers would
   also be drawn as text.
 
 - barlayout:
 
-  (`character` or `NULL`)  
+  (`character` or `NULL`)\
   type of the bar layout. Options are `"stacked"` (default) or
   `"side_by_side"`.
 
 - flip_axis:
 
-  (`character` or `NULL`)  
+  (`character` or `NULL`)\
   whether to flip the plot axis.
 
 - rotate_bar_labels:
 
-  (`logical` or `NULL`)  
+  (`logical` or `NULL`)\
   whether bar labels should be rotated by 45 degrees.
 
 - rotate_x_label:
 
-  (`logical` or `NULL`)  
+  (`logical` or `NULL`)\
   whether x-axis labels should be rotated by 45 degrees.
 
 - rotate_y_label:
 
-  (`logical` or `NULL`)  
+  (`logical` or `NULL`)\
   whether y-axis labels should be rotated by 45 degrees.
 
 - expand_y_range:
 
-  (`numeric` or `NULL`)  
+  (`numeric` or `NULL`)\
   fraction of y-axis range to further expand by.
 
 - facet_scales:
 
-  (`character`)  
+  (`character`)\
   value passed to `scales` argument of
   [`ggplot2::facet_grid()`](https://ggplot2.tidyverse.org/reference/facet_grid.html).
   Options are `fixed`, `free_x`, `free_y`, and `free`.
 
 - ggplot2_args:
 
-  (`ggplot2_args`) optional  
+  (`ggplot2_args`) optional\
   object created by
   [`teal.widgets::ggplot2_args()`](https://insightsengineering.github.io/teal.widgets/latest-tag/reference/ggplot2_args.html)
   with settings for the module plot. The argument is merged with option

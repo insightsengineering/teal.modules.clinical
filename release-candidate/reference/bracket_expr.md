@@ -12,7 +12,7 @@ bracket_expr(exprs)
 
 - exprs:
 
-  (`list` of `call`)  
+  (`list` of `call`)\
   expressions to concatenate into a single *bracketed* expression.
 
 ## Value

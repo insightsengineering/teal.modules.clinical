@@ -12,17 +12,17 @@ column_annotation_label(dataset, column, omit_raw_name = FALSE)
 
 - dataset:
 
-  (`data.frame`)  
+  (`data.frame`)\
   dataset
 
 - column:
 
-  (`character`)  
+  (`character`)\
   column to get label from
 
 - omit_raw_name:
 
-  (`logical`)  
+  (`logical`)\
   omits the raw name in square brackets if label is found
 
 ## Value

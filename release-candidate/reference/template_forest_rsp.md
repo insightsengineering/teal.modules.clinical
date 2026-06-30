@@ -29,58 +29,58 @@ template_forest_rsp(
 
 - dataname:
 
-  (`character`)  
+  (`character`)\
   analysis data used in teal module.
 
 - parentname:
 
-  (`character`)  
+  (`character`)\
   parent analysis data used in teal module, usually this refers to
   `ADSL`.
 
 - arm_var:
 
-  (`character`)  
+  (`character`)\
   variable names that can be used as `arm_var`.
 
 - ref_arm:
 
-  (`character`)  
+  (`character`)\
   the level of reference arm in case of arm comparison.
 
 - comp_arm:
 
-  (`character`)  
+  (`character`)\
   the level of comparison arm in case of arm comparison.
 
 - obj_var_name:
 
-  (`character`)  
+  (`character`)\
   additional text to append to the table title.
 
 - aval_var:
 
-  (`character`)  
+  (`character`)\
   name of the analysis value variable.
 
 - responders:
 
-  (`character`)  
+  (`character`)\
   values of `aval_var` that are considered to be responders.
 
 - subgroup_var:
 
-  (`character`)  
+  (`character`)\
   with variable names that can be used as subgroups.
 
 - strata_var:
 
-  (`character`)  
+  (`character`)\
   names of the variables for stratified analysis.
 
 - stats:
 
-  (`character`)  
+  (`character`)\
   the names of statistics to be reported among:
 
   - `n`: Total number of observations per group.
@@ -100,7 +100,7 @@ template_forest_rsp(
 
 - riskdiff:
 
-  (`list`)  
+  (`list`)\
   if a risk (proportion) difference column should be added, a list of
   settings to apply within the column. See
   [`tern::control_riskdiff()`](https://insightsengineering.github.io/tern/latest-tag/reference/control_riskdiff.html)
@@ -108,12 +108,12 @@ template_forest_rsp(
 
 - conf_level:
 
-  (`numeric`)  
+  (`numeric`)\
   value for the confidence level within the range of (0, 1).
 
 - col_symbol_size:
 
-  (`integer` or `NULL`)  
+  (`integer` or `NULL`)\
   column index to be used to determine relative size for estimator plot
   symbol. Typically, the symbol size is proportional to the sample size
   used to calculate the estimator. If `NULL`, the same symbol size is
@@ -121,12 +121,12 @@ template_forest_rsp(
 
 - font_size:
 
-  (`numeric(1)`)  
+  (`numeric(1)`)\
   font size.
 
 - ggplot2_args:
 
-  (`ggplot2_args`) optional  
+  (`ggplot2_args`) optional\
   object created by
   [`teal.widgets::ggplot2_args()`](https://insightsengineering.github.io/teal.widgets/latest-tag/reference/ggplot2_args.html)
   with settings for the module plot. For this module, this argument will

@@ -30,67 +30,67 @@ template_events_summary(
 
 - anl_name:
 
-  (`character`)  
+  (`character`)\
   analysis data used in teal module.
 
 - parentname:
 
-  (`character`)  
+  (`character`)\
   parent analysis data used in teal module, usually this refers to
   `ADSL`.
 
 - arm_var:
 
-  (`character`)  
+  (`character`)\
   variable names that can be used as `arm_var`.
 
 - dthfl_var:
 
-  (`character`)  
+  (`character`)\
   name of variable for subject death flag from `parentname`. Records
   with `"Y"` are summarized in the table row for "Total number of
   deaths".
 
 - dcsreas_var:
 
-  (`character`)  
+  (`character`)\
   name of variable for study discontinuation reason from `parentname`.
   Records with `"ADVERSE EVENTS"` are summarized in the table row for
   "Total number of patients withdrawn from study due to an AE".
 
 - flag_var_anl:
 
-  (`character`)  
+  (`character`)\
   name of flag variable from `dataset` used to count adverse event
   sub-groups (e.g. Serious events, Related events, etc.). Variable
   labels are used as table row names if they exist.
 
 - flag_var_aesi:
 
-  (`character`)  
+  (`character`)\
   name of flag variable from `dataset` used to count adverse event
   special interest groups. All flag variables must be of type `logical`.
   Variable labels are used as table row names if they exist.
 
 - aeseq_var:
 
-  (`character`)  
+  (`character`)\
   name of variable for adverse events sequence number from `dataset`.
   Used for counting total number of events.
 
 - llt:
 
-  (`character`)  
+  (`character`)\
   name of the variable with low level term for events.
 
 - add_total:
 
-  (`logical`)  
+  (`logical`)\
   whether to include column with total number of patients.
 
 - total_label:
 
-  (`string`)  
+  (`string`)\
   string to display as total column/row label if column/row is enabled
   (see `add_total`). Defaults to `"All Patients"`. To set a new default
   `total_label` to apply in all modules, run
@@ -98,7 +98,7 @@ template_events_summary(
 
 - na_level:
 
-  (`string`)  
+  (`string`)\
   used to replace all `NA` or empty values in character or factor
   variables in the data. Defaults to `"<Missing>"`. To set a default
   `na_level` to apply in all modules, run
@@ -106,31 +106,31 @@ template_events_summary(
 
 - count_dth:
 
-  (`logical`)  
+  (`logical`)\
   whether to show count of total deaths (based on `dthfl_var`). Defaults
   to `TRUE`.
 
 - count_wd:
 
-  (`logical`)  
+  (`logical`)\
   whether to show count of patients withdrawn from study due to an
   adverse event (based on `dcsreas_var`). Defaults to `TRUE`.
 
 - count_subj:
 
-  (`logical`)  
+  (`logical`)\
   whether to show count of unique subjects (based on `USUBJID`). Only
   applies if event flag variables are provided.
 
 - count_pt:
 
-  (`logical`)  
+  (`logical`)\
   whether to show count of unique preferred terms (based on `llt`). Only
   applies if event flag variables are provided.
 
 - count_events:
 
-  (`logical`)  
+  (`logical`)\
   whether to show count of events (based on `aeseq_var`). Only applies
   if event flag variables are provided.
 

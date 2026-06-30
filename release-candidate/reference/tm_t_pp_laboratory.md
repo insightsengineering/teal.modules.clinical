@@ -30,28 +30,28 @@ tm_t_pp_laboratory(
 
 - label:
 
-  (`character`)  
+  (`character`)\
   menu item label of the module in the teal app.
 
 - dataname:
 
-  (`character`)  
+  (`character`)\
   analysis data used in teal module.
 
 - parentname:
 
-  (`character`)  
+  (`character`)\
   parent analysis data used in teal module, usually this refers to
   `ADSL`.
 
 - patient_col:
 
-  (`character`)  
+  (`character`)\
   name of patient ID variable.
 
 - timepoints:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))  
+  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   object with all available choices and preselected option for the time
   variable from `dataname`.
 
@@ -61,7 +61,7 @@ tm_t_pp_laboratory(
 
 - aval_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))  
+  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   object with all available choices and pre-selected option for the
   analysis variable.
 
@@ -71,38 +71,38 @@ tm_t_pp_laboratory(
 
 - avalu_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))  
+  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   object with all available choices and preselected option for the
   analysis unit variable.
 
 - param:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))  
+  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   object with all available choices and preselected option for the
   `PARAM` variable from `dataname`.
 
 - paramcd:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))  
+  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   object with all available choices and preselected option for the
   parameter code variable from `dataname`.
 
 - anrind:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))  
+  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   object with all available choices and preselected option for the
   `ANRIND` variable from `dataname`. Variable should have the following
   3 levels: `"HIGH"`, `"LOW"`, and `"NORMAL"`.
 
 - pre_output:
 
-  (`shiny.tag`) optional,  
+  (`shiny.tag`) optional,\
   with text placed before the output to put the output into context. For
   example a title.
 
 - post_output:
 
-  (`shiny.tag`) optional,  
+  (`shiny.tag`) optional,\
   with text placed after the output to put the output into context. For
   example the
   [`shiny::helpText()`](https://rdrr.io/pkg/shiny/man/helpText.html)

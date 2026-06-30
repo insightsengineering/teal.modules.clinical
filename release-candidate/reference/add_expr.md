@@ -12,12 +12,12 @@ add_expr(expr_ls, new_expr)
 
 - expr_ls:
 
-  (`list` of `call`)  
+  (`list` of `call`)\
   the list to which a new expression should be added.
 
 - new_expr:
 
-  (`call`)  
+  (`call`)\
   the new expression to add.
 
 ## Value

@@ -31,59 +31,59 @@ tm_g_ci(
 
 - label:
 
-  (`character`)  
+  (`character`)\
   menu item label of the module in the teal app.
 
 - x_var:
 
-  (`character`)  
+  (`character`)\
   name of the treatment variable to put on the x-axis.
 
 - y_var:
 
-  (`character`)  
+  (`character`)\
   name of the response variable to put on the y-axis.
 
 - color:
 
-  (`data_extract_spec`)  
+  (`data_extract_spec`)\
   the group variable used to determine the plot colors, shapes, and line
   types.
 
 - stat:
 
-  (`character`)  
+  (`character`)\
   statistic to plot. Options are `"mean"` and `"median"`.
 
 - conf_level:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))  
+  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   object with all available choices and pre-selected option for the
   confidence level, each within range of (0, 1).
 
 - plot_height:
 
-  (`numeric`) optional  
+  (`numeric`) optional\
   vector of length three with `c(value, min, max)`. Specifies the height
   of the main plot and renders a slider on the plot to interactively
   adjust the plot height.
 
 - plot_width:
 
-  (`numeric`) optional  
+  (`numeric`) optional\
   vector of length three with `c(value, min, max)`. Specifies the width
   of the main plot and renders a slider on the plot to interactively
   adjust the plot width.
 
 - pre_output:
 
-  (`shiny.tag`) optional,  
+  (`shiny.tag`) optional,\
   with text placed before the output to put the output into context. For
   example a title.
 
 - post_output:
 
-  (`shiny.tag`) optional,  
+  (`shiny.tag`) optional,\
   with text placed after the output to put the output into context. For
   example the
   [`shiny::helpText()`](https://rdrr.io/pkg/shiny/man/helpText.html)
@@ -91,7 +91,7 @@ tm_g_ci(
 
 - ggplot2_args:
 
-  (`ggplot2_args`) optional  
+  (`ggplot2_args`) optional\
   object created by
   [`teal.widgets::ggplot2_args()`](https://insightsengineering.github.io/teal.widgets/latest-tag/reference/ggplot2_args.html)
   with settings for the module plot. The argument is merged with option

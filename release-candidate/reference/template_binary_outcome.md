@@ -33,80 +33,80 @@ template_binary_outcome(
 
 - dataname:
 
-  (`character`)  
+  (`character`)\
   analysis data used in teal module.
 
 - parentname:
 
-  (`character`)  
+  (`character`)\
   parent analysis data used in teal module, usually this refers to
   `ADSL`.
 
 - arm_var:
 
-  (`character`)  
+  (`character`)\
   variable names that can be used as `arm_var`.
 
 - paramcd:
 
-  (`character`)  
+  (`character`)\
   response parameter value to use in the table title.
 
 - ref_arm:
 
-  (`character`)  
+  (`character`)\
   the level of reference arm in case of arm comparison.
 
 - comp_arm:
 
-  (`character`)  
+  (`character`)\
   the level of comparison arm in case of arm comparison.
 
 - compare_arm:
 
-  (`logical`)  
+  (`logical`)\
   triggers the comparison between study arms.
 
 - combine_comp_arms:
 
-  (`logical`)  
+  (`logical`)\
   triggers the combination of comparison arms.
 
 - aval_var:
 
-  (`character`)  
+  (`character`)\
   name of the analysis value variable.
 
 - show_rsp_cat:
 
-  (`logical`)  
+  (`logical`)\
   display the multinomial response estimations.
 
 - responder_val:
 
-  (`character`)  
+  (`character`)\
   the short label for observations to translate `AVALC` into
   responder/non-responder.
 
 - responder_val_levels:
 
-  (`character`)  
+  (`character`)\
   the levels of responses that will be shown in the multinomial response
   estimations.
 
 - control:
 
-  (`list`)  
+  (`list`)\
   list of settings for the analysis.
 
 - add_total:
 
-  (`logical`)  
+  (`logical`)\
   whether to include column with total number of patients.
 
 - total_label:
 
-  (`string`)  
+  (`string`)\
   string to display as total column/row label if column/row is enabled
   (see `add_total`). Defaults to `"All Patients"`. To set a new default
   `total_label` to apply in all modules, run
@@ -114,7 +114,7 @@ template_binary_outcome(
 
 - na_level:
 
-  (`string`)  
+  (`string`)\
   used to replace all `NA` or empty values in character or factor
   variables in the data. Defaults to `"<Missing>"`. To set a default
   `na_level` to apply in all modules, run
@@ -122,7 +122,7 @@ template_binary_outcome(
 
 - denom:
 
-  (`string`)  
+  (`string`)\
   choice of denominator for proportion. Options are:
 
   - `N_col`: total number of patients in this column across rows.
@@ -133,7 +133,7 @@ template_binary_outcome(
 
 - basic_table_args:
 
-  (`basic_table_args`) optional  
+  (`basic_table_args`) optional\
   object created by
   [`teal.widgets::basic_table_args()`](https://insightsengineering.github.io/teal.widgets/latest-tag/reference/basic_table_args.html)
   with settings for the module table. The argument is merged with option

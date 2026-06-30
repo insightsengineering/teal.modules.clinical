@@ -44,30 +44,30 @@ tm_g_forest_tte(
 
 - label:
 
-  (`character`)  
+  (`character`)\
   menu item label of the module in the teal app.
 
 - dataname:
 
-  (`character`)  
+  (`character`)\
   analysis data used in teal module.
 
 - parentname:
 
-  (`character`)  
+  (`character`)\
   parent analysis data used in teal module, usually this refers to
   `ADSL`.
 
 - arm_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))  
+  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   object with all available choices and preselected option for variable
   names that can be used as `arm_var`. It defines the grouping variable
   in the results table.
 
 - arm_ref_comp:
 
-  (`list`) optional,  
+  (`list`) optional,\
   if specified it must be a named list with each element corresponding
   to an arm variable in `ADSL` and the element must be another list
   (possibly with delayed
@@ -79,36 +79,36 @@ tm_g_forest_tte(
 
 - subgroup_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))  
+  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   object with all available choices and preselected option for variable
   names that can be used as the default subgroups.
 
 - paramcd:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))  
+  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   object with all available choices and preselected option for the
   parameter code variable from `dataname`.
 
 - strata_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))  
+  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   names of the variables for stratified analysis.
 
 - aval_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))  
+  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   object with all available choices and pre-selected option for the
   analysis variable.
 
 - cnsr_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))  
+  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   object with all available choices and preselected option for the
   censoring variable.
 
 - stats:
 
-  (`character`)  
+  (`character`)\
   the names of statistics to be reported among:
 
   - `n_tot_events`: Total number of events per group.
@@ -130,7 +130,7 @@ tm_g_forest_tte(
 
 - riskdiff:
 
-  (`list`)  
+  (`list`)\
   if a risk (proportion) difference column should be added, a list of
   settings to apply within the column. See
   [`tern::control_riskdiff()`](https://insightsengineering.github.io/tern/latest-tag/reference/control_riskdiff.html)
@@ -138,58 +138,58 @@ tm_g_forest_tte(
 
 - conf_level:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))  
+  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   object with all available choices and pre-selected option for the
   confidence level, each within range of (0, 1).
 
 - time_unit_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))  
+  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   object with all available choices and pre-selected option for the time
   unit variable.
 
 - fixed_symbol_size:
 
-  (`logical`)  
+  (`logical`)\
   When (`TRUE`), the same symbol size is used for plotting each
   estimate. Otherwise, the symbol size will be proportional to the
   sample size in each each subgroup.
 
 - plot_height:
 
-  (`numeric`) optional  
+  (`numeric`) optional\
   vector of length three with `c(value, min, max)`. Specifies the height
   of the main plot and renders a slider on the plot to interactively
   adjust the plot height.
 
 - plot_width:
 
-  (`numeric`) optional  
+  (`numeric`) optional\
   vector of length three with `c(value, min, max)`. Specifies the width
   of the main plot and renders a slider on the plot to interactively
   adjust the plot width.
 
 - rel_width_forest:
 
-  (`proportion`)  
+  (`proportion`)\
   proportion of total width to allocate to the forest plot. Relative
   width of table is then `1 - rel_width_forest`. If `as_list = TRUE`,
   this parameter is ignored.
 
 - font_size:
 
-  (`numeric(1)`)  
+  (`numeric(1)`)\
   font size.
 
 - pre_output:
 
-  (`shiny.tag`) optional,  
+  (`shiny.tag`) optional,\
   with text placed before the output to put the output into context. For
   example a title.
 
 - post_output:
 
-  (`shiny.tag`) optional,  
+  (`shiny.tag`) optional,\
   with text placed after the output to put the output into context. For
   example the
   [`shiny::helpText()`](https://rdrr.io/pkg/shiny/man/helpText.html)
@@ -197,7 +197,7 @@ tm_g_forest_tte(
 
 - ggplot2_args:
 
-  (`ggplot2_args`) optional  
+  (`ggplot2_args`) optional\
   object created by
   [`teal.widgets::ggplot2_args()`](https://insightsengineering.github.io/teal.widgets/latest-tag/reference/ggplot2_args.html)
   with settings for the module plot. The argument is merged with option

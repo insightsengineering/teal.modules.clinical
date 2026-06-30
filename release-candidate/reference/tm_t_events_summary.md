@@ -43,23 +43,23 @@ tm_t_events_summary(
 
 - label:
 
-  (`character`)  
+  (`character`)\
   menu item label of the module in the teal app.
 
 - dataname:
 
-  (`character`)  
+  (`character`)\
   analysis data used in teal module.
 
 - parentname:
 
-  (`character`)  
+  (`character`)\
   parent analysis data used in teal module, usually this refers to
   `ADSL`.
 
 - arm_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))  
+  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   object with all available choices and preselected option for variable
   names that can be used as `arm_var`. It defines the grouping
   variable(s) in the results table. If there are two elements selected
@@ -69,7 +69,7 @@ tm_t_events_summary(
 - flag_var_anl:
 
   ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html)
-  or `NULL`)  
+  or `NULL`)\
   vector with names of flag variables from `dataset` used to count
   adverse event sub-groups (e.g. Serious events, Related events, etc.).
   Variable labels are used as table row names if they exist.
@@ -77,7 +77,7 @@ tm_t_events_summary(
 - flag_var_aesi:
 
   ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html)
-  or `NULL`)  
+  or `NULL`)\
   vector with names of flag variables from `dataset` used to count
   adverse event special interest groups. All flag variables must be of
   type `logical`. Variable labels are used as table row names if they
@@ -85,14 +85,14 @@ tm_t_events_summary(
 
 - dthfl_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))  
+  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   object with all available choices and preselected option for variable
   names that can be used as death flag variable. Records with \`"Y"“ are
   summarized in the table row for "Total number of deaths".
 
 - dcsreas_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))  
+  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   object with all available choices and preselected option for variable
   names that can be used as study discontinuation reason variable.
   Records with `"ADVERSE EVENTS"` are summarized in the table row for
@@ -100,23 +100,23 @@ tm_t_events_summary(
 
 - llt:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))  
+  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   name of the variable with low level term for events.
 
 - aeseq_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))  
+  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   variable for adverse events sequence number from `dataset`. Used for
   counting total number of events.
 
 - add_total:
 
-  (`logical`)  
+  (`logical`)\
   whether to include column with total number of patients.
 
 - total_label:
 
-  (`string`)  
+  (`string`)\
   string to display as total column/row label if column/row is enabled
   (see `add_total`). Defaults to `"All Patients"`. To set a new default
   `total_label` to apply in all modules, run
@@ -124,7 +124,7 @@ tm_t_events_summary(
 
 - na_level:
 
-  (`string`)  
+  (`string`)\
   used to replace all `NA` or empty values in character or factor
   variables in the data. Defaults to `"<Missing>"`. To set a default
   `na_level` to apply in all modules, run
@@ -132,43 +132,43 @@ tm_t_events_summary(
 
 - count_dth:
 
-  (`logical`)  
+  (`logical`)\
   whether to show count of total deaths (based on `dthfl_var`). Defaults
   to `TRUE`.
 
 - count_wd:
 
-  (`logical`)  
+  (`logical`)\
   whether to show count of patients withdrawn from study due to an
   adverse event (based on `dcsreas_var`). Defaults to `TRUE`.
 
 - count_subj:
 
-  (`logical`)  
+  (`logical`)\
   whether to show count of unique subjects (based on `USUBJID`). Only
   applies if event flag variables are provided.
 
 - count_pt:
 
-  (`logical`)  
+  (`logical`)\
   whether to show count of unique preferred terms (based on `llt`). Only
   applies if event flag variables are provided.
 
 - count_events:
 
-  (`logical`)  
+  (`logical`)\
   whether to show count of events (based on `aeseq_var`). Only applies
   if event flag variables are provided.
 
 - pre_output:
 
-  (`shiny.tag`) optional,  
+  (`shiny.tag`) optional,\
   with text placed before the output to put the output into context. For
   example a title.
 
 - post_output:
 
-  (`shiny.tag`) optional,  
+  (`shiny.tag`) optional,\
   with text placed after the output to put the output into context. For
   example the
   [`shiny::helpText()`](https://rdrr.io/pkg/shiny/man/helpText.html)
@@ -176,7 +176,7 @@ tm_t_events_summary(
 
 - basic_table_args:
 
-  (`basic_table_args`) optional  
+  (`basic_table_args`) optional\
   object created by
   [`teal.widgets::basic_table_args()`](https://insightsengineering.github.io/teal.widgets/latest-tag/reference/basic_table_args.html)
   with settings for the module table. The argument is merged with option

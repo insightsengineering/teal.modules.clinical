@@ -20,27 +20,27 @@ color_lab_values(
 
 - x:
 
-  (`character`)  
+  (`character`)\
   vector with elements under the format (`value level`).
 
 - classes:
 
-  (`character`)  
+  (`character`)\
   classes vector.
 
 - colors:
 
-  (`list`)  
+  (`list`)\
   color per class.
 
 - default_color:
 
-  (`character`)  
+  (`character`)\
   default color.
 
 - icons:
 
-  (`list`)  
+  (`list`)\
   certain icons per level.
 
 ## Value

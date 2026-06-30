@@ -41,30 +41,30 @@ tm_g_forest_rsp(
 
 - label:
 
-  (`character`)  
+  (`character`)\
   menu item label of the module in the teal app.
 
 - dataname:
 
-  (`character`)  
+  (`character`)\
   analysis data used in teal module.
 
 - parentname:
 
-  (`character`)  
+  (`character`)\
   parent analysis data used in teal module, usually this refers to
   `ADSL`.
 
 - arm_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))  
+  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   object with all available choices and preselected option for variable
   names that can be used as `arm_var`. It defines the grouping variable
   in the results table.
 
 - arm_ref_comp:
 
-  (`list`) optional,  
+  (`list`) optional,\
   if specified it must be a named list with each element corresponding
   to an arm variable in `ADSL` and the element must be another list
   (possibly with delayed
@@ -76,30 +76,30 @@ tm_g_forest_rsp(
 
 - paramcd:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))  
+  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   object with all available choices and preselected option for the
   parameter code variable from `dataname`.
 
 - aval_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))  
+  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   object with all available choices and pre-selected option for the
   analysis variable.
 
 - subgroup_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))  
+  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   object with all available choices and preselected option for variable
   names that can be used as the default subgroups.
 
 - strata_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))  
+  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   names of the variables for stratified analysis.
 
 - stats:
 
-  (`character`)  
+  (`character`)\
   the names of statistics to be reported among:
 
   - `n`: Total number of observations per group.
@@ -119,7 +119,7 @@ tm_g_forest_rsp(
 
 - riskdiff:
 
-  (`list`)  
+  (`list`)\
   if a risk (proportion) difference column should be added, a list of
   settings to apply within the column. See
   [`tern::control_riskdiff()`](https://insightsengineering.github.io/tern/latest-tag/reference/control_riskdiff.html)
@@ -127,20 +127,20 @@ tm_g_forest_rsp(
 
 - fixed_symbol_size:
 
-  (`logical`)  
+  (`logical`)\
   When (`TRUE`), the same symbol size is used for plotting each
   estimate. Otherwise, the symbol size will be proportional to the
   sample size in each each subgroup.
 
 - conf_level:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))  
+  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   object with all available choices and pre-selected option for the
   confidence level, each within range of (0, 1).
 
 - default_responses:
 
-  (`list` or `character`)  
+  (`list` or `character`)\
   defines the default codes for the response variable in the module per
   value of `paramcd`. A passed vector is transmitted for all `paramcd`
   values. A passed `list` must be named and contain arrays, each name
@@ -150,39 +150,39 @@ tm_g_forest_rsp(
 
 - plot_height:
 
-  (`numeric`) optional  
+  (`numeric`) optional\
   vector of length three with `c(value, min, max)`. Specifies the height
   of the main plot and renders a slider on the plot to interactively
   adjust the plot height.
 
 - plot_width:
 
-  (`numeric`) optional  
+  (`numeric`) optional\
   vector of length three with `c(value, min, max)`. Specifies the width
   of the main plot and renders a slider on the plot to interactively
   adjust the plot width.
 
 - rel_width_forest:
 
-  (`proportion`)  
+  (`proportion`)\
   proportion of total width to allocate to the forest plot. Relative
   width of table is then `1 - rel_width_forest`. If `as_list = TRUE`,
   this parameter is ignored.
 
 - font_size:
 
-  (`numeric(1)`)  
+  (`numeric(1)`)\
   font size.
 
 - pre_output:
 
-  (`shiny.tag`) optional,  
+  (`shiny.tag`) optional,\
   with text placed before the output to put the output into context. For
   example a title.
 
 - post_output:
 
-  (`shiny.tag`) optional,  
+  (`shiny.tag`) optional,\
   with text placed after the output to put the output into context. For
   example the
   [`shiny::helpText()`](https://rdrr.io/pkg/shiny/man/helpText.html)
@@ -190,7 +190,7 @@ tm_g_forest_rsp(
 
 - ggplot2_args:
 
-  (`ggplot2_args`) optional  
+  (`ggplot2_args`) optional\
   object created by
   [`teal.widgets::ggplot2_args()`](https://insightsengineering.github.io/teal.widgets/latest-tag/reference/ggplot2_args.html)
   with settings for the module plot. For this module, this argument will

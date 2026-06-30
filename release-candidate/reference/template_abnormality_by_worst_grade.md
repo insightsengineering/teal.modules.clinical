@@ -27,58 +27,58 @@ template_abnormality_by_worst_grade(
 
 - parentname:
 
-  (`character`)  
+  (`character`)\
   parent analysis data used in teal module, usually this refers to
   `ADSL`.
 
 - dataname:
 
-  (`character`)  
+  (`character`)\
   analysis data used in teal module.
 
 - arm_var:
 
-  (`character`)  
+  (`character`)\
   variable names that can be used as `arm_var`.
 
 - id_var:
 
-  (`character`)  
+  (`character`)\
   the variable name for subject id.
 
 - paramcd:
 
-  (`character`)  
+  (`character`)\
   name of the parameter code variable.
 
 - atoxgr_var:
 
-  (`character`)  
+  (`character`)\
   name of the variable indicating Analysis Toxicity Grade.
 
 - worst_high_flag_var:
 
-  (`character`)  
+  (`character`)\
   name of the variable indicating Worst High Grade flag
 
 - worst_low_flag_var:
 
-  (`character`)  
+  (`character`)\
   name of the variable indicating Worst Low Grade flag
 
 - worst_flag_indicator:
 
-  (`character`)  
+  (`character`)\
   flag value indicating the worst grade.
 
 - add_total:
 
-  (`logical`)  
+  (`logical`)\
   whether to include column with total number of patients.
 
 - total_label:
 
-  (`string`)  
+  (`string`)\
   string to display as total column/row label if column/row is enabled
   (see `add_total`). Defaults to `"All Patients"`. To set a new default
   `total_label` to apply in all modules, run
@@ -86,7 +86,7 @@ template_abnormality_by_worst_grade(
 
 - drop_arm_levels:
 
-  (`logical`)  
+  (`logical`)\
   whether to drop unused levels of `arm_var`. If `TRUE`, `arm_var`
   levels are set to those used in the `dataname` dataset. If `FALSE`,
   `arm_var` levels are set to those used in the `parentname` dataset. If
@@ -95,7 +95,7 @@ template_abnormality_by_worst_grade(
 
 - basic_table_args:
 
-  (`basic_table_args`) optional  
+  (`basic_table_args`) optional\
   object created by
   [`teal.widgets::basic_table_args()`](https://insightsengineering.github.io/teal.widgets/latest-tag/reference/basic_table_args.html)
   with settings for the module table. The argument is merged with option

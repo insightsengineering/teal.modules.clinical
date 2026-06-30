@@ -14,23 +14,23 @@ prepare_arm_levels(dataname, parentname, arm_var, drop_arm_levels = TRUE)
 
 - dataname:
 
-  (`character`)  
+  (`character`)\
   analysis data used in teal module.
 
 - parentname:
 
-  (`character`)  
+  (`character`)\
   parent analysis data used in teal module, usually this refers to
   `ADSL`.
 
 - arm_var:
 
-  (`character`)  
+  (`character`)\
   variable names that can be used as `arm_var`.
 
 - drop_arm_levels:
 
-  (`logical`)  
+  (`logical`)\
   whether to drop unused levels of `arm_var`. If `TRUE`, `arm_var`
   levels are set to those used in the `dataname` dataset. If `FALSE`,
   `arm_var` levels are set to those used in the `parentname` dataset. If

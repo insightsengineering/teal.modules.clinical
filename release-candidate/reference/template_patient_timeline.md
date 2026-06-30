@@ -30,77 +30,77 @@ template_patient_timeline(
 
 - dataname:
 
-  (`character`)  
+  (`character`)\
   analysis data used in teal module.
 
 - aeterm:
 
-  (`character`)  
+  (`character`)\
   name of the reported term for the adverse event variable.
 
 - aetime_start:
 
-  (`character`)  
+  (`character`)\
   name of start date/time of adverse event variable.
 
 - aetime_end:
 
-  (`character`)  
+  (`character`)\
   name of end date/time of adverse event variable.
 
 - dstime_start:
 
-  (`character`)  
+  (`character`)\
   name of date/time of first exposure to treatment variable.
 
 - dstime_end:
 
-  (`character`)  
+  (`character`)\
   name of date/time of last exposure to treatment variable.
 
 - cmdecod:
 
-  (`character`)  
+  (`character`)\
   name of standardized medication name variable.
 
 - aerelday_start:
 
-  (`character`)  
+  (`character`)\
   name of adverse event study start day variable.
 
 - aerelday_end:
 
-  (`character`)  
+  (`character`)\
   name of adverse event study end day variable.
 
 - dsrelday_start:
 
-  (`character`)  
+  (`character`)\
   name of concomitant medications study start day variable.
 
 - dsrelday_end:
 
-  (`character`)  
+  (`character`)\
   name of concomitant medications study day start variable.
 
 - relative_day:
 
-  (`logical`)  
+  (`logical`)\
   whether to use relative days (`TRUE`) or absolute dates (`FALSE`).
 
 - patient_id:
 
-  (`character`)  
+  (`character`)\
   patient ID.
 
 - font_size:
 
-  (`numeric`)  
+  (`numeric`)\
   font size value.
 
 - ggplot2_args:
 
-  (`ggplot2_args`) optional  
+  (`ggplot2_args`) optional\
   object created by
   [`teal.widgets::ggplot2_args()`](https://insightsengineering.github.io/teal.widgets/latest-tag/reference/ggplot2_args.html)
   with settings for the module plot. The argument is merged with option

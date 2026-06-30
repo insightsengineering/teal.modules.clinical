@@ -12,12 +12,12 @@ facet_grid_formula(x_facet, y_facet)
 
 - x_facet:
 
-  (`character(1)`)  
+  (`character(1)`)\
   name of x facet, if empty, will not facet along x.
 
 - y_facet:
 
-  (`character(1)`)  
+  (`character(1)`)\
   name of y facet, if empty, will not facet along y.
 
 ## Value

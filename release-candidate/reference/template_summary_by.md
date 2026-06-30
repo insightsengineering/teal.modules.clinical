@@ -33,48 +33,48 @@ template_summary_by(
 
 - parentname:
 
-  (`character`)  
+  (`character`)\
   parent analysis data used in teal module, usually this refers to
   `ADSL`.
 
 - dataname:
 
-  (`character`)  
+  (`character`)\
   analysis data used in teal module.
 
 - arm_var:
 
-  (`character`)  
+  (`character`)\
   variable names that can be used as `arm_var`.
 
 - id_var:
 
-  (`character`)  
+  (`character`)\
   the variable name for subject id.
 
 - sum_vars:
 
-  (`character`)  
+  (`character`)\
   names of the variables that should be summarized.
 
 - by_vars:
 
-  (`character`)  
+  (`character`)\
   variable names used to split the summary by rows.
 
 - var_labels:
 
-  (named `character`) optional  
+  (named `character`) optional\
   variable labels for relabeling the analysis variables.
 
 - add_total:
 
-  (`logical`)  
+  (`logical`)\
   whether to include column with total number of patients.
 
 - total_label:
 
-  (`string`)  
+  (`string`)\
   string to display as total column/row label if column/row is enabled
   (see `add_total`). Defaults to `"All Patients"`. To set a new default
   `total_label` to apply in all modules, run
@@ -82,23 +82,23 @@ template_summary_by(
 
 - parallel_vars:
 
-  (`logical`)  
+  (`logical`)\
   whether summarized variables should be arranged in columns. Can only
   be set to `TRUE` if all chosen analysis variables are numeric.
 
 - row_groups:
 
-  (`logical`)  
+  (`logical`)\
   whether summarized variables should be arranged in row groups.
 
 - na.rm:
 
-  (`logical`)  
+  (`logical`)\
   whether `NA` values should be removed prior to analysis.
 
 - na_level:
 
-  (`string`)  
+  (`string`)\
   used to replace all `NA` or empty values in character or factor
   variables in the data. Defaults to `"<Missing>"`. To set a default
   `na_level` to apply in all modules, run
@@ -106,14 +106,14 @@ template_summary_by(
 
 - numeric_stats:
 
-  (`character`)  
+  (`character`)\
   names of statistics to display for numeric summary variables.
   Available statistics are `n`, `mean_sd`, `mean_ci`, `median`,
   `median_ci`, `quantiles`, `range`, and `geom_mean`.
 
 - denominator:
 
-  (`character`)  
+  (`character`)\
   chooses how percentages are calculated. With option `N`, the reference
   population from the column total is used as the denominator. With
   option `n`, the number of non-missing records in this row and column
@@ -122,7 +122,7 @@ template_summary_by(
 
 - drop_arm_levels:
 
-  (`logical`)  
+  (`logical`)\
   whether to drop unused levels of `arm_var`. If `TRUE`, `arm_var`
   levels are set to those used in the `dataname` dataset. If `FALSE`,
   `arm_var` levels are set to those used in the `parentname` dataset. If
@@ -131,13 +131,13 @@ template_summary_by(
 
 - drop_zero_levels:
 
-  (`logical`)  
+  (`logical`)\
   whether rows with zero counts in all columns should be removed from
   the table.
 
 - basic_table_args:
 
-  (`basic_table_args`) optional  
+  (`basic_table_args`) optional\
   object created by
   [`teal.widgets::basic_table_args()`](https://insightsengineering.github.io/teal.widgets/latest-tag/reference/basic_table_args.html)
   with settings for the module table. The argument is merged with option

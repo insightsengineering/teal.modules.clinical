@@ -32,91 +32,91 @@ template_tte(
 
 - dataname:
 
-  (`character`)  
+  (`character`)\
   analysis data used in teal module.
 
 - parentname:
 
-  (`character`)  
+  (`character`)\
   parent analysis data used in teal module, usually this refers to
   `ADSL`.
 
 - arm_var:
 
-  (`character`)  
+  (`character`)\
   variable names that can be used as `arm_var`.
 
 - paramcd:
 
-  (`character`)  
+  (`character`)\
   endpoint parameter value to use in the table title.
 
 - ref_arm:
 
-  (`character`)  
+  (`character`)\
   the level of reference arm in case of arm comparison.
 
 - comp_arm:
 
-  (`character`)  
+  (`character`)\
   the level of comparison arm in case of arm comparison.
 
 - compare_arm:
 
-  (`logical`)  
+  (`logical`)\
   triggers the comparison between study arms.
 
 - combine_comp_arms:
 
-  (`logical`)  
+  (`logical`)\
   triggers the combination of comparison arms.
 
 - aval_var:
 
-  (`character`)  
+  (`character`)\
   name of the analysis value variable.
 
 - cnsr_var:
 
-  (`character`)  
+  (`character`)\
   name of the censoring variable.
 
 - strata_var:
 
-  (`character`)  
+  (`character`)\
   names of the variables for stratified analysis.
 
 - time_points:
 
-  (`character`)  
+  (`character`)\
   time points that can be used in
   [`tern::surv_timepoint()`](https://insightsengineering.github.io/tern/latest-tag/reference/survival_timepoint.html).
 
 - time_unit_var:
 
-  (`character`)  
+  (`character`)\
   name of the variable representing time units.
 
 - event_desc_var:
 
-  (`character`)  
+  (`character`)\
   name of the variable with events description.
 
 - control:
 
-  (`list`)  
+  (`list`)\
   list of settings for the analysis. See
   [`control_tte()`](https://insightsengineering.github.io/teal.modules.clinical/reference/control_tte.md)
   for details.
 
 - add_total:
 
-  (`logical`)  
+  (`logical`)\
   whether to include column with total number of patients.
 
 - total_label:
 
-  (`string`)  
+  (`string`)\
   string to display as total column/row label if column/row is enabled
   (see `add_total`). Defaults to `"All Patients"`. To set a new default
   `total_label` to apply in all modules, run
@@ -124,7 +124,7 @@ template_tte(
 
 - na_level:
 
-  (`string`)  
+  (`string`)\
   used to replace all `NA` or empty values in character or factor
   variables in the data. Defaults to `"<Missing>"`. To set a default
   `na_level` to apply in all modules, run
@@ -132,7 +132,7 @@ template_tte(
 
 - basic_table_args:
 
-  (`basic_table_args`) optional  
+  (`basic_table_args`) optional\
   object created by
   [`teal.widgets::basic_table_args()`](https://insightsengineering.github.io/teal.widgets/latest-tag/reference/basic_table_args.html)
   with settings for the module table. The argument is merged with option

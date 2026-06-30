@@ -13,6 +13,7 @@ and stable test data and it is kept internal for feature tracking.
 ## Setup & Helper Functions
 
 ``` r
+
 library(dplyr)
 library(teal.data)
 
@@ -42,21 +43,21 @@ relvar_init <- function(relvar1, relvar2) {
 rel_var <- function(df = NULL, var_name = NULL, var_values = NULL, related_var = NULL) {
   if (is.null(df)) {
     message("Missing data frame argument value.")
-    return(NA)
+    NA
   } else {
     n_relvar1 <- length(unique(df[, related_var, drop = TRUE]))
     n_relvar2 <- length(var_values)
     if (n_relvar1 != n_relvar2) {
       message(paste("Unequal vector lengths for", related_var, "and", var_name))
-      return(NA)
+      NA
     } else {
       relvar1 <- unique(df[, related_var, drop = TRUE])
       relvar2_values <- rep(NA, nrow(df))
-      for (r in seq_len(length(relvar1))) {
+      for (r in seq_along(relvar1)) {
         matched <- which(df[, related_var, drop = TRUE] == relvar1[r])
         relvar2_values[matched] <- var_values[r]
       }
-      return(relvar2_values)
+      relvar2_values
     }
   }
 }
@@ -141,6 +142,7 @@ common_var_labels <- c(
 ## `ADSL`
 
 ``` r
+
 generate_adsl <- function(N = 200) { 
   set.seed(1)
   sys_dtm <- lubridate::fast_strptime("20/2/2019 11:16:16.683", "%d/%m/%Y %H:%M:%OS", tz = "UTC")
@@ -250,6 +252,7 @@ generate_adsl <- function(N = 200) {
 ## `ADAE`
 
 ``` r
+
 generate_adae <- function(adsl = tmc_ex_adsl,
                           max_n_aes = 5) {
   set.seed(1)
@@ -432,6 +435,7 @@ generate_adae <- function(adsl = tmc_ex_adsl,
 ## `ADAETTE`
 
 ``` r
+
 generate_adaette <- function(adsl = tmc_ex_adsl) {
   set.seed(1)
   lookup_adaette <- tibble::tribble(
@@ -607,6 +611,7 @@ generate_adaette <- function(adsl = tmc_ex_adsl) {
 ## `ADCM`
 
 ``` r
+
 generate_adcm <- function(adsl = tmc_ex_adsl,
                           max_n_cms = 5L) {
   set.seed(1)
@@ -715,6 +720,7 @@ generate_adcm <- function(adsl = tmc_ex_adsl,
 ## `ADEG`
 
 ``` r
+
 generate_adeg <- function(adsl = tmc_ex_adsl,
                           n_assessments = 3L,
                           n_days = 3L,
@@ -970,6 +976,7 @@ generate_adeg <- function(adsl = tmc_ex_adsl,
 ## `ADEX`
 
 ``` r
+
 generate_adex <- function(adsl = tmc_ex_adsl,
                           n_assessments = 3L,
                           n_days = 3L,
@@ -1179,6 +1186,7 @@ generate_adex <- function(adsl = tmc_ex_adsl,
 ## `ADLB`
 
 ``` r
+
 generate_adlb <- function(adsl = tmc_ex_adsl,
                           n_assessments = 3L,
                           n_days = 3L,
@@ -1483,6 +1491,7 @@ generate_adlb <- function(adsl = tmc_ex_adsl,
 ## `ADMH`
 
 ``` r
+
 generate_admh <- function(adsl = tmc_ex_adsl,
                           max_n_mhs = 10L) {
   set.seed(1)
@@ -1566,6 +1575,7 @@ generate_admh <- function(adsl = tmc_ex_adsl,
 ## `ADQS`
 
 ``` r
+
 generate_adqs <- function(adsl = tmc_ex_adsl,
                           n_assessments = 5L,
                           n_days = 5L) {
@@ -1676,6 +1686,7 @@ generate_adqs <- function(adsl = tmc_ex_adsl,
 ## `ADRS`
 
 ``` r
+
 generate_adrs <- function(adsl = tmc_ex_adsl) {
   set.seed(1)
   param_codes <- stats::setNames(1:5, c("CR", "PR", "SD", "PD", "NE"))
@@ -1791,6 +1802,7 @@ generate_adrs <- function(adsl = tmc_ex_adsl) {
 ## `ADTTE`
 
 ``` r
+
 generate_adtte <- function(adsl = tmc_ex_adsl) {
   set.seed(1)
   lookup_tte <- tibble::tribble(
@@ -1916,6 +1928,7 @@ generate_adtte <- function(adsl = tmc_ex_adsl) {
 ## `ADVS`
 
 ``` r
+
 generate_advs <- function(adsl = tmc_ex_adsl,
                           n_assessments = 5L,
                           n_days = 5L) {
@@ -2011,6 +2024,7 @@ generate_advs <- function(adsl = tmc_ex_adsl,
 ## Generate Data
 
 ``` r
+
 # Generate & load adsl
 tmp_fol <- getwd()
 setwd(dirname(tmp_fol))

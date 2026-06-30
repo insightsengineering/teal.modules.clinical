@@ -30,72 +30,72 @@ template_therapy(
 
 - dataname:
 
-  (`character`)  
+  (`character`)\
   analysis data used in teal module.
 
 - atirel:
 
-  (`character`)  
+  (`character`)\
   name of time relation of medication variable.
 
 - cmdecod:
 
-  (`character`)  
+  (`character`)\
   name of standardized medication name variable.
 
 - cmindc:
 
-  (`character`)  
+  (`character`)\
   name of indication variable.
 
 - cmdose:
 
-  (`character`)  
+  (`character`)\
   name of dose per administration variable.
 
 - cmtrt:
 
-  (`character`)  
+  (`character`)\
   name of reported name of drug, med, or therapy variable.
 
 - cmdosu:
 
-  (`character`)  
+  (`character`)\
   name of dose units variable.
 
 - cmroute:
 
-  (`character`)  
+  (`character`)\
   name of route of administration variable.
 
 - cmdosfrq:
 
-  (`character`)  
+  (`character`)\
   name of dosing frequency per interval variable.
 
 - cmstdy:
 
-  (`character`)  
+  (`character`)\
   name of study relative day of start of medication variable.
 
 - cmendy:
 
-  (`character`)  
+  (`character`)\
   name of study day of end of medication variable.
 
 - patient_id:
 
-  (`character`)  
+  (`character`)\
   patient ID.
 
 - font_size:
 
-  (`numeric`)  
+  (`numeric`)\
   font size value.
 
 - ggplot2_args:
 
-  (`ggplot2_args`) optional  
+  (`ggplot2_args`) optional\
   object created by
   [`teal.widgets::ggplot2_args()`](https://insightsengineering.github.io/teal.widgets/latest-tag/reference/ggplot2_args.html)
   with settings for the module plot. The argument is merged with option

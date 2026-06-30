@@ -31,74 +31,74 @@ template_g_ipp(
 
 - dataname:
 
-  (`character`)  
+  (`character`)\
   analysis data used in teal module.
 
 - paramcd:
 
-  (`character`)  
+  (`character`)\
   name of the parameter code variable.
 
 - arm_var:
 
-  (`character`)  
+  (`character`)\
   variable names that can be used as `arm_var`.
 
 - arm_levels:
 
-  (`character`)  
+  (`character`)\
   vector of all levels of `arm_var`.
 
 - avalu_first:
 
-  (`character`)  
+  (`character`)\
   `avalu_var` text to append to the plot title and y-axis label if
   `add_avalu` is `TRUE`.
 
 - paramcd_first:
 
-  (`character`)  
+  (`character`)\
   `paramcd` text to append to the plot title and y-axis label.
 
 - aval_var:
 
-  (`character`)  
+  (`character`)\
   name of the analysis value variable.
 
 - avalu_var:
 
-  (`character`)  
+  (`character`)\
   name of the analysis value unit variable.
 
 - id_var:
 
-  (`character`)  
+  (`character`)\
   the variable name for subject id.
 
 - visit_var:
 
-  (`character`)  
+  (`character`)\
   name of the variable for visit timepoints.
 
 - baseline_var:
 
-  (`character`)  
+  (`character`)\
   name of the variable for baseline values of the analysis variable.
 
 - add_baseline_hline:
 
-  (`logical`)  
+  (`logical`)\
   whether a horizontal line should be added to the plot at baseline
   y-value.
 
 - separate_by_obs:
 
-  (`logical`)  
+  (`logical`)\
   whether to create multi-panel plots.
 
 - ggplot2_args:
 
-  (`ggplot2_args`) optional  
+  (`ggplot2_args`) optional\
   object created by
   [`teal.widgets::ggplot2_args()`](https://insightsengineering.github.io/teal.widgets/latest-tag/reference/ggplot2_args.html)
   with settings for the module plot. For this module, this argument will
@@ -113,12 +113,12 @@ template_g_ipp(
 
 - suppress_legend:
 
-  (`logical`)  
+  (`logical`)\
   whether to suppress the plot legend.
 
 - add_avalu:
 
-  (`logical`)  
+  (`logical`)\
   whether `avalu_first` text should be appended to the plot title and
   y-axis label.
 

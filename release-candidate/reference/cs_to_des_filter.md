@@ -18,32 +18,32 @@ cs_to_des_filter(
 
 - cs:
 
-  (`choices_selected`)  
+  (`choices_selected`)\
   object to be transformed. See
   [`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html)
   for details.
 
 - dataname:
 
-  (`character`)  
+  (`character`)\
   name of the data
 
 - multiple:
 
-  (`logical`)  
+  (`logical`)\
   Whether multiple values shall be allowed in the shiny
   [`shiny::selectInput()`](https://rdrr.io/pkg/shiny/man/selectInput.html).
 
 - include_vars:
 
-  (`flag`)  
+  (`flag`)\
   whether to include the filter variables as fixed selection in the
   result. This can be useful for preserving for reuse in `rtables` code
   e.g.
 
 - label:
 
-  (`character`)  
+  (`character`)\
   Label to print over the selection field. For no label, set to `NULL`.
 
 ## Value

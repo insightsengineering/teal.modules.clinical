@@ -8,8 +8,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Quick start: `substitute` for NSE • teal.modules.clinical</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Quick start: `substitute` for NSE">
 <link rel="stylesheet" href="../consent.css">
@@ -23,7 +23,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">teal.modules.clinical</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.12.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.13.0</small>
 
     <div style="width: 140px; margin-left: 0.5rem;"> <small class="nav-text text-muted me-auto">part of</small> <img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/nest.png?raw=true" alt="NEST" style="height: 30px;"><a href="https://pharmaverse.org/" class="external-link"><img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/pharmaverse.png?raw=true" alt="pharmaverse" style="height: 28px;"></a> </div>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -57,6 +57,7 @@
     <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/release-candidate">release-candidate</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/main">main</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/latest-tag">latest-tag</a>
+<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.13.0-rc2">v0.13.0-rc2</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.12.0">v0.12.0</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.12.0-rc1">v0.12.0-rc1</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.11.1">v0.11.1</a>
@@ -94,7 +95,7 @@ Collin</h4>
             
             <h4 data-toc-skip class="date">29.10.2020</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/insightsengineering/teal.modules.clinical/blob/v0.12.0-rc1/vignettes/quickstart_substitute.Rmd" class="external-link"><code>vignettes/quickstart_substitute.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/insightsengineering/teal.modules.clinical/blob/v0.13.0-rc2/vignettes/quickstart_substitute.Rmd" class="external-link"><code>vignettes/quickstart_substitute.Rmd</code></a></small>
       <div class="d-none name"><code>quickstart_substitute.Rmd</code></div>
     </div>
 
@@ -151,7 +152,8 @@ choice was made to focus on <code>substitute</code>.</p>
 <span><span class="va">non_evaluated_expression</span></span>
 <span><span class="co">## a + b</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/eval.html" class="external-link">eval</a></span><span class="op">(</span><span class="va">non_evaluated_expression</span><span class="op">)</span></span>
-<span><span class="co">## Error in eval(non_evaluated_expression): object 'b' not found</span></span></code></pre></div>
+<span><span class="co">## <span style="color: #BBBB00; font-weight: bold;">Error</span><span style="font-weight: bold;">:</span></span></span>
+<span><span class="co">## <span style="color: #BBBB00;">!</span> object 'b' not found</span></span></code></pre></div>
 <p>What happened?</p>
 <ul>
 <li>
@@ -225,7 +227,7 @@ values were substituted (argument <code>env</code>).</li>
 <span><span class="va">non_evaluated_expression</span></span>
 <span><span class="co">## plot(x = 0:10, y = exp(0:10), main = "A graph")</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/eval.html" class="external-link">eval</a></span><span class="op">(</span><span class="va">non_evaluated_expression</span><span class="op">)</span></span></code></pre></div>
-<p><img src="quickstart_substitute_files/figure-html/unnamed-chunk-6-1.svg" class="r-plt" width="700"></p>
+<p><img src="quickstart_substitute_files/figure-html/unnamed-chunk-6-1.svg" class="r-plt" alt="" width="700"></p>
 <p>Note that:</p>
 <ul>
 <li>
@@ -248,7 +250,8 @@ the substitution?</p>
 <span>    text <span class="op">=</span> <span class="st">"Iris, again ..."</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">## Error: object 'Sepal.Length' not found</span></span></code></pre></div>
+<span><span class="co">## <span style="color: #BBBB00; font-weight: bold;">Error</span><span style="font-weight: bold;">:</span></span></span>
+<span><span class="co">## <span style="color: #BBBB00;">!</span> object 'Sepal.Length' not found</span></span></code></pre></div>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Error expected:</span></span>
 <span><span class="va">plot_expr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">substitute</a></span><span class="op">(</span></span>
@@ -262,7 +265,8 @@ the substitution?</p>
 <span><span class="va">plot_expr</span></span>
 <span><span class="co">## plot("Sepal.Width" ~ "Sepal.Length", data = iris, main = "Iris, again ...")</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/eval.html" class="external-link">eval</a></span><span class="op">(</span><span class="va">plot_expr</span><span class="op">)</span></span>
-<span><span class="co">## Error in terms.formula(formula, data = data): invalid term in model formula</span></span></code></pre></div>
+<span><span class="co">## <span style="color: #BBBB00; font-weight: bold;">Error</span><span style="font-weight: bold;"> in `terms.formula()`:</span></span></span>
+<span><span class="co">## <span style="color: #BBBB00;">!</span> invalid term in model formula</span></span></code></pre></div>
 <p>The object names have a specific <em>class</em> (<code>name</code>);
 <code>as.names</code> coerces a character string to an object name
 (alternatively, <code>as.symbol</code> provides an identical
@@ -279,7 +283,7 @@ result):</p>
 <span><span class="va">plot_expr</span></span>
 <span><span class="co">## plot(Sepal.Width ~ Sepal.Length, data = iris, main = "Iris, again ...")</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/eval.html" class="external-link">eval</a></span><span class="op">(</span><span class="va">plot_expr</span><span class="op">)</span></span></code></pre></div>
-<p><img src="quickstart_substitute_files/figure-html/unnamed-chunk-9-1.svg" class="r-plt" width="700"></p>
+<p><img src="quickstart_substitute_files/figure-html/unnamed-chunk-9-1.svg" class="r-plt" alt="" width="700"></p>
 </div>
 <div class="section level3">
 <h3 id="what-about-dataframe-names">What about dataframe names?<a class="anchor" aria-label="anchor" href="#what-about-dataframe-names"></a>
@@ -313,7 +317,7 @@ dataframe: the pipeline is working but not humanly readable.</p>
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/eval.html" class="external-link">eval</a></span><span class="op">(</span><span class="va">plot_expr</span><span class="op">)</span></span></code></pre></div>
-<p><img src="quickstart_substitute_files/figure-html/unnamed-chunk-10-1.svg" class="r-plt" width="700"></p>
+<p><img src="quickstart_substitute_files/figure-html/unnamed-chunk-10-1.svg" class="r-plt" alt="" width="700"></p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">plot_expr</span></span>
 <span><span class="co">## list(Sepal.Length = c(5.1, 4.9, 4.7, 4.6, 5, 5.4), Sepal.Width = c(3.5, </span></span>
@@ -338,7 +342,7 @@ value?</p>
 <span><span class="va">plot_expr</span></span>
 <span><span class="co">## iris %&gt;% plot(Sepal.Width ~ Sepal.Length, data = ., main = "Iris, again ...")</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/eval.html" class="external-link">eval</a></span><span class="op">(</span><span class="va">plot_expr</span><span class="op">)</span></span></code></pre></div>
-<p><img src="quickstart_substitute_files/figure-html/unnamed-chunk-11-1.svg" class="r-plt" width="700"></p>
+<p><img src="quickstart_substitute_files/figure-html/unnamed-chunk-11-1.svg" class="r-plt" alt="" width="700"></p>
 </div>
 <div class="section level3">
 <h3 id="in-a-nutshell">In a nutshell<a class="anchor" aria-label="anchor" href="#in-a-nutshell"></a>

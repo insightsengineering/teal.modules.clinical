@@ -33,102 +33,102 @@ template_ancova(
 
 - dataname:
 
-  (`character`)  
+  (`character`)\
   analysis data used in teal module.
 
 - parentname:
 
-  (`character`)  
+  (`character`)\
   parent analysis data used in teal module, usually this refers to
   `ADSL`.
 
 - arm_var:
 
-  (`character`)  
+  (`character`)\
   variable names that can be used as `arm_var`.
 
 - ref_arm:
 
-  (`character`)  
+  (`character`)\
   the level of reference arm in case of arm comparison.
 
 - comp_arm:
 
-  (`character`)  
+  (`character`)\
   the level of comparison arm in case of arm comparison.
 
 - combine_comp_arms:
 
-  (`logical`)  
+  (`logical`)\
   triggers the combination of comparison arms.
 
 - aval_var:
 
-  (`character`)  
+  (`character`)\
   name of the analysis value variable.
 
 - label_aval:
 
-  (`character`)  
+  (`character`)\
   label of value variable used for title rendering.
 
 - cov_var:
 
-  (`character`)  
+  (`character`)\
   names of the covariates variables.
 
 - include_interact:
 
-  (`logical`)  
+  (`logical`)\
   whether an interaction term should be included in the model.
 
 - interact_var:
 
-  (`character`)  
+  (`character`)\
   name of the variable that should have interactions with arm. If the
   interaction is not needed, the default option is `NULL`.
 
 - interact_y:
 
-  (`character`)  
+  (`character`)\
   a selected item from the `interact_var` column which will be used to
   select the specific ANCOVA results. If the interaction is not needed,
   the default option is `FALSE`.
 
 - paramcd_levels:
 
-  (`character`)  
+  (`character`)\
   variable levels for the studied parameter.
 
 - paramcd_var:
 
-  (`character`)  
+  (`character`)\
   variable name for the studied parameter.
 
 - label_paramcd:
 
-  (`character`)  
+  (`character`)\
   variable label used for title rendering.
 
 - visit_levels:
 
-  (`character`)  
+  (`character`)\
   variable levels for studied visits.
 
 - visit_var:
 
-  (`character`)  
+  (`character`)\
   variable names that can be used as `visit` variable. Must be a factor
   in `dataname`.
 
 - conf_level:
 
-  (`numeric`)  
+  (`numeric`)\
   value for the confidence level within the range of (0, 1).
 
 - basic_table_args:
 
-  (`basic_table_args`) optional  
+  (`basic_table_args`) optional\
   object created by
   [`teal.widgets::basic_table_args()`](https://insightsengineering.github.io/teal.widgets/latest-tag/reference/basic_table_args.html)
   with settings for the module table. The argument is merged with option

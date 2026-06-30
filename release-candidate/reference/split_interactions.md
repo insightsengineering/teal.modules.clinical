@@ -12,13 +12,13 @@ split_interactions(x, by = "\\*|:")
 
 - x:
 
-  (`character`)  
+  (`character`)\
   string representing the interaction usually in the form `x:y` or
   `x*y`.
 
 - by:
 
-  (`character`)  
+  (`character`)\
   regex with which to split the interaction term by.
 
 ## Value

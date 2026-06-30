@@ -31,78 +31,78 @@ template_events_by_grade(
 
 - dataname:
 
-  (`character`)  
+  (`character`)\
   analysis data used in teal module.
 
 - parentname:
 
-  (`character`)  
+  (`character`)\
   parent analysis data used in teal module, usually this refers to
   `ADSL`.
 
 - arm_var:
 
-  (`character`)  
+  (`character`)\
   variable names that can be used as `arm_var`.
 
 - id:
 
-  (`character`)  
+  (`character`)\
   unique identifier of patients in datasets, default to `"USUBJID"`.
 
 - hlt:
 
-  (`character`)  
+  (`character`)\
   name of the variable with high level term for events.
 
 - llt:
 
-  (`character`)  
+  (`character`)\
   name of the variable with low level term for events.
 
 - label_hlt:
 
-  (`string`)  
+  (`string`)\
   label of the `hlt` variable from `dataname`. The label will be
   extracted from the module.
 
 - label_llt:
 
-  (`string`)  
+  (`string`)\
   label of the `llt` variable from `dataname`. The label will be
   extracted from the module.
 
 - grade:
 
-  (`character`)  
+  (`character`)\
   name of the severity level variable.
 
 - label_grade:
 
-  (`string`)  
+  (`string`)\
   label of the `grade` variable from `dataname`. The label will be
   extracted from the module.
 
 - prune_freq:
 
-  (`number`)  
+  (`number`)\
   threshold to use for trimming table using event incidence rate in any
   column.
 
 - prune_diff:
 
-  (`number`)  
+  (`number`)\
   threshold to use for trimming table using as criteria difference in
   rates between any two columns.
 
 - add_total:
 
-  (`logical`)  
+  (`logical`)\
   whether to include column with total number of patients.
 
 - total_label:
 
-  (`string`)  
+  (`string`)\
   string to display as total column/row label if column/row is enabled
   (see `add_total`). Defaults to `"All Patients"`. To set a new default
   `total_label` to apply in all modules, run
@@ -110,7 +110,7 @@ template_events_by_grade(
 
 - na_level:
 
-  (`string`)  
+  (`string`)\
   used to replace all `NA` or empty values in character or factor
   variables in the data. Defaults to `"<Missing>"`. To set a default
   `na_level` to apply in all modules, run
@@ -118,7 +118,7 @@ template_events_by_grade(
 
 - drop_arm_levels:
 
-  (`logical`)  
+  (`logical`)\
   whether to drop unused levels of `arm_var`. If `TRUE`, `arm_var`
   levels are set to those used in the `dataname` dataset. If `FALSE`,
   `arm_var` levels are set to those used in the `parentname` dataset. If
@@ -127,7 +127,7 @@ template_events_by_grade(
 
 - basic_table_args:
 
-  (`basic_table_args`) optional  
+  (`basic_table_args`) optional\
   object created by
   [`teal.widgets::basic_table_args()`](https://insightsengineering.github.io/teal.widgets/latest-tag/reference/basic_table_args.html)
   with settings for the module table. The argument is merged with option

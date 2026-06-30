@@ -28,60 +28,60 @@ template_shift_by_arm(
 
 - dataname:
 
-  (`character`)  
+  (`character`)\
   analysis data used in teal module.
 
 - parentname:
 
-  (`character`)  
+  (`character`)\
   parent analysis data used in teal module, usually this refers to
   `ADSL`.
 
 - arm_var:
 
-  (`character`)  
+  (`character`)\
   variable names that can be used as `arm_var`.
 
 - paramcd:
 
-  (`character`)  
+  (`character`)\
   name of the parameter code variable.
 
 - visit_var:
 
-  (`character`)  
+  (`character`)\
   variable names that can be used as `visit` variable. Must be a factor
   in `dataname`.
 
 - treatment_flag_var:
 
-  (`character`)  
+  (`character`)\
   name of the on treatment flag variable.
 
 - treatment_flag:
 
-  (`character`)  
+  (`character`)\
   name of the value indicating on treatment records in
   `treatment_flag_var`.
 
 - aval_var:
 
-  (`character`)  
+  (`character`)\
   name of the analysis reference range indicator variable.
 
 - baseline_var:
 
-  (`character`)  
+  (`character`)\
   name of the baseline reference range indicator variable.
 
 - na.rm:
 
-  (`logical`)  
+  (`logical`)\
   whether `NA` values should be removed prior to analysis.
 
 - na_level:
 
-  (`string`)  
+  (`string`)\
   used to replace all `NA` or empty values in character or factor
   variables in the data. Defaults to `"<Missing>"`. To set a default
   `na_level` to apply in all modules, run
@@ -89,12 +89,12 @@ template_shift_by_arm(
 
 - add_total:
 
-  (`logical`)  
+  (`logical`)\
   whether to include row with total number of patients.
 
 - total_label:
 
-  (`string`)  
+  (`string`)\
   string to display as total column/row label if column/row is enabled
   (see `add_total`). Defaults to `"All Patients"`. To set a new default
   `total_label` to apply in all modules, run
@@ -102,7 +102,7 @@ template_shift_by_arm(
 
 - basic_table_args:
 
-  (`basic_table_args`) optional  
+  (`basic_table_args`) optional\
   object created by
   [`teal.widgets::basic_table_args()`](https://insightsengineering.github.io/teal.widgets/latest-tag/reference/basic_table_args.html)
   with settings for the module table. The argument is merged with option

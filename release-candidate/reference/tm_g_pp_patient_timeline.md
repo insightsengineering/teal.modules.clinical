@@ -38,119 +38,119 @@ tm_g_pp_patient_timeline(
 
 - label:
 
-  (`character`)  
+  (`character`)\
   menu item label of the module in the teal app.
 
 - dataname_adcm:
 
-  (`character`)  
+  (`character`)\
   name of `ADCM` dataset or equivalent.
 
 - dataname_adae:
 
-  (`character`)  
+  (`character`)\
   name of `ADAE` dataset or equivalent.
 
 - parentname:
 
-  (`character`)  
+  (`character`)\
   parent analysis data used in teal module, usually this refers to
   `ADSL`.
 
 - patient_col:
 
-  (`character`)  
+  (`character`)\
   name of patient ID variable.
 
 - aeterm:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))  
+  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   object with all available choices and preselected option for the
   `AETERM` variable from `dataname`.
 
 - cmdecod:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))  
+  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   object with all available choices and preselected option for the
   `CMDECOD` variable from `dataname_adcm`.
 
 - aetime_start:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))  
+  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   object with all available choices and preselected option for the
   `ASTDTM` variable from `dataname_adae`.
 
 - aetime_end:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))  
+  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   object with all available choices and preselected option for the
   `AENDTM` variable from `dataname_adae`.
 
 - dstime_start:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))  
+  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   object with all available choices and preselected option for the
   `CMASTDTM` variable from `dataname_adcm`.
 
 - dstime_end:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))  
+  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   object with all available choices and preselected option for the
   `CMAENDTM` variable from `dataname_adcm`.
 
 - aerelday_start:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))  
+  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   object with all available choices and preselected option for the
   `ASTDY` variable from `dataname_adae`.
 
 - aerelday_end:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))  
+  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   object with all available choices and preselected option for the
   `AENDY` variable from `dataname_adae`.
 
 - dsrelday_start:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))  
+  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   object with all available choices and preselected option for the
   `ASTDY` variable from `dataname_adcm`.
 
 - dsrelday_end:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))  
+  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   object with all available choices and preselected option for the
   `AENDY` variable from `dataname_adcm`.
 
 - font_size:
 
-  (`numeric`)  
+  (`numeric`)\
   numeric vector of length 3 of current, minimum and maximum font size
   values.
 
 - plot_height:
 
-  (`numeric`) optional  
+  (`numeric`) optional\
   vector of length three with `c(value, min, max)`. Specifies the height
   of the main plot and renders a slider on the plot to interactively
   adjust the plot height.
 
 - plot_width:
 
-  (`numeric`) optional  
+  (`numeric`) optional\
   vector of length three with `c(value, min, max)`. Specifies the width
   of the main plot and renders a slider on the plot to interactively
   adjust the plot width.
 
 - pre_output:
 
-  (`shiny.tag`) optional,  
+  (`shiny.tag`) optional,\
   with text placed before the output to put the output into context. For
   example a title.
 
 - post_output:
 
-  (`shiny.tag`) optional,  
+  (`shiny.tag`) optional,\
   with text placed after the output to put the output into context. For
   example the
   [`shiny::helpText()`](https://rdrr.io/pkg/shiny/man/helpText.html)
@@ -158,7 +158,7 @@ tm_g_pp_patient_timeline(
 
 - ggplot2_args:
 
-  (`ggplot2_args`) optional  
+  (`ggplot2_args`) optional\
   object created by
   [`teal.widgets::ggplot2_args()`](https://insightsengineering.github.io/teal.widgets/latest-tag/reference/ggplot2_args.html)
   with settings for the module plot. The argument is merged with option

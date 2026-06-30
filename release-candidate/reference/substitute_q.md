@@ -15,12 +15,12 @@ substitute_q(qexpr, env)
 
 - qexpr:
 
-  (`language`)  
+  (`language`)\
   a quoted expression.
 
 - env:
 
-  (`environment` or `list`)  
+  (`environment` or `list`)\
   requested variable substitutions.
 
 ## Value

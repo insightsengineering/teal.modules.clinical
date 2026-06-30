@@ -41,11 +41,13 @@ choice was made to focus on `substitute`.
 ### NSE Principle
 
 ``` r
+
 non_evaluated_expression <- substitute(expr = a + b)
 non_evaluated_expression
 ## a + b
 eval(non_evaluated_expression)
-## Error in eval(non_evaluated_expression): object 'b' not found
+## Error:
+## ! object 'b' not found
 ```
 
 What happened?
@@ -58,6 +60,7 @@ What happened?
   error:
 
 ``` r
+
 non_evaluated_expression <- substitute(expr = a + b)
 a <- 1
 b <- 5
@@ -70,6 +73,7 @@ the expression, it also **operates substitutions** of some terms within
 a given expression.
 
 ``` r
+
 fun <- function(a, b) {
   substitute(expr = a + b)
 }
@@ -97,6 +101,7 @@ submitted in `substitute` has corresponding objects in `env`, the terms
 within the expression will be substituted with provided values:
 
 ``` r
+
 non_evaluated_expression <- substitute(
   expr = a + b,
   env = list(a = 5, b = 5)
@@ -118,6 +123,7 @@ What happened?
 With a slightly more elaborate expression:
 
 ``` r
+
 non_evaluated_expression <- substitute(
   expr = plot(x = x, y = exp(x), main = text),
   env = list(x = 0:10, text = "A graph")
@@ -140,6 +146,7 @@ In formulas, character strings are not accepted, how do we execute the
 substitution?
 
 ``` r
+
 # Error expected:
 plot_expr <- substitute(
   expr = plot(y ~ x, data = iris, main = text),
@@ -149,10 +156,12 @@ plot_expr <- substitute(
     text = "Iris, again ..."
   )
 )
-## Error: object 'Sepal.Length' not found
+## Error:
+## ! object 'Sepal.Length' not found
 ```
 
 ``` r
+
 # Error expected:
 plot_expr <- substitute(
   expr = plot(y ~ x, data = iris, main = text),
@@ -165,7 +174,8 @@ plot_expr <- substitute(
 plot_expr
 ## plot("Sepal.Width" ~ "Sepal.Length", data = iris, main = "Iris, again ...")
 eval(plot_expr)
-## Error in terms.formula(formula, data = data): invalid term in model formula
+## Error in `terms.formula()`:
+## ! invalid term in model formula
 ```
 
 The object names have a specific *class* (`name`); `as.names` coerces a
@@ -173,6 +183,7 @@ character string to an object name (alternatively, `as.symbol` provides
 an identical result):
 
 ``` r
+
 plot_expr <- substitute(
   expr = plot(y ~ x, data = iris, main = text),
   env = list(
@@ -200,6 +211,7 @@ object provided and not the expression generating the dataframe: the
 pipeline is working but not humanly readable.
 
 ``` r
+
 library(dplyr)
 ## 
 ## Attaching package: 'dplyr'
@@ -226,6 +238,7 @@ eval(plot_expr)
 ![](quickstart_substitute_files/figure-html/unnamed-chunk-10-1.svg)
 
 ``` r
+
 plot_expr
 ## list(Sepal.Length = c(5.1, 4.9, 4.7, 4.6, 5, 5.4), Sepal.Width = c(3.5, 
 ## 3, 3.2, 3.1, 3.6, 3.9), Petal.Length = c(1.4, 1.4, 1.3, 1.5, 
@@ -239,6 +252,7 @@ How can we replace the value by the expression generating this value?
 That is pretty much the topic of the vignette: `substitute`.
 
 ``` r
+
 plot_expr <- substitute(
   expr = df %>% plot(y ~ x, data = ., main = text),
   env = list(
@@ -281,6 +295,7 @@ changes from baseline (`CHG`), per analysis visit in rows.
 The data can be prepared as follows:
 
 ``` r
+
 library(teal.modules.clinical)
 library(rtables)
 library(tern)
@@ -297,6 +312,7 @@ adlb_f <- adlb %>%
 And the `rtables` expression is obtained as:
 
 ``` r
+
 rtables_expr <- substitute(
   expr = basic_table() %>%
     split_cols_by(arm, split_fun = drop_split_levels) %>%
@@ -318,6 +334,7 @@ rtables_expr <- substitute(
 The expression is valid … :
 
 ``` r
+
 eval(rtables_expr)
 ##                        A: Drug X                    B: Placebo        
 ##                   Value         Change         Value         Change   
@@ -332,6 +349,7 @@ eval(rtables_expr)
 … but not easily readable …:
 
 ``` r
+
 rtables_expr
 ## basic_table() %>% split_cols_by("ARM", split_fun = drop_split_levels) %>% 
 ##     split_rows_by("AVISIT", split_fun = drop_split_levels) %>% 
@@ -342,6 +360,7 @@ rtables_expr
 … but that can be arranged:
 
 ``` r
+
 library(teal)
 library(styler)
 
@@ -377,6 +396,7 @@ Moving further, `substitute` can actually be wrapped in a function, this
 way the `rtables` pipelines are *programmatically* obtained:
 
 ``` r
+
 rtables_expr <- function(df,
                          arm,
                          visit) {
@@ -426,6 +446,7 @@ eval(result)
   panel.
 
 ``` r
+
 result <- rtables_expr(df = adlb_f, arm = "ARMCD", visit = "AVISITN")
 eval(result)
 ## Split var [AVISITN] was not character or factor. Converting to factor
@@ -455,6 +476,7 @@ It is also possible to manipulate expressions, for instance, expressions
 might be chained in a pipeline.
 
 ``` r
+
 #' Expressions as a pipeline
 #'
 #' Accepts expressions to be chained using the `magrittr` pipeline-flavor.
@@ -493,6 +515,7 @@ result
   code with `Show R Code`:
 
 ``` r
+
 rtables_expr <- function(df,
                          arm,
                          visit,
@@ -538,6 +561,7 @@ rtables_expr <- function(df,
 - First application with standard statistics:
 
 ``` r
+
 result <- rtables_expr(df = adlb_f, arm = "ARM", visit = "AVISIT")
 styled_expr(result)
 ## basic_table() %>%
@@ -563,6 +587,7 @@ eval(result)
 - Then with statistics specifications:
 
 ``` r
+
 result <- rtables_expr(
   df = adlb_f, arm = "ARM", visit = "AVISIT",
   .stats = c("n", "mean_sd")
@@ -595,6 +620,7 @@ single function.
   section:
 
 ``` r
+
 rtables_expr <- function(df,
                          paramcd,
                          arm,
@@ -655,6 +681,7 @@ It is now possible to modify the studied parameter (`PARAMCD`) in
 addition to the study arm and visit variables names.
 
 ``` r
+
 adlb <- tmc_ex_adlb
 result <- rtables_expr(
   df = adlb, paramcd = "CRP", arm = "ARM", visit = "AVISIT",
@@ -665,6 +692,7 @@ result <- rtables_expr(
 The two expressions are consistent:
 
 ``` r
+
 styled_expr(result$data)
 ## adlb <- adlb %>% filter(PARAMCD == "CRP" & ARMCD %in% c(
 ##   "ARM A",
@@ -685,6 +713,7 @@ styled_expr(result$rtables)
 The two expressions can be executed and return the `rtables`:
 
 ``` r
+
 result_exec <- mapply(eval, result)
 result_exec$rtables
 ##                      A: Drug X              B: Placebo      

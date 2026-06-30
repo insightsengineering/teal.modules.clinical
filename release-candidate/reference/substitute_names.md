@@ -20,28 +20,28 @@ substitute_rhs(qexpr, env)
 
 - expr:
 
-  (`language`)  
+  (`language`)\
   an expression.
 
 - names:
 
-  (named `list` of `name`)  
+  (named `list` of `name`)\
   requested name substitutions.
 
 - others:
 
-  (named `list`)  
+  (named `list`)\
   requested other substitutions which will only happen on the right-hand
   side.
 
 - qexpr:
 
-  (`language`)  
+  (`language`)\
   a quoted expression.
 
 - env:
 
-  (`environment` or `list`)  
+  (`environment` or `list`)\
   requested variable substitutions.
 
 ## Value

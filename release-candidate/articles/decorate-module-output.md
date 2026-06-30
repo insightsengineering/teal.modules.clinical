@@ -91,6 +91,7 @@ the help of `rtables` modifiers like
 [`rtables::insert_rrow`](https://insightsengineering.github.io/rtables/latest-tag/reference/insert_rrow.html).
 
 ``` r
+
 library(teal.modules.clinical)
 
 data <- within(teal_data(), {
@@ -178,6 +179,7 @@ Here’s an example to showcase how you can edit an output of class
 `ggplot`. You can extend them using `ggplot2` functions.
 
 ``` r
+
 library(teal.modules.clinical)
 
 data <- teal_data(join_keys = default_cdisc_join_keys[c("ADSL", "ADRS")])
@@ -257,6 +259,7 @@ functions](https://rstudio.github.io/DT/functions.html) of the `DT`
 package to learn more about extending the `datatables` objects.
 
 ``` r
+
 library(teal.modules.clinical)
 
 data <- teal_data(join_keys = default_cdisc_join_keys[c("ADSL", "ADRS")])
@@ -345,11 +348,12 @@ app <- init(
     ## teal.modules.clinical 0.11.0.
     ## ℹ Decorators functionality was removed from this module. The `decorators`
     ##   argument will be ignored.
-    ## This warning is displayed once every 8 hours.
+    ## This warning is displayed once per session.
     ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
     ## generated.
 
 ``` r
+
 if (interactive()) {
   shinyApp(app$ui, app$server)
 }

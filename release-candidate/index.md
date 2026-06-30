@@ -89,12 +89,14 @@ examples of `shiny` apps created using modules from this package.
 ## Installation
 
 ``` r
+
 install.packages('teal.modules.clinical')
 ```
 
 Alternatively, you might want to use the development version.
 
 ``` r
+
 # install.packages("pak")
 pak::pak("insightsengineering/teal.modules.clinical")
 ```
@@ -124,20 +126,3 @@ workspace](https://pharmaverse.slack.com).
 This package is the result of the joint efforts of many developers and
 stakeholders. We would like to thank everyone who has contributed so
 far!
-
-## Stargazers and Forkers
-
-### Stargazers over time
-
-[![Stargazers over
-time](https://starchart.cc/insightsengineering/teal.modules.clinical.svg)](https://starchart.cc/insightsengineering/teal.modules.clinical)
-
-### Stargazers
-
-[![Stargazers repo roster
-for](https://reporoster.com/stars/insightsengineering/teal.modules.clinical)](https://github.com/insightsengineering/teal.modules.clinical/stargazers)
-
-### Forkers
-
-[![Forkers repo roster
-for](https://reporoster.com/forks/insightsengineering/teal.modules.clinical)](https://github.com/insightsengineering/teal.modules.clinical/network/members)

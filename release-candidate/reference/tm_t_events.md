@@ -35,23 +35,23 @@ tm_t_events(
 
 - label:
 
-  (`character`)  
+  (`character`)\
   menu item label of the module in the teal app.
 
 - dataname:
 
-  (`character`)  
+  (`character`)\
   analysis data used in teal module.
 
 - parentname:
 
-  (`character`)  
+  (`character`)\
   parent analysis data used in teal module, usually this refers to
   `ADSL`.
 
 - arm_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))  
+  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   object with all available choices and preselected option for variable
   names that can be used as `arm_var`. It defines the grouping
   variable(s) in the results table. If there are two elements selected
@@ -60,22 +60,22 @@ tm_t_events(
 
 - hlt:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))  
+  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   name of the variable with high level term for events.
 
 - llt:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))  
+  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   name of the variable with low level term for events.
 
 - add_total:
 
-  (`logical`)  
+  (`logical`)\
   whether to include column with total number of patients.
 
 - total_label:
 
-  (`string`)  
+  (`string`)\
   string to display as total column/row label if column/row is enabled
   (see `add_total`). Defaults to `"All Patients"`. To set a new default
   `total_label` to apply in all modules, run
@@ -83,7 +83,7 @@ tm_t_events(
 
 - na_level:
 
-  (`string`)  
+  (`string`)\
   used to replace all `NA` or empty values in character or factor
   variables in the data. Defaults to `"<Missing>"`. To set a default
   `na_level` to apply in all modules, run
@@ -91,38 +91,38 @@ tm_t_events(
 
 - event_type:
 
-  (`character`)  
+  (`character`)\
   type of event that is summarized (e.g. adverse event, treatment).
   Default is `"event"`.
 
 - sort_criteria:
 
-  (`character`)  
+  (`character`)\
   how to sort the final table. Default option `freq_desc` sorts on
   column `sort_freq_col` by decreasing number of patients with event.
   Alternative option `alpha` sorts events alphabetically.
 
 - sort_freq_col:
 
-  (`character`)  
+  (`character`)\
   column to sort by frequency on if `sort_criteria` is set to
   `freq_desc`.
 
 - prune_freq:
 
-  (`number`)  
+  (`number`)\
   threshold to use for trimming table using event incidence rate in any
   column.
 
 - prune_diff:
 
-  (`number`)  
+  (`number`)\
   threshold to use for trimming table using as criteria difference in
   rates between any two columns.
 
 - drop_arm_levels:
 
-  (`logical`)  
+  (`logical`)\
   whether to drop unused levels of `arm_var`. If `TRUE`, `arm_var`
   levels are set to those used in the `dataname` dataset. If `FALSE`,
   `arm_var` levels are set to those used in the `parentname` dataset. If
@@ -131,19 +131,19 @@ tm_t_events(
 
 - incl_overall_sum:
 
-  (`flag`)  
+  (`flag`)\
   whether two rows which summarize the overall number of adverse events
   should be included at the top of the table.
 
 - pre_output:
 
-  (`shiny.tag`) optional,  
+  (`shiny.tag`) optional,\
   with text placed before the output to put the output into context. For
   example a title.
 
 - post_output:
 
-  (`shiny.tag`) optional,  
+  (`shiny.tag`) optional,\
   with text placed after the output to put the output into context. For
   example the
   [`shiny::helpText()`](https://rdrr.io/pkg/shiny/man/helpText.html)
@@ -151,7 +151,7 @@ tm_t_events(
 
 - basic_table_args:
 
-  (`basic_table_args`) optional  
+  (`basic_table_args`) optional\
   object created by
   [`teal.widgets::basic_table_args()`](https://insightsengineering.github.io/teal.widgets/latest-tag/reference/basic_table_args.html)
   with settings for the module table. The argument is merged with option

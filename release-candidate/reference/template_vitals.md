@@ -23,42 +23,42 @@ template_vitals(
 
 - dataname:
 
-  (`character`)  
+  (`character`)\
   analysis data used in teal module.
 
 - paramcd:
 
-  (`character`)  
+  (`character`)\
   name of the parameter code variable.
 
 - paramcd_levels:
 
-  (`character`)  
+  (`character`)\
   vector of all levels of `paramcd`.
 
 - xaxis:
 
-  (`character`)  
+  (`character`)\
   name of the time variable to put on the x-axis.
 
 - aval_var:
 
-  (`character`)  
+  (`character`)\
   name of the analysis value variable.
 
 - patient_id:
 
-  (`character`)  
+  (`character`)\
   patient ID.
 
 - font_size:
 
-  (`numeric`)  
+  (`numeric`)\
   font size value.
 
 - ggplot2_args:
 
-  (`ggplot2_args`) optional  
+  (`ggplot2_args`) optional\
   object created by
   [`teal.widgets::ggplot2_args()`](https://insightsengineering.github.io/teal.widgets/latest-tag/reference/ggplot2_args.html)
   with settings for the module plot. The argument is merged with option

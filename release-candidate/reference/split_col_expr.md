@@ -16,22 +16,22 @@ split_col_expr(compare, combine, ref, arm_var)
 
 - compare:
 
-  (`logical`)  
+  (`logical`)\
   if `TRUE` the reference level is included.
 
 - combine:
 
-  (`logical`)  
+  (`logical`)\
   if `TRUE` the group combination is included.
 
 - ref:
 
-  (`character`)  
+  (`character`)\
   the reference level (not used for `combine = TRUE`).
 
 - arm_var:
 
-  (`character`)  
+  (`character`)\
   the arm or grouping variable name.
 
 ## Value

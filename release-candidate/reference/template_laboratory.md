@@ -23,47 +23,47 @@ template_laboratory(
 
 - dataname:
 
-  (`character`)  
+  (`character`)\
   analysis data used in teal module.
 
 - paramcd:
 
-  (`character`)  
+  (`character`)\
   name of the parameter code variable.
 
 - param:
 
-  (`character`)  
+  (`character`)\
   name of the parameter variable.
 
 - anrind:
 
-  (`character`)  
+  (`character`)\
   name of the analysis reference range indicator variable.
 
 - timepoints:
 
-  (`character`)  
+  (`character`)\
   name of time variable.
 
 - aval_var:
 
-  (`character`)  
+  (`character`)\
   name of the analysis value variable.
 
 - avalu_var:
 
-  (`character`)  
+  (`character`)\
   name of the analysis value unit variable.
 
 - patient_id:
 
-  (`character`)  
+  (`character`)\
   patient ID.
 
 - round_value:
 
-  (`numeric`)  
+  (`numeric`)\
   number of decimal places to round to.
 
 ## Value

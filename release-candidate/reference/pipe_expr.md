@@ -12,12 +12,12 @@ pipe_expr(exprs, pipe_str = "%>%")
 
 - exprs:
 
-  (`list` of `call`)  
+  (`list` of `call`)\
   expressions to concatenate in a pipeline (`%>%`).
 
 - pipe_str:
 
-  (`character`)  
+  (`character`)\
   the character which separates the expressions.
 
 ## Value

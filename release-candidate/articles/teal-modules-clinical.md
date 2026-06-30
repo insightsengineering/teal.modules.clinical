@@ -60,6 +60,7 @@ A `teal.modules.clinical` module needs to be embedded inside a
 including a bar chart module could look like this:
 
 ``` r
+
 library(teal.modules.clinical)
 library(nestcolor)
 
@@ -124,6 +125,7 @@ is a `teal.data` function.
 Let’s break the above app down into pieces:
 
 ``` r
+
 library(teal.modules.clinical)
 library(nestcolor)
 ```
@@ -132,6 +134,7 @@ The above lines load the libraries used in this example. We will use the
 example data provided in the `teal.modules.clinical` package:
 
 ``` r
+
 ADSL <- tmc_ex_adsl
 ADAE <- tmc_ex_adae
 ```
@@ -150,6 +153,7 @@ application. Here, we include only one module:
 [`tm_g_barchart_simple()`](https://insightsengineering.github.io/teal.modules.clinical/reference/tm_g_barchart_simple.md).
 
 ``` r
+
 app <- init(
   data = cdisc_data(
     ADSL = ADSL,
@@ -184,6 +188,7 @@ app <- init(
 Finally, we use `shiny` to launch the application:
 
 ``` r
+
 shinyApp(app$ui, app$server)
 ```
 
@@ -195,6 +200,7 @@ such as the
 module in the following example.
 
 ``` r
+
 ADSL <- tmc_ex_adsl
 
 app <- init(
