@@ -3,7 +3,7 @@ Title: 'teal' Modules for Standard Clinical Outputs
 Version: 0.13.0
 Date: 2026-06-29
 Authors@R: c(
-    person("Dony", "Unardi", , "unardid@gene.com", role = c("aut", "cre")),
+    person("Dony", "Unardi", , "andre.verissimo@external.roche.com", role = c("aut", "cre")),
     person("Joe", "Zhu", , "joe.zhu@roche.com", role = "aut",
            comment = c(ORCID = "0000-0001-7566-2787")),
     person("Jana", "Stoilova", , "jana.stoilova@roche.com", role = "aut"),
@@ -34,7 +34,7 @@ BugReports:
     https://github.com/insightsengineering/teal.modules.clinical/issues
 Depends:
     R (>= 4.4),
-    teal (>= 1.1.1),
+    teal (>= 1.2.0),
     teal.transform (>= 0.7.0),
     tern (>= 0.9.9)
 Imports:
