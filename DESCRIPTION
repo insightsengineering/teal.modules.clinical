@@ -80,8 +80,6 @@ Suggests:
     styler (>= 1.10.3),
     testthat (>= 3.2.3),
     withr (>= 3.0.0)
-Remotes:
-    insightsengineering/teal@release-candidate-v1.1.1
 VignetteBuilder:
     knitr,
     rmarkdown
