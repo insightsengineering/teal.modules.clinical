@@ -35,7 +35,7 @@ BugReports:
 Depends:
     R (>= 4.4),
     teal (>= 1.2.0),
-    teal.transform (>= 0.7.0),
+    teal.transform (>= 0.7.2),
     tern (>= 0.9.9)
 Imports:
     broom (>= 0.7.10),
