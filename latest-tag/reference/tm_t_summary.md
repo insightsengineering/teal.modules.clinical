@@ -19,6 +19,7 @@ tm_t_summary(
   na_level = tern::default_na_str(),
   numeric_stats = c("n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles",
     "range", "geom_mean"),
+  numeric_formats = NULL,
   denominator = c("N", "n", "omit"),
   drop_arm_levels = TRUE,
   pre_output = NULL,
@@ -98,6 +99,14 @@ tm_t_summary(
   names of statistics to display for numeric summary variables.
   Available statistics are `n`, `mean_sd`, `mean_ci`, `median`,
   `median_ci`, `quantiles`, `range`, and `geom_mean`.
+
+- numeric_formats:
+
+  (named `list` or `NULL`)\
+  format patterns for numeric statistics. Names should match the
+  statistics in `numeric_stats`. If `NULL`, defaults from
+  [`tern::analyze_vars()`](https://insightsengineering.github.io/tern/latest-tag/reference/analyze_variables.html)
+  are used.
 
 - denominator:
 
@@ -214,7 +223,7 @@ where additional example apps implementing this module can be found.
 - example-1:
 
   [Open in
-  Shinylive](https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpQGIdABUZxULKBokOkTGOqQAFrrkoqQ6sqK6RoIJOgAGTgDyAMoAIgCaqTpQEPxpOQDCWVhOAIJZhZostFD0IqJhRDr8cHwQMczkOjC0oqK0EADmXQFQGEr8M-pGXNQA+gukUNbzi4Y6AO60EePsG1C4OiBKOjo1OVkAMkthMASrcAAeq1D8otTXt3uDwAJJlcnlgABGAC6zwAcjVVuNyBNVKslABfRQQABWRHGqwA1nBWKJTjMbHtusYoMJSKsCPwRm88QTiaTgNB4GSznJoa4IHdHs8zsBgAowEKHhLofyIEo0KhnuMjuwAWcdABeaabXAAvhCNpaoYCYRiNUQG43UgwVb00SCGAwFgcAFWnTUFpwajGiU5HpECbMVDhGR2FoiCV6y3unXFWC6bUSqVRt1Wli2xqMY0EcL4ghiVYJETqOD8dgENWSrAAWSjOmTtfKOQlcgujbrYDbaZuP34dqImx92vszmjsZ0DqdTQAXnBVln2trc-nC8W4KXyz2rZWJVknAANesSrA1couPANsAAIRrWAA0lgAEzHsBg-KvipVWpZV81ADiF7djGE67mA+5HpeJ5nkB27AROyRwAivpgLQNIQKwEpptiNzYtiaE6OwyKqFAFjaNYNhXDGoihhhNToOwirAoItAXExCSMNojDYhiShgBi0JAA)
+  Shinylive](https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpQGIdABUZxULKBokOkTGOqQAFrrkoqQ6sqK6RoIJOgAGTgDyAMoAIgCaqTpQEPxpOQDCWVhOAIJZhZostFD0IqJhRDr8cHwQMczkOjC0oqK0EADmXQFQGEr8M-pGXNQA+gukUNbzi4Y6AO60EePsG1C4OiBKOjo1OVkAMkthMASrcAAeq1D8otTXt3uDwAJJlcnlgABGAC6zwAcjVVuNyBNVKslABfRQQABWRHGqwA1nBWKJTjMbHtusYoMJSKsCPwRm88QTiaTgNB4GSznJoa4IHdHs8zsBgAowEKHhLofyIEo0KhnuMjuwAWcdABeaabXAAvhCNpaoYCYRiNUQG43UgwVb00SCGAwFgcAFWnTUFpwajGiU5HpECbMVDhGR2FoiCV6y3unXFWC6bUSqVRt1Wli2xqMY0EcL4ghiVYJETqOD8dgENWSrAAWSjOmTtfKOQlcgujbrYDbaZuP34dqImx92vszmjsZ0DqdTQAXnBVln2trc-nC8W4KXyz2rZWJVknAANesSrA1couPANsAAIRrWAA0lgAEzHsBg-KvipVWpZV81ADiF7djGE67mA+5HpeJ5nkB27AROECOqoMirMYRCMM6pBLh6IykBaE43BK8DFAytASr6YDsB8HwYB8FzUbRihgHB46xskcAIhRtA0hArASmm2I3Ni2LcTo7DIqoUAWNo1g2FcMaiKGvE1Og7CKsCgi0Bc6kJIw2iMNiGJKGAGLQkAA)
 
 ## Examples
 
@@ -240,6 +249,9 @@ app <- init(
       summarize_vars = choices_selected(
         c("SEX", "RACE", "BMRKR2", "EOSDY", "DCSREAS", "AGE"),
         c("SEX", "RACE")
+      ),
+      numeric_formats = list(
+        "mean_ci" = "(xx.x, xx.x)"
       ),
       useNA = "ifany"
     )

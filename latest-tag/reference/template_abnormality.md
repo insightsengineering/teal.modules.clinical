@@ -77,9 +77,7 @@ template_abnormality(
 
 - treatment_flag:
 
-  (`character`)\
-  name of the value indicating on treatment records in
-  `treatment_flag_var`.
+  (`character`) vector of one or more treatments flags
 
 - add_total:
 

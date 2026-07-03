@@ -20,7 +20,9 @@ split_choices(x)
 
 a
 [`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html)
-object.
+object. When `x` is a `delayed_choices_selected` object (created with
+delayed data), it is returned unchanged because the actual choices are
+not available until data is resolved at runtime.
 
 ## Note
 
@@ -41,4 +43,22 @@ split_choices(choices_selected(choices = c("x:y", "a*b"), selected = all_choices
 #> 
 #> attr(,"class")
 #> [1] "choices_selected"
+
+# Also works with delayed data - returns the object unchanged
+split_choices(choices_selected(variable_choices("ADSL")))
+#> choices_selected with delayed data:  ADSL
+#> $ choices
+#>   variable_choices with delayed data: ADSL
+#>   $ data
+#>   [1] "ADSL"
+#>   $ subset
+#>   NULL
+#>   $ key
+#>   NULL
+#> $ selected
+#> NULL
+#> $ keep_order
+#> [1] FALSE
+#> $ fixed
+#> [1] FALSE
 ```

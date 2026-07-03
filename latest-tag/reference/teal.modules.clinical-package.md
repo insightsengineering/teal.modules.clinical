@@ -17,9 +17,11 @@ Useful links:
 
 ## Author
 
-**Maintainer**: Dawid Kaledkowski <dawid.kaledkowski@roche.com>
+**Maintainer**: Dony Unardi <unardid@gene.com>
 
 Authors:
+
+- Dony Unardi <unardid@gene.com>
 
 - Joe Zhu <joe.zhu@roche.com>
   ([ORCID](https://orcid.org/0000-0001-7566-2787))
@@ -33,6 +35,8 @@ Authors:
 - Abinaya Yogasekaram <abinaya.yogasekaram@contractors.roche.com>
 
 - Mahmoud Hallal <mahmoud.hallal@roche.com>
+
+- Dawid Kaledkowski <dawid.kaledkowski@roche.com>
 
 - Rosemary Li <li.yaqiong@gene.com>
 

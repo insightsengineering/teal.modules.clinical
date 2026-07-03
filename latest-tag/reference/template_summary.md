@@ -18,6 +18,7 @@ template_summary(
   na_level = tern::default_na_str(),
   numeric_stats = c("n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles",
     "range", "geom_mean"),
+  numeric_formats = NULL,
   denominator = c("N", "n", "omit"),
   drop_arm_levels = TRUE,
   basic_table_args = teal.widgets::basic_table_args()
@@ -90,6 +91,14 @@ template_summary(
   names of statistics to display for numeric summary variables.
   Available statistics are `n`, `mean_sd`, `mean_ci`, `median`,
   `median_ci`, `quantiles`, `range`, and `geom_mean`.
+
+- numeric_formats:
+
+  (named `list` or `NULL`)\
+  format patterns for numeric statistics. Names should match the
+  statistics in `numeric_stats`. If `NULL`, defaults from
+  [`tern::analyze_vars()`](https://insightsengineering.github.io/tern/latest-tag/reference/analyze_variables.html)
+  are used.
 
 - denominator:
 

@@ -8,8 +8,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>teal Module: Summary of Variables — tm_t_summary • teal.modules.clinical</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="teal Module: Summary of Variables — tm_t_summary">
 <meta name="description" content="This module produces a table to summarize variables.">
@@ -25,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">teal.modules.clinical</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.12.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.13.0</small>
 
     <div style="width: 140px; margin-left: 0.5rem;"> <small class="nav-text text-muted me-auto">part of</small> <img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/nest.png?raw=true" alt="NEST" style="height: 30px;"><a href="https://pharmaverse.org/" class="external-link"><img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/pharmaverse.png?raw=true" alt="pharmaverse" style="height: 28px;"></a> </div>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -59,6 +59,7 @@
     <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/release-candidate">release-candidate</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/main">main</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/latest-tag">latest-tag</a>
+<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.13.0">v0.13.0</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.13.0-rc2">v0.13.0-rc2</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.12.0">v0.12.0</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.12.0-rc1">v0.12.0-rc1</a>
@@ -88,7 +89,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>teal Module: Summary of Variables</h1>
-      <small class="dont-index">Source: <a href="https://github.com/insightsengineering/teal.modules.clinical/blob/v0.12.0/R/tm_t_summary.R" class="external-link"><code>R/tm_t_summary.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/insightsengineering/teal.modules.clinical/blob/v0.13.0/R/tm_t_summary.R" class="external-link"><code>R/tm_t_summary.R</code></a></small>
       <div class="d-none name"><code>tm_t_summary.Rd</code></div>
     </div>
 
@@ -113,6 +114,7 @@
 <span>  na_level <span class="op">=</span> <span class="fu">tern</span><span class="fu">::</span><span class="fu"><a href="https://insightsengineering.github.io/tern/latest-tag/reference/default_na_str.html" class="external-link">default_na_str</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  numeric_stats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"n"</span>, <span class="st">"mean_sd"</span>, <span class="st">"mean_ci"</span>, <span class="st">"median"</span>, <span class="st">"median_ci"</span>, <span class="st">"quantiles"</span>,</span>
 <span>    <span class="st">"range"</span>, <span class="st">"geom_mean"</span><span class="op">)</span>,</span>
+<span>  numeric_formats <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  denominator <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"N"</span>, <span class="st">"n"</span>, <span class="st">"omit"</span><span class="op">)</span>,</span>
 <span>  drop_arm_levels <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  pre_output <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -192,6 +194,12 @@ default <code>na_level</code> to apply in all modules, run <code>set_default_na_
 </dt>
 <dd><p>(<code>character</code>)<br> names of statistics to display for numeric summary variables. Available
 statistics are <code>n</code>, <code>mean_sd</code>, <code>mean_ci</code>, <code>median</code>, <code>median_ci</code>, <code>quantiles</code>, <code>range</code>, and <code>geom_mean</code>.</p></dd>
+
+
+<dt id="arg-numeric-formats">numeric_formats<a class="anchor" aria-label="anchor" href="#arg-numeric-formats"></a>
+</dt>
+<dd><p>(named <code>list</code> or <code>NULL</code>)<br> format patterns for numeric statistics. Names should match the
+statistics in <code>numeric_stats</code>. If <code>NULL</code>, defaults from <code><a href="https://insightsengineering.github.io/tern/latest-tag/reference/analyze_variables.html" class="external-link">tern::analyze_vars()</a></code> are used.</p></dd>
 
 
 <dt id="arg-denominator">denominator<a class="anchor" aria-label="anchor" href="#arg-denominator"></a>
@@ -309,8 +317,8 @@ apps implementing this module can be found.</p></div>
 
 <dl>
 <dt>example-1</dt>
-<dd><p><a href="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpQGIdABUZxULKBokOkTGOqQAFrrkoqQ6sqK6RoIJOgAGTgDyAMoAIgCaqTpQEPxpOQDCWVhOAIJZhZostFD0IqJhRDr8cHwQMczkOjC0oqK0EADmXQFQGEr8M-pGXNQA+gukUNbzi4Y6AO60EePsG1C4OiBKOjo1OVkAMkthMASrcAAeq1D8otTXt3uDwAJJlcnlgABGAC6zwAcjVVuNyBNVKslABfRQQABWRHGqwA1nBWKJTjMbHtusYoMJSKsCPwRm88QTiaTgNB4GSznJoa4IHdHs8zsBgAowEKHhLofyIEo0KhnuMjuwAWcdABeaabXAAvhCNpaoYCYRiNUQG43UgwVb00SCGAwFgcAFWnTUFpwajGiU5HpECbMVDhGR2FoiCV6y3unXFWC6bUSqVRt1Wli2xqMY0EcL4ghiVYJETqOD8dgENWSrAAWSjOmTtfKOQlcgujbrYDbaZuP34dqImx92vszmjsZ0DqdTQAXnBVln2trc-nC8W4KXyz2rZWJVknAANesSrA1couPANsAAIRrWAA0lgAEzHsBg-KvipVWpZV81ADiF7djGE67mA+5HpeJ5nkB27AROyRwAivpgLQNIQKwEpptiNzYtiaE6OwyKqFAFjaNYNhXDGoihhhNToOwirAoItAXExCSMNojDYhiShgBi0JAA" class="external-link">Open in Shinylive</a>
-    <iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpQGIdABUZxULKBokOkTGOqQAFrrkoqQ6sqK6RoIJOgAGTgDyAMoAIgCaqTpQEPxpOQDCWVhOAIJZhZostFD0IqJhRDr8cHwQMczkOjC0oqK0EADmXQFQGEr8M-pGXNQA+gukUNbzi4Y6AO60EePsG1C4OiBKOjo1OVkAMkthMASrcAAeq1D8otTXt3uDwAJJlcnlgABGAC6zwAcjVVuNyBNVKslABfRQQABWRHGqwA1nBWKJTjMbHtusYoMJSKsCPwRm88QTiaTgNB4GSznJoa4IHdHs8zsBgAowEKHhLofyIEo0KhnuMjuwAWcdABeaabXAAvhCNpaoYCYRiNUQG43UgwVb00SCGAwFgcAFWnTUFpwajGiU5HpECbMVDhGR2FoiCV6y3unXFWC6bUSqVRt1Wli2xqMY0EcL4ghiVYJETqOD8dgENWSrAAWSjOmTtfKOQlcgujbrYDbaZuP34dqImx92vszmjsZ0DqdTQAXnBVln2trc-nC8W4KXyz2rZWJVknAANesSrA1couPANsAAIRrWAA0lgAEzHsBg-KvipVWpZV81ADiF7djGE67mA+5HpeJ5nkB27AROyRwAivpgLQNIQKwEpptiNzYtiaE6OwyKqFAFjaNYNhXDGoihhhNToOwirAoItAXExCSMNojDYhiShgBi0JAA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50%; margin-top: 30px; transform: translateX(-50%); z-index: 1"></iframe>
+<dd><p><a href="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpQGIdABUZxULKBokOkTGOqQAFrrkoqQ6sqK6RoIJOgAGTgDyAMoAIgCaqTpQEPxpOQDCWVhOAIJZhZostFD0IqJhRDr8cHwQMczkOjC0oqK0EADmXQFQGEr8M-pGXNQA+gukUNbzi4Y6AO60EePsG1C4OiBKOjo1OVkAMkthMASrcAAeq1D8otTXt3uDwAJJlcnlgABGAC6zwAcjVVuNyBNVKslABfRQQABWRHGqwA1nBWKJTjMbHtusYoMJSKsCPwRm88QTiaTgNB4GSznJoa4IHdHs8zsBgAowEKHhLofyIEo0KhnuMjuwAWcdABeaabXAAvhCNpaoYCYRiNUQG43UgwVb00SCGAwFgcAFWnTUFpwajGiU5HpECbMVDhGR2FoiCV6y3unXFWC6bUSqVRt1Wli2xqMY0EcL4ghiVYJETqOD8dgENWSrAAWSjOmTtfKOQlcgujbrYDbaZuP34dqImx92vszmjsZ0DqdTQAXnBVln2trc-nC8W4KXyz2rZWJVknAANesSrA1couPANsAAIRrWAA0lgAEzHsBg-KvipVWpZV81ADiF7djGE67mA+5HpeJ5nkB27AROECOqoMirMYRCMM6pBLh6IykBaE43BK8DFAytASr6YDsB8HwYB8FzUbRihgHB46xskcAIhRtA0hArASmm2I3Ni2LcTo7DIqoUAWNo1g2FcMaiKGvE1Og7CKsCgi0Bc6kJIw2iMNiGJKGAGLQkAA" class="external-link">Open in Shinylive</a>
+    <iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpQGIdABUZxULKBokOkTGOqQAFrrkoqQ6sqK6RoIJOgAGTgDyAMoAIgCaqTpQEPxpOQDCWVhOAIJZhZostFD0IqJhRDr8cHwQMczkOjC0oqK0EADmXQFQGEr8M-pGXNQA+gukUNbzi4Y6AO60EePsG1C4OiBKOjo1OVkAMkthMASrcAAeq1D8otTXt3uDwAJJlcnlgABGAC6zwAcjVVuNyBNVKslABfRQQABWRHGqwA1nBWKJTjMbHtusYoMJSKsCPwRm88QTiaTgNB4GSznJoa4IHdHs8zsBgAowEKHhLofyIEo0KhnuMjuwAWcdABeaabXAAvhCNpaoYCYRiNUQG43UgwVb00SCGAwFgcAFWnTUFpwajGiU5HpECbMVDhGR2FoiCV6y3unXFWC6bUSqVRt1Wli2xqMY0EcL4ghiVYJETqOD8dgENWSrAAWSjOmTtfKOQlcgujbrYDbaZuP34dqImx92vszmjsZ0DqdTQAXnBVln2trc-nC8W4KXyz2rZWJVknAANesSrA1couPANsAAIRrWAA0lgAEzHsBg-KvipVWpZV81ADiF7djGE67mA+5HpeJ5nkB27AROECOqoMirMYRCMM6pBLh6IykBaE43BK8DFAytASr6YDsB8HwYB8FzUbRihgHB46xskcAIhRtA0hArASmm2I3Ni2LcTo7DIqoUAWNo1g2FcMaiKGvE1Og7CKsCgi0Bc6kJIw2iMNiGJKGAGLQkAA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50%; margin-top: 30px; transform: translateX(-50%); z-index: 1"></iframe>
     <a style="height: 800px; display: block;"></a></p></dd>
 
 
@@ -341,6 +349,9 @@ apps implementing this module can be found.</p></div>
 <span class="r-in"><span>      summarize_vars <span class="op">=</span> <span class="fu">choices_selected</span><span class="op">(</span></span></span>
 <span class="r-in"><span>        <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"SEX"</span>, <span class="st">"RACE"</span>, <span class="st">"BMRKR2"</span>, <span class="st">"EOSDY"</span>, <span class="st">"DCSREAS"</span>, <span class="st">"AGE"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>        <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"SEX"</span>, <span class="st">"RACE"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>      <span class="op">)</span>,</span></span>
+<span class="r-in"><span>      numeric_formats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>        <span class="st">"mean_ci"</span> <span class="op">=</span> <span class="st">"(xx.x, xx.x)"</span></span></span>
 <span class="r-in"><span>      <span class="op">)</span>,</span></span>
 <span class="r-in"><span>      useNA <span class="op">=</span> <span class="st">"ifany"</span></span></span>
 <span class="r-in"><span>    <span class="op">)</span></span></span>
