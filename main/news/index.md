@@ -1,6 +1,10 @@
 # Changelog
 
-## teal.modules.clinical 0.12.0.9013
+## teal.modules.clinical 0.13.0.9000
+
+## teal.modules.clinical 0.13.0
+
+CRAN release: 2026-07-02
 
 #### Enhancements
 
