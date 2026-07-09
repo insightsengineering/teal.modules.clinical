@@ -48,3 +48,5 @@ coverage.*
 ^.revdeprefs\.yaml$
 ^revdep$
 ^\.covrignore$
+^CRAN-SUBMISSION$
+^cran-comments\.md$
