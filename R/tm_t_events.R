@@ -6,6 +6,8 @@
 #' @param sort_freq_col (`character`)\cr column to sort by frequency on if `sort_criteria` is set to `freq_desc`.
 #' @param incl_overall_sum (`flag`)\cr  whether two rows which summarize the overall number of adverse events
 #'   should be included at the top of the table.
+#' @param incl_num_patients_hlt (`flag`)\cr whether to include a summary row for the total number of patients with at least one event under each HLT/SOC split when both HLT and LLT are selected.
+#' @param incl_num_events_hlt (`flag`)\cr whether to include a summary row for the overall total number of events under each HLT/SOC split when both HLT and LLT are selected.
 #'
 #' @inherit template_arguments return
 #'
@@ -29,6 +31,8 @@ template_events <- function(dataname,
                             prune_diff = 0,
                             drop_arm_levels = TRUE,
                             incl_overall_sum = TRUE,
+                            incl_num_patients_hlt = TRUE,
+                            incl_num_events_hlt = TRUE,
                             basic_table_args = teal.widgets::basic_table_args()) {
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
@@ -45,6 +49,8 @@ template_events <- function(dataname,
   checkmate::assert_flag(drop_arm_levels)
   checkmate::assert_scalar(prune_freq)
   checkmate::assert_scalar(prune_diff)
+  checkmate::assert_flag(incl_num_patients_hlt)
+  checkmate::assert_flag(incl_num_events_hlt)
 
   sort_criteria <- match.arg(sort_criteria)
 
@@ -202,7 +208,6 @@ template_events <- function(dataname,
     )
   }
 
-
   one_term <- is.null(hlt) || is.null(llt)
 
   if (one_term) {
@@ -221,42 +226,78 @@ template_events <- function(dataname,
     )
   } else {
     # Case when both hlt and llt are used.
-
     y$layout_prep <- quote(split_fun <- rtables::drop_split_levels)
 
-    layout_list <- add_expr(
-      layout_list,
-      substitute(
-        expr = rtables::split_rows_by(
-          hlt,
-          child_labels = "visible",
-          nested = FALSE,
-          indent_mod = -1L,
-          split_fun = split_fun,
-          label_pos = "topleft",
-          split_label = teal.data::col_labels(dataname[hlt])
-        ) %>%
-          tern::summarize_num_patients(
-            var = "USUBJID",
-            .stats = c("unique", "nonunique"),
-            .labels = c(
-              unique = unique_label,
-              nonunique = nonunique_label
-            ),
-            na_str = na_str
+    # Determine if any nested summary rows should be included
+    has_hlt_sum <- incl_num_patients_hlt || incl_num_events_hlt
+
+    if (has_hlt_sum) {
+      hlt_stats <- character(0)
+      hlt_labels <- character(0)
+
+      # Dynamically configure which summary stats to display based on UI inputs
+      if (incl_num_patients_hlt) {
+        hlt_stats <- c(hlt_stats, "unique")
+        hlt_labels <- c(hlt_labels, unique = unique_label)
+      }
+      if (incl_num_events_hlt) {
+        hlt_stats <- c(hlt_stats, "nonunique")
+        hlt_labels <- c(hlt_labels, nonunique = nonunique_label)
+      }
+
+      layout_list <- add_expr(
+        layout_list,
+        substitute(
+          expr = rtables::split_rows_by(
+            hlt,
+            child_labels = "visible",
+            nested = FALSE,
+            indent_mod = -1L,
+            split_fun = split_fun,
+            label_pos = "topleft",
+            split_label = teal.data::col_labels(dataname[hlt])
           ) %>%
-          tern::count_occurrences(vars = llt, .indent_mods = c(count_fraction = 1L)) %>%
-          tern::append_varlabels(dataname, llt, indent = 1L),
-        env = list(
-          dataname = as.name(dataname),
-          hlt = hlt,
-          llt = llt,
-          unique_label = unique_label,
-          nonunique_label = nonunique_label,
-          na_str = na_level
+            tern::summarize_num_patients(
+              var = "USUBJID",
+              .stats = hlt_stats_val,
+              .labels = hlt_labels_val,
+              na_str = na_str
+            ) %>%
+            tern::count_occurrences(vars = llt, .indent_mods = c(count_fraction = 1L)) %>%
+            tern::append_varlabels(dataname, llt, indent = 1L),
+          env = list(
+            dataname = as.name(dataname),
+            hlt = hlt,
+            llt = llt,
+            hlt_stats_val = hlt_stats,
+            hlt_labels_val = hlt_labels,
+            na_str = na_level
+          )
         )
       )
-    )
+    } else {
+      layout_list <- add_expr(
+        layout_list,
+        substitute(
+          expr = rtables::split_rows_by(
+            hlt,
+            child_labels = "visible",
+            nested = FALSE,
+            indent_mod = -1L,
+            split_fun = split_fun,
+            label_pos = "topleft",
+            split_label = teal.data::col_labels(dataname[hlt])
+          ) %>%
+            tern::count_occurrences(vars = llt, .indent_mods = c(count_fraction = 1L)) %>%
+            tern::append_varlabels(dataname, llt, indent = 1L),
+          env = list(
+            dataname = as.name(dataname),
+            hlt = hlt,
+            llt = llt
+          )
+        )
+      )
+    }
   }
 
   y$layout <- substitute(
@@ -400,37 +441,70 @@ template_events <- function(dataname,
         )
       )
     } else {
-      sort_list <- add_expr(
-        sort_list,
-        substitute(
-          expr = {
-            pruned_and_sorted_result <- pruned_result %>%
-              rtables::sort_at_path(path = c(hlt), scorefun = scorefun_hlt) %>%
-              rtables::sort_at_path(path = c(hlt, "*", llt), scorefun = scorefun_llt)
-          },
-          env = list(
-            llt = llt,
-            hlt = hlt,
-            scorefun_hlt = scorefun_hlt,
-            scorefun_llt = scorefun_llt
-          )
-        )
-      )
-
-      if (prune_freq > 0 || prune_diff > 0) {
+      if (has_hlt_sum) {
         sort_list <- add_expr(
           sort_list,
-          quote(
-            criteria_fun <- function(tr) {
-              inherits(tr, "ContentRow")
-            }
+          substitute(
+            expr = {
+              pruned_and_sorted_result <- pruned_result %>%
+                rtables::sort_at_path(path = c(hlt), scorefun = scorefun_hlt) %>%
+                rtables::sort_at_path(path = c(hlt, "*", llt), scorefun = scorefun_llt)
+            },
+            env = list(
+              llt = llt,
+              hlt = hlt,
+              scorefun_hlt = scorefun_hlt,
+              scorefun_llt = scorefun_llt
+            )
           )
         )
 
+        if (prune_freq > 0 || prune_diff > 0) {
+          sort_list <- add_expr(
+            sort_list,
+            quote(
+              criteria_fun <- function(tr) {
+                inherits(tr, "ContentRow")
+              }
+            )
+          )
+
+          sort_list <- add_expr(
+            sort_list,
+            quote(
+              pruned_and_sorted_result <- rtables::trim_rows(pruned_and_sorted_result, criteria = criteria_fun)
+            )
+          )
+        }
+      } else {
         sort_list <- add_expr(
           sort_list,
-          quote(
-            pruned_and_sorted_result <- rtables::trim_rows(pruned_and_sorted_result, criteria = criteria_fun)
+          substitute(
+            expr = {
+              scorefun_hlt_no_sum <- function(cb) {
+                get_leaves <- function(node) {
+                  if (inherits(node, "TableRow")) {
+                    return(list(node))
+                  }
+                  unlist(lapply(rtables::tree_children(node), get_leaves), recursive = FALSE)
+                }
+                leaves <- get_leaves(cb)
+                leaves <- leaves[vapply(leaves, function(x) inherits(x, "DataRow") || inherits(x, "ContentRow"), logical(1))]
+                if (length(leaves) == 0) {
+                  return(0)
+                }
+                sum(vapply(leaves, SCORE_FUN, numeric(1)))
+              }
+
+              pruned_and_sorted_result <- pruned_result %>%
+                rtables::sort_at_path(path = c(hlt), scorefun = scorefun_hlt_no_sum) %>%
+                rtables::sort_at_path(path = c(hlt, "*", llt), scorefun = SCORE_FUN)
+            },
+            env = list(
+              llt = llt,
+              hlt = hlt,
+              SCORE_FUN = scorefun_llt
+            )
           )
         )
       }
@@ -543,6 +617,8 @@ tm_t_events <- function(label,
                         prune_diff = 0,
                         drop_arm_levels = TRUE,
                         incl_overall_sum = TRUE,
+                        incl_num_patients_hlt = TRUE,
+                        incl_num_events_hlt = TRUE,
                         pre_output = NULL,
                         post_output = NULL,
                         basic_table_args = teal.widgets::basic_table_args(),
@@ -564,17 +640,28 @@ tm_t_events <- function(label,
   checkmate::assert_scalar(prune_diff)
   checkmate::assert_flag(drop_arm_levels)
   checkmate::assert_flag(incl_overall_sum)
+  checkmate::assert_flag(incl_num_patients_hlt)
+  checkmate::assert_flag(incl_num_events_hlt)
   sort_criteria <- match.arg(sort_criteria)
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
-  teal::assert_decorators(decorators, "table")
+  # assert_decorators(decorators, "table")
 
   args <- as.list(environment())
 
   data_extract_list <- list(
     arm_var = cs_to_des_select(arm_var, dataname = parentname, multiple = TRUE, ordered = TRUE),
-    hlt = cs_to_des_select(hlt, dataname = dataname),
+    hlt = teal.transform::data_extract_spec(
+      dataname = dataname,
+      select = teal.transform::select_spec(
+        choices = variable_choices(dataname, c("AEBODSYS", "AESOC")),
+        selected = "AEBODSYS",
+        multiple = TRUE,
+        always_selected = NULL,
+        fixed = FALSE
+      )
+    ),
     llt = cs_to_des_select(llt, dataname = dataname)
   )
 
@@ -594,6 +681,8 @@ tm_t_events <- function(label,
         na_level = na_level,
         sort_freq_col = sort_freq_col,
         incl_overall_sum = incl_overall_sum,
+        incl_num_patients_hlt = incl_num_patients_hlt,
+        incl_num_events_hlt = incl_num_events_hlt,
         basic_table_args = basic_table_args,
         decorators = decorators
       )
@@ -635,7 +724,17 @@ ui_t_events_byterm <- function(id, ...) {
         is_single_dataset = is_single_dataset_value
       ),
       checkboxInput(ns("add_total"), "Add All Patients columns", value = a$add_total),
-      teal::ui_transform_teal_data(ns("decorator"), transformators = select_decorators(a$decorators, "table")),
+      checkboxInput(
+        ns("incl_num_patients_hlt"),
+        "Show patients with >= 1 event per SOC/HLT",
+        value = a$incl_num_patients_hlt
+      ),
+      checkboxInput(
+        ns("incl_num_events_hlt"),
+        "Show total events per SOC/HLT",
+        value = a$incl_num_events_hlt
+      ),
+      teal.modules.clinical:::ui_decorate_teal_data(ns("decorator"), decorators = teal.modules.clinical:::select_decorators(a$decorators, "table")),
       bslib::accordion(
         open = TRUE,
         bslib::accordion_panel(
@@ -693,6 +792,8 @@ srv_t_events_byterm <- function(id,
                                 llt,
                                 drop_arm_levels,
                                 incl_overall_sum,
+                                incl_num_patients_hlt,
+                                incl_num_events_hlt,
                                 label,
                                 total_label,
                                 na_level,
@@ -710,9 +811,6 @@ srv_t_events_byterm <- function(id,
       select_validation_rule = list(
         arm_var = ~ if (length(.) != 1 && length(.) != 2) {
           "Please select 1 or 2 treatment variable values"
-        },
-        hlt = ~ if (length(selector_list()$llt()$select) + length(.) == 0) {
-          "Please select at least one of \"LOW LEVEL TERM\" or \"HIGH LEVEL TERM\" variables."
         },
         llt = ~ if (length(selector_list()$hlt()$select) + length(.) == 0) {
           "Please select at least one of \"LOW LEVEL TERM\" or \"HIGH LEVEL TERM\" variables."
@@ -792,7 +890,7 @@ srv_t_events_byterm <- function(id,
       )
 
       # validate inputs
-      validate_standard_inputs(
+      teal.modules.clinical:::validate_standard_inputs(
         adsl = adsl_filtered,
         adslvars = c("USUBJID", "STUDYID", input_arm_var),
         anl = anl_filtered,
@@ -808,14 +906,14 @@ srv_t_events_byterm <- function(id,
 
       input_hlt <- as.vector(merged$anl_input_r()$columns_source$hlt)
       input_llt <- as.vector(merged$anl_input_r()$columns_source$llt)
-      label_hlt <- if (length(input_hlt) != 0) attributes(ANL[[input_hlt]])$label else NULL
+      label_hlt <- if (length(input_hlt) != 0) attributes(ANL[[input_hlt[1]]])$label else NULL
       label_llt <- if (length(input_llt) != 0) attributes(ANL[[input_llt]])$label else NULL
 
       my_calls <- template_events(
         dataname = "ANL",
         parentname = "ANL_ADSL",
         arm_var = as.vector(merged$anl_input_r()$columns_source$arm_var),
-        hlt = if (length(input_hlt) != 0) input_hlt else NULL,
+        hlt = if (length(input_hlt) != 0) input_hlt[1] else NULL,
         llt = if (length(input_llt) != 0) input_llt else NULL,
         label_hlt = label_hlt,
         label_llt = label_llt,
@@ -829,6 +927,8 @@ srv_t_events_byterm <- function(id,
         prune_diff = input$prune_diff / 100,
         drop_arm_levels = input$drop_arm_levels,
         incl_overall_sum = incl_overall_sum,
+        incl_num_patients_hlt = isTRUE(input$incl_num_patients_hlt),
+        incl_num_events_hlt = isTRUE(input$incl_num_events_hlt),
         basic_table_args = basic_table_args
       )
 
@@ -843,11 +943,11 @@ srv_t_events_byterm <- function(id,
         table <- pruned_and_sorted_result
       })
     })
-    decorated_table_q <- teal::srv_transform_teal_data(
+    decorated_table_q <- teal.modules.clinical:::srv_decorate_teal_data(
       id = "decorator",
       data = table_renamed_q,
-      transformators = select_decorators(decorators, "table"),
-      expr = quote(table)
+      decorators = teal.modules.clinical:::select_decorators(decorators, "table"),
+      expr = table
     )
 
     # Outputs to render.
