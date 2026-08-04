@@ -954,7 +954,7 @@ srv_t_coxreg <- function(id,
       }
 
       NULL
-      })
+    })
 
     at <- reactive({
       input_cov_var <- as.vector(merged_input_r()$cov_var)

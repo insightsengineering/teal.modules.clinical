@@ -136,7 +136,7 @@ srv_g_ci <- function(id, # nolint: object_name.
       color = color
     )
 
-    selectors <- teal.picks::picks_srv(picks = picks_list, data  = data)
+    selectors <- teal.picks::picks_srv(picks = picks_list, data = data)
 
     validated_q <- reactive({
       obj <- req(data())
