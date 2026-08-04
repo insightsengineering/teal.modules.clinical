@@ -31,7 +31,7 @@ app_driver_tm_g_ci <- function() {
         avisit = teal.picks::picks(
           teal.picks::datasets("ADLB", "ADLB"),
           teal.picks::variables("AVISIT", "AVISIT"),
-          teal.picks::values( multiple = FALSE)
+          teal.picks::values(multiple = FALSE)
         ),
         stat = c("mean", "median"),
         conf_level = teal.picks::values(c("0.95", "0.9", "0.8"), selected = "0.95", keep_order = TRUE),

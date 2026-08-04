@@ -31,7 +31,7 @@ app_driver_tm_g_lineplot <- function() {
         ),
         y_unit = teal.picks::variables("AVALU", fixed = TRUE),
         paramcd = teal.picks::picks(
-          teal.picks::variables("PARAMCD", "PARAMCD",fixed = TRUE),
+          teal.picks::variables("PARAMCD", "PARAMCD", fixed = TRUE),
           teal.picks::values("ALT", multiple = FALSE),
           check_dataset = FALSE
         ),
