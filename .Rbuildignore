@@ -51,3 +51,5 @@ coverage.*
 ^\.covrignore$
 ^.cursor
 ^.copilot
+^CRAN-SUBMISSION$
+^cran-comments\.md$
