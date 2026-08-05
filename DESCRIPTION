@@ -103,10 +103,9 @@ Config/Needs/verdepcheck: insightsengineering/teal,
     rstudio/shinytest2, r-lib/styler, r-lib/testthat, r-lib/tidyselect,
     r-lib/withr
 Config/Needs/website: insightsengineering/nesttemplate
-Config/roxygen2/version: 8.0.0
+Config/roxygen2/version: 8.1.0
 Config/testthat/edition: 3
 Encoding: UTF-8
 Language: en-US
 LazyData: true
 Roxygen: list(markdown = TRUE, packages = c("roxy.shinylive"))
-Config/roxygen2/version: 8.1.0
