@@ -1,3 +1,13 @@
+# Setup timeout options for shinytest2 if none are set in options nor on environment variables
+withr::local_options(
+  list(
+    shinytest2.timeout = getOption(
+      "shinytest2.timeout",
+      default = Sys.getenv("SHINYTEST2_TIMEOUT", unset = 60 * 1000)
+    )
+  )
+)
+
 app_driver_tm_g_lineplot <- function() {
   data <- within(teal.data::teal_data(), {
     require(nestcolor)
