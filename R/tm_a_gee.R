@@ -475,7 +475,7 @@ srv_gee <- function(id,
         ),
         teal::need_input(
           "conf_level",
-          !is.null(input$conf_level) && is.na(suppressWarnings(as.numeric(input$conf_level))) &&
+          !is.null(input$conf_level) && !is.na(suppressWarnings(as.numeric(input$conf_level))) &&
             as.numeric(input$conf_level) > 0 && as.numeric(input$conf_level) < 1,
           "Confidence level must be between 0 and 1"
         ),
