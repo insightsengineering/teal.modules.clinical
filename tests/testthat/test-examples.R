@@ -67,12 +67,15 @@ with_mocked_app_bindings <- function(code) {
     duration_val <- max(as.numeric(getOption("shinytest2.duration")), 2000)
     timeout_val <- max(as.numeric(getOption("shinytest2.timeout")), 60000)
 
-    tryCatch({
-      app_driver$wait_for_idle(timeout = timeout_val, duration = duration_val)
-    }, error = function(e) {
-      message("App log: ", process_log(app_driver))
-      stop(e)
-    })
+    tryCatch(
+      {
+        app_driver$wait_for_idle(timeout = timeout_val, duration = duration_val)
+      },
+      error = function(e) {
+        message("App log: ", process_log(app_driver))
+        stop(e)
+      }
+    )
 
     # Simple testing
     ## warning in the app does not invoke a warning in the test

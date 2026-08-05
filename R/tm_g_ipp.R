@@ -231,7 +231,7 @@ template_g_ipp <- function(dataname = "ANL",
 #'       paramcd = picks(
 #'         datasets("ADLB", "ADLB"),
 #'         variables("PARAMCD", "PARAMCD"),
-#'         values(selected = "ALT", multiple = FALSE )
+#'         values(selected = "ALT", multiple = FALSE)
 #'       ),
 #'       id_var = variables("USUBJID", "USUBJID"),
 #'       visit_var = variables("AVISIT", "AVISIT"),
