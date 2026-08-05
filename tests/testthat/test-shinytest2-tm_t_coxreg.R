@@ -29,7 +29,8 @@ app_driver_tm_t_coxreg <- function() {
         paramcd = suppressWarnings(
           teal.picks::picks(
             teal.picks::variables("PARAMCD", "PARAMCD"),
-            teal.picks::values(selected = "OS", multiple = FALSE), check_dataset = FALSE
+            teal.picks::values(selected = "OS", multiple = FALSE),
+            check_dataset = FALSE
           ),
           classes = "picks_delayed"
         ),
