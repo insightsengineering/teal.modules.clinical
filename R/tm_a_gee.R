@@ -464,9 +464,10 @@ srv_gee <- function(id,
           "An endpoint is required"
         ),
         teal::need_input(
-          "paramcd-values-selected",
-          length(anl_selectors$paramcd()$values$selected) >= 1L,
-          "An endpoint is required"
+          "paramcd-values-selected", # Only shows when variable is already selected
+          length(anl_selectors$paramcd()$variables$selected) == 0 ||
+            length(anl_selectors$paramcd()$values$selected) >= 1L,
+          "An endpoint is required (please select at least one value)"
         ),
         teal::need_input(
           "conf_level",
