@@ -33,19 +33,19 @@ app_driver_tm_g_lineplot <- function() {
           "ARM",
           multiple = FALSE
         ),
-        x = teal.picks::variables("AVISIT", fixed = TRUE),
+        x = teal.picks::variables("AVISIT", "AVISIT", fixed = FALSE),
         y = teal.picks::variables(
           c("AVAL", "BASE", "CHG", "PCHG"),
           "AVAL",
           multiple = FALSE
         ),
-        y_unit = teal.picks::variables("AVALU", fixed = TRUE),
+        y_unit = teal.picks::variables("AVALU", "AVALU", fixed = FALSE),
         paramcd = teal.picks::picks(
-          teal.picks::variables("PARAMCD", "PARAMCD", fixed = TRUE),
+          teal.picks::variables("PARAMCD", "PARAMCD", fixed = FALSE),
           teal.picks::values("ALT", multiple = FALSE),
           check_dataset = FALSE
         ),
-        conf_level = teal.picks::values(c("0.95", "0.9", "0.8"), "0.95", keep_order = TRUE),
+        conf_level = teal.picks::values(c("0.95", "0.9", "0.8"), "0.95"),
         interval = "mean_ci",
         mid = "mean",
         whiskers = c("mean_ci_lwr", "mean_ci_upr"),
