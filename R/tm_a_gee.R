@@ -429,46 +429,57 @@ srv_gee <- function(id,
 
     # Create ANL_ADSL for use as alt_counts_df in rtables::build_table()
     anl_q_with_adsl <- reactive({
-      teal.code::eval_code(
-        anl_q(),
-        bquote(ANL_ADSL <- .(as.name(parentname)))
-      )
+      obj <- req(anl_q())
+      teal.code::eval_code(obj, bquote(ANL_ADSL <- .(as.name(parentname))))
     })
 
     shinyjs::show("gee_title")
 
     validate_checks <- reactive({
       validate(
-        need(
+        teal::need_input(
+          "arm_var-variables-selected",
           length(anl_selectors$arm_var()$variables$selected) >= 1L,
           "A treatment variable is required"
         ),
-        need(
+        teal::need_input(
+          "aval_var-variables-selected",
           length(anl_selectors$aval_var()$variables$selected) >= 1L,
           "An analysis variable is required"
         ),
-        need(
+        teal::need_input(
+          "id_var-variables-selected",
           length(anl_selectors$id_var()$variables$selected) >= 1L,
           "A subject identifier is required"
         ),
-        need(
+        teal::need_input(
+          "visit_var-variables-selected",
           length(anl_selectors$visit_var()$variables$selected) >= 1L,
           "A visit variable is required"
         ),
-        need(
+        teal::need_input(
+          "paramcd-variables-selected",
           length(anl_selectors$paramcd()$variables$selected) >= 1L,
           "An endpoint is required"
         ),
-        need(
+        teal::need_input(
+          "paramcd-values-selected",
+          length(anl_selectors$paramcd()$values$selected) >= 1L,
+          "An endpoint is required"
+        ),
+        teal::need_input(
+          "conf_level",
           !is.null(input$conf_level) && nzchar(input$conf_level),
           "Please choose a confidence level"
         ),
-        need(
+        teal::need_input(
+          "conf_level",
           is.na(suppressWarnings(as.numeric(input$conf_level))) ||
             (as.numeric(input$conf_level) > 0 && as.numeric(input$conf_level) < 1),
           "Confidence level must be between 0 and 1"
         ),
-        need(
+        teal::need_input(
+          "cor_struct",
           !is.null(input$cor_struct) && nzchar(input$cor_struct),
           "Please choose a correlation structure"
         )
