@@ -131,7 +131,7 @@ testthat::test_that("e2e - tm_t_coxreg: Deselection of paramcd throws validation
   app_driver$expect_validation_error()
 })
 
-testthat::test_that( "e2e - tm_t_coxreg: Selecting arm_var changes the table and does not throw validation errors.", {
+testthat::test_that("e2e - tm_t_coxreg: Selecting arm_var changes the table and does not throw validation errors.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_coxreg()
   withr::defer(app_driver$stop())
