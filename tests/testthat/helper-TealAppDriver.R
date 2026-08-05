@@ -11,7 +11,7 @@ withr::local_options(
     ),
     shinytest2.duration = getOption(
       "shinytest2.duration",
-      default = Sys.getenv("SHINYTEST2_DURATION", unset = 0.5 * 1000)
+      default = Sys.getenv("SHINYTEST2_DURATION", unset = 1.5 * 1000)
     )
   ),
   .local_envir = testthat::test_env()

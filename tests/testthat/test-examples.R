@@ -45,7 +45,8 @@ with_mocked_app_bindings <- function(code) {
         x,
         shiny_args = args,
         check_names = FALSE, # explicit check below
-        options = options() # https://github.com/rstudio/shinytest2/issues/377
+        options = options(), # https://github.com/rstudio/shinytest2/issues/377
+        wait = FALSE
       ),
       error = function(e) {
         e$app$stop() # Ensure the R instance is stopped
@@ -53,7 +54,8 @@ with_mocked_app_bindings <- function(code) {
       }
     )
     on.exit(app_driver$stop(), add = TRUE)
-    app_driver$wait_for_idle(timeout = 30000)
+    duration_val <- max(as.numeric(getOption("shinytest2.duration")), 2000)
+    app_driver$wait_for_idle(duration = duration_val)
 
     # Simple testing
     ## warning in the app does not invoke a warning in the test
@@ -86,7 +88,7 @@ with_mocked_app_bindings <- function(code) {
     # Check if the teal app has content is empty
     if (identical(trimws(app_driver$get_text("#teal-main_ui_container")), "")) {
       tryCatch(
-        app_driver$wait_for_idle(duration = 2000), # wait 2 seconds for session to disconnect
+        app_driver$wait_for_idle(duration = duration_val), # wait 2 seconds for session to disconnect
         error = function(err) {
           stop(
             sprintf(
