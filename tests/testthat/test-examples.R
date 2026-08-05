@@ -134,6 +134,7 @@ for (i in rd_files()) {
           "(Setting explicit `selected` while `choices` are delayed)", # teal.picks eager/delayed choices
           "(It is not guaranteed that explicitly defined choices)", # teal.picks eager/delayed choices
           "(`multiple` has been set to `FALSE`, while selected contains multiple values, forcing to select first:<fn>)",
+          "(cartesian join - happens when primary keys)", # teal.picks module merge
           "(Warning in min[(]x[)])", # ggplot2 facet may cause this
           "(Warning in max[(]x[)])" # ggplot2 facet may cause this
         )

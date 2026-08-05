@@ -433,56 +433,16 @@ template_patient_timeline <- function(dataname = "ANL",
 #'       parentname = "ADSL",
 #'       patient_col = "USUBJID",
 #'       plot_height = c(600L, 200L, 2000L),
-#'       cmdecod = variables(
-#'         choices = "CMDECOD",
-#'         selected = "CMDECOD",
-#'         multiple = FALSE
-#'       ),
-#'       aeterm = variables(
-#'         choices = "AETERM",
-#'         selected = "AETERM",
-#'         multiple = FALSE
-#'       ),
-#'       aetime_start = variables(
-#'         choices = "ASTDTM",
-#'         selected = "ASTDTM",
-#'         multiple = FALSE
-#'       ),
-#'       aetime_end = variables(
-#'         choices = "AENDTM",
-#'         selected = "AENDTM",
-#'         multiple = FALSE
-#'       ),
-#'       dstime_start = variables(
-#'         choices = "CMASTDTM",
-#'         selected = "CMASTDTM",
-#'         multiple = FALSE
-#'       ),
-#'       dstime_end = variables(
-#'         choices = "CMAENDTM",
-#'         selected = "CMAENDTM",
-#'         multiple = FALSE
-#'       ),
-#'       aerelday_start = variables(
-#'         choices = "ASTDY",
-#'         selected = "ASTDY",
-#'         multiple = FALSE
-#'       ),
-#'       aerelday_end = variables(
-#'         choices = "AENDY",
-#'         selected = "AENDY",
-#'         multiple = FALSE
-#'       ),
-#'       dsrelday_start = variables(
-#'         choices = "ASTDY",
-#'         selected = "ASTDY",
-#'         multiple = FALSE
-#'       ),
-#'       dsrelday_end = variables(
-#'         choices = "AENDY",
-#'         selected = "AENDY",
-#'         multiple = FALSE
-#'       )
+#'       cmdecod = variables("CMDECOD", "CMDECOD") ,
+#'       aeterm = variables("AETERM", "AETERM") ,
+#'       aetime_start = variables("ASTDTM", "ASTDTM") ,
+#'       aetime_end = variables("AENDTM", "AENDTM") ,
+#'       dstime_start = variables("CMASTDTM", "CMASTDTM") ,
+#'       dstime_end = variables("CMAENDTM", "CMAENDTM") ,
+#'       aerelday_start = variables("ASTDY", "ASTDY") ,
+#'       aerelday_end = variables("AENDY", "AENDY") ,
+#'       dsrelday_start = variables("ASTDY", "ASTDY") ,
+#'       dsrelday_end = variables("AENDY", "AENDY")
 #'     )
 #'   )
 #' )
@@ -572,13 +532,19 @@ tm_g_pp_patient_timeline <- function(label,
   ))
 
   picks_adae <- if (length(picks_adae_vars) > 0) {
-    lapply(picks_adae_vars, function(my_pick) create_picks_helper(teal.picks::datasets(dataname_adae), my_pick))
+    lapply(
+      picks_adae_vars,
+      function(my_pick) create_picks_helper(teal.picks::datasets(dataname_adae, dataname_adae), my_pick)
+    )
   } else {
     NULL
   }
 
   picks_adcm <- if (length(picks_adcm_vars) > 0) {
-    lapply(picks_adcm_vars, function(my_pick) create_picks_helper(teal.picks::datasets(dataname_adcm), my_pick))
+    lapply(
+      picks_adcm_vars,
+      function(my_pick) create_picks_helper(teal.picks::datasets(dataname_adcm, dataname_adcm), my_pick)
+    )
   } else {
     NULL
   }
