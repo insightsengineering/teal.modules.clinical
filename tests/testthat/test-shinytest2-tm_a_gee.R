@@ -1,6 +1,5 @@
 app_driver_tm_a_gee <- function() {
-  data <- teal.data::teal_data()
-  data <- within(data, {
+  data <- within(teal.data::teal_data(), {
     library(dplyr)
     ADSL <- tmc_ex_adsl
     ADQS <- tmc_ex_adqs |>
@@ -29,12 +28,15 @@ app_driver_tm_a_gee <- function() {
         id_var = teal.picks::variables(choices = c("USUBJID", "SUBJID"), selected = "USUBJID"),
         arm_var = teal.picks::variables(choices = c("ARM", "ARMCD"), selected = "ARM"),
         visit_var = teal.picks::variables(choices = c("AVISIT", "AVISITN"), selected = "AVISIT"),
-        paramcd = picks(
-          variables(choices = c("PARAMCD")),
-          suppressWarnings(values(selected = "FKSI-FWB"), classes = "pick_delayed"),
+        paramcd = teal.picks::picks(
+          teal.picks::variables(choices = c("PARAMCD", "PARAMCD")),
+          suppressWarnings(teal.picks::values(selected = "FKSI-FWB"), classes = "pick_delayed"),
           check_dataset = FALSE
         ),
-        cov_var = teal.picks::variables(choices = c("BASE", "AGE", "SEX", "BASE:AVISIT"), selected = NULL),
+        cov_var = teal.picks::variables(
+          c("BASE", "AGE", "SEX", teal.picks::interaction_vars("BASE", "AVISIT")),
+          NULL
+        ),
         conf_level = teal.picks::values(c(0.95, 0.9, 0.8, -1), 0.95, multiple = FALSE),
         arm_ref_comp = NULL,
         pre_output = NULL,

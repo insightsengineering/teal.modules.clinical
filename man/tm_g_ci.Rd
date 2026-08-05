@@ -10,10 +10,10 @@ tm_g_ci(
   label,
   x_var,
   y_var,
-  color,
-  stat = c("mean", "median"),
   paramcd = NULL,
   avisit = NULL,
+  color,
+  stat = c("mean", "median"),
   conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95),
   plot_height = c(700L, 200L, 2000L),
   plot_width = NULL,
@@ -70,16 +70,16 @@ treatment-axis encoding.}
 \item{y_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}, \code{\link[teal.picks:picks]{teal.picks::picks()}}, or legacy \code{data_extract_spec})\cr
 analysis-value encoding.}
 
-\item{color}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}, \code{\link[teal.picks:picks]{teal.picks::picks()}}, or legacy \code{data_extract_spec})\cr
-grouping variable for colors, shapes, and line types.}
-
-\item{stat}{(\code{character})\cr statistic to plot. Options are \code{"mean"} and \code{"median"}.}
-
 \item{paramcd}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
 object with all available choices and preselected option for the parameter code variable from \code{dataname}.}
 
 \item{avisit}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
 value of analysis visit \code{AVISIT} of interest.}
+
+\item{color}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}, \code{\link[teal.picks:picks]{teal.picks::picks()}}, or legacy \code{data_extract_spec})\cr
+grouping variable for colors, shapes, and line types.}
+
+\item{stat}{(\code{character})\cr statistic to plot. Options are \code{"mean"} and \code{"median"}.}
 
 \item{conf_level}{(\code{\link[teal.picks:values]{teal.picks::values()}}; legacy \code{teal.transform::choices_selected()} is deprecated but still
 accepted)\cr available confidence levels and default selection, each in the range (0, 1).}

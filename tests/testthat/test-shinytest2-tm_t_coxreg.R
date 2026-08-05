@@ -24,25 +24,20 @@ app_driver_tm_t_coxreg <- function() {
         label = "Cox Reg.",
         dataname = "ADTTE",
         parentname = "ADSL",
-        arm_var = variables(
-          choices = c("ARM", "ARMCD", "ACTARMCD"),
-          selected = "ARM"
-        ),
+        arm_var = teal.picks::variables(c("ARM", "ARMCD", "ACTARMCD"), "ARM"),
         arm_ref_comp = arm_ref_comp,
-        paramcd = variables(choices = "PARAMCD"),
-        strata_var = variables(
-          choices = c("COUNTRY", "STRATA1", "STRATA2"),
-          selected = "STRATA1"
+        paramcd = suppressWarnings(
+          teal.picks::picks(
+            teal.picks::variables("PARAMCD", "PARAMCD"),
+            teal.picks::values(selected = "OS", multiple = FALSE), check_dataset = FALSE
+          ),
+          classes = "picks_delayed"
         ),
-        cov_var = variables(
-          choices = c("AGE", "BMRKR1", "BMRKR2", "REGION1"),
-          selected = "AGE",
-          multiple = TRUE,
-          ordered = TRUE
-        ),
+        strata_var = teal.picks::variables(c("COUNTRY", "STRATA1", "STRATA2"), "STRATA1"),
+        cov_var = teal.picks::variables(c("AGE", "BMRKR1", "BMRKR2", "REGION1"), "AGE", multiple = TRUE),
         multivariate = TRUE,
-        aval_var = variables(choices = "AVAL"),
-        cnsr_var = variables(choices = "CNSR"),
+        aval_var = teal.picks::variables("AVAL", "AVAL"),
+        cnsr_var = teal.picks::variables("CNSR", "CNSR"),
         na_level = default_na_str(),
         conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95, multiple = FALSE),
         pre_output = NULL,
@@ -62,59 +57,52 @@ testthat::test_that("e2e - tm_t_coxreg: Module initializes in teal without error
   app_driver$expect_visible(app_driver$namespaces(TRUE)$module("table-table-with-settings"))
 })
 
-testthat::test_that(
-  "e2e - tm_t_coxreg: Starts with specified label, type, paramcd, arm_var, buckets,
-  cov_var, strata_var, pval_method, ties, conf_level, combine_comp_arms.",
-  {
-    skip_if_too_deep(5)
-    app_driver <- app_driver_tm_t_coxreg()
-    withr::defer(app_driver$stop())
-    testthat::expect_equal(
-      app_driver$get_text(".teal-modules-tree a.module-button.active"),
-      "Cox Reg."
+testthat::test_that("e2e - tm_t_coxreg: Starts with provided parameters selected", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_t_coxreg()
+  withr::defer(app_driver$stop())
+  testthat::expect_equal(
+    app_driver$get_text(".teal-modules-tree a.module-button.active"),
+    "Cox Reg."
+  )
+  testthat::expect_equal(
+    app_driver$get_active_module_input("type"),
+    "Multivariate"
+  )
+  testthat::expect_identical(get_teal_picks_slot(app_driver, "paramcd", "values"), "OS")
+  testthat::expect_identical(
+    get_teal_picks_slot(app_driver, "arm_var", "variables"),
+    "ARM"
+  )
+  testthat::expect_equal(
+    app_driver$get_active_module_input("buckets"),
+    list(
+      Ref = list("B: Placebo"),
+      Comp = list("A: Drug X", "C: Combination")
     )
-    testthat::expect_equal(
-      app_driver$get_active_module_input("type"),
-      "Multivariate"
-    )
-    testthat::expect_identical(
-      get_teal_picks_slot(app_driver, "paramcd", "values"),
-      c("CRSD", "EFS", "OS", "PFS", "TNE")
-    )
-    testthat::expect_identical(
-      get_teal_picks_slot(app_driver, "arm_var", "variables"),
-      "ARM"
-    )
-    testthat::expect_equal(
-      app_driver$get_active_module_input("buckets"),
-      list(
-        Ref = list("B: Placebo"),
-        Comp = list("A: Drug X", "C: Combination")
-      )
-    )
-    testthat::expect_identical(
-      get_teal_picks_slot(app_driver, "cov_var", "variables"),
-      "AGE"
-    )
-    testthat::expect_identical(
-      get_teal_picks_slot(app_driver, "strata_var", "variables"),
-      "STRATA1"
-    )
-    testthat::expect_equal(
-      app_driver$get_active_module_input("pval_method"),
-      "wald"
-    )
-    testthat::expect_equal(
-      app_driver$get_active_module_input("ties"),
-      "exact"
-    )
-    testthat::expect_equal(
-      app_driver$get_active_module_input("conf_level"),
-      "0.95"
-    )
-    testthat::expect_false(app_driver$get_active_module_input("combine_comp_arms"))
-  }
-)
+  )
+  testthat::expect_identical(
+    get_teal_picks_slot(app_driver, "cov_var", "variables"),
+    "AGE"
+  )
+  testthat::expect_identical(
+    get_teal_picks_slot(app_driver, "strata_var", "variables"),
+    "STRATA1"
+  )
+  testthat::expect_equal(
+    app_driver$get_active_module_input("pval_method"),
+    "wald"
+  )
+  testthat::expect_equal(
+    app_driver$get_active_module_input("ties"),
+    "exact"
+  )
+  testthat::expect_equal(
+    app_driver$get_active_module_input("conf_level"),
+    "0.95"
+  )
+  testthat::expect_false(app_driver$get_active_module_input("combine_comp_arms"))
+})
 
 testthat::test_that(
   "e2e - tm_t_coxreg: Selecting paramcd changes the table and does not throw validation errors.",
@@ -143,23 +131,20 @@ testthat::test_that("e2e - tm_t_coxreg: Deselection of paramcd throws validation
   app_driver$expect_validation_error()
 })
 
-testthat::test_that(
-  "e2e - tm_t_coxreg: Selecting arm_var changes the table and does not throw validation errors.",
-  {
-    skip_if_too_deep(5)
-    app_driver <- app_driver_tm_t_coxreg()
-    withr::defer(app_driver$stop())
-    table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    set_teal_picks_slot(app_driver, "arm_var", "variables", "ARMCD")
-    testthat::expect_false(
-      identical(
-        table_before,
-        app_driver$get_active_module_table_output("table-table-with-settings")
-      )
+testthat::test_that( "e2e - tm_t_coxreg: Selecting arm_var changes the table and does not throw validation errors.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_t_coxreg()
+  withr::defer(app_driver$stop())
+  table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
+  set_teal_picks_slot(app_driver, "arm_var", "variables", "ARMCD")
+  testthat::expect_false(
+    identical(
+      table_before,
+      app_driver$get_active_module_table_output("table-table-with-settings")
     )
-    app_driver$expect_no_validation_error()
-  }
-)
+  )
+  app_driver$expect_no_validation_error()
+})
 
 testthat::test_that("e2e - tm_t_coxreg: Deselection of arm_var throws validation error.", {
   skip_if_too_deep(5)
@@ -188,33 +173,20 @@ testthat::test_that(
   }
 )
 
-testthat::test_that(
-  paste0(
-    "e2e - tm_t_coxreg: Deselection of all covariates clears the table and surfaces ",
-    "a validation error from the analysis pipeline."
-  ),
-  {
-    skip_if_too_deep(5)
-    app_driver <- app_driver_tm_t_coxreg()
-    withr::defer(app_driver$stop())
-    testthat::expect_gt(
-      nrow(app_driver$get_active_module_table_output("table-table-with-settings")),
-      0L
+testthat::test_that("e2e - tm_t_coxreg: Deselection of all covariates clears the table and does not throw errors", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_t_coxreg()
+  withr::defer(app_driver$stop())
+  table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
+  set_teal_picks_slot(app_driver, "cov_var", "variables", NULL)
+  testthat::expect_false(
+    identical(
+      table_before,
+      app_driver$get_active_module_table_output("table-table-with-settings")
     )
-    set_teal_picks_slot(app_driver, "cov_var", "variables", NULL)
-    testthat::expect_identical(
-      app_driver$get_active_module_table_output("table-table-with-settings"),
-      data.frame()
-    )
-    app_driver$expect_validation_error()
-    validation_html <- app_driver$get_html(".shiny-output-error-validation")
-    testthat::expect_match(
-      paste(validation_html, collapse = ""),
-      "Data passed has errors",
-      fixed = TRUE
-    )
-  }
-)
+  )
+  app_driver$expect_no_validation_error()
+})
 
 testthat::test_that(
   "e2e - tm_t_coxreg: Selecting strata_var changes the table and does not throw validation errors.",

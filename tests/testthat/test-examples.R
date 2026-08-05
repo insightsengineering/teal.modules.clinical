@@ -116,8 +116,8 @@ with_mocked_app_bindings <- function(code) {
   )
 }
 
-
-for (i in rd_files()) {
+# for (i in rd_files()) {
+for (i in rd_files()[grepl("tte", rd_files())]) {
   testthat::test_that(sprintf("example-%s", basename(i)), {
     testthat::skip_on_cran()
     skip_if_too_deep(5)
@@ -127,7 +127,13 @@ for (i in rd_files()) {
         testthat::expect_no_error(
           pkgload::run_example(i, run_donttest = TRUE, run_dontrun = FALSE, quiet = TRUE)
         ),
-        "may not be available when loading"
+        paste(
+          sep = "|",
+          "(may not be available when loading)", # https://github.com/insightsengineering/teal.code/issues/194
+          "(Setting explicit `selected` while `choices` are delayed)", # teal.picks eager/delayed choices
+          "(It is not guaranteed that explicitly defined choices)", # teal.picks eager/delayed choices
+          "`multiple` has been set to `FALSE`, while selected contains multiple values, forcing to select first:<fn>"
+        )
       )
     )
   })

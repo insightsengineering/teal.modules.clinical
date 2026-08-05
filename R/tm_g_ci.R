@@ -274,10 +274,10 @@ template_g_ci <- function(dataname,
 tm_g_ci <- function(label,
                     x_var,
                     y_var,
-                    color,
-                    stat = c("mean", "median"),
                     paramcd = NULL,
                     avisit = NULL,
+                    color,
+                    stat = c("mean", "median"),
                     conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95),
                     plot_height = c(700L, 200L, 2000L),
                     plot_width = NULL,
@@ -314,8 +314,8 @@ tm_g_ci.data_extract_spec <- function(label,
                                       transformators = list(),
                                       decorators = list()) {
   stat <- match.arg(stat)
-  checkmate::assert_null(paramcd, .var.name = "paramcd")
-  checkmate::assert_null(avisit, .var.name = "avisit")
+  checkmate::assert_null(paramcd)
+  checkmate::assert_null(avisit)
   checkmate::assert_class(x_var, classes = "data_extract_spec")
   checkmate::assert_class(y_var, classes = "data_extract_spec")
   checkmate::assert_class(color, classes = "data_extract_spec")
