@@ -435,7 +435,8 @@ srv_gee <- function(id,
 
     shinyjs::show("gee_title")
 
-    validate_checks <- reactive({
+    validated_q <- reactive({
+      obj <- req(anl_q_with_adsl())
       validate(
         teal::need_input(
           "arm_var-variables-selected",
@@ -474,8 +475,8 @@ srv_gee <- function(id,
         ),
         teal::need_input(
           "conf_level",
-          is.na(suppressWarnings(as.numeric(input$conf_level))) ||
-            (as.numeric(input$conf_level) > 0 && as.numeric(input$conf_level) < 1),
+          !is.null(input$conf_level) && is.na(suppressWarnings(as.numeric(input$conf_level))) &&
+            as.numeric(input$conf_level) > 0 && as.numeric(input$conf_level) < 1,
           "Confidence level must be between 0 and 1"
         ),
         teal::need_input(
@@ -484,12 +485,12 @@ srv_gee <- function(id,
           "Please choose a correlation structure"
         )
       )
-      NULL
+      obj
     })
 
     ## table_r ----
     table_q <- reactive({
-      validate_checks()
+      obj <- req(validated_q())
       output_table <- input$output_table
       conf_level <- as.numeric(input$conf_level)
 
@@ -533,7 +534,6 @@ srv_gee <- function(id,
         "t_gee_lsmeans" = "LS Means Estimates"
       )
 
-      obj <- anl_q_with_adsl()
       teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), paste("### ", table_type, "Table"))
       teal.code::eval_code(obj, as.expression(unlist(my_calls)))
     })

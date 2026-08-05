@@ -145,11 +145,7 @@ testthat::test_that("e2e - tm_a_gee: Deselection of id_var throws validation err
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$get_text(
-      app_driver$namespaces(TRUE)$module(
-        "table-table_out_main"
-      )
-    ),
+    app_driver$get_text(app_driver$namespaces(TRUE)$module("table-table_out_main")),
     "A subject identifier is required"
   )
 })
