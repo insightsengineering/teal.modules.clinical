@@ -675,11 +675,6 @@ srv_summary_by <- function(id,
           "Subject identifier variable name is empty."
         ),
         teal::need_input(
-          "by_vars-variables-selected",
-          length(selectors$by_vars()$variables$selected) >= 1L,
-          "Row By Variable is empty."
-        ),
-        teal::need_input(
           "summarize_vars-variables-selected",
           length(selectors$summarize_vars()$variables$selected) >= 1L,
           "Summarize variable name is empty."
@@ -749,7 +744,7 @@ srv_summary_by <- function(id,
         dataname = "ANL",
         arm_var = anl_selectors$arm_var()$variables$selected,
         sum_vars = input_summarize_vars,
-        by_vars = anl_selectors$by_vars()$variables$selected,
+        by_vars = anl_selectors$by_vars()$variables$selected %||% character(0),
         var_labels = var_labels,
         id_var = anl_selectors$id_var()$variables$selected,
         na.rm = ifelse(input$useNA == "ifany", FALSE, TRUE),
