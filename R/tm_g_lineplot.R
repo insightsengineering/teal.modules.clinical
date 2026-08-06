@@ -301,7 +301,7 @@ tm_g_lineplot <- function(label,
                           y_unit = teal.picks::variables("AVALU", "AVALU"),
                           paramcd = teal.picks::picks(
                             teal.picks::variables("PARAMCD", "PARAMCD", fixed = TRUE),
-                            teal.picks::values(c("ALT", "CRP", "IGA"), "ALT",),
+                            teal.picks::values(c("ALT", "CRP", "IGA"), "ALT", multiple = FALSE),
                             check_dataset = FALSE
                           ),
                           conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95),

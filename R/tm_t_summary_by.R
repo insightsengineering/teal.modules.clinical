@@ -661,8 +661,35 @@ srv_summary_by <- function(id,
     anl_selectors <- selectors
     adsl_selectors <- selectors["arm_var"]
 
-    data_with_card <- reactive({
+    validated_q <- reactive({
       obj <- data()
+      validate(
+        teal::need_input(
+          "arm_var-variables-selected",
+          length(selectors$arm_var()$variables$selected) >= 1L,
+          "Treatment variable name is empty."
+        ),
+        teal::need_input(
+          "id_var-variables-selected",
+          length(selectors$id_var()$variables$selected) >= 1L,
+          "Subject identifier variable name is empty."
+        ),
+        teal::need_input(
+          "by_vars-variables-selected",
+          length(selectors$by_vars()$variables$selected) >= 1L,
+          "Row By Variable is empty."
+        ),
+        teal::need_input(
+          "summarize_vars-variables-selected",
+          length(selectors$summarize_vars()$variables$selected) >= 1L,
+          "Summarize variable name is empty."
+        )
+      )
+      obj
+    })
+
+    data_with_card <- reactive({
+      obj <- validated_q()
       teal.reporter::teal_card(obj) <-
         c(
           teal.reporter::teal_card(obj),

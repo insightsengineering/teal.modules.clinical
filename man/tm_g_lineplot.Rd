@@ -16,7 +16,8 @@ tm_g_lineplot(
     "AVAL"),
   y_unit = teal.picks::variables("AVALU", "AVALU"),
   paramcd = teal.picks::picks(teal.picks::variables("PARAMCD", "PARAMCD", fixed = TRUE),
-    teal.picks::values(c("ALT", "CRP", "IGA"), "ALT", ), check_dataset = FALSE),
+    teal.picks::values(c("ALT", "CRP", "IGA"), "ALT", multiple = FALSE), check_dataset =
+    FALSE),
   conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95),
   interval = "mean_ci",
   mid = "mean",
