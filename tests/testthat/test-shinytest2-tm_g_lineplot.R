@@ -28,21 +28,16 @@ app_driver_tm_g_lineplot <- function() {
         label = "Line Plot",
         dataname = "ADLB",
         parentname = "ADSL",
-        group_var = teal.picks::variables(
-          c("ARM", "ARMCD", "ACTARMCD"),
-          "ARM",
-          multiple = FALSE
-        ),
-        x = teal.picks::variables("AVISIT", "AVISIT", fixed = FALSE),
-        y = teal.picks::variables(
-          c("AVAL", "BASE", "CHG", "PCHG"),
-          "AVAL",
-          multiple = FALSE
-        ),
-        y_unit = teal.picks::variables("AVALU", "AVALU", fixed = FALSE),
+        group_var = teal.picks::variables(c("ARM", "ARMCD", "ACTARMCD"), "ARM"),
+        x = teal.picks::variables("AVISIT", "AVISIT"),
+        y = teal.picks::variables(c("AVAL", "BASE", "CHG", "PCHG"), "AVAL"),
+        y_unit = teal.picks::variables("AVALU", "AVALU"),
         paramcd = teal.picks::picks(
           teal.picks::variables("PARAMCD", "PARAMCD", fixed = FALSE),
-          teal.picks::values("ALT", multiple = FALSE),
+          suppressWarnings(
+            teal.picks::values(selected = "ALT", multiple = FALSE),
+            classes = "picks_delayed"
+          ),
           check_dataset = FALSE
         ),
         conf_level = teal.picks::values(c("0.95", "0.9", "0.8"), "0.95"),
