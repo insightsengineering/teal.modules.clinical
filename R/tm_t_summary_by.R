@@ -399,14 +399,14 @@ template_summary_by <- function(parentname,
 #'     tm_t_summary_by(
 #'       label = "Summary by Row Groups Table",
 #'       dataname = "ADLB",
-#'       arm_var = variables(choices = c("ARM", "ARMCD")),
+#'       arm_var = variables(choices = c("ARM", "ARMCD"), multiple = TRUE),
 #'       add_total = TRUE,
-#'       by_vars = variables(choices = c("PARAM", "AVISIT"), selected = "AVISIT"),
-#'       summarize_vars = variables(choices = c("AVAL", "CHG"), selected = "AVAL"),
+#'       by_vars = variables(choices = c("PARAM", "AVISIT"), selected = "AVISIT", multiple = TRUE),
+#'       summarize_vars = variables(choices = c("AVAL", "CHG"), selected = "AVAL", multiple = TRUE),
 #'       useNA = "ifany",
 #'       paramcd = picks(
 #'         variables(choices = "PARAMCD"),
-#'         values(selected = "ALT"),
+#'         values(selected = "ALT", multiple = TRUE),
 #'         check_dataset = FALSE
 #'       )
 #'     )
