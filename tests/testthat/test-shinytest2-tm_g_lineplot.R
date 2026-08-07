@@ -1,3 +1,13 @@
+# Setup timeout options for shinytest2 if none are set in options nor on environment variables
+withr::local_options(
+  list(
+    shinytest2.timeout = getOption(
+      "shinytest2.timeout",
+      default = Sys.getenv("SHINYTEST2_TIMEOUT", unset = 60 * 1000)
+    )
+  )
+)
+
 app_driver_tm_g_lineplot <- function() {
   data <- within(teal.data::teal_data(), {
     require(nestcolor)
@@ -18,28 +28,19 @@ app_driver_tm_g_lineplot <- function() {
         label = "Line Plot",
         dataname = "ADLB",
         parentname = "ADSL",
-        group_var = teal.picks::variables(
-          choices = c("ARM", "ARMCD", "ACTARMCD"),
-          selected = "ARM",
-          multiple = FALSE
-        ),
-        x = teal.picks::variables("AVISIT", fixed = TRUE),
-        y = teal.picks::variables(
-          choices = c("AVAL", "BASE", "CHG", "PCHG"),
-          selected = "AVAL",
-          multiple = FALSE
-        ),
-        y_unit = teal.picks::variables("AVALU", fixed = TRUE),
+        group_var = teal.picks::variables(c("ARM", "ARMCD", "ACTARMCD"), "ARM"),
+        x = teal.picks::variables("AVISIT", "AVISIT"),
+        y = teal.picks::variables(c("AVAL", "BASE", "CHG", "PCHG"), "AVAL"),
+        y_unit = teal.picks::variables("AVALU", "AVALU"),
         paramcd = teal.picks::picks(
-          teal.picks::datasets("ADLB"),
-          teal.picks::variables("PARAMCD", fixed = TRUE),
-          teal.picks::values(
-            choices = levels(data[["ADLB"]]$PARAMCD),
-            selected = "ALT",
-            multiple = FALSE
-          )
+          teal.picks::variables("PARAMCD", "PARAMCD", fixed = FALSE),
+          suppressWarnings(
+            teal.picks::values(selected = "ALT", multiple = FALSE),
+            classes = "picks_delayed"
+          ),
+          check_dataset = FALSE
         ),
-        conf_level = teal.picks::values(c("0.95", "0.9", "0.8"), "0.95", keep_order = TRUE),
+        conf_level = teal.picks::values(c("0.95", "0.9", "0.8"), "0.95"),
         interval = "mean_ci",
         mid = "mean",
         whiskers = c("mean_ci_lwr", "mean_ci_upr"),

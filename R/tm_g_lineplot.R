@@ -255,9 +255,6 @@ template_g_lineplot <- function(dataname = "ANL",
 #' })
 #' join_keys(data) <- default_cdisc_join_keys[names(data)]
 #'
-#' ADSL <- data[["ADSL"]]
-#' ADLB <- data[["ADLB"]]
-#'
 #' app <- init(
 #'   data = data,
 #'   modules = modules(
@@ -276,13 +273,9 @@ template_g_lineplot <- function(dataname = "ANL",
 #'         multiple = FALSE
 #'       ),
 #'       paramcd = picks(
-#'         datasets("ADLB"),
 #'         variables("PARAMCD", fixed = TRUE),
-#'         values(
-#'           choices = levels(data[["ADLB"]]$PARAMCD),
-#'           selected = "ALT",
-#'           multiple = FALSE
-#'         )
+#'         values(selected = "ALT", multiple = FALSE),
+#'         check_dataset = FALSE
 #'       )
 #'     )
 #'   )
@@ -300,19 +293,15 @@ tm_g_lineplot <- function(label,
                             choices = c("ARM", "ARMCD", "ACTARMCD"),
                             selected = "ARM"
                           ),
-                          x = teal.picks::variables("AVISIT", "AVISIT", fixed = TRUE),
+                          x = teal.picks::variables("AVISIT", "AVISIT"),
                           y = teal.picks::variables(
                             choices = c("AVAL", "BASE", "CHG", "PCHG"),
                             selected = "AVAL"
                           ),
-                          y_unit = teal.picks::variables("AVALU", "AVALU", fixed = TRUE),
+                          y_unit = teal.picks::variables("AVALU", "AVALU"),
                           paramcd = teal.picks::picks(
                             teal.picks::variables("PARAMCD", "PARAMCD", fixed = TRUE),
-                            teal.picks::values(
-                              choices = c("ALT", "CRP", "IGA"),
-                              selected = "ALT",
-                              multiple = FALSE
-                            ),
+                            teal.picks::values(c("ALT", "CRP", "IGA"), "ALT", multiple = FALSE),
                             check_dataset = FALSE
                           ),
                           conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95),

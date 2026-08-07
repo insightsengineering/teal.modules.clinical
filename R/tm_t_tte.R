@@ -270,7 +270,7 @@ template_tte <- function(dataname = "ANL",
           vars = aval_var,
           is_event = "is_event",
           var_labels = c("Unstratified Analysis"),
-          control = list(
+          control = tern::control_coxph(
             pval_method = pval_method,
             ties = ties,
             conf_level = conf_level
@@ -456,11 +456,11 @@ template_tte <- function(dataname = "ANL",
 #'     tm_t_tte(
 #'       label = "Time To Event Table",
 #'       dataname = "ADTTE",
-#'       arm_var = variables(choices = c("ARM", "ARMCD", "ACTARMCD")),
+#'       arm_var = variables(c("ARM", "ARMCD", "ACTARMCD")),
 #'       arm_ref_comp = arm_ref_comp,
 #'       paramcd = variables(c("PARAMCD", "PARAM")),
-#'       strata_var = variables(choices = c("SEX", "BMRKR2"), selected = "SEX"),
-#'       time_points = teal.picks::values(c(182, 243), 182, multiple = FALSE)
+#'       strata_var = variables(c("SEX", "BMRKR2"), "SEX"),
+#'       time_points = teal.picks::values(c(182, 243), 182)
 #'     )
 #'   )
 #' )

@@ -133,7 +133,7 @@
                   quantiles = c(0.25, 0.75)), na_str = "<Missing>", 
               table_names = "time_to_event") %>% tern::coxph_pairwise(vars = "AVAL", 
           is_event = "is_event", var_labels = c("Unstratified Analysis"), 
-          control = list(pval_method = "log-rank", ties = "efron", 
+          control = tern::control_coxph(pval_method = "log-rank", ties = "efron", 
               conf_level = 0.95), na_str = "<Missing>", table_names = "unstratified") %>% 
           tern::surv_timepoint(vars = "AVAL", var_labels = as.character(anl$AVALU[1]), 
               is_event = "is_event", time_point = c(183, 365, 548), 
@@ -189,7 +189,7 @@
                   quantiles = c(0.25, 0.75)), na_str = "<Missing>", 
               table_names = "time_to_event") %>% tern::coxph_pairwise(vars = "AVAL", 
           is_event = "is_event", var_labels = c("Unstratified Analysis"), 
-          control = list(pval_method = "log-rank", ties = "efron", 
+          control = tern::control_coxph(pval_method = "log-rank", ties = "efron", 
               conf_level = 0.95), na_str = "<Missing>", table_names = "unstratified") %>% 
           tern::surv_timepoint(vars = "AVAL", var_labels = as.character(anl$AVALU[1]), 
               is_event = "is_event", time_point = c(183, 365, 548), 

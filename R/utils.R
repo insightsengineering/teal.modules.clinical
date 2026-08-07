@@ -817,7 +817,7 @@ color_lab_values <- function(x,
       class <- classes[vapply(classes, function(class) {
         grepl(sprintf("%s", class), val)
       }, logical(1))]
-      if (!is.null(class) & length(class) > 0) {
+      if (!is.null(class) && length(class) > 0) {
         color <- colors[class]
         if (is.null(color)) color <- default_color
         icony <- icons[class]

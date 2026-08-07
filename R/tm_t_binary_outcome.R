@@ -775,25 +775,25 @@ srv_t_binary_outcome <- function(id,
       arm_var_r = arm_var_r
     )
 
-    iv_r <- reactive({
-      iv <- shinyvalidate::InputValidator$new()
+    validated_q <- reactive({
+      obj <- req(data())
+      obj <- teal.code::eval_code(obj, "library(dplyr)")
 
-      if (isTRUE(input$compare_arms)) {
-        iv$add_validator(arm_ref_comp_buckets_validator())
-      }
-
-      iv$add_rule("responders", shinyvalidate::sv_required("`Responders` field is empty"))
-      iv$add_rule("conf_level", shinyvalidate::sv_required("Please choose a confidence level between 0 and 1"))
-      iv$add_rule(
-        "conf_level",
-        shinyvalidate::sv_between(0, 1, message_fmt = "Please choose a confidence level between {left} and {right}")
+      validate_input(
+        inputId = "conf_level",
+        condition = !is.null(input$conf_level),
+        message = "Please choose a confidence level."
       )
-      iv$enable()
-      iv
+      validate_input(
+        inputId = "conf_level",
+        condition = as.numeric(input$conf_level) > 0 && as.numeric(input$conf_level) < 1,
+        message = "Confidence level must be between 0 and 1."
+      )
+      obj
     })
 
     data_with_card <- reactive({
-      obj <- data()
+      obj <- validated_q()
       teal.reporter::teal_card(obj) <-
         c(
           teal.reporter::teal_card(obj),
@@ -814,68 +814,55 @@ srv_t_binary_outcome <- function(id,
     )
     anl_q <- merged_adsl$data
 
-    # Update responders when merged ANL or encoding picks change (see tm_g_forest_rsp).
     observeEvent(
       anl_q(),
-      {
+      handlerExpr = {
         anl <- anl_q()[["ANL"]]
+
         aval_var <- anl_selectors$aval_var()$variables$selected
-        paramcd_pick <- anl_selectors$paramcd()
-        paramcd_sel <- if (is.null(paramcd_pick$values)) {
-          character(0)
-        } else {
-          paramcd_pick$values$selected
-        }
+        paramcd <- anl_selectors$paramcd()$values$selected
 
-        if (c(any(!is.data.frame(anl), nrow(anl) == 0L, length(aval_var) == 0L, length(paramcd_sel) == 0L))) {
-          return(invisible(NULL))
-        }
-
-        sel_param <- if (is.list(default_responses)) {
-          default_responses[[paramcd_sel[[1L]]]]
+        sel_param <- if (is.list(default_responses) && !is.null(paramcd)) {
+          default_responses[[paramcd]]
         } else {
           default_responses
         }
-        common_rsp <- if (is.list(sel_param)) sel_param$rsp else sel_param
 
-        responder_choices <- if (is.list(sel_param) && "levels" %in% names(sel_param)) {
-          if (length(intersect(unique(anl[[aval_var]]), sel_param$levels)) > 1L) {
-            sel_param$levels
+        common_rsp <- if (is.list(sel_param)) {
+          sel_param$rsp
+        } else {
+          sel_param
+        }
+
+        responder_choices <- if (length(aval_var) == 0L) {
+          character(0L)
+        } else {
+          if ("levels" %in% names(sel_param)) {
+            if (length(intersect(unique(anl[[aval_var]]), sel_param$levels)) > 1L) {
+              sel_param$levels
+            } else {
+              unique(anl[[aval_var]])
+            }
           } else {
             unique(anl[[aval_var]])
           }
-        } else {
-          unique(anl[[aval_var]])
-        }
-        if (length(responder_choices) == 0L) {
-          return(invisible(NULL))
         }
 
-        responder_sel <- intersect(responder_choices, shiny::isolate(input$responders))
-        if (length(responder_sel) == 0L) {
-          responder_sel <- intersect(responder_choices, common_rsp)
-        }
-        if (length(responder_sel) == 0L) {
-          return(invisible(NULL))
-        }
-
-        shiny::updateSelectInput(
+        updateSelectInput(
           session, "responders",
           choices = responder_choices,
-          selected = responder_sel
+          selected = intersect(responder_choices, common_rsp)
         )
       }
     )
 
     validate_check <- reactive({
-      if (isTRUE(input$compare_arms)) {
-        arm_ref_comp_iv()
-      }
-      teal::validate_inputs(iv_r())
-      validate(
-        need(length(anl_selectors$arm_var()$variables$selected) >= 1L, "A treatment variable is required"),
-        need(length(anl_selectors$aval_var()$variables$selected) >= 1L, "An analysis variable is required")
+      validate_input( # delayed validation for responders until after choices are updated based on PARAMCD selection
+        inputId = "responders",
+        condition = !is.null(input$responders) && length(input$responders) > 0L,
+        message = "`Responders` field is empty"
       )
+
       pc <- anl_selectors$paramcd()
       pc_vals <- if (is.null(pc$values)) character(0) else pc$values$selected
       validate(need(length(pc_vals) >= 1L, "Please select a filter."))

@@ -159,10 +159,14 @@ migrate_value_choices_to_picks <- function(x, # nolint: object_length_linter.
   }
   if (inherits(x, "variables")) {
     if (add_values) {
+      args <- list(multiple = multiple)[!is.null(multiple)]
+      if (isFALSE(multiple)) {
+        args$selected <- function(x) identical(parent.frame()$i, 1L)
+      }
       return(
         teal.picks::picks(
           x,
-          do.call(teal.picks::values, list(multiple = multiple)[!is.null(multiple)]),
+          do.call(teal.picks::values, args),
           check_dataset = FALSE
         )
       )

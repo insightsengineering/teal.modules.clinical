@@ -11,23 +11,28 @@ app_driver_tm_g_ci <- function() {
       data = data,
       modules = tm_g_ci(
         label = "Confidence Interval Plot",
-        x_var = teal.picks::variables(
-          choices = c("ARMCD", "BMRKR2"),
-          selected = "ARMCD",
-          multiple = FALSE
+        x_var = teal.picks::picks(
+          teal.picks::datasets("ADSL", "ADSL"),
+          teal.picks::variables(c("ARMCD", "BMRKR2"), "ARMCD"),
         ),
-        y_var = teal.picks::variables(
-          choices = c("AVAL", "CHG", "CHG2"),
-          selected = "AVAL",
-          multiple = FALSE
+        y_var = teal.picks::picks(
+          teal.picks::datasets("ADLB", "ADLB"),
+          teal.picks::variables(c("AVAL", "CHG", "CHG2"), "AVAL")
         ),
-        color = teal.picks::variables(
-          choices = c("SEX", "STRATA1", "STRATA2"),
-          selected = "STRATA1",
-          multiple = FALSE
+        color = teal.picks::picks(
+          teal.picks::datasets("ADLB", "ADLB"),
+          teal.picks::variables(c("SEX", "STRATA1", "STRATA2"), "STRATA1")
         ),
-        paramcd = teal.picks::values(multiple = FALSE),
-        avisit = teal.picks::values(multiple = FALSE),
+        paramcd = teal.picks::picks(
+          teal.picks::datasets("ADLB", "ADLB"),
+          teal.picks::variables("PARAMCD", "PARAMCD"),
+          teal.picks::values(multiple = FALSE)
+        ),
+        avisit = teal.picks::picks(
+          teal.picks::datasets("ADLB", "ADLB"),
+          teal.picks::variables("AVISIT", "AVISIT"),
+          teal.picks::values(multiple = FALSE)
+        ),
         stat = c("mean", "median"),
         conf_level = teal.picks::values(c("0.95", "0.9", "0.8"), selected = "0.95", keep_order = TRUE),
         plot_height = c(700L, 200L, 2000L),
@@ -53,30 +58,27 @@ app_driver_tm_g_ci_custom_filters <- function() { # nolint object_name.
       data = data,
       modules = tm_g_ci(
         label = "Confidence Interval Plot",
-        x_var = teal.picks::variables(
-          choices = c("ARMCD", "BMRKR2"),
-          selected = "ARMCD",
-          multiple = FALSE
+        x_var = teal.picks::picks(
+          teal.picks::datasets("ADSL", "ADSL"),
+          teal.picks::variables(c("ARMCD", "BMRKR2"), "ARMCD")
         ),
-        y_var = teal.picks::variables(
-          choices = c("AVAL", "CHG", "CHG2"),
-          selected = "AVAL",
-          multiple = FALSE
+        y_var = teal.picks::picks(
+          teal.picks::datasets("ADLB", "ADLB"),
+          teal.picks::variables(c("AVAL", "CHG", "CHG2"), "AVAL")
         ),
-        color = teal.picks::variables(
-          choices = c("SEX", "STRATA1", "STRATA2"),
-          selected = "STRATA1",
-          multiple = FALSE
+        color = teal.picks::picks(
+          teal.picks::datasets("ADSL", "ADSL"),
+          teal.picks::variables(c("SEX", "STRATA1", "STRATA2"), "STRATA1")
         ),
-        paramcd = teal.picks::values(
-          choices = c("CRP", "IGA"),
-          selected = "CRP",
-          multiple = FALSE
+        paramcd = teal.picks::picks(
+          teal.picks::datasets("ADLB", "ADLB"),
+          teal.picks::variables("PARAMCD", "PARAMCD"),
+          teal.picks::values(c("CRP", "IGA"), "CRP")
         ),
-        avisit = teal.picks::values(
-          choices = c("BASELINE", "WEEK 1 DAY 8"),
-          selected = "BASELINE",
-          multiple = FALSE
+        avisit = teal.picks::picks(
+          teal.picks::datasets("ADLB", "ADLB"),
+          teal.picks::variables("AVISIT", "AVISIT"),
+          teal.picks::values(c("BASELINE", "WEEK 1 DAY 8"), "BASELINE", multiple = FALSE)
         ),
         stat = c("mean", "median"),
         conf_level = teal.picks::values(c("0.95", "0.9", "0.8"), selected = "0.95", keep_order = TRUE),
@@ -118,27 +120,27 @@ testthat::test_that(
     )
 
     testthat::expect_equal(
-      exported_values[["x_var_picks-picks_resolved"]]$variables$selected,
+      exported_values[["x_var-picks_resolved"]]$variables$selected,
       "ARMCD"
     )
 
     testthat::expect_equal(
-      exported_values[["y_var_picks-picks_resolved"]]$variables$selected,
+      exported_values[["y_var-picks_resolved"]]$variables$selected,
       "AVAL"
     )
 
     testthat::expect_equal(
-      exported_values[["paramcd_picks-picks_resolved"]]$values$selected,
+      exported_values[["paramcd-picks_resolved"]]$values$selected,
       "ALT"
     )
 
     testthat::expect_equal(
-      exported_values[["avisit_picks-picks_resolved"]]$values$selected,
+      exported_values[["avisit-picks_resolved"]]$values$selected,
       "SCREENING"
     )
 
     testthat::expect_equal(
-      exported_values[["color_picks-picks_resolved"]]$variables$selected,
+      exported_values[["color-picks_resolved"]]$variables$selected,
       "STRATA1"
     )
 
@@ -160,11 +162,11 @@ testthat::test_that("e2e - tm_g_ci: Uses PARAMCD and AVISIT module arguments in 
   )
 
   testthat::expect_equal(
-    exported_values[["paramcd_picks-picks_resolved"]]$values$selected,
+    exported_values[["paramcd-picks_resolved"]]$values$selected,
     "CRP"
   )
   testthat::expect_equal(
-    exported_values[["avisit_picks-picks_resolved"]]$values$selected,
+    exported_values[["avisit-picks_resolved"]]$values$selected,
     "BASELINE"
   )
   app_driver$expect_no_validation_error()
@@ -175,7 +177,7 @@ testthat::test_that("e2e - tm_g_ci: Selecting x_var column updates plot.", {
   app_driver <- app_driver_tm_g_ci()
   withr::defer(app_driver$stop())
   plot_before <- app_driver$get_active_module_plot_output("myplot")
-  set_teal_picks_slot(app_driver, "x_var_picks", "variables", "BMRKR2")
+  set_teal_picks_slot(app_driver, "x_var", "variables", "BMRKR2")
   testthat::expect_false(
     identical(
       plot_before,
@@ -189,7 +191,7 @@ testthat::test_that("e2e - tm_g_ci: Deselecting x_var column shows validation er
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ci()
   withr::defer(app_driver$stop())
-  set_teal_picks_slot(app_driver, "x_var_picks", "variables", character(0L))
+  set_teal_picks_slot(app_driver, "x_var", "variables", character(0L))
   testthat::expect_identical(app_driver$get_active_module_plot_output("myplot"), character(0))
   app_driver$expect_validation_error()
   testthat::expect_match(
@@ -203,7 +205,7 @@ testthat::test_that("e2e - tm_g_ci: Selecting y_var column updates plot.", {
   app_driver <- app_driver_tm_g_ci()
   withr::defer(app_driver$stop())
   plot_before <- app_driver$get_active_module_plot_output("myplot")
-  set_teal_picks_slot(app_driver, "y_var_picks", "variables", "CHG2")
+  set_teal_picks_slot(app_driver, "y_var", "variables", "CHG2")
   testthat::expect_false(
     identical(
       plot_before,
@@ -217,7 +219,7 @@ testthat::test_that("e2e - tm_g_ci: Deselecting y_var column shows validation er
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ci()
   withr::defer(app_driver$stop())
-  set_teal_picks_slot(app_driver, "y_var_picks", "variables", character(0L))
+  set_teal_picks_slot(app_driver, "y_var", "variables", character(0L))
   testthat::expect_identical(app_driver$get_active_module_plot_output("myplot"), character(0))
   app_driver$expect_validation_error()
   testthat::expect_match(
@@ -233,7 +235,7 @@ testthat::test_that(
     app_driver <- app_driver_tm_g_ci()
     withr::defer(app_driver$stop())
     plot_before <- app_driver$get_active_module_plot_output("myplot")
-    set_teal_picks_slot(app_driver, "paramcd_picks", "values", "CRP")
+    set_teal_picks_slot(app_driver, "paramcd", "values", "CRP")
     testthat::expect_false(
       identical(
         plot_before,
@@ -248,7 +250,7 @@ testthat::test_that("e2e - tm_g_ci: Deselecting PARAMCD filter shows validation 
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ci()
   withr::defer(app_driver$stop())
-  set_teal_picks_slot(app_driver, "paramcd_picks", "values", character(0L))
+  set_teal_picks_slot(app_driver, "paramcd", "values", character(0L))
   testthat::expect_identical(app_driver$get_active_module_plot_output("myplot"), character(0))
   app_driver$expect_validation_error()
   testthat::expect_match(
@@ -262,7 +264,7 @@ testthat::test_that("e2e - tm_g_ci: Selecting AVISIT filter value updates plot."
   app_driver <- app_driver_tm_g_ci()
   withr::defer(app_driver$stop())
   plot_before <- app_driver$get_active_module_plot_output("myplot")
-  set_teal_picks_slot(app_driver, "avisit_picks", "values", "BASELINE")
+  set_teal_picks_slot(app_driver, "avisit", "values", "BASELINE")
   testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
   app_driver$expect_no_validation_error()
 })
@@ -271,7 +273,7 @@ testthat::test_that("e2e - tm_g_ci: Deselecting AVISIT filter shows validation e
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ci()
   withr::defer(app_driver$stop())
-  set_teal_picks_slot(app_driver, "avisit_picks", "values", character(0L))
+  set_teal_picks_slot(app_driver, "avisit", "values", character(0L))
   testthat::expect_identical(app_driver$get_active_module_plot_output("myplot"), character(0))
   app_driver$expect_validation_error()
   testthat::expect_match(
@@ -285,7 +287,7 @@ testthat::test_that("e2e - tm_g_ci: Selecting color column updates plot.", {
   app_driver <- app_driver_tm_g_ci()
   withr::defer(app_driver$stop())
   plot_before <- app_driver$get_active_module_plot_output("myplot")
-  set_teal_picks_slot(app_driver, "color_picks", "variables", "SEX")
+  set_teal_picks_slot(app_driver, "color", "variables", "SEX")
   testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
   app_driver$expect_no_validation_error()
 })
@@ -294,7 +296,7 @@ testthat::test_that("e2e - tm_g_ci: Deselecting color column shows validation er
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ci()
   withr::defer(app_driver$stop())
-  set_teal_picks_slot(app_driver, "color_picks", "variables", character(0L))
+  set_teal_picks_slot(app_driver, "color", "variables", character(0L))
   testthat::expect_identical(app_driver$get_active_module_plot_output("myplot"), character(0))
   app_driver$expect_validation_error()
   testthat::expect_match(

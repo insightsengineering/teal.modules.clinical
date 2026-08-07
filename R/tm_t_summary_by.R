@@ -399,14 +399,14 @@ template_summary_by <- function(parentname,
 #'     tm_t_summary_by(
 #'       label = "Summary by Row Groups Table",
 #'       dataname = "ADLB",
-#'       arm_var = variables(choices = c("ARM", "ARMCD")),
+#'       arm_var = variables(choices = c("ARM", "ARMCD"), multiple = TRUE),
 #'       add_total = TRUE,
-#'       by_vars = variables(choices = c("PARAM", "AVISIT"), selected = "AVISIT"),
-#'       summarize_vars = variables(choices = c("AVAL", "CHG"), selected = "AVAL"),
+#'       by_vars = variables(choices = c("PARAM", "AVISIT"), selected = "AVISIT", multiple = TRUE),
+#'       summarize_vars = variables(choices = c("AVAL", "CHG"), selected = "AVAL", multiple = TRUE),
 #'       useNA = "ifany",
 #'       paramcd = picks(
 #'         variables(choices = "PARAMCD"),
-#'         values(selected = "ALT"),
+#'         values(selected = "ALT", multiple = TRUE),
 #'         check_dataset = FALSE
 #'       )
 #'     )
@@ -661,8 +661,30 @@ srv_summary_by <- function(id,
     anl_selectors <- selectors
     adsl_selectors <- selectors["arm_var"]
 
-    data_with_card <- reactive({
+    validated_q <- reactive({
       obj <- data()
+      validate(
+        teal::need_input(
+          "arm_var-variables-selected",
+          length(selectors$arm_var()$variables$selected) >= 1L,
+          "Treatment variable name is empty."
+        ),
+        teal::need_input(
+          "id_var-variables-selected",
+          length(selectors$id_var()$variables$selected) >= 1L,
+          "Subject identifier variable name is empty."
+        ),
+        teal::need_input(
+          "summarize_vars-variables-selected",
+          length(selectors$summarize_vars()$variables$selected) >= 1L,
+          "Please select at least one variable to summarize."
+        )
+      )
+      obj
+    })
+
+    data_with_card <- reactive({
+      obj <- validated_q()
       teal.reporter::teal_card(obj) <-
         c(
           teal.reporter::teal_card(obj),
@@ -689,11 +711,6 @@ srv_summary_by <- function(id,
       input_by_vars <- anl_selectors$by_vars()$variables$selected
       input_summarize_vars <- anl_selectors$summarize_vars()$variables$selected
       input_paramcd_var <- if (!is.null(paramcd)) anl_selectors$paramcd()$variables$selected else NULL
-
-      validate(shiny::need(
-        length(input_summarize_vars) >= 1L,
-        "Please select at least one variable to summarize."
-      ))
 
       validate_standard_inputs(
         adsl = adsl_filtered,
@@ -722,7 +739,7 @@ srv_summary_by <- function(id,
         dataname = "ANL",
         arm_var = anl_selectors$arm_var()$variables$selected,
         sum_vars = input_summarize_vars,
-        by_vars = anl_selectors$by_vars()$variables$selected,
+        by_vars = anl_selectors$by_vars()$variables$selected %||% character(0),
         var_labels = var_labels,
         id_var = anl_selectors$id_var()$variables$selected,
         na.rm = ifelse(input$useNA == "ifany", FALSE, TRUE),

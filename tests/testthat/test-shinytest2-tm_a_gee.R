@@ -1,6 +1,5 @@
 app_driver_tm_a_gee <- function() {
-  data <- teal.data::teal_data()
-  data <- within(data, {
+  data <- within(teal.data::teal_data(), {
     library(dplyr)
     ADSL <- tmc_ex_adsl
     ADQS <- tmc_ex_adqs |>
@@ -18,9 +17,6 @@ app_driver_tm_a_gee <- function() {
 
   teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
 
-  all_values <- function(x) unique(x)
-  class(all_values) <- append(class(all_values), "des-delayed")
-
   init_teal_app_driver(
     teal::init(
       data = data,
@@ -32,12 +28,15 @@ app_driver_tm_a_gee <- function() {
         id_var = teal.picks::variables(choices = c("USUBJID", "SUBJID"), selected = "USUBJID"),
         arm_var = teal.picks::variables(choices = c("ARM", "ARMCD"), selected = "ARM"),
         visit_var = teal.picks::variables(choices = c("AVISIT", "AVISITN"), selected = "AVISIT"),
-        paramcd = picks(
-          variables(choices = c("PARAMCD", "PARAM")),
-          values(all_values, "FKSI-FWB"),
+        paramcd = teal.picks::picks(
+          teal.picks::variables(choices = c("PARAMCD", "PARAMCD")),
+          suppressWarnings(teal.picks::values(selected = "FKSI-FWB"), classes = "pick_delayed"),
           check_dataset = FALSE
         ),
-        cov_var = teal.picks::variables(choices = c("BASE", "AGE", "SEX", "BASE:AVISIT"), selected = NULL),
+        cov_var = teal.picks::variables(
+          c("BASE", "AGE", "SEX", teal.picks::interaction_vars("BASE", "AVISIT")),
+          NULL
+        ),
         conf_level = teal.picks::values(c(0.95, 0.9, 0.8, -1), 0.95, multiple = FALSE),
         arm_ref_comp = NULL,
         pre_output = NULL,
@@ -146,11 +145,7 @@ testthat::test_that("e2e - tm_a_gee: Deselection of id_var throws validation err
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$get_text(
-      app_driver$namespaces(TRUE)$module(
-        "table-table_out_main"
-      )
-    ),
+    app_driver$get_text(app_driver$namespaces(TRUE)$module("table-table_out_main")),
     "A subject identifier is required"
   )
 })

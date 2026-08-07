@@ -1,32 +1,29 @@
 #' @describeIn tm_g_ci teal.picks encodings via \code{picks} objects for \code{x_var}, \code{y_var}, and \code{color}
-#' (use [`tm_g_ci.variables()`] to pass [`teal.picks::variables()`] objects; they are wrapped into \code{picks}).
+#' (use [`tm_g_ci()`] to pass [`teal.picks::variables()`] objects; they are wrapped into \code{picks}).
 #' @export
-tm_g_ci.picks <- function(label,
-                          x_var,
-                          y_var,
-                          color,
-                          stat = c("mean", "median"),
-                          paramcd,
-                          avisit,
-                          conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95),
-                          plot_height = c(700L, 200L, 2000L),
-                          plot_width = NULL,
-                          pre_output = NULL,
-                          post_output = NULL,
-                          ggplot2_args = teal.widgets::ggplot2_args(),
-                          transformators = list(),
-                          decorators = list()) {
+tm_g_ci.default <- function(label,
+                            x_var,
+                            y_var,
+                            paramcd,
+                            avisit,
+                            color,
+                            stat = c("mean", "median"),
+                            conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95),
+                            plot_height = c(700L, 200L, 2000L),
+                            plot_width = NULL,
+                            pre_output = NULL,
+                            post_output = NULL,
+                            ggplot2_args = teal.widgets::ggplot2_args(),
+                            transformators = list(),
+                            decorators = list()) {
   stat <- match.arg(stat)
 
   checkmate::assert_string(label)
-  x_dataname <- "ADSL"
-  y_dataname <- "ADLB"
-
-  checkmate::assert_class(x_var, "picks")
-  checkmate::assert_class(y_var, "picks")
-  checkmate::assert_class(color, "picks")
-  checkmate::assert_class(paramcd, "values")
-  checkmate::assert_class(avisit, "values")
+  checkmate::assert_multi_class(x_var, c("picks"))
+  checkmate::assert_multi_class(y_var, c("picks"))
+  checkmate::assert_multi_class(color, c("picks"))
+  checkmate::assert_multi_class(paramcd, c("picks"))
+  checkmate::assert_multi_class(avisit, c("picks"))
   checkmate::assert_class(conf_level, "values")
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")
@@ -40,84 +37,32 @@ tm_g_ci.picks <- function(label,
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
   teal::assert_decorators(decorators, "plot")
 
-  x_var_picks <- x_var
-
-  paramcd_picks <- teal.picks::picks(
-    teal.picks::datasets(y_dataname, y_dataname),
-    teal.picks::variables("PARAMCD", "PARAMCD"),
-    paramcd
-  )
-  avisit_picks <- teal.picks::picks(
-    teal.picks::datasets(y_dataname, y_dataname),
-    teal.picks::variables("AVISIT", "AVISIT"),
-    avisit
-  )
-
-  y_var_picks <- y_var
-
-  color_picks <- color
-
+  paramcd <- create_picks_helper(y_var$datasets, paramcd)
+  avisit <- create_picks_helper(y_var$datasets, avisit)
   args <- as.list(environment())
 
   module(
     label = label,
-    server = srv_g_ci.picks,
-    ui = ui_g_ci.picks,
-    ui_args = args[names(args) %in% names(formals(ui_g_ci.picks))],
-    server_args = args[names(args) %in% names(formals(srv_g_ci.picks))],
-    transformators = transformators,
-    datanames = c(x_dataname, y_dataname)
-  )
-}
-
-#' @describeIn tm_g_ci teal.picks encodings via \code{variables} (recommended entry point).
-#' @export
-tm_g_ci.variables <- function(label,
-                              x_var,
-                              y_var,
-                              color,
-                              stat = c("mean", "median"),
-                              paramcd,
-                              avisit,
-                              conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95),
-                              plot_height = c(700L, 200L, 2000L),
-                              plot_width = NULL,
-                              pre_output = NULL,
-                              post_output = NULL,
-                              ggplot2_args = teal.widgets::ggplot2_args(),
-                              transformators = list(),
-                              decorators = list()) {
-  tm_g_ci.picks(
-    label = label,
-    x_var = teal.picks::picks(teal.picks::datasets("ADSL", "ADSL"), x_var),
-    y_var = teal.picks::picks(teal.picks::datasets("ADLB", "ADLB"), y_var),
-    color = teal.picks::picks(teal.picks::datasets("ADSL", "ADSL"), color),
-    stat = stat,
-    paramcd = paramcd,
-    avisit = avisit,
-    conf_level = conf_level,
-    plot_height = plot_height,
-    plot_width = plot_width,
-    pre_output = pre_output,
-    post_output = post_output,
-    ggplot2_args = ggplot2_args,
-    transformators = transformators,
-    decorators = decorators
+    server = srv_g_ci,
+    ui = ui_g_ci,
+    ui_args = args[names(args) %in% names(formals(ui_g_ci))],
+    server_args = args[names(args) %in% names(formals(srv_g_ci))],
+    transformators = transformators
   )
 }
 
 #' @keywords internal
-ui_g_ci.picks <- function(id, # nolint: object_name.
-                          x_var_picks,
-                          y_var_picks,
-                          paramcd_picks,
-                          avisit_picks,
-                          color_picks,
-                          conf_level,
-                          stat,
-                          pre_output,
-                          post_output,
-                          decorators) {
+ui_g_ci <- function(id, # nolint: object_name.
+                    x_var,
+                    y_var,
+                    paramcd,
+                    avisit,
+                    color,
+                    conf_level,
+                    stat,
+                    pre_output,
+                    post_output,
+                    decorators) {
   ns <- NS(id)
   teal.widgets::standard_layout(
     output = teal.widgets::plot_with_settings_ui(id = ns("myplot")),
@@ -125,23 +70,23 @@ ui_g_ci.picks <- function(id, # nolint: object_name.
       tags$label("Encodings", class = "text-primary"), tags$br(),
       tags$div(
         tags$label("Treatment (x axis):"),
-        teal.picks::picks_ui(ns("x_var_picks"), x_var_picks)
+        teal.picks::picks_ui(ns("x_var"), x_var)
       ),
       tags$div(
         tags$label("Select lab (PARAMCD):"),
-        teal.picks::picks_ui(ns("paramcd_picks"), paramcd_picks)
+        teal.picks::picks_ui(ns("paramcd"), paramcd)
       ),
       tags$div(
         tags$label("Select visit (AVISIT):"),
-        teal.picks::picks_ui(ns("avisit_picks"), avisit_picks)
+        teal.picks::picks_ui(ns("avisit"), avisit)
       ),
       tags$div(
         tags$label("Analysis Value (y axis):"),
-        teal.picks::picks_ui(ns("y_var_picks"), y_var_picks)
+        teal.picks::picks_ui(ns("y_var"), y_var)
       ),
       tags$div(
         tags$label("Groups (color):"),
-        teal.picks::picks_ui(ns("color_picks"), color_picks)
+        teal.picks::picks_ui(ns("color"), color)
       ),
       teal.widgets::optionalSelectInput(
         inputId = ns("conf_level"),
@@ -154,7 +99,7 @@ ui_g_ci.picks <- function(id, # nolint: object_name.
       radioButtons(
         inputId = ns("stat"),
         label = "Statistic to use",
-        choices = c("mean", "median"),
+        choices = formals(tm_g_ci)$stat,
         selected = stat
       ),
       teal::ui_transform_teal_data(ns("decorator"), transformators = select_decorators(decorators, "plot"))
@@ -165,20 +110,18 @@ ui_g_ci.picks <- function(id, # nolint: object_name.
 }
 
 #' @keywords internal
-srv_g_ci.picks <- function(id, # nolint: object_name.
-                           data,
-                           x_dataname,
-                           y_dataname,
-                           x_var_picks,
-                           y_var_picks,
-                           paramcd_picks,
-                           avisit_picks,
-                           color_picks,
-                           label,
-                           plot_height,
-                           plot_width,
-                           ggplot2_args,
-                           decorators) {
+srv_g_ci <- function(id, # nolint: object_name.
+                     data,
+                     x_var,
+                     y_var,
+                     paramcd,
+                     avisit,
+                     color,
+                     label,
+                     plot_height,
+                     plot_width,
+                     ggplot2_args,
+                     decorators) {
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
@@ -186,44 +129,41 @@ srv_g_ci.picks <- function(id, # nolint: object_name.
     teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
 
     picks_list <- list(
-      x_var_picks = x_var_picks,
-      y_var_picks = y_var_picks,
-      paramcd_picks = paramcd_picks,
-      avisit_picks = avisit_picks,
-      color_picks = color_picks
+      x_var = x_var,
+      y_var = y_var,
+      paramcd = paramcd,
+      avisit = avisit,
+      color = color
     )
 
-    selectors <- teal.picks::picks_srv(
-      picks = picks_list,
-      data  = data
-    )
+    selectors <- teal.picks::picks_srv(picks = picks_list, data = data)
 
     validated_q <- reactive({
       obj <- req(data())
 
       teal::validate_input(
-        inputId = "x_var_picks-variables-selected",
-        condition = length(selectors$x_var_picks()$variables$selected) > 0L,
+        inputId = "x_var-variables-selected",
+        condition = length(selectors$x_var()$variables$selected) > 0L,
         message = "Please select a treatment variable (x axis)."
       )
       teal::validate_input(
-        inputId = "paramcd_picks-values-selected",
-        condition = length(selectors$paramcd_picks()$values$selected) > 0L,
+        inputId = "paramcd-values-selected",
+        condition = length(selectors$paramcd()$values$selected) > 0L,
         message = "Please select a lab parameter (PARAMCD)."
       )
       teal::validate_input(
-        inputId = "avisit_picks-values-selected",
-        condition = length(selectors$avisit_picks()$values$selected) > 0L,
+        inputId = "avisit-values-selected",
+        condition = length(selectors$avisit()$values$selected) > 0L,
         message = "Please select a visit (AVISIT)."
       )
       teal::validate_input(
-        inputId = "y_var_picks-variables-selected",
-        condition = length(selectors$y_var_picks()$variables$selected) > 0L,
+        inputId = "y_var-variables-selected",
+        condition = length(selectors$y_var()$variables$selected) > 0L,
         message = "Please select an analysis value variable (y axis)."
       )
       teal::validate_input(
-        inputId = "color_picks-variables-selected",
-        condition = length(selectors$color_picks()$variables$selected) > 0L,
+        inputId = "color-variables-selected",
+        condition = length(selectors$color()$variables$selected) > 0L,
         message = "Please select a grouping variable (color)."
       )
       teal::validate_input(
@@ -240,6 +180,25 @@ srv_g_ci.picks <- function(id, # nolint: object_name.
         message = "Confidence level must be between 0 and 1."
       )
 
+      validate(
+        teal::need_input(
+          inputId = c("y_var-datasets-selected", "paramcd-datasets-selected"),
+          condition = identical(
+            selectors$y_var()$datasets$selected,
+            selectors$paramcd()$datasets$selected,
+          ),
+          message = "Analysis and Treatment variables must be from the same dataset."
+        ),
+        teal::need_input(
+          inputId = c("y_var-datasets-selected", "avisit-datasets-selected"),
+          condition = identical(
+            selectors$y_var()$datasets$selected,
+            selectors$avisit()$datasets$selected,
+          ),
+          message = "Analysis and visit variables must be from the same dataset."
+        )
+      )
+
       teal.reporter::teal_card(obj) <- c(
         teal.reporter::teal_card("# Confidence Interval Plot"),
         teal.reporter::teal_card(obj),
@@ -248,54 +207,38 @@ srv_g_ci.picks <- function(id, # nolint: object_name.
       obj
     })
 
-    # Merge y_dataname selectors (paramcd filter + avisit filter + y variable)
     anl_inputs <- teal.picks::merge_srv(
       "anl_inputs",
       data = validated_q,
-      selectors = selectors[c("paramcd_picks", "avisit_picks", "y_var_picks")],
-      output_name = "ANL_Y"
+      selectors = selectors,
+      output_name = "ANL"
     )
 
-    # Merge x_dataname selectors (x variable + optional color variable)
-    x_selectors <- selectors[c("x_var_picks", "color_picks")]
-    adsl_inputs <- teal.picks::merge_srv(
-      "adsl_inputs",
-      data = validated_q,
-      selectors = x_selectors,
-      output_name = "ANL_X"
-    )
+    all_q <- reactive({
+      obj <- anl_inputs$data()
 
-    anl_q <- reactive({
-      anl <- c(anl_inputs$data(), adsl_inputs$data())
+      x_sel <- selectors$x_var()$variables$selected
+      y_sel <- selectors$y_var()$variables$selected
 
-      x <- selectors$x_var_picks()$variables$selected
-      y <- selectors$y_var_picks()$variables$selected
-
-      teal::validate_has_data(anl[["ANL_Y"]], min_nrow = 2)
+      teal::validate_has_data(obj[["ANL"]], min_nrow = 2)
 
       validate(
         need(
-          !all(is.na(anl[["ANL_Y"]][[y]])),
+          !all(is.na(obj[["ANL"]][[y_sel]])),
           "No valid data. Please check the filtering options for analysis value (y axis)."
         )
       )
-      anl
-    })
 
-    all_q <- reactive({
-      obj <- anl_q()
+      x_sel <- selectors$x_var()$variables$selected
+      y_sel <- selectors$y_var()$variables$selected
+      color_sel <- selectors$color()$variables$selected
+      paramcd_sel <- selectors$paramcd()$values$selected
+      avisit_sel <- selectors$avisit()$values$selected
 
-      x <- selectors$x_var_picks()$variables$selected
-      y <- selectors$y_var_picks()$variables$selected
-      color <- selectors$color_picks()$variables$selected
-
-      paramcd_sel <- selectors$paramcd_picks()$values$selected
-      avisit_sel <- selectors$avisit_picks()$values$selected
-
-      x_label <- teal.modules.clinical::column_annotation_label(obj[[x_dataname]], x)
-      y_label <- teal.modules.clinical::column_annotation_label(obj[[y_dataname]], y)
-      color_label <- if (!is.null(color) && length(color) > 0) {
-        teal.modules.clinical::column_annotation_label(obj[[x_dataname]], color)
+      x_label <- teal.modules.clinical::column_annotation_label(obj[["ANL"]], x_sel)
+      y_label <- teal.modules.clinical::column_annotation_label(obj[["ANL"]], y_sel)
+      color_label <- if (!is.null(color_sel) && length(color_sel) > 0) {
+        teal.modules.clinical::column_annotation_label(obj[["ANL"]], color_sel)
       } else {
         NULL
       }
@@ -309,22 +252,18 @@ srv_g_ci.picks <- function(id, # nolint: object_name.
       gg_args$labs$lty <- color_label
       gg_args$labs$shape <- color_label
 
-      # Build ANL by joining ANL_X and ANL_Y
-      join_call <- quote(ANL <- dplyr::inner_join(ANL_X, ANL_Y))
-
       list_calls <- template_g_ci(
         dataname = "ANL",
-        x_var = x,
-        y_var = y,
-        grp_var = if (length(color) == 0 || is.null(color)) NULL else color,
+        x_var = x_sel,
+        y_var = y_sel,
+        grp_var = if (length(color_sel) == 0 || is.null(color_sel)) NULL else color_sel,
         stat = input$stat,
         conf_level = as.numeric(input$conf_level),
         ggplot2_args = gg_args
       )
 
       teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "### Plot")
-      teal.code::eval_code(obj, join_call) |>
-        teal.code::eval_code(list_calls)
+      teal.code::eval_code(obj, list_calls)
     })
 
     decorated_plot_q <- teal::srv_transform_teal_data(
@@ -346,7 +285,3 @@ srv_g_ci.picks <- function(id, # nolint: object_name.
     set_chunk_dims(pws, decorated_plot_q)
   })
 }
-
-#' @describeIn tm_g_ci teal.picks encodings via \code{picks} objects for \code{x_var}, \code{y_var}, and \code{color}
-#' @export
-tm_g_ci.default <- tm_g_ci.picks

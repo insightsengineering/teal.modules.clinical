@@ -287,8 +287,38 @@ srv_t_glm_counts <- function(id,
       arm_var_r = arm_var_r
     )
 
+    validated_q <- reactive({
+      obj <- req(data())
+      validate(
+        teal::need_input(
+          inputId = "arm_var-variables-selected",
+          condition = length(anl_selectors$arm_var()$variables$selected) >= 1L,
+          "A treatment variable is required"
+        ),
+        teal::need_input(
+          inputId = "aval_var-variables-selected",
+          condition = length(anl_selectors$aval_var()$variables$selected) >= 1L,
+          "An analysis variable is required"
+        ),
+        teal::need_input(
+          inputId = "conf_level",
+          condition = !is.null(input$conf_level),
+          "Please choose a confidence level"
+        ),
+        teal::need_input(
+          inputId = "conf_level",
+          condition = {
+            cv <- suppressWarnings(as.numeric(input$conf_level))
+            !is.na(cv) && cv > 0 && cv < 1
+          },
+          "Confidence level must be between 0 and 1"
+        )
+      )
+      obj
+    })
+
     data_with_card <- reactive({
-      obj <- data()
+      obj <- validated_q()
       teal.reporter::teal_card(obj) <-
         c(
           teal.reporter::teal_card(obj),
@@ -304,38 +334,10 @@ srv_t_glm_counts <- function(id,
       helpText("Multiple reference groups are automatically combined into a single group.")
     })
 
-    iv_r <- reactive({
-      iv <- shinyvalidate::InputValidator$new()
-      if (isTRUE(input$compare_arms)) {
-        iv$add_validator(arm_ref_comp_buckets_validator())
-      }
-      iv$add_rule("conf_level", shinyvalidate::sv_required("Please choose a confidence level"))
-      iv$add_rule(
-        "conf_level",
-        shinyvalidate::sv_between(
-          0, 1,
-          message_fmt = "Confidence level must be between 0 and 1"
-        )
-      )
-      iv$enable()
-      iv
-    })
-
     validate_checks <- reactive({
       if (isTRUE(input$compare_arms)) {
         arm_ref_comp_iv()
       }
-      teal::validate_inputs(iv_r())
-      validate(
-        need(
-          length(anl_selectors$arm_var()$variables$selected) >= 1L,
-          "A treatment variable is required"
-        ),
-        need(
-          length(anl_selectors$aval_var()$variables$selected) >= 1L,
-          "An analysis variable is required"
-        )
-      )
 
       adsl_filtered <- anl_q()[[parentname]]
       anl_filtered <- anl_q()[[dataname]]

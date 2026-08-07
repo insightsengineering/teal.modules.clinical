@@ -252,7 +252,7 @@ tm_a_gee <- function(label,
   aval_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), aval_var)
   id_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), id_var)
   arm_var <- create_picks_helper(teal.picks::datasets(parentname, parentname), arm_var)
-  visit_var <- create_picks_helper(teal.picks::datasets(dataname), visit_var)
+  visit_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), visit_var)
   split_covariates <- create_picks_helper(
     teal.picks::datasets(dataname, dataname),
     split_choices_variables(cov_var)
@@ -429,56 +429,69 @@ srv_gee <- function(id,
 
     # Create ANL_ADSL for use as alt_counts_df in rtables::build_table()
     anl_q_with_adsl <- reactive({
-      teal.code::eval_code(
-        anl_q(),
-        bquote(ANL_ADSL <- .(as.name(parentname)))
-      )
+      obj <- req(anl_q())
+      teal.code::eval_code(obj, bquote(ANL_ADSL <- .(as.name(parentname))))
     })
 
     shinyjs::show("gee_title")
 
-    validate_checks <- reactive({
+    validated_q <- reactive({
+      obj <- req(anl_q_with_adsl())
       validate(
-        need(
+        teal::need_input(
+          "arm_var-variables-selected",
           length(anl_selectors$arm_var()$variables$selected) >= 1L,
           "A treatment variable is required"
         ),
-        need(
+        teal::need_input(
+          "aval_var-variables-selected",
           length(anl_selectors$aval_var()$variables$selected) >= 1L,
           "An analysis variable is required"
         ),
-        need(
+        teal::need_input(
+          "id_var-variables-selected",
           length(anl_selectors$id_var()$variables$selected) >= 1L,
           "A subject identifier is required"
         ),
-        need(
+        teal::need_input(
+          "visit_var-variables-selected",
           length(anl_selectors$visit_var()$variables$selected) >= 1L,
           "A visit variable is required"
         ),
-        need(
+        teal::need_input(
+          "paramcd-variables-selected",
           length(anl_selectors$paramcd()$variables$selected) >= 1L,
           "An endpoint is required"
         ),
-        need(
+        teal::need_input(
+          "paramcd-values-selected", # Only shows when variable is already selected
+          length(anl_selectors$paramcd()$variables$selected) == 0 ||
+            length(anl_selectors$paramcd()$values$selected) >= 1L,
+          "An endpoint is required (please select at least one value)"
+        ),
+        teal::need_input(
+          "conf_level",
           !is.null(input$conf_level) && nzchar(input$conf_level),
           "Please choose a confidence level"
         ),
-        need(
-          is.na(suppressWarnings(as.numeric(input$conf_level))) ||
-            (as.numeric(input$conf_level) > 0 && as.numeric(input$conf_level) < 1),
+        teal::need_input(
+          "conf_level",
+          !is.null(input$conf_level) && !is.na(suppressWarnings(as.numeric(input$conf_level))) &&
+            as.numeric(input$conf_level) > 0 && as.numeric(input$conf_level) < 1,
           "Confidence level must be between 0 and 1"
         ),
-        need(
+        teal::need_input(
+          "cor_struct",
           !is.null(input$cor_struct) && nzchar(input$cor_struct),
           "Please choose a correlation structure"
         )
       )
-      NULL
+      obj
     })
 
     ## table_r ----
     table_q <- reactive({
-      validate_checks()
+      obj <- req(validated_q())
       output_table <- input$output_table
       conf_level <- as.numeric(input$conf_level)
 
@@ -522,7 +535,6 @@ srv_gee <- function(id,
         "t_gee_lsmeans" = "LS Means Estimates"
       )
 
-      obj <- anl_q_with_adsl()
       teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), paste("### ", table_type, "Table"))
       teal.code::eval_code(obj, as.expression(unlist(my_calls)))
     })

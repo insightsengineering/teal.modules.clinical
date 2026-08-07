@@ -227,29 +227,17 @@ template_g_ipp <- function(dataname = "ANL",
 #'       label = "Individual Patient Plot",
 #'       dataname = "ADLB",
 #'       parentname = "ADSL",
-#'       arm_var = variables(
-#'         choices = c("ARMCD", "ARM"),
-#'         selected = "ARMCD",
-#'         multiple = FALSE
-#'       ),
+#'       arm_var = variables(c("ARMCD", "ARM"), "ARMCD"),
 #'       paramcd = picks(
-#'         datasets("ADLB"),
-#'         variables("PARAMCD", fixed = TRUE),
-#'         values(
-#'           choices = levels(ADLB$PARAMCD),
-#'           selected = "ALT",
-#'           multiple = FALSE
-#'         )
+#'         datasets("ADLB", "ADLB"),
+#'         variables("PARAMCD", "PARAMCD"),
+#'         values(selected = "ALT", multiple = FALSE)
 #'       ),
-#'       id_var = variables("USUBJID", fixed = TRUE),
-#'       visit_var = variables("AVISIT", fixed = TRUE),
-#'       aval_var = variables(
-#'         choices = c("AVAL", "CHG"),
-#'         selected = "AVAL",
-#'         multiple = FALSE
-#'       ),
-#'       avalu_var = variables("AVALU", fixed = TRUE),
-#'       baseline_var = variables("BASE", fixed = TRUE),
+#'       id_var = variables("USUBJID", "USUBJID"),
+#'       visit_var = variables("AVISIT", "AVISIT"),
+#'       aval_var = variables(c("AVAL", "CHG"), "AVAL"),
+#'       avalu_var = variables("AVALU", "AVALU"),
+#'       baseline_var = variables("BASE", "BASE"),
 #'       add_baseline_hline = FALSE,
 #'       separate_by_obs = FALSE
 #'     )
@@ -577,7 +565,8 @@ srv_g_ipp <- function(id,
     decorated_all_q <- teal::srv_transform_teal_data(
       id = "decorator",
       data = all_q,
-      transformators = select_decorators(decorators, "plot")
+      transformators = select_decorators(decorators, "plot"),
+      expr = quote(plot)
     )
     plot_r <- reactive(decorated_all_q()[["plot"]])
 

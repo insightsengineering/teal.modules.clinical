@@ -12,18 +12,15 @@ app_driver_tm_g_ipp <- function() {
   })
   teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
 
-  testthat::expect_warning(
-    paramcd_value <- teal.picks::values(selected = "ALT", multiple = FALSE),
-    "doesn't guarantee that `selected` is a subset of `choices`.",
-    fixed = TRUE
+  paramcd_value <- suppressWarnings(
+    teal.picks::values(selected = "ALT", multiple = FALSE),
+    classes = "pick_delayed"
   )
 
-  testthat::expect_warning(
-    arm_var_value <- teal.picks::values(selected = "ARM A", multiple = FALSE),
-    "doesn't guarantee that `selected` is a subset of `choices`.",
-    fixed = TRUE
+  arm_var_value <- suppressWarnings(
+    teal.picks::values(selected = "ARM A", multiple = FALSE),
+    classes = "pick_delayed"
   )
-
   init_teal_app_driver(
     teal::init(
       data = data,
@@ -32,20 +29,20 @@ app_driver_tm_g_ipp <- function() {
         dataname = "ADLB",
         parentname = "ADSL",
         arm_var = teal.picks::picks(
-          teal.picks::datasets("ADSL"),
-          teal.picks::variables("ARMCD", fixed = TRUE),
-          arm_var_value
+          teal.picks::variables("ARMCD", "ARMCD", fixed = TRUE),
+          arm_var_value,
+          check_dataset = FALSE
         ),
         paramcd = teal.picks::picks(
-          teal.picks::datasets("ADLB"),
-          teal.picks::variables("PARAMCD", fixed = TRUE),
-          paramcd_value
+          teal.picks::variables("PARAMCD", "PARAMCD", fixed = TRUE),
+          paramcd_value,
+          check_dataset = FALSE
         ),
-        id_var = teal.picks::variables("USUBJID", fixed = TRUE),
+        id_var = teal.picks::variables("USUBJID", "USUBJID", fixed = TRUE),
         visit_var = teal.picks::variables(c("AVISIT", "ATOXGR"), multiple = FALSE),
         aval_var = teal.picks::variables(c("AVAL", "CHG"), multiple = FALSE),
-        avalu_var = teal.picks::variables("AVALU", fixed = TRUE),
-        baseline_var = teal.picks::variables("BASE", fixed = TRUE),
+        avalu_var = teal.picks::variables("AVALU", "AVALU"),
+        baseline_var = teal.picks::variables("BASE", "BASE"),
         add_baseline_hline = FALSE,
         separate_by_obs = FALSE,
         suppress_legend = FALSE,
