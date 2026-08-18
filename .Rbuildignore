@@ -47,6 +47,9 @@ coverage.*
 ^pkgdown$
 ^.revdeprefs\.yaml$
 ^revdep$
+^scripts$
 ^\.covrignore$
+^.cursor
+^.copilot
 ^CRAN-SUBMISSION$
 ^cran-comments\.md$

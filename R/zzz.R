@@ -3,3 +3,5 @@
   teal.logger::register_handlers("teal.modules.clinical")
   tern::set_default_na_str("<Missing>")
 }
+
+validate_input <- getFromNamespace("validate_input", "teal")

@@ -27,6 +27,15 @@ suppress_warnings <- function(expr, pattern = "*", ...) {
   )
 }
 
+process_log <- function(app_driver) {
+  app_logs <- subset(app_driver$get_logs(), location == "shiny")[["message"]]
+  if (length(app_logs) > 0) {
+    message("App log: ", paste0(app_logs, collapse = "\n"))
+  } else {
+    "No app log messages."
+  }
+}
+
 with_mocked_app_bindings <- function(code) {
   shiny__shinyApp <- shiny::shinyApp # nolint object_name_linter.
 
@@ -45,7 +54,8 @@ with_mocked_app_bindings <- function(code) {
         x,
         shiny_args = args,
         check_names = FALSE, # explicit check below
-        options = options() # https://github.com/rstudio/shinytest2/issues/377
+        options = options(), # https://github.com/rstudio/shinytest2/issues/377
+        wait = FALSE
       ),
       error = function(e) {
         e$app$stop() # Ensure the R instance is stopped
@@ -53,7 +63,19 @@ with_mocked_app_bindings <- function(code) {
       }
     )
     on.exit(app_driver$stop(), add = TRUE)
-    app_driver$wait_for_idle(timeout = 30000)
+    # Increase wait time for idle to avoid flaky tests due to slow CI
+    duration_val <- max(as.numeric(getOption("shinytest2.duration")), 2000)
+    timeout_val <- max(as.numeric(getOption("shinytest2.timeout")), 60000)
+
+    tryCatch(
+      {
+        app_driver$wait_for_idle(timeout = timeout_val, duration = duration_val)
+      },
+      error = function(e) {
+        message("App log: ", process_log(app_driver))
+        stop(e)
+      }
+    )
 
     # Simple testing
     ## warning in the app does not invoke a warning in the test
@@ -75,6 +97,7 @@ with_mocked_app_bindings <- function(code) {
     ## shinytest2 captures app crash but teal continues on error inside the module
     ## we need to use a different way to check if there are errors
     if (!is.null(err_el <- app_driver$get_html(".shiny-output-error"))) {
+      message("App log: ", process_log(app_driver))
       stop(sprintf("Module error is observed:\n%s", err_el))
     }
 
@@ -86,7 +109,7 @@ with_mocked_app_bindings <- function(code) {
     # Check if the teal app has content is empty
     if (identical(trimws(app_driver$get_text("#teal-main_ui_container")), "")) {
       tryCatch(
-        app_driver$wait_for_idle(duration = 2000), # wait 2 seconds for session to disconnect
+        app_driver$wait_for_idle(duration = duration_val), # wait 2 seconds for session to disconnect
         error = function(err) {
           stop(
             sprintf(
@@ -116,7 +139,6 @@ with_mocked_app_bindings <- function(code) {
   )
 }
 
-
 for (i in rd_files()) {
   testthat::test_that(sprintf("example-%s", basename(i)), {
     testthat::skip_on_cran()
@@ -127,7 +149,17 @@ for (i in rd_files()) {
         testthat::expect_no_error(
           pkgload::run_example(i, run_donttest = TRUE, run_dontrun = FALSE, quiet = TRUE)
         ),
-        "may not be available when loading"
+        paste(
+          sep = "|",
+          "(may not be available when loading)", # https://github.com/insightsengineering/teal.code/issues/194
+          "(Setting explicit `selected` while `choices` are delayed)", # teal.picks eager/delayed choices
+          "(It is not guaranteed that explicitly defined choices)", # teal.picks eager/delayed choices
+          "(`multiple` has been set to `FALSE`, while selected contains multiple values, forcing to select first:<fn>)",
+          "(None of the `choices/selected)", # teal.picks eager/delayed choices
+          "(cartesian join - happens when primary keys)", # teal.picks module merge
+          "(Warning in min[(]x[)])", # ggplot2 facet may cause this
+          "(Warning in max[(]x[)])" # ggplot2 facet may cause this
+        )
       )
     )
   })

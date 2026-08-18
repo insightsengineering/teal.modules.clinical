@@ -273,11 +273,10 @@ template_forest_tte <- function(dataname = "ANL",
 #'
 #' data <- teal_data()
 #' data <- within(data, {
-#'   library(teal.modules.clinical)
 #'   library(formatters)
 #'   library(dplyr)
-#'   ADSL <- tmc_ex_adsl
-#'   ADTTE <- tmc_ex_adtte
+#'   ADSL <- teal.modules.clinical::tmc_ex_adsl
+#'   ADTTE <- teal.modules.clinical::tmc_ex_adtte
 #'   ADSL$RACE <- droplevels(ADSL$RACE) %>% with_label("Race")
 #' })
 #' join_keys(data) <- default_cdisc_join_keys[names(data)]
@@ -302,23 +301,15 @@ template_forest_tte <- function(dataname = "ANL",
 #'     tm_g_forest_tte(
 #'       label = "Forest Survival",
 #'       dataname = "ADTTE",
-#'       arm_var = choices_selected(
-#'         variable_choices(ADSL, c("ARM", "ARMCD")),
-#'         "ARMCD"
-#'       ),
+#'       arm_var = variables(c("ARM", "ARMCD"), "ARMCD"),
 #'       arm_ref_comp = arm_ref_comp,
-#'       paramcd = choices_selected(
-#'         value_choices(ADTTE, "PARAMCD", "PARAM"),
-#'         "OS"
+#'       paramcd = picks(
+#'         variables("PARAMCD", "PARAMCD"),
+#'         values(selected = "OS", multiple = FALSE),
+#'         check_dataset = FALSE
 #'       ),
-#'       subgroup_var = choices_selected(
-#'         variable_choices(ADSL, names(ADSL)),
-#'         c("BMRKR2", "SEX")
-#'       ),
-#'       strata_var = choices_selected(
-#'         variable_choices(ADSL, c("STRATA1", "STRATA2")),
-#'         "STRATA2"
-#'       )
+#'       subgroup_var = variables(c("BMRKR2", "SEX"), "BMRKR2", multiple = TRUE),
+#'       strata_var = variables(c("STRATA1", "STRATA2"), "STRATA2", multiple = TRUE)
 #'     )
 #'   )
 #' )
@@ -329,31 +320,18 @@ template_forest_tte <- function(dataname = "ANL",
 #' @export
 tm_g_forest_tte <- function(label,
                             dataname,
-                            parentname = ifelse(
-                              inherits(arm_var, "data_extract_spec"),
-                              teal.transform::datanames_input(arm_var),
-                              "ADSL"
-                            ),
+                            parentname = "ADSL",
                             arm_var,
                             arm_ref_comp = NULL,
                             subgroup_var,
                             paramcd,
                             strata_var,
-                            aval_var = teal.transform::choices_selected(
-                              teal.transform::variable_choices(dataname, "AVAL"), "AVAL",
-                              fixed = TRUE
-                            ),
-                            cnsr_var = teal.transform::choices_selected(
-                              teal.transform::variable_choices(dataname, "CNSR"), "CNSR",
-                              fixed = TRUE
-                            ),
+                            aval_var = teal.picks::variables("AVAL", "AVAL", fixed = TRUE),
+                            cnsr_var = teal.picks::variables("CNSR", "CNSR", fixed = TRUE),
                             stats = c("n_tot_events", "n_events", "median", "hr", "ci"),
                             riskdiff = NULL,
-                            conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
-                            time_unit_var = teal.transform::choices_selected(
-                              teal.transform::variable_choices(dataname, "AVALU"), "AVALU",
-                              fixed = TRUE
-                            ),
+                            conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95),
+                            time_unit_var = teal.picks::variables("AVALU", "AVALU", fixed = TRUE),
                             fixed_symbol_size = TRUE,
                             plot_height = c(500L, 200L, 2000L),
                             plot_width = c(1500L, 800L, 3000L),
@@ -365,17 +343,19 @@ tm_g_forest_tte <- function(label,
                             transformators = list(),
                             decorators = list()) {
   message("Initializing tm_g_forest_tte")
+
+  arm_var <- migrate_choices_selected_to_variables(arm_var, null.ok = TRUE)
+  paramcd <- migrate_value_choices_to_picks(paramcd, multiple = FALSE)
+  aval_var <- migrate_choices_selected_to_variables(aval_var)
+  cnsr_var <- migrate_choices_selected_to_variables(cnsr_var)
+  subgroup_var <- migrate_choices_selected_to_variables(subgroup_var, multiple = TRUE)
+  strata_var <- migrate_choices_selected_to_variables(strata_var, multiple = TRUE)
+  time_unit_var <- migrate_choices_selected_to_variables(time_unit_var)
+  conf_level <- migrate_choices_selected_to_values(conf_level)
+
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
-  checkmate::assert_class(arm_var, "choices_selected")
-  checkmate::assert_class(subgroup_var, "choices_selected")
-  checkmate::assert_class(paramcd, "choices_selected")
-  checkmate::assert_class(strata_var, "choices_selected")
-  checkmate::assert_class(aval_var, "choices_selected")
-  checkmate::assert_class(cnsr_var, "choices_selected")
-  checkmate::assert_class(conf_level, "choices_selected")
-  checkmate::assert_class(time_unit_var, "choices_selected")
   checkmate::assert_character(stats, min.len = 3)
   checkmate::assert_true(any(c("n_tot", "n_tot_events") %in% stats))
   checkmate::assert_true(all(c("hr", "ci") %in% stats))
@@ -393,107 +373,85 @@ tm_g_forest_tte <- function(label,
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
   teal::assert_decorators(decorators, "plot")
 
-  args <- as.list(environment())
+  arm_var <- if (!is.null(arm_var)) create_picks_helper(teal.picks::datasets(parentname, parentname), arm_var)
+  paramcd <- create_picks_helper(teal.picks::datasets(dataname, dataname), paramcd)
+  aval_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), aval_var)
+  cnsr_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), cnsr_var)
+  subgroup_var <- create_picks_helper(teal.picks::datasets(parentname, parentname), subgroup_var)
+  strata_var <- create_picks_helper(teal.picks::datasets(parentname, parentname), strata_var)
+  time_unit_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), time_unit_var)
 
-  data_extract_list <- list(
-    arm_var = cs_to_des_select(arm_var, dataname = parentname),
-    paramcd = cs_to_des_filter(paramcd, dataname = dataname),
-    aval_var = cs_to_des_select(aval_var, dataname = dataname),
-    cnsr_var = cs_to_des_select(cnsr_var, dataname = dataname),
-    subgroup_var = cs_to_des_select(subgroup_var, dataname = parentname, multiple = TRUE, ordered = TRUE),
-    strata_var = cs_to_des_select(strata_var, dataname = parentname, multiple = TRUE),
-    time_unit_var = cs_to_des_select(time_unit_var, dataname = dataname)
-  )
+  args <- as.list(environment())
 
   module(
     label = label,
     server = srv_g_forest_tte,
     ui = ui_g_forest_tte,
-    ui_args = c(data_extract_list, args),
-    server_args = c(
-      data_extract_list,
-      list(
-        dataname = dataname,
-        arm_ref_comp = arm_ref_comp,
-        parentname = parentname,
-        stats = stats,
-        riskdiff = riskdiff,
-        label = label,
-        plot_height = plot_height,
-        plot_width = plot_width,
-        ggplot2_args = ggplot2_args,
-        decorators = decorators
-      )
-    ),
+    ui_args = args[names(args) %in% names(formals(ui_g_forest_tte))],
+    server_args = args[names(args) %in% names(formals(srv_g_forest_tte))],
     transformators = transformators,
-    datanames = teal.transform::get_extract_datanames(data_extract_list)
+    datanames = c(dataname, parentname)
   )
 }
 
 #' @keywords internal
-ui_g_forest_tte <- function(id, ...) {
-  a <- list(...)
-  is_single_dataset_value <- teal.transform::is_single_dataset(
-    a$arm_var,
-    a$paramcd,
-    a$subgroup_var,
-    a$strata_var,
-    a$aval_var,
-    a$cnsr_var,
-    a$time_unit_var
-  )
-
+ui_g_forest_tte <- function(id,
+                            arm_var,
+                            paramcd,
+                            aval_var,
+                            cnsr_var,
+                            subgroup_var,
+                            strata_var,
+                            time_unit_var,
+                            conf_level,
+                            fixed_symbol_size,
+                            rel_width_forest,
+                            font_size,
+                            pre_output,
+                            post_output,
+                            decorators) {
   ns <- NS(id)
 
   teal.widgets::standard_layout(
     output = teal.widgets::plot_with_settings_ui(id = ns("myplot")),
     encoding = tags$div(
       tags$label("Encodings", class = "text-primary"), tags$br(),
-      teal.transform::datanames_input(a[c("arm_var", "paramcd", "subgroup_var", "strata_var", "aval_var", "cnsr_var")]),
-      teal.transform::data_extract_ui(
-        id = ns("paramcd"),
-        label = "Select Endpoint",
-        data_extract_spec = a$paramcd,
-        is_single_dataset = is_single_dataset_value
+      tags$div(
+        tags$label("Select Endpoint:"),
+        teal.picks::picks_ui(ns("paramcd"), paramcd)
       ),
-      teal.transform::data_extract_ui(
-        id = ns("aval_var"),
-        label = "Analysis Variable",
-        data_extract_spec = a$aval_var,
-        is_single_dataset = is_single_dataset_value
+      tags$div(
+        tags$label("Analysis Variable:"),
+        teal.picks::picks_ui(ns("aval_var"), aval_var)
       ),
-      teal.transform::data_extract_ui(
-        id = ns("cnsr_var"),
-        label = "Censor Variable",
-        data_extract_spec = a$cnsr_var,
-        is_single_dataset = is_single_dataset_value
+      tags$div(
+        tags$label("Censor Variable:"),
+        teal.picks::picks_ui(ns("cnsr_var"), cnsr_var)
       ),
-      teal.transform::data_extract_ui(
-        id = ns("arm_var"),
-        label = "Select Treatment Variable",
-        data_extract_spec = a$arm_var,
-        is_single_dataset = is_single_dataset_value
-      ),
-      uiOutput(
-        ns("arms_buckets"),
-        title = paste(
-          "Multiple reference groups are automatically combined into a single group when more than one",
-          "value is selected."
+      if (!is.null(arm_var)) {
+        tags$div(
+          tags$div(
+            tags$label("Select Treatment Variable:"),
+            teal.picks::picks_ui(ns("arm_var"), arm_var)
+          ),
+          uiOutput(
+            ns("arms_buckets"),
+            title = paste(
+              "Multiple reference groups are automatically combined into a single group",
+              "when more than one value is selected."
+            )
+          )
         )
+      },
+      tags$div(
+        tags$label("Subgroup Variables:"),
+        teal.picks::picks_ui(ns("subgroup_var"), subgroup_var)
       ),
-      teal.transform::data_extract_ui(
-        id = ns("subgroup_var"),
-        label = "Subgroup Variables",
-        data_extract_spec = a$subgroup_var,
-        is_single_dataset = is_single_dataset_value
+      tags$div(
+        tags$label("Stratify by:"),
+        teal.picks::picks_ui(ns("strata_var"), strata_var)
       ),
-      teal.transform::data_extract_ui(
-        id = ns("strata_var"),
-        label = "Stratify by",
-        data_extract_spec = a$strata_var,
-        is_single_dataset = is_single_dataset_value
-      ),
-      teal::ui_transform_teal_data(ns("decorator"), transformators = select_decorators(a$decorators, "plot")),
+      teal::ui_transform_teal_data(ns("decorator"), transformators = select_decorators(decorators, "plot")),
       bslib::accordion(
         open = TRUE,
         bslib::accordion_panel(
@@ -501,35 +459,33 @@ ui_g_forest_tte <- function(id, ...) {
           teal.widgets::optionalSelectInput(
             ns("conf_level"),
             "Level of Confidence",
-            a$conf_level$choices,
-            a$conf_level$selected,
+            conf_level$choices,
+            conf_level$selected,
             multiple = FALSE,
-            fixed = a$conf_level$fixed
+            fixed = teal.picks::is_pick_fixed(conf_level)
           ),
-          checkboxInput(ns("fixed_symbol_size"), "Fixed symbol size", value = TRUE),
-          teal.transform::data_extract_ui(
-            id = ns("time_unit_var"),
-            label = "Time Unit Variable",
-            data_extract_spec = a$time_unit_var,
-            is_single_dataset = is_single_dataset_value
+          checkboxInput(ns("fixed_symbol_size"), "Fixed symbol size", value = fixed_symbol_size),
+          tags$div(
+            tags$label("Time Unit Variable:"),
+            teal.picks::picks_ui(ns("time_unit_var"), time_unit_var)
           ),
           teal.widgets::optionalSliderInputValMinMax(
             ns("rel_width_forest"),
             "Relative Width of Forest Plot (%)",
-            a$rel_width_forest,
+            rel_width_forest,
             ticks = FALSE, step = 1
           ),
           teal.widgets::optionalSliderInputValMinMax(
             ns("font_size"),
             "Table Font Size",
-            a$font_size,
+            font_size,
             ticks = FALSE, step = 1
           )
         )
       )
     ),
-    pre_output = a$pre_output,
-    post_output = a$post_output
+    pre_output = pre_output,
+    post_output = post_output
   )
 }
 
@@ -558,96 +514,128 @@ srv_g_forest_tte <- function(id,
 
   moduleServer(id, function(input, output, session) {
     teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
-    # Setup arm variable selection, default reference arms, and default
-    # comparison arms for encoding panel
-    iv_arm_ref <- arm_ref_comp_observer(
-      session,
-      input,
-      output,
-      id_arm_var = extract_input("arm_var", parentname),
-      data = data()[[parentname]],
-      arm_ref_comp = arm_ref_comp,
-      module = "tm_g_forest_tte"
+
+    arm_var_r <- reactive(selectors$arm_var()$variables$selected)
+
+    if (!is.null(arm_var)) {
+      iv_arm_ref <- arm_ref_comp_observer_picks(
+        session,
+        input,
+        output,
+        id_arm_var = "arm_var-variables-selected",
+        data = reactive(data()[[parentname]]),
+        arm_ref_comp = arm_ref_comp,
+        module = "tm_g_forest_tte",
+        arm_var_r = arm_var_r
+      )
+    }
+
+    picks_list <- Filter(Negate(is.null), list(
+      arm_var = arm_var,
+      paramcd = paramcd,
+      aval_var = aval_var,
+      cnsr_var = cnsr_var,
+      subgroup_var = subgroup_var,
+      strata_var = strata_var,
+      time_unit_var = time_unit_var
+    ))
+
+    selectors <- teal.picks::picks_srv(
+      picks = picks_list,
+      data  = data
     )
 
-    selector_list <- teal.transform::data_extract_multiple_srv(
-      data_extract = list(
-        arm_var = arm_var,
-        paramcd = paramcd,
-        subgroup_var = subgroup_var,
-        strata_var = strata_var,
-        aval_var = aval_var,
-        cnsr_var = cnsr_var,
-        time_unit_var = time_unit_var
-      ),
-      datasets = data,
-      select_validation_rule = list(
-        aval_var = shinyvalidate::sv_required("An analysis variable is required"),
-        cnsr_var = shinyvalidate::sv_required("A censor variable is required"),
-        arm_var = shinyvalidate::sv_required("A treatment variable is required")
-      ),
-      filter_validation_rule = list(
-        paramcd = shinyvalidate::sv_required(message = "Please select Endpoint filter.")
-      )
-    )
+    validated_q <- reactive({
+      obj <- req(data())
 
-    iv_r <- reactive({
-      iv <- shinyvalidate::InputValidator$new()
-      iv$add_rule("conf_level", shinyvalidate::sv_required("Please choose a confidence level"))
-      iv$add_rule(
-        "conf_level",
-        shinyvalidate::sv_between(0, 1, message_fmt = "Confidence level must be between 0 and 1")
+      validate_input(
+        inputId   = "paramcd-values-selected",
+        condition = !is.null(selectors$paramcd()$values$selected),
+        message   = "Please select Endpoint filter."
       )
-      iv$add_validator(iv_arm_ref)
-      teal.transform::compose_and_enable_validators(iv, selector_list, c("arm_var", "aval_var", "paramcd"))
+      validate_input(
+        inputId   = "aval_var-variables-selected",
+        condition = !is.null(selectors$aval_var()$variables$selected),
+        message   = "An analysis variable is required."
+      )
+      validate_input(
+        inputId   = "cnsr_var-variables-selected",
+        condition = !is.null(selectors$cnsr_var()$variables$selected),
+        message   = "A censor variable is required."
+      )
+      if (!is.null(arm_var)) {
+        validate_input(
+          inputId   = "arm_var-variables-selected",
+          condition = !is.null(selectors$arm_var()$variables$selected),
+          message   = "A treatment variable is required."
+        )
+      }
+      validate_input(
+        inputId   = "conf_level",
+        condition = !is.null(input$conf_level),
+        message   = "Please choose a confidence level."
+      )
+      validate_input(
+        inputId = "conf_level",
+        condition = {
+          cv <- suppressWarnings(as.numeric(input$conf_level))
+          !is.na(cv) && cv > 0 && cv < 1
+        },
+        message = "Confidence level must be between 0 and 1."
+      )
+
+      teal.reporter::teal_card(obj) <- c(
+        teal.reporter::teal_card("# Forest Survival Plot"),
+        teal.reporter::teal_card(obj),
+        teal.reporter::teal_card("## Module's code")
+      )
+      obj
     })
 
-    anl_inputs <- teal.transform::merge_expression_srv(
-      datasets = data,
-      selector_list = selector_list,
-      merge_function = "dplyr::inner_join"
+    anl_inputs <- teal.picks::merge_srv(
+      "anl_inputs",
+      data = validated_q,
+      selectors = selectors,
+      join_fun = "dplyr::inner_join",
+      output_name = "ANL"
     )
 
-    adsl_inputs <- teal.transform::merge_expression_module(
-      datasets = data,
-      data_extract = list(arm_var = arm_var, subgroup_var = subgroup_var, strata_var = strata_var),
-      anl_name = "ANL_ADSL"
+    adsl_selector_names <- intersect(
+      c("arm_var", "subgroup_var", "strata_var"),
+      names(selectors)
+    )
+    adsl_inputs <- teal.picks::merge_srv(
+      "adsl_inputs",
+      data = validated_q,
+      selectors = selectors[adsl_selector_names],
+      output_name = "ANL_ADSL"
     )
 
     anl_q <- reactive({
-      obj <- data()
-      teal.reporter::teal_card(obj) <-
-        c(
-          teal.reporter::teal_card(obj),
-          teal.reporter::teal_card("## Module's output(s)")
-        )
-      obj %>%
-        teal.code::eval_code(code = as.expression(anl_inputs()$expr)) %>%
-        teal.code::eval_code(code = as.expression(adsl_inputs()$expr))
+      c(anl_inputs$data(), adsl_inputs$data())
     })
 
     validate_checks <- reactive({
-      teal::validate_inputs(iv_r())
+      req(anl_q())
       adsl_filtered <- anl_q()[[parentname]]
       anl_filtered <- anl_q()[[dataname]]
       anl <- anl_q()[["ANL"]]
 
-      anl_m <- anl_inputs()
-      input_arm_var <- as.vector(anl_m$columns_source$arm_var)
-      input_aval_var <- as.vector(anl_m$columns_source$aval_var)
-      input_cnsr_var <- as.vector(anl_m$columns_source$cnsr_var)
-      input_subgroup_var <- as.vector(anl_m$columns_source$subgroup_var)
-      input_strata_var <- as.vector(anl_m$columns_source$strata_var)
-      input_time_unit_var <- as.vector(anl_m$columns_source$time_unit_var)
-      input_paramcd <- unlist(paramcd$filter)["vars_selected"]
+      input_arm_var <- selectors$arm_var()$variables$selected
+      input_aval_var <- selectors$aval_var()$variables$selected
+      input_cnsr_var <- selectors$cnsr_var()$variables$selected
+      input_subgroup_var <- selectors$subgroup_var()$variables$selected
+      input_strata_var <- selectors$strata_var()$variables$selected
+      input_time_unit_var <- selectors$time_unit_var()$variables$selected
+      input_paramcd <- selectors$paramcd()$variables$selected
 
       # validate inputs
       validate_args <- list(
-        adsl = adsl_filtered,
+        adsl     = adsl_filtered,
         adslvars = c("USUBJID", "STUDYID", input_arm_var, input_subgroup_var, input_strata_var),
-        anl = anl_filtered,
-        anlvars = c("USUBJID", "STUDYID", input_paramcd, input_aval_var, input_cnsr_var, input_time_unit_var),
-        arm_var = input_arm_var
+        anl      = anl_filtered,
+        anlvars  = c("USUBJID", "STUDYID", input_paramcd, input_aval_var, input_cnsr_var, input_time_unit_var),
+        arm_var  = input_arm_var
       )
 
       # validate arm levels
@@ -661,7 +649,7 @@ srv_g_forest_tte <- function(id,
       if (length(input_subgroup_var) > 0) {
         validate(
           need(
-            all(vapply(adsl_filtered[, input_subgroup_var], is.factor, logical(1))),
+            all(vapply(adsl_filtered[, input_subgroup_var, drop = FALSE], is.factor, logical(1))),
             "Not all subgroup variables are factors."
           )
         )
@@ -670,7 +658,7 @@ srv_g_forest_tte <- function(id,
       if (length(input_strata_var) > 0) {
         validate(
           need(
-            all(vapply(adsl_filtered[, input_strata_var], is.factor, logical(1))),
+            all(vapply(adsl_filtered[, input_strata_var, drop = FALSE], is.factor, logical(1))),
             "Not all stratification variables are factors."
           )
         )
@@ -690,31 +678,34 @@ srv_g_forest_tte <- function(id,
     all_q <- reactive({
       validate_checks()
 
-      anl_m <- anl_inputs()
+      input_arm_var <- selectors$arm_var()$variables$selected
+      input_aval_var <- selectors$aval_var()$variables$selected
+      input_cnsr_var <- selectors$cnsr_var()$variables$selected
+      input_subgroup_var <- selectors$subgroup_var()$variables$selected
+      input_strata_var <- selectors$strata_var()$variables$selected
+      input_time_unit_var <- selectors$time_unit_var()$variables$selected
 
-      strata_var <- as.vector(anl_m$columns_source$strata_var)
-      subgroup_var <- as.vector(anl_m$columns_source$subgroup_var)
-      resolved_paramcd <- teal.transform::resolve_delayed(paramcd, as.list(data()))
-      obj_var_name <- get_g_forest_obj_var_name(resolved_paramcd, input)
+      paramcd_level <- selectors$paramcd()$values$selected
+      obj_var_name <- paramcd_level %||% ""
 
       my_calls <- template_forest_tte(
-        dataname = "ANL",
-        parentname = "ANL_ADSL",
-        arm_var = as.vector(anl_m$columns_source$arm_var),
-        ref_arm = unlist(input$buckets$Ref),
-        comp_arm = unlist(input$buckets$Comp),
-        obj_var_name = obj_var_name,
-        aval_var = as.vector(anl_m$columns_source$aval_var),
-        cnsr_var = as.vector(anl_m$columns_source$cnsr_var),
-        subgroup_var = if (length(subgroup_var) != 0) subgroup_var else NULL,
-        strata_var = if (length(strata_var) != 0) strata_var else NULL,
-        stats = stats,
-        riskdiff = riskdiff,
-        conf_level = as.numeric(input$conf_level),
-        col_symbol_size = if (!input$fixed_symbol_size) 1,
-        time_unit_var = as.vector(anl_m$columns_source$time_unit_var),
-        font_size = input$font_size,
-        ggplot2_args = ggplot2_args
+        dataname         = "ANL",
+        parentname       = "ANL_ADSL",
+        arm_var          = input_arm_var,
+        ref_arm          = unlist(input$buckets$Ref),
+        comp_arm         = unlist(input$buckets$Comp),
+        obj_var_name     = obj_var_name,
+        aval_var         = input_aval_var,
+        cnsr_var         = input_cnsr_var,
+        subgroup_var     = if (length(input_subgroup_var) != 0) input_subgroup_var else NULL,
+        strata_var       = if (length(input_strata_var) != 0) input_strata_var else NULL,
+        stats            = stats,
+        riskdiff         = riskdiff,
+        conf_level       = as.numeric(input$conf_level),
+        col_symbol_size  = if (!input$fixed_symbol_size) 1,
+        time_unit_var    = input_time_unit_var,
+        font_size        = input$font_size,
+        ggplot2_args     = ggplot2_args
       )
       obj <- anl_q()
       teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "### Table and Plot")

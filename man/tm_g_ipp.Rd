@@ -7,22 +7,14 @@
 tm_g_ipp(
   label,
   dataname,
-  parentname = ifelse(inherits(arm_var, "data_extract_spec"),
-    teal.transform::datanames_input(arm_var), "ADSL"),
+  parentname = "ADSL",
   arm_var,
   paramcd,
-  id_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
-    "USUBJID"), "USUBJID", fixed = TRUE),
-  visit_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
-    "AVISIT"), "AVISIT", fixed = TRUE),
-  aval_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
-    "AVAL"), "AVAL", fixed = TRUE),
-  avalu_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
-    "AVALU"), "AVALU", fixed = TRUE),
-  base_var = lifecycle::deprecated(),
-  baseline_var =
-    teal.transform::choices_selected(teal.transform::variable_choices(dataname, "BASE"),
-    "BASE", fixed = TRUE),
+  id_var = teal.picks::variables("USUBJID", "USUBJID", fixed = TRUE),
+  visit_var = teal.picks::variables("AVISIT", "AVISIT", fixed = TRUE),
+  aval_var = teal.picks::variables("AVAL", "AVAL", fixed = TRUE),
+  avalu_var = teal.picks::variables("AVALU", "AVALU", fixed = TRUE),
+  baseline_var = teal.picks::variables("BASE", "BASE", fixed = TRUE),
   add_baseline_hline = FALSE,
   separate_by_obs = FALSE,
   suppress_legend = FALSE,
@@ -43,29 +35,31 @@ tm_g_ipp(
 
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
-all available choices and preselected option for variable values that can be used as arm variable.}
+\item{arm_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}, \code{\link[teal.picks:picks]{teal.picks::picks()}}, or legacy \code{choices_selected})\cr
+\strong{Required} (no default, as on \code{main}). Arm encoding; resolved on \code{parentname} (typically \code{ADSL}).
+Legacy inputs are coerced with a deprecation warning.}
 
-\item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
-available choices and preselected option for the parameter code variable from \code{dataname}.}
+\item{paramcd}{(\code{\link[teal.picks:picks]{teal.picks::picks()}} or legacy \code{choices_selected} from \code{\link[teal.transform:value_choices]{teal.transform::value_choices()}})\cr
+\strong{Required} (no default, as on \code{main}). Parameter code filter: a \code{\link[teal.picks:picks]{teal.picks::picks()}} with
+\code{\link[teal.picks:variables]{teal.picks::variables()}} (typically \code{PARAMCD}) and \code{\link[teal.picks:values]{teal.picks::values()}} for levels; legacy
+\code{choices_selected} inputs are coerced with a deprecation warning.}
 
-\item{id_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object specifying
-the variable name for subject id.}
+\item{id_var, }{visit_var, aval_var, avalu_var, baseline_var (\code{\link[teal.picks:variables]{teal.picks::variables()}},
+\code{\link[teal.picks:picks]{teal.picks::picks()}}, or legacy \code{choices_selected})\cr encodings on \code{dataname}. Legacy inputs are
+coerced with a deprecation warning.}
 
-\item{visit_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
-all available choices and preselected option for variable names that can be used as \code{visit} variable.
+\item{visit_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+object with all available choices and preselected option for variable names that can be used as \code{visit} variable.
 Must be a factor in \code{dataname}.}
 
-\item{aval_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
-all available choices and pre-selected option for the analysis variable.}
+\item{aval_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+object with all available choices and pre-selected option for the analysis variable.}
 
-\item{avalu_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
-all available choices and preselected option for the analysis unit variable.}
+\item{avalu_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+object with all available choices and preselected option for the analysis unit variable.}
 
-\item{base_var}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use the \code{baseline_var} argument instead.}
-
-\item{baseline_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
-all available choices and preselected option for variable values that can be used as \code{baseline_var}.}
+\item{baseline_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+object with all available choices and preselected option for variable values that can be used as \code{baseline_var}.}
 
 \item{add_baseline_hline}{(\code{logical})\cr whether a horizontal line should be added to the plot at baseline y-value.}
 
@@ -182,37 +176,18 @@ app <- init(
     tm_g_ipp(
       label = "Individual Patient Plot",
       dataname = "ADLB",
-      arm_var = choices_selected(
-        value_choices(ADLB, "ARMCD"),
-        "ARM A"
+      parentname = "ADSL",
+      arm_var = variables(c("ARMCD", "ARM"), "ARMCD"),
+      paramcd = picks(
+        datasets("ADLB", "ADLB"),
+        variables("PARAMCD", "PARAMCD"),
+        values(selected = "ALT", multiple = FALSE)
       ),
-      paramcd = choices_selected(
-        value_choices(ADLB, "PARAMCD"),
-        "ALT"
-      ),
-      aval_var = choices_selected(
-        variable_choices(ADLB, c("AVAL", "CHG")),
-        "AVAL"
-      ),
-      avalu_var = choices_selected(
-        variable_choices(ADLB, c("AVALU")),
-        "AVALU",
-        fixed = TRUE
-      ),
-      id_var = choices_selected(
-        variable_choices(ADLB, c("USUBJID")),
-        "USUBJID",
-        fixed = TRUE
-      ),
-      visit_var = choices_selected(
-        variable_choices(ADLB, c("AVISIT")),
-        "AVISIT"
-      ),
-      baseline_var = choices_selected(
-        variable_choices(ADLB, c("BASE")),
-        "BASE",
-        fixed = TRUE
-      ),
+      id_var = variables("USUBJID", "USUBJID"),
+      visit_var = variables("AVISIT", "AVISIT"),
+      aval_var = variables(c("AVAL", "CHG"), "AVAL"),
+      avalu_var = variables("AVALU", "AVALU"),
+      baseline_var = variables("BASE", "BASE"),
       add_baseline_hline = FALSE,
       separate_by_obs = FALSE
     )
@@ -230,8 +205,8 @@ apps implementing this module can be found.
 \section{Examples in Shinylive}{
 \describe{
   \item{example-1}{
-    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo67sxsnHDcvALCYhJSMvKl5QyVHOSMEEFlFZ75qNSsgW0AggAiAMoAMpE6pDAEMXAAHjFQ-KLUOgCkAHx7bWU7MnDsAIyIAEwADDaHxxBlZfzGq2vDMpkx0IkvHRTWYAIQWSxW602-Go9H2RxOJlo1G67Ac0wcIIAUgBJSb7XJ7IEzWYAEnRmNxk0eCMBbw+62+BF+-xpz1eSJRqnY4wAajjpjjbDoAIQAXh0CjA0wAwlgnE4AHI4xUAcSlQQAvkEAFZEXIxADWcFYonyyRsqX4cGMUGEpBiBH4tFEKz1BuNpuA0HgZoKcgAuq4IFM5gsCsBgFLQ7MpQGgyHJqDw8lI9GkyC4wmlGhUAtcpl2G0CjoJQVcG0+EIRKJSzoqw0zYiljEAOYxWjoIt017UKD0OC7CVSnEQZ2aWhCbg6AAKYVoFFIs-8pClFZ7b2SPt0w7AwMzeERZRYMBimhYdYIWX1BDEMVEg7g6jg-G7HI55+ogjgjuv5zN+5FNGWAALIypMGrru+rzASBQJSkeOhyFB76oCwsBOpef63qI96Ps+r6IWUn7fr+N5iDyGZAWAM7jFg4xgRBYDIURkp7rMtgIRuSEoRyUCfmeF4Sle5G4Q+IgEW+0E6OejC0P2Ihkf+lGgkUBBFnuvLjLGeBsTKAAS6rMSx3FlNGWk6YhJnQfx3CCIJjBYaJeESeQhGmTJLDyfQikicpgE6Op5naQ4GrWdJwWzKFh4ecYtBrC+db2M4Vm8a8k4OU5-4uU+blSdBsneb52EUQFQVgBS2J4mFaUclKlVUmurFxQl-BJY4LjceFH4ur8slZThOWSaxhUKT+fk4SpIJqRpfICkKNWseZ82cWAqWIfQUDibkP79cJJVifheUjV5Y1KZNZUaSC4zTC4xm1TBYDXbdTWxfFiUSslnXQd1rxbPwMSbdt3gxFkUg7joABi2m3Q9D5ocw5CA6wMREPQtYStDswvT2fRIUoQS0MYOjsLk3RQBY2jWDYJSAqIOQQKw4xdrmpKCLQRSsw+jDaGMECakoYCagGQA}{Open in Shinylive}
-    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo67sxsnHDcvALCYhJSMvKl5QyVHOSMEEFlFZ75qNSsgW0AggAiAMoAMpE6pDAEMXAAHjFQ-KLUOgCkAHx7bWU7MnDsAIyIAEwADDaHxxBlZfzGq2vDMpkx0IkvHRTWYAIQWSxW602-Go9H2RxOJlo1G67Ac0wcIIAUgBJSb7XJ7IEzWYAEnRmNxk0eCMBbw+62+BF+-xpz1eSJRqnY4wAajjpjjbDoAIQAXh0CjA0wAwlgnE4AHI4xUAcSlQQAvkEAFZEXIxADWcFYonyyRsqX4cGMUGEpBiBH4tFEKz1BuNpuA0HgZoKcgAuq4IFM5gsCsBgFLQ7MpQGgyHJqDw8lI9GkyC4wmlGhUAtcpl2G0CjoJQVcG0+EIRKJSzoqw0zYiljEAOYxWjoIt017UKD0OC7CVSnEQZ2aWhCbg6AAKYVoFFIs-8pClFZ7b2SPt0w7AwMzeERZRYMBimhYdYIWX1BDEMVEg7g6jg-G7HI55+ogjgjuv5zN+5FNGWAALIypMGrru+rzASBQJSkeOhyFB76oCwsBOpef63qI96Ps+r6IWUn7fr+N5iDyGZAWAM7jFg4xgRBYDIURkp7rMtgIRuSEoRyUCfmeF4Sle5G4Q+IgEW+0E6OejC0P2Ihkf+lGgkUBBFnuvLjLGeBsTKAAS6rMSx3FlNGWk6YhJnQfx3CCIJjBYaJeESeQhGmTJLDyfQikicpgE6Op5naQ4GrWdJwWzKFh4ecYtBrC+db2M4Vm8a8k4OU5-4uU+blSdBsneb52EUQFQVgBS2J4mFaUclKlVUmurFxQl-BJY4LjceFH4ur8slZThOWSaxhUKT+fk4SpIJqRpfICkKNWseZ82cWAqWIfQUDibkP79cJJVifheUjV5Y1KZNZUaSC4zTC4xm1TBYDXbdTWxfFiUSslnXQd1rxbPwMSbdt3gxFkUg7joABi2m3Q9D5ocw5CA6wMREPQtYStDswvT2fRIUoQS0MYOjsLk3RQBY2jWDYJSAqIOQQKw4xdrmpKCLQRSsw+jDaGMECakoYCagGQA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo67sxsnHDcvALCYhJSMvKl5QyVHOSMEEFlFZ75qNSsgW0AggAiAMoAMpE6pDAEMXAAHjFQ-KLUOgCkAHx7bWU7MnDsAIyIAEwADDaHxxBlZfzGq2vDMpkx0IkvHRTWYAIQWSxW602-Go9H2RxOJlo1G67Ac0wcIIAUgBJSb7XJ7IEzWYAEnRmNxk0eCMBbw+62+BF+-xpz1eSJRqnY4wAajjpjjbDoAIQAXh0CjA0wAwlgnE4AHI4xUAcSlQQAvkEAFZEXIxADWcFYonyyRsqX4cGMUGEpBiBH4tFEKz1BuNpuA0HgZoKcgAuq4IFM5gsCsBgFLQ7MpQGgyHJqDw8lI9GkyC4wmlGhUAtcpl2G0CjoJQVcG0+EIRKJSzoqw0zYiljEAOYxWjoIt017UKD0OC7CVSnEQZ2aWhCbg6AAKYVoFFIs-8pClFZ7b2SPt0w7AwMzeERZVQLEX27r6bma6POhYMBimhYdcfjFo-Zr7AIRb3WAAsjLJjXSUf1-DUimjP8ALAm8T2YZZ+DrVAZENJsN1eApRDgUgmz3DMgPTUFoLQsoXzfegPylGdxiwcZ-0AvBgKomi6KIjkOUfahBDEdhMJEdQ4AQ3dxlmWwgJge1OxEOsADFhOmJw+jYuR1zYnRJwfJ8JVI99uKlClsTxfCwH0qlWLYidRF+F9nxYMiKL3flBVEhjo0coUzI5KAOI0xgbNfHSzS-VzhKMmUAAl1TAZTgL5EKopUtivO4QQfL8uzdIc4SHCM2LZmy+Kb3oKBeNyOBUq02yAu-EFxnkoyarqgq0K2fgYiKkrvBiLIpB3HRZNmeSEo5TDYLCMr6FYGIiHoWsJX6uqe0UoIgloYwdHYXJuigCxtGsGwSkBUQcggVhxi7XNSUEWgiguzDGG0MYIE1JQwE1AMgA}{Open in Shinylive}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo67sxsnHDcvALCYhJSMvKl5QyVHOSMEEFlFZ75qNSsgW0AggAiAMoAMpE6pDAEMXAAHjFQ-KLUOgCkAHx7bWU7MnDsAIyIAEwADDaHxxBlZfzGq2vDMpkx0IkvHRTWYAIQWSxW602-Go9H2RxOJlo1G67Ac0wcIIAUgBJSb7XJ7IEzWYAEnRmNxk0eCMBbw+62+BF+-xpz1eSJRqnY4wAajjpjjbDoAIQAXh0CjA0wAwlgnE4AHI4xUAcSlQQAvkEAFZEXIxADWcFYonyyRsqX4cGMUGEpBiBH4tFEKz1BuNpuA0HgZoKcgAuq4IFM5gsCsBgFLQ7MpQGgyHJqDw8lI9GkyC4wmlGhUAtcpl2G0CjoJQVcG0+EIRKJSzoqw0zYiljEAOYxWjoIt017UKD0OC7CVSnEQZ2aWhCbg6AAKYVoFFIs-8pClFZ7b2SPt0w7AwMzeERZVQLEX27r6bma6POhYMBimhYdcfjFo-Zr7AIRb3WAAsjLJjXSUf1-DUimjP8ALAm8T2YZZ+DrVAZENJsN1eApRDgUgmz3DMgPTUFoLQsoXzfegPylGdxiwcZ-0AvBgKomi6KIjkOUfahBDEdhMJEdQ4AQ3dxlmWwgJge1OxEOsADFhOmJw+jYuR1zYnRJwfJ8JVI99uKlClsTxfCwH0qlWLYidRF+F9nxYMiKL3flBVEhjo0coUzI5KAOI0xgbNfHSzS-VzhKMmUAAl1TAZTgL5EKopUtivO4QQfL8uzdIc4SHCM2LZmy+Kb3oKBeNyOBUq02yAu-EFxnkoyarqgq0K2fgYiKkrvBiLIpB3HRZNmeSEo5TDYLCMr6FYGIiHoWsJX6uqe0UoIgloYwdHYXJuigCxtGsGwSkBUQcggVhxi7XNSUEWgiguzDGG0MYIE1JQwE1AMgA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
     \if{html}{\out{<a style='height: 800px; display: block;'></a>}}
   }
 }

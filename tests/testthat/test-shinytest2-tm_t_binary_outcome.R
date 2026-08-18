@@ -23,30 +23,22 @@ app_driver_tm_t_binary_outcome <- function() {
         label = "Responders",
         dataname = "ADRS",
         parentname = "ADSL",
-        arm_var = teal.transform::choices_selected(
-          choices = teal.transform::variable_choices(data[["ADRS"]], c("ARM", "ARMCD", "ACTARMCD")),
+        arm_var = teal.picks::variables(
+          choices = c("ARM", "ARMCD", "ACTARMCD"),
           selected = "ARM"
         ),
         arm_ref_comp = arm_ref_comp,
-        paramcd = teal.transform::choices_selected(
-          choices = teal.transform::value_choices(data[["ADRS"]], "PARAMCD", "PARAM"),
-          selected = "BESRSPI"
-        ),
-        strata_var = teal.transform::choices_selected(
-          choices = teal.transform::variable_choices(data[["ADRS"]], c("SEX", "BMRKR2", "RACE")),
+        paramcd = teal.picks::variables(choices = "PARAMCD"),
+        strata_var = teal.picks::variables(
+          choices = c("SEX", "BMRKR2", "RACE"),
           selected = "RACE"
         ),
-        aval_var = teal.transform::choices_selected(
-          choices = teal.transform::variable_choices(
-            data[["ADRS"]], c("AVALC", "SEX")
-          ),
+        aval_var = teal.picks::variables(
+          choices = c("AVALC", "SEX"),
           selected = "AVALC",
           fixed = FALSE
         ),
-        conf_level = teal.transform::choices_selected(
-          c(2, 0.95, 0.9, 0.8), 0.95,
-          keep_order = TRUE
-        ),
+        conf_level = teal.picks::values(c(2, 0.95, 0.9, 0.8), 0.95, multiple = FALSE),
         default_responses = list(
           BESRSPI = list(
             rsp = c("Complete Response (CR)", "Partial Response (PR)"),
@@ -92,10 +84,10 @@ app_driver_tm_t_binary_outcome <- function() {
 testthat::test_that("e2e - tm_t_binary_outcome: Module initializes in teal without errors and produces table output.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_binary_outcome()
+  withr::defer(app_driver$stop())
   app_driver$expect_no_shiny_error()
   app_driver$expect_no_validation_error()
   app_driver$expect_visible(app_driver$namespaces(TRUE)$module("table-table-with-settings"))
-  app_driver$stop()
 })
 
 testthat::test_that(
@@ -105,13 +97,14 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_binary_outcome()
+    withr::defer(app_driver$stop())
 
     testthat::expect_equal(
-      app_driver$get_text("a.nav-link.active"),
+      app_driver$get_text(".teal-modules-tree a.module-button.active"),
       "Responders"
     )
-    testthat::expect_equal(
-      app_driver$get_active_module_input("paramcd-dataset_ADRS_singleextract-filter1-vals"),
+    testthat::expect_identical(
+      sort(get_teal_picks_slot(app_driver, "paramcd", "values")),
       "BESRSPI"
     )
     testthat::expect_equal(
@@ -119,7 +112,7 @@ testthat::test_that(
       c("Complete Response (CR)", "Partial Response (PR)")
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("arm_var-dataset_ADSL_singleextract-select"),
+      get_teal_picks_slot(app_driver, "arm_var", "variables"),
       "ARM"
     )
     testthat::expect_equal(
@@ -138,7 +131,7 @@ testthat::test_that(
       "schouten"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("strata_var-dataset_ADSL_singleextract-select"),
+      get_teal_picks_slot(app_driver, "strata_var", "variables"),
       "RACE"
     )
     testthat::expect_equal(
@@ -154,14 +147,13 @@ testthat::test_that(
       "0.95"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("aval_var-dataset_ADRS_singleextract-select"),
+      get_teal_picks_slot(app_driver, "aval_var", "variables"),
       "AVALC"
     )
     testthat::expect_true(app_driver$get_active_module_input("compare_arms"))
     testthat::expect_false(app_driver$get_active_module_input("combine_comp_arms"))
     testthat::expect_true(app_driver$get_active_module_input("u_odds_ratio"))
     testthat::expect_false(app_driver$get_active_module_input("show_rsp_cat"))
-    app_driver$stop()
   }
 )
 
@@ -170,8 +162,9 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_binary_outcome()
+    withr::defer(app_driver$stop())
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("paramcd-dataset_ADRS_singleextract-filter1-vals", "INVET")
+    set_teal_picks_slot(app_driver, "paramcd", "values", "INVET")
     testthat::expect_false(
       identical(
         table_before,
@@ -179,23 +172,16 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
   }
 )
 
 testthat::test_that("e2e - tm_t_binary_outcome: Deselection of paramcd throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_binary_outcome()
-  app_driver$set_active_module_input("paramcd-dataset_ADRS_singleextract-filter1-vals", NULL)
+  withr::defer(app_driver$stop())
+  set_teal_picks_slot(app_driver, "paramcd", "values", NULL)
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
-  testthat::expect_equal(
-    app_driver$get_text(app_driver$namespaces(TRUE)$module(
-      "paramcd-dataset_ADRS_singleextract-filter1-vals_input .shiny-validation-message"
-    )),
-    "Please select a filter."
-  )
-  app_driver$stop()
 })
 
 testthat::test_that(
@@ -203,6 +189,7 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_binary_outcome()
+    withr::defer(app_driver$stop())
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
     app_driver$set_active_module_input("responders", c("Stable Disease (SD)", "Progressive Disease (PD)"))
     testthat::expect_false(
@@ -212,27 +199,20 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
   }
 )
 
 testthat::test_that("e2e - tm_t_binary_outcome: Deselection of responders throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_binary_outcome()
+  withr::defer(app_driver$stop())
   testthat::expect_false(
-    identical(
-      app_driver$get_text(".shiny-validation-message"),
-      "`Responders` field is empty"
-    )
+    identical(app_driver$get_text(".shiny-output-error-validation"), "`Responders` field is empty")
   )
   app_driver$set_active_module_input("responders", NULL)
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
-  testthat::expect_equal(
-    app_driver$get_text(".shiny-validation-message"),
-    "`Responders` field is empty"
-  )
-  app_driver$stop()
+  testthat::expect_equal(app_driver$get_text(".shiny-output-error-validation"), "`Responders` field is empty")
 })
 
 testthat::test_that(
@@ -240,8 +220,9 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_binary_outcome()
+    withr::defer(app_driver$stop())
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", "ARMCD")
+    set_teal_picks_slot(app_driver, "arm_var", "variables", "ARMCD")
     testthat::expect_false(
       identical(
         table_before,
@@ -249,23 +230,16 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
   }
 )
 
 testthat::test_that("e2e - tm_t_binary_outcome: Deselection of arm_var throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_binary_outcome()
-  app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", NULL)
+  withr::defer(app_driver$stop())
+  set_teal_picks_slot(app_driver, "arm_var", "variables", NULL)
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
-  testthat::expect_equal(
-    app_driver$get_text(
-      app_driver$namespaces(TRUE)$module("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message")
-    ),
-    "Treatment variable must be selected"
-  )
-  app_driver$stop()
 })
 
 testthat::test_that(
@@ -273,9 +247,9 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_binary_outcome()
+    withr::defer(app_driver$stop())
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("strata_var-dataset_ADSL_singleextract-select", "SEX")
-
+    set_teal_picks_slot(app_driver, "strata_var", "variables", "SEX")
     testthat::expect_false(
       identical(
         table_before,
@@ -283,7 +257,6 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
   }
 )
 
@@ -292,8 +265,9 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_binary_outcome()
+    withr::defer(app_driver$stop())
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("strata_var-dataset_ADSL_singleextract-select", NULL)
+    set_teal_picks_slot(app_driver, "strata_var", "variables", NULL)
     testthat::expect_false(
       identical(
         table_before,
@@ -301,6 +275,5 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
   }
 )

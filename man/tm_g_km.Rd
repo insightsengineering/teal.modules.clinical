@@ -7,24 +7,17 @@
 tm_g_km(
   label,
   dataname,
-  parentname = ifelse(inherits(arm_var, "data_extract_spec"),
-    teal.transform::datanames_input(arm_var), "ADSL"),
+  parentname = "ADSL",
   arm_var,
   arm_ref_comp = NULL,
   paramcd,
   strata_var,
   facet_var,
-  time_unit_var =
-    teal.transform::choices_selected(teal.transform::variable_choices(dataname, "AVALU"),
-    "AVALU", fixed = TRUE),
-  aval_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
-    "AVAL"), "AVAL", fixed = TRUE),
-  cnsr_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
-    "CNSR"), "CNSR", fixed = TRUE),
-  conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order =
-    TRUE),
-  conf_type = teal.transform::choices_selected(c("plain", "log", "log-log"), "plain",
-    TRUE),
+  time_unit_var = teal.picks::variables("AVALU", "AVALU", fixed = TRUE),
+  aval_var = teal.picks::variables("AVAL", "AVAL", fixed = TRUE),
+  cnsr_var = teal.picks::variables("CNSR", "CNSR", fixed = TRUE),
+  conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95),
+  conf_type = teal.picks::values(c("plain", "log", "log-log"), "plain"),
   font_size = c(11L, 1L, 30),
   xticks = NULL,
   control_annot_surv_med = tern::control_surv_med_annot(),
@@ -46,36 +39,38 @@ tm_g_km(
 
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
-available choices and preselected option for variable names that can be used as \code{arm_var}.
+\item{arm_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+object with all available choices and preselected option for variable names that can be used as \code{arm_var}.
 It defines the grouping variable in the results table.}
 
 \item{arm_ref_comp}{(\code{list}) optional,\cr if specified it must be a named list with each element corresponding to
 an arm variable in \code{ADSL} and the element must be another list (possibly
-with delayed \code{\link[teal.transform:variable_choices]{teal.transform::variable_choices()}} or delayed \code{\link[teal.transform:value_choices]{teal.transform::value_choices()}}
-with the elements named \code{ref} and \code{comp} that the defined the default
-reference and comparison arms when the arm variable is changed.}
+with delayed \code{\link[teal.picks:variables]{teal.picks::variables()}} or \code{\link[teal.picks:values]{teal.picks::values()}}; legacy
+\code{\link[teal.transform:variable_choices]{teal.transform::variable_choices()}} and \code{\link[teal.transform:value_choices]{teal.transform::value_choices()}} are deprecated but still accepted)
+with the elements named \code{ref} and \code{comp} that define the default reference and comparison arms when the arm
+variable is changed.}
 
-\item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
-available choices and preselected option for the parameter code variable from \code{dataname}.}
+\item{paramcd}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+object with all available choices and preselected option for the parameter code variable from \code{dataname}.}
 
-\item{strata_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr names of
-the variables for stratified analysis.}
+\item{strata_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+names of the variables for stratified analysis.}
 
-\item{facet_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
-all available choices and preselected option for names of variable that can be used for plot faceting.}
+\item{facet_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+object with all available choices and preselected option for the variable used to facet the plot
+(from \code{parentname}). Use no selection (e.g. \code{NULL} selected) for no faceting.}
 
-\item{time_unit_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object
-with all available choices and pre-selected option for the time unit variable.}
+\item{time_unit_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated
+but still accepted)\cr object with all available choices and pre-selected option for the time unit variable.}
 
-\item{aval_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
-all available choices and pre-selected option for the analysis variable.}
+\item{aval_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+object with all available choices and pre-selected option for the analysis variable.}
 
-\item{cnsr_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
-available choices and preselected option for the censoring variable.}
+\item{cnsr_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+object with all available choices and preselected option for the censoring variable.}
 
-\item{conf_level}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
-all available choices and pre-selected option for the confidence level, each within range of (0, 1).}
+\item{conf_level}{(\code{\link[teal.picks:values]{teal.picks::values()}}; legacy \code{teal.transform::choices_selected()} is deprecated but still
+accepted)\cr available confidence levels and default selection, each in the range (0, 1).}
 
 \item{conf_type}{(\code{string})\cr confidence interval type for median survival time CI. Options are "plain" (default),
 "log", "log-log".}
@@ -206,22 +201,31 @@ app <- init(
     tm_g_km(
       label = "Kaplan-Meier Plot",
       dataname = "ADTTE",
-      arm_var = choices_selected(
-        variable_choices(ADSL, c("ARM", "ARMCD", "ACTARMCD")),
-        "ARM"
+      parentname = "ADSL",
+      arm_var = variables(
+        choices = c("ARM", "ARMCD", "ACTARMCD"),
+        selected = "ARM",
+        multiple = FALSE
       ),
-      paramcd = choices_selected(
-        value_choices(ADTTE, "PARAMCD", "PARAM"),
-        "OS"
+      paramcd = picks(
+        datasets("ADTTE"),
+        variables("PARAMCD", fixed = TRUE),
+        values(
+          choices = unique(ADTTE$PARAMCD),
+          selected = "OS",
+          multiple = FALSE
+        )
       ),
       arm_ref_comp = arm_ref_comp,
-      strata_var = choices_selected(
-        variable_choices(ADSL, c("SEX", "BMRKR2")),
-        "SEX"
+      strata_var = variables(
+        choices = c("SEX", "BMRKR2"),
+        selected = "SEX",
+        multiple = TRUE
       ),
-      facet_var = choices_selected(
-        variable_choices(ADSL, c("SEX", "BMRKR2")),
-        NULL
+      facet_var = variables(
+        choices = c("SEX", "BMRKR2"),
+        selected = NULL,
+        multiple = FALSE
       ),
       xticks = c(0, 30, 60, 90, 120, 150, 180)
     )
@@ -239,8 +243,8 @@ apps implementing this module can be found.
 \section{Examples in Shinylive}{
 \describe{
   \item{example-1}{
-    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo67sxs+ajUrIGl5QyVHNG8AsJiElIy8g0AggAiAMoAMpE6pDAEMXAAHjFQ-KLU-QO2tk7jk9NzC-yk5EoAvkEAVkS5MQDWcKyi+ck2qfxwxlDCpDEE-LSi0+eXG53YDQeD3ApyAC6rggg1G4wKwGACjAcJGKMh0Nhaw2COSSJRg3WLjAmJhLBgMUYry+RBgqHGdFEpHY-QAwrY+lgALJsgY6AC8jWZrIgZTK1OMgp0hJ5OgAQijcA0ysR6dKCKzUXK+kqZdruTo2SigmU5MqxTouYahUyWSqdJLpSj5YgdAAFahQAhwehEJUOtUMoWawlugaMQQAcx0AA09Si2W62XT6LkwpZgmBTTogkElGgGalcplRWUCtKChaynwhCJRNLax17g7JjEo9cYGXxWUvfQ4NRnWAANJoL0QAzcuC0VQe-ykAOWnsFUG6IWEnEk6s9nQUmKaFgarIXH2iGKiAdwdRwfjdnc6A+MWhQegiL7HmRidhooqhg0Jg0+QAvoOWtIDs3NB0e1lbkUSg3Ntx7VAWFgb4jxPMRz0va9b3gsoD2oQQ4HfDD7iJDYihRd0uT6XkBgA6isFok1EJ3FEAHkhjgpdxUgniyj3SVaXVIVBJpINWLKZlmHCfdDxDD9TywkQcLvHdH2fV9iIIRSvx-HQ-yGJx4zwfV5W5LBhywAAmE0+PvMoUSMkz4Psnc3h9T5H3Qz8zwvFTyFw-jxQ0l83x00jv2GEZfy1ZyAPMyybLsyTxQAOQcEZ0WCtye1mDQCCuBsQ3YAAGIoAGZyp0AA2aqAE5qoARms5qAFZmoADlKnMzQaPMlFoKV2Fycg1A0bRrBsEpLVEHIIFYPp0HYQsABJBFoIo1ovRhtHqCAjiUMAjkhIA}{Open in Shinylive}
-    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo67sxs+ajUrIGl5QyVHNG8AsJiElIy8g0AggAiAMoAMpE6pDAEMXAAHjFQ-KLU-QO2tk7jk9NzC-yk5EoAvkEAVkS5MQDWcKyi+ck2qfxwxlDCpDEE-LSi0+eXG53YDQeD3ApyAC6rggg1G4wKwGACjAcJGKMh0Nhaw2COSSJRg3WLjAmJhLBgMUYry+RBgqHGdFEpHY-QAwrY+lgALJsgY6AC8jWZrIgZTK1OMgp0hJ5OgAQijcA0ysR6dKCKzUXK+kqZdruTo2SigmU5MqxTouYahUyWSqdJLpSj5YgdAAFahQAhwehEJUOtUMoWawlugaMQQAcx0AA09Si2W62XT6LkwpZgmBTTogkElGgGalcplRWUCtKChaynwhCJRNLax17g7JjEo9cYGXxWUvfQ4NRnWAANJoL0QAzcuC0VQe-ykAOWnsFUG6IWEnEk6s9nQUmKaFgarIXH2iGKiAdwdRwfjdnc6A+MWhQegiL7HmRidhooqhg0Jg0+QAvoOWtIDs3NB0e1lbkUSg3Ntx7VAWFgb4jxPMRz0va9b3gsoD2oQQ4HfDD7iJDYihRd0uT6XkBgA6isFok1EJ3FEAHkhjgpdxUgniyj3SVaXVIVBJpINWLKZlmHCfdDxDD9TywkQcLvHdH2fV9iIIRSvx-HQ-yGJx4zwfV5W5LBhywAAmE0+PvMoUSMkz4Psnc3h9T5H3Qz8zwvFTyFw-jxQ0l83x00jv2GEZfy1ZyAPMyybLsyTxQAOQcEZ0WCtye1mDQCCuBsQ3YAAGIoAGZyp0AA2aqAE5qoARms5qAFZmoADlKnMzQaPMlFoKV2Fycg1A0bRrBsEpLVEHIIFYPp0HYQsABJBFoIo1ovRhtHqCAjiUMAjkhIA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo67sxs+ajUrIGl5QyVHNG8AsJiElIy8g0AggAiAMoAMpE6pDAEMXAAHjFQ-KLU-QO2tk7jk9NzC-yk5EoAvkEAVkS5MQDWcKyi+ck2qfxwxlDCpDEE-LSi0+eXG53YDQeD3ApyAC6rggg1G4wKwGACjAcJGKMh0Nhaw2COSSJRg3WLjAmJhLBgMUYry+RBgqHGdFEpHY-QAwrY+lgALJsgY6AC8jWZrIgZTK1OMgp0hJ5OgAQijcA0ysR6dKCKzUXK+kqZdruTo2SigmU5MqxTouYahUyWSqdJLpSj5YgdAAFahQAhwehEJUOtUMoWawlugaMQQAcx0AA09Si2W62XT6LkwpZgmBTTogkElGgGalcplRWUCtKChaynwhCJRNLax17g7JjEo9cYGXxWUvfQ4NRnWAANJoL0QAzcuC0VQe-ykAOWnsFUG6IWEnEk6s9nSoFgUUirodoxc7nQUmKaFjSq+MWhQej17tnghZC4+hshrXWhMGvm-voOWtf9s23M9RAHOB1Dgfhjx5U8zx0GAPloGo1x0AAxPoRiGFwl3Fc0HTKPdmCmWChVQGQrhbfDl2SCDSBbVFNxNMCd1ve9HzELV3S5PpeQGPVjFoWYYOlexnEI2jxSvahBG4oid1fd8xGlMxaAAR3k9giQ2AASXisH4vkpMQ8UIJEaDyP1AB5IYELM5DqA0NDpSwnC8LMnMe1MncL0lWl1SFfyaSDNiymZZhwkva8hQ4h8n0U1U3xkVSvxRXD4zwfV5W5LBhywAAmVikp0CyoPIayMqcLLwvFJyXJEcTHE8ndfJ7N4fU+W8bxYTjEuk5KVM-HRQzATLf1y-KipKwaysgqzpQAOQcEYRjqmsUNcoV3NwxT2vFWYNAIaiNXYAAGIoAGZLp0AA2W6AE5boARkK16AFZXoADnO7zcwaPMlFoKV2Fycg1A0bRrBsEpLVEHIIFYPp0HYQs9MEWginRiDGG0eoICOJQwCOSEgA}{Open in Shinylive}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo67sxs+ajUrIGl5QyVHNG8AsJiElIy8g0AggAiAMoAMpE6pDAEMXAAHjFQ-KLU-QO2tk7jk9NzC-yk5EoAvkEAVkS5MQDWcKyi+ck2qfxwxlDCpDEE-LSi0+eXG53YDQeD3ApyAC6rggg1G4wKwGACjAcJGKMh0Nhaw2COSSJRg3WLjAmJhLBgMUYry+RBgqHGdFEpHY-QAwrY+lgALJsgY6AC8jWZrIgZTK1OMgp0hJ5OgAQijcA0ysR6dKCKzUXK+kqZdruTo2SigmU5MqxTouYahUyWSqdJLpSj5YgdAAFahQAhwehEJUOtUMoWawlugaMQQAcx0AA09Si2W62XT6LkwpZgmBTTogkElGgGalcplRWUCtKChaynwhCJRNLax17g7JjEo9cYGXxWUvfQ4NRnWAANJoL0QAzcuC0VQe-ykAOWnsFUG6IWEnEk6s9nSoFgUUirodoxc7nQUmKaFjSq+MWhQej17tnghZC4+hshrXWhMGvm-voOWtf9s23M9RAHOB1Dgfhjx5U8zx0GAPloGo1x0AAxPoRiGFwl3Fc0HTKPdmCmWChVQGQrhbfDl2SCDSBbVFNxNMCd1ve9HzELV3S5PpeQGPVjFoWYYOlexnEI2jxSvahBG4oid1fd8xGlMxaAAR3k9giQ2AASXisH4vkpMQ8UIJEaDyP1AB5IYELM5DqA0NDpSwnC8LMnMe1MncL0lWl1SFfyaSDNiymZZhwkva8hQ4h8n0U1U3xkVSvxRXD4zwfV5W5LBhywAAmVikp0CyoPIayMqcLLwvFJyXJEcTHE8ndfJ7N4fU+W8bxYTjEuk5KVM-HRQzATLf1y-KipKwaysgqzpQAOQcEYRjqmsUNcoV3NwxT2vFWYNAIaiNXYAAGIoAGZLp0AA2W6AE5boARkK16AFZXoADnO7zcwaPMlFoKV2Fycg1A0bRrBsEpLVEHIIFYPp0HYQs9MEWginRiDGG0eoICOJQwCOSEgA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
     \if{html}{\out{<a style='height: 800px; display: block;'></a>}}
   }
 }

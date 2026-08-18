@@ -1,0 +1,446 @@
+#' Coerce legacy `teal.transform` specs to [`teal.picks::variables()`] with deprecation
+#'
+#' If `x` is a legacy `choices_selected`, `filter_spec`, or `select_spec` object, it is converted
+#' via [`teal.picks::as.picks()`]. Otherwise `x` must already inherit `"variables"`.
+#'
+#' @param x (`values`, `choices_selected` or `picks`) object.
+#' @param arg_name optional (`character(1)`) argument name.
+#' @param multiple optional (`logical(1)`) whether multiple values are allowed.
+#' If `NULL` (default), it is not validated and inferred from the length of `selected` in the
+#' `choices_selected` object.
+#' @param null.ok (`logical(1)`) whether `NULL` is allowed.
+#'
+#' @keywords internal
+#' @noRd
+migrate_choices_selected_to_variables <- function(x, # nolint: object_length_linter
+                                                  arg_name = checkmate::vname(x),
+                                                  multiple = NULL,
+                                                  null.ok = FALSE) { # nolint: object_name_linter.
+  # nolint: object_name_linter.
+  checkmate::assert_string(arg_name)
+  checkmate::assert_flag(multiple, null.ok = TRUE)
+  checkmate::assert_flag(null.ok)
+  if (inherits(x, "picks")) {
+    return(x)
+  }
+
+  if (isTRUE(null.ok) && is.null(x)) {
+    return(x)
+  }
+  legacy <- c("choices_selected", "filter_spec", "select_spec")
+  if (inherits(x, legacy)) {
+    lifecycle::deprecate_warn(
+      when = "0.13.0",
+      what = I(paste0("`", arg_name, "`")),
+      details = paste(
+        "Pass `teal.picks::variables()` (or a full `teal.picks::picks()` chain).",
+        "Support for legacy `teal.transform::choices_selected()`, `filter_spec`, and `select_spec` is deprecated."
+      )
+    )
+    x <- teal.picks::as.picks(x, quiet = FALSE)
+    attr(x, "multiple") <- (!is.null(multiple) && multiple) || (is.null(multiple) && length(x$selected) > 1L)
+  } else {
+    if (!is.null(multiple) && !identical(attr(x, "multiple", exact = TRUE), multiple)) {
+      stop(
+        sprintf("`multiple` metadata does not match the requirement for %s.", arg_name),
+        sprintf(" Please set multiple = %s in the picks object.", multiple),
+        call. = FALSE
+      )
+    }
+  }
+  checkmate::assert_class(
+    x,
+    "variables",
+    null.ok = null.ok,
+    .var.name = arg_name
+  )
+  x
+}
+
+#' Coerce legacy `choices_selected` to [`teal.picks::values()`] with deprecation
+#'
+#' @param x (`values`, `choices_selected`, [`teal.picks::picks()`], or [`teal.picks::variables()`]) object.
+#' @param arg_name optional (`character(1)`) argument name.
+#' @param multiple optional (`logical(1)`) whether multiple values are allowed.
+#' If `NULL` (default), it is not validated and inferred from the length of `selected` in the
+#' `choices_selected` object. If `FALSE`, the result is checked with [teal.picks::is_pick_multiple()].
+#'
+#' @keywords internal
+#' @noRd
+migrate_choices_selected_to_values <- function(x, # nolint: object_length_linter
+                                               arg_name = checkmate::vname(x),
+                                               multiple = NULL) {
+  checkmate::assert_string(arg_name)
+  checkmate::assert_flag(multiple, null.ok = TRUE)
+
+  if (inherits(x, "picks")) {
+    return(x)
+  }
+  if (inherits(x, "variables")) {
+    return(x)
+  }
+  if (inherits(x, "choices_selected")) {
+    lifecycle::deprecate_warn(
+      when = "0.13.0",
+      what = I(paste0("`", arg_name, "`")),
+      details = paste(
+        "Pass `teal.picks::values()`.",
+        "Support for legacy `teal.transform::choices_selected()` is deprecated."
+      )
+    )
+    if (is.null(x$choices) || inherits(x$choices, "delayed_data")) {
+      stop(
+        "Delayed `choices_selected` objects cannot be coerced automatically; ",
+        "specify `teal.picks::values()` explicitly.",
+        call. = FALSE
+      )
+    }
+    choices <- as.character(x$choices)
+    selected <- as.character(unlist(x$selected, use.names = FALSE))
+    checkmate::assert_character(choices, min.len = 1L)
+    checkmate::assert_character(selected, min.len = 1L)
+    fixed <- isTRUE(x$fixed)
+    multiple <- (!is.null(multiple) && multiple) || (is.null(multiple) && length(selected) > 1L)
+    x <- teal.picks::values(choices, selected, fixed = fixed, multiple = multiple)
+  }
+  checkmate::assert_class(x, "values", .var.name = arg_name)
+  x
+}
+
+#' Coerce legacy `choices_selected`-based specs to `picks` with deprecation
+#'
+#' @param x (`variables`, `values`, `choices_selected` or `picks`) object.
+#'   A bare [`teal.picks::variables()`] pick is returned unchanged (column selector only; value
+#'   levels follow from data when the pick chain is completed with `create_picks_helper()`).
+#' @param arg_name optional (`character(1)`) argument name.
+#' @param multiple optional (`logical(1)`) whether multiple values are allowed.
+#' If `NULL` (default), it is not validated and inferred from the length of `selected` in the
+#' `choices_selected` object.
+#'
+#' @keywords internal
+#' @noRd
+migrate_value_choices_to_picks <- function(x, # nolint: object_length_linter.
+                                           multiple = NULL,
+                                           arg_name = checkmate::vname(x),
+                                           add_values = TRUE) {
+  if (inherits(x, "picks")) {
+    if (!is.null(multiple) && !identical(attr(x$values, "multiple", exact = TRUE), multiple)) {
+      stop(
+        sprintf("`multiple` metadata does not match the requirement for %s.", arg_name),
+        sprintf(" Please set multiple = %s in the picks object.", multiple),
+        call. = FALSE
+      )
+    }
+
+    if (add_values && is.null(x$values)) {
+      x$values <- do.call(teal.picks::values, list(multiple = multiple)[!is.null(multiple)])
+    }
+    return(x)
+  }
+
+  if (inherits(x, "choices_selected")) {
+    values <- migrate_choices_selected_to_values(x, multiple = multiple, arg_name = arg_name)
+    variable_name <- attr(x$choices, "var_choices", exact = TRUE)
+    if (inherits(x, "choices_selected") && is.null(variable_name)) {
+      stop(
+        sprintf("When using choices_selected for %s", arg_name),
+        " it should have 'var_choices' attribute specifying variable choices.",
+        " Cannot convert to picks object without this information.",
+        call. = FALSE
+      )
+    }
+    return(
+      teal.picks::picks(
+        teal.picks::variables(variable_name, variable_name),
+        values,
+        check_dataset = FALSE
+      )
+    )
+  }
+  if (inherits(x, "variables")) {
+    if (add_values) {
+      args <- list(multiple = multiple)[!is.null(multiple)]
+      if (isFALSE(multiple)) {
+        args$selected <- function(x) identical(parent.frame()$i, 1L)
+      }
+      return(
+        teal.picks::picks(
+          x,
+          do.call(teal.picks::values, args),
+          check_dataset = FALSE
+        )
+      )
+    }
+    teal.picks::picks(x, check_dataset = FALSE)
+  } else {
+    stop(
+      sprintf("Cannot convert object of class %s to picks for %s.", class(x)[1], arg_name),
+      call. = FALSE
+    )
+  }
+}
+
+#' Supports the creation of picks object that does not override a dataset if already exists
+#' @param datasets ([`teal.picks::datasets()`] object) to use if `x` does not already have a dataset.
+#' @param x (`pick` or `picks` object) to ensure has a dataset.
+#' @return a `picks` object with a dataset, either from `x` or from `datasets`.
+#' @keywords internal
+#' @noRd
+create_picks_helper <- function(datasets = NULL, x) {
+  if (inherits(x, "picks") && !is.null(x$datasets)) {
+    return(x)
+  }
+  checkmate::assert_class(datasets, "datasets", null.ok = FALSE)
+  checkmate::assert_multi_class(x, c("pick", "picks"))
+
+  if (inherits(x, "picks")) {
+    picks_args <- list(datasets, x$variables, x$values)
+    do.call(
+      teal.picks::picks,
+      picks_args[vapply(picks_args, Negate(is.null), logical(1L))],
+    )
+  } else if (inherits(x, "pick")) {
+    teal.picks::picks(datasets, x)
+  }
+}
+
+#' Coerce legacy `data_extract_spec` / lists of specs to [`teal.picks::picks()`]
+#'
+#' Single-spec encodings become [`teal.picks::as.picks()`] output. Multiple
+#' `data_extract_spec` objects (legacy list inputs) are combined into one
+#' `picks()` with a [`teal.picks::datasets()`] step when choices are eager;
+#' delayed specs must be replaced with explicit [`teal.picks::picks()`].
+#'
+#' @param x (`NULL`, `picks`, `data_extract_spec`, or `list` of `data_extract_spec`).
+#' @param arg_name (`character(1)`) argument name for messages.
+#' @param allow_null (`logical(1)`).
+#'
+#' @return `NULL` or a [`teal.picks::picks`] object.
+#'
+#' @keywords internal
+#' @noRd
+migrate_list_extract_spec_to_picks <- function(x, # nolint: object_length_linter.
+                                               arg_name = "x",
+                                               allow_null = TRUE) {
+  checkmate::assert_string(arg_name)
+  checkmate::assert_flag(allow_null)
+  if (isTRUE(allow_null) && is.null(x)) {
+    return(x)
+  }
+  if (inherits(x, "picks")) {
+    return(x)
+  }
+
+  des_list <- teal.transform::list_extract_spec(x, allow_null = allow_null)
+  if (is.null(des_list)) {
+    return(NULL)
+  }
+
+  legacy <- vapply(
+    des_list,
+    function(des) inherits(des, "data_extract_spec"),
+    logical(1L)
+  )
+  if (any(legacy)) {
+    lifecycle::deprecate_warn(
+      when = "0.13.0",
+      what = I(paste0("`", arg_name, "`")),
+      details = paste(
+        "Pass `teal.picks::picks()` built with `teal.picks::datasets()` and `teal.picks::variables()`.",
+        "Support for legacy `teal.transform::data_extract_spec()` is deprecated."
+      )
+    )
+  }
+
+  picks_one <- lapply(des_list, teal.picks::as.picks, quiet = FALSE)
+  picks_one <- Filter(Negate(is.null), picks_one)
+  checkmate::assert_list(picks_one, min.len = 1L, .var.name = arg_name)
+
+  if (length(picks_one) == 1L) {
+    return(picks_one[[1L]])
+  }
+
+  datanames <- unique(vapply(des_list, `[[`, character(1L), "dataname"))
+  var_lists <- lapply(des_list, function(des) {
+    ch <- des$select$choices
+    if (checkmate::test_character(ch, min.len = 1L)) {
+      ch
+    } else {
+      NULL
+    }
+  })
+  if (any(vapply(var_lists, is.null, logical(1L)))) {
+    stop(
+      "Combining multiple `data_extract_spec` into picks requires eager character ",
+      "`select_spec(choices = ...)` for `",
+      arg_name,
+      "`. Specify `teal.picks::picks()` explicitly for delayed or mixed specs.",
+      call. = FALSE
+    )
+  }
+  var_union <- sort(unique(unlist(var_lists, use.names = FALSE)))
+  pick_selected <- vapply(
+    des_list,
+    function(des) {
+      s <- des$select$selected
+      if (checkmate::test_character(s, min.len = 1L)) {
+        s[[1L]]
+      } else {
+        NA_character_
+      }
+    },
+    character(1L)
+  )
+  pick_selected <- pick_selected[!is.na(pick_selected) & nzchar(pick_selected)]
+  default_sel <- if (length(pick_selected) > 0L) {
+    pick_selected[[length(pick_selected)]]
+  } else {
+    var_union[[1L]]
+  }
+
+  teal.picks::picks(
+    teal.picks::datasets(choices = datanames),
+    teal.picks::variables(
+      choices = var_union,
+      selected = default_sel,
+      multiple = FALSE
+    )
+  )
+}
+
+#' First non-`NULL` element of a named encoding list (S3 dispatch helper).
+#'
+#' @param arg_list (`named list`) typically `x`, `fill`, `x_facet`, `y_facet` slots; at least one
+#'   non-`NULL` when used from module generics.
+#'
+#' @keywords internal
+#' @noRd
+.module_arg_first_encoding <- function(arg_list) {
+  checkmate::assert_list(arg_list, all.missing = FALSE)
+  non_null <- vapply(arg_list, Negate(is.null), logical(1L))
+  if (!any(non_null)) {
+    stop("internal error: no encoding found", call. = FALSE)
+  }
+  arg_list[non_null][[1L]]
+}
+
+#' @keywords internal
+#' @noRd
+.encoding_slot_is_legacy_data_extract <- function(z) { # nolint: object_length_linter.
+  if (is.null(z)) {
+    return(FALSE)
+  }
+  if (inherits(z, "data_extract_spec")) {
+    return(TRUE)
+  }
+  is.list(z) && length(z) > 0L && all(vapply(z, inherits, logical(1L), "data_extract_spec"))
+}
+
+#' @keywords internal
+#' @noRd
+.encoding_slot_is_picks <- function(z) {
+  !is.null(z) && inherits(z, "picks")
+}
+
+#' Classify encoding slots as legacy extract specs or [`teal.picks::picks()`].
+#'
+#' @param slots (`named list`) module encoding arguments (e.g. `x`, `fill`, `x_facet`, `y_facet`).
+#'
+#' @return `character(1)` `"legacy"` or `"picks"`.
+#'
+#' @keywords internal
+#' @noRd
+.tm_encoding_slots_kind <- function(slots) {
+  checkmate::assert_list(slots, names = "unique")
+  legacy_any <- any(vapply(slots, .encoding_slot_is_legacy_data_extract, logical(1L)))
+  picks_any <- any(vapply(slots, .encoding_slot_is_picks, logical(1L)))
+  if (legacy_any && picks_any) {
+    stop(
+      "Mixing `teal.transform::data_extract_spec()` and `teal.picks::picks()` encodings is not supported. ",
+      "Use only data extract specs, or only `teal.picks::picks()`.",
+      call. = FALSE
+    )
+  }
+  switch(as.character(legacy_any + 2L * picks_any),
+    "0" = stop(
+      "Could not classify encodings: pass `data_extract_spec` / `list` thereof, or `teal.picks::picks()`.",
+      call. = FALSE
+    ),
+    "1" = "legacy",
+    "2" = "picks",
+    stop("internal error: unexpected encoding classification state.", call. = FALSE)
+  )
+}
+
+#' Build eval-time relabel call for merged analysis data (picks modules).
+#'
+#' Mirrors [teal.transform::get_anl_relabel_call()] using only `teal.data`, so picks-only
+#' module code does not need `teal.transform` for column relabeling.
+#'
+#' @param columns_source (`named list`) slot-wise column maps with `"dataname"` attribute per element.
+#' @param datasets (`named list` of `reactive` data) source datasets keyed by dataname.
+#' @param anl_name (`character(1)`) symbol name of the analysis object to relabel.
+#'
+#' @return `call` or `NULL`.
+#'
+#' @keywords internal
+#' @noRd
+.picks_get_anl_relabel_call <- function(columns_source, datasets, anl_name = "ANL") {
+  checkmate::assert_string(anl_name)
+  stopifnot(attr(regexec("[A-Za-z0-9\\_]*", anl_name)[[1]], "match.length") == nchar(anl_name))
+
+  labels_vector <- Reduce(
+    function(x, y) append(x, y),
+    lapply(
+      columns_source,
+      function(selector) {
+        column_names <- names(selector)
+        if (length(column_names) == 0L) {
+          return(NULL)
+        }
+
+        data_used <- datasets[[attr(selector, "dataname")]]
+        labels <- teal.data::col_labels(data_used(), fill = FALSE)
+        column_labels <- labels[intersect(colnames(data_used()), column_names)]
+
+        if (length(column_labels) == 0L) {
+          column_labels
+        } else {
+          stats::setNames(
+            column_labels,
+            selector[names(column_labels)]
+          )
+        }
+      }
+    )
+  )
+
+  if (length(labels_vector) == 0L || all(is.na(labels_vector))) {
+    return(NULL)
+  }
+
+  relabel_pipe <- .picks_get_relabel_call(labels_vector)
+  if (is.null(relabel_pipe)) {
+    return(NULL)
+  }
+
+  relabel_call <- call("%>%", as.name(anl_name), relabel_pipe)
+  call("<-", as.name(anl_name), relabel_call)
+}
+
+#' @keywords internal
+#' @noRd
+.picks_get_relabel_call <- function(labels) {
+  if (length(stats::na.omit(labels)) == 0L || is.null(names(labels))) {
+    return(NULL)
+  }
+  labels <- labels[!duplicated(names(labels))]
+  labels <- labels[!is.na(labels)]
+
+  as.call(
+    append(
+      quote(teal.data::col_relabel),
+      labels
+    )
+  )
+}

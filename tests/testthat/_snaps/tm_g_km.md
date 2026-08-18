@@ -44,9 +44,10 @@
                       annot_coxph = TRUE, control_coxph_pw = tern::control_coxph(conf_level = 0.95, 
                         pval_method = "log-rank", ties = "efron"), 
                       control_annot_surv_med = list(x = 0.8, y = 0.85, 
-                        w = 0.32, h = 0.16, fill = TRUE), control_annot_coxph = list(x = 0.27, 
-                        y = 0.35, w = 0.3, h = 0.125, fill = TRUE, 
-                        ref_lbls = FALSE), legend_pos = NULL, rel_height_plot = 0.8)
+                        w = 0.32, h = 0.16, fill = TRUE, digits = 4), 
+                      control_annot_coxph = list(x = 0.27, y = 0.35, 
+                        w = 0.3, h = 0.125, fill = TRUE, ref_lbls = FALSE), 
+                      legend_pos = NULL, rel_height_plot = 0.8)
               }
           }
           g_km_counter <- g_km_counter_generator()
@@ -105,9 +106,10 @@
                       annot_coxph = TRUE, control_coxph_pw = tern::control_coxph(conf_level = 0.95, 
                         pval_method = "log-rank", ties = "efron"), 
                       control_annot_surv_med = list(x = 0.8, y = 0.85, 
-                        w = 0.32, h = 0.16, fill = TRUE), control_annot_coxph = list(x = 0.27, 
-                        y = 0.35, w = 0.3, h = 0.125, fill = TRUE, 
-                        ref_lbls = FALSE), legend_pos = NULL, rel_height_plot = 0.8)
+                        w = 0.32, h = 0.16, fill = TRUE, digits = 4), 
+                      control_annot_coxph = list(x = 0.27, y = 0.35, 
+                        w = 0.3, h = 0.125, fill = TRUE, ref_lbls = FALSE), 
+                      legend_pos = NULL, rel_height_plot = 0.8)
               }
           }
           g_km_counter <- g_km_counter_generator()
@@ -167,9 +169,10 @@
                       annot_coxph = TRUE, control_coxph_pw = tern::control_coxph(conf_level = 0.95, 
                         pval_method = "log-rank", ties = "efron"), 
                       control_annot_surv_med = list(x = 0.8, y = 0.85, 
-                        w = 0.32, h = 0.16, fill = TRUE), control_annot_coxph = list(x = 0.27, 
-                        y = 0.35, w = 0.3, h = 0.125, fill = TRUE, 
-                        ref_lbls = FALSE), legend_pos = NULL, rel_height_plot = 0.8)
+                        w = 0.32, h = 0.16, fill = TRUE, digits = 4), 
+                      control_annot_coxph = list(x = 0.27, y = 0.35, 
+                        w = 0.3, h = 0.125, fill = TRUE, ref_lbls = FALSE), 
+                      legend_pos = NULL, rel_height_plot = 0.8)
               }
           }
           g_km_counter <- g_km_counter_generator()

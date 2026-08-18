@@ -110,10 +110,18 @@ testthat::describe("template_summary_by rtables output for different statistics"
     label = "Summary by Row Groups",
     dataname = "ADLB",
     parentname = "ADSL",
-    arm_var = choices_selected("ARM", fixed = TRUE),
-    by_vars = choices_selected("AVISIT", fixed = TRUE),
-    summarize_vars = choices_selected("AVALC", fixed = TRUE),
-    categorical_stats = "count"
+    arm_var = teal.picks::variables(choices = "ARM", selected = "ARM", fixed = TRUE),
+    by_vars = teal.picks::variables(choices = "AVISIT", selected = "AVISIT", fixed = TRUE),
+    summarize_vars = teal.picks::variables(choices = "AVALC", selected = "AVALC", fixed = TRUE, multiple = TRUE),
+    categorical_stats = "count",
+    paramcd = suppressWarnings(
+      teal.picks::picks(
+        teal.picks::variables(choices = "PARAMCD", selected = "PARAMCD"),
+        teal.picks::values(selected = "ALT", multiple = TRUE),
+        check_dataset = FALSE
+      ),
+      classes = "pick_delayed"
+    )
   )
 
   it("adds 'fraction' to the statistics", {
@@ -122,12 +130,6 @@ testthat::describe("template_summary_by rtables output for different statistics"
       args = c(list(id = "test_data", data = reactive(data)), mod$server_args),
       expr = {
         session$setInputs(
-          "arm_var-dataset_ADSL_singleextract-select" = "ARM",
-          "by_vars-dataset_ADLB_singleextract-select" = "AVISIT",
-          "summarize_vars-dataset_ADLB_singleextract-select" = "AVALC",
-          "paramcd-dataset_ADLB_singleextract-filter1-vals" = "ALT",
-          "id_var-dataset_ADLB_singleextract-select" = "USUBJID",
-          "paramcd-dataset_ADLB_singleextract-filter1-col" = "PARAMCD",
           drop_zero_levels = TRUE,
           add_total = TRUE,
           row_groups = FALSE,
@@ -149,12 +151,6 @@ testthat::describe("template_summary_by rtables output for different statistics"
       args = c(list(id = "test_data", data = reactive(data)), mod$server_args),
       expr = {
         session$setInputs(
-          "arm_var-dataset_ADSL_singleextract-select" = "ARM",
-          "by_vars-dataset_ADLB_singleextract-select" = "AVISIT",
-          "summarize_vars-dataset_ADLB_singleextract-select" = "AVALC",
-          "paramcd-dataset_ADLB_singleextract-filter1-vals" = "ALT",
-          "id_var-dataset_ADLB_singleextract-select" = "USUBJID",
-          "paramcd-dataset_ADLB_singleextract-filter1-col" = "PARAMCD",
           drop_zero_levels = TRUE,
           add_total = TRUE,
           row_groups = FALSE,

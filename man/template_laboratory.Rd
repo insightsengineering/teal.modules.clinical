@@ -9,7 +9,7 @@ template_laboratory(
   paramcd = "PARAMCD",
   param = "PARAM",
   anrind = "ANRIND",
-  timepoints = "ADY",
+  time_points = "ADY",
   aval_var = "AVAL",
   avalu_var = "AVALU",
   patient_id = NULL,
@@ -25,7 +25,7 @@ template_laboratory(
 
 \item{anrind}{(\code{character})\cr name of the analysis reference range indicator variable.}
 
-\item{timepoints}{(\code{character})\cr name of time variable.}
+\item{time_points}{(\code{character})\cr name of time variable.}
 
 \item{aval_var}{(\code{character})\cr name of the analysis value variable.}
 

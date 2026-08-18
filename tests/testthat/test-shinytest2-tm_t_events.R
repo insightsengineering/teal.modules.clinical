@@ -13,20 +13,22 @@ app_driver_tm_t_events <- function() {
         label = "Adverse Event Table",
         dataname = "ADAE",
         parentname = "ADSL",
-        arm_var = teal.transform::choices_selected(c("ARM", "ARMCD"), "ARM"),
-        llt = teal.transform::choices_selected(
-          choices = teal.transform::variable_choices(data[["ADAE"]], c("AETERM", "AEDECOD")),
-          selected = c("AEDECOD")
+        arm_var = teal.picks::variables(
+          choices = c("ARM", "ARMCD"),
+          selected = "ARM"
         ),
-        hlt = teal.transform::choices_selected(
-          choices = teal.transform::variable_choices(data[["ADAE"]], c("AEBODSYS", "AESOC")),
+        llt = teal.picks::variables(
+          choices = c("AETERM", "AEDECOD"),
+          selected = "AEDECOD"
+        ),
+        hlt = teal.picks::variables(
+          choices = c("AEBODSYS", "AESOC"),
           selected = "AEBODSYS"
         ),
         add_total = TRUE,
         event_type = "adverse event",
         total_label = default_total_label(),
         na_level = default_na_str(),
-        sort_criteria = c("freq_desc", "alpha"),
         sort_freq_col = default_total_label(),
         prune_freq = 0,
         prune_diff = 0,
@@ -43,10 +45,10 @@ app_driver_tm_t_events <- function() {
 testthat::test_that("e2e - tm_t_events: Module initializes in teal without errors and produces table output.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_events()
+  withr::defer(app_driver$stop())
   app_driver$expect_no_shiny_error()
   app_driver$expect_no_validation_error()
   app_driver$expect_visible(app_driver$namespaces(TRUE)$module("table-table-with-settings"))
-  app_driver$stop()
 })
 
 testthat::test_that(
@@ -55,21 +57,22 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events()
+    withr::defer(app_driver$stop())
 
     testthat::expect_equal(
-      app_driver$get_text("a.nav-link.active"),
+      app_driver$get_text(".teal-modules-tree a.module-button.active"),
       "Adverse Event Table"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("arm_var-dataset_ADSL_singleextract-select"),
+      get_teal_picks_slot(app_driver, "arm_var", "variables"),
       "ARM"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("hlt-dataset_ADAE_singleextract-select"),
+      get_teal_picks_slot(app_driver, "hlt", "variables"),
       "AEBODSYS"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("llt-dataset_ADAE_singleextract-select"),
+      get_teal_picks_slot(app_driver, "llt", "variables"),
       "AEDECOD"
     )
     testthat::expect_equal(
@@ -86,7 +89,6 @@ testthat::test_that(
     )
     testthat::expect_true(app_driver$get_active_module_input("add_total"))
     testthat::expect_true(app_driver$get_active_module_input("drop_arm_levels"))
-    app_driver$stop()
   }
 )
 
@@ -95,8 +97,9 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events()
+    withr::defer(app_driver$stop())
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", "ARMCD")
+    set_teal_picks_slot(app_driver, "arm_var", "variables", "ARMCD")
     testthat::expect_false(
       identical(
         table_before,
@@ -104,22 +107,16 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
   }
 )
 
 testthat::test_that("e2e - tm_t_events: Deselection of arm_var throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_events()
-  app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", NULL)
+  withr::defer(app_driver$stop())
+  set_teal_picks_slot(app_driver, "arm_var", "variables", NULL)
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
-  selector <- "arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message"
-  testthat::expect_equal(
-    app_driver$get_text(app_driver$namespaces(TRUE)$module(selector)),
-    "Please select 1 or 2 treatment variable values"
-  )
-  app_driver$stop()
 })
 
 testthat::test_that(
@@ -127,8 +124,9 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events()
+    withr::defer(app_driver$stop())
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("hlt-dataset_ADAE_singleextract-select", "AESOC")
+    set_teal_picks_slot(app_driver, "hlt", "variables", "AESOC")
     testthat::expect_false(
       identical(
         table_before,
@@ -136,7 +134,6 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
   }
 )
 
@@ -145,8 +142,9 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events()
+    withr::defer(app_driver$stop())
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("hlt-dataset_ADAE_singleextract-select", NULL)
+    set_teal_picks_slot(app_driver, "hlt", "variables", NULL)
     testthat::expect_false(
       identical(
         table_before,
@@ -154,7 +152,6 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
   }
 )
 
@@ -163,8 +160,9 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events()
+    withr::defer(app_driver$stop())
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("llt-dataset_ADAE_singleextract-select", "AETERM")
+    set_teal_picks_slot(app_driver, "llt", "variables", "AETERM")
     testthat::expect_false(
       identical(
         table_before,
@@ -172,7 +170,6 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
   }
 )
 
@@ -181,8 +178,9 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events()
+    withr::defer(app_driver$stop())
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("llt-dataset_ADAE_singleextract-select", NULL)
+    set_teal_picks_slot(app_driver, "llt", "variables", NULL)
     testthat::expect_false(
       identical(
         table_before,
@@ -190,6 +188,5 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
   }
 )

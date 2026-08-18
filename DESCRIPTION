@@ -35,6 +35,7 @@ BugReports:
 Depends:
     R (>= 4.4),
     teal (>= 1.2.0),
+    teal.picks (>= 0.1.0),
     teal.transform (>= 0.7.2),
     tern (>= 0.9.9)
 Imports:
@@ -65,6 +66,7 @@ Imports:
     teal.widgets (>= 0.5.0),
     tern.gee (>= 0.1.5),
     tern.mmrm (>= 0.3.3),
+    tidyselect (>= 1.2.0),
     utils,
     vistime (>= 1.2.3)
 Suggests:
@@ -98,9 +100,10 @@ Config/Needs/verdepcheck: insightsengineering/teal,
     shosaco/vistime, tidyverse/forcats, yihui/knitr, tidyverse/lubridate,
     insightsengineering/nestcolor, r-lib/pkgload,
     insightsengineering/roxy.shinylive, tidyverse/rvest,
-    rstudio/shinytest2, r-lib/styler, r-lib/testthat, r-lib/withr
+    rstudio/shinytest2, r-lib/styler, r-lib/testthat, r-lib/tidyselect,
+    r-lib/withr
 Config/Needs/website: insightsengineering/nesttemplate
-Config/roxygen2/version: 8.0.0
+Config/roxygen2/version: 8.1.0
 Config/testthat/edition: 3
 Encoding: UTF-8
 Language: en-US

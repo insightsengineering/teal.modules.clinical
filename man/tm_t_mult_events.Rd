@@ -7,8 +7,7 @@
 tm_t_mult_events(
   label,
   dataname,
-  parentname = ifelse(inherits(arm_var, "data_extract_spec"),
-    teal.transform::datanames_input(arm_var), "ADSL"),
+  parentname = "ADSL",
   arm_var,
   seq_var,
   hlt,
@@ -33,19 +32,19 @@ tm_t_mult_events(
 
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
-available choices and preselected option for variable names that can be used as \code{arm_var}.
+\item{arm_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+object with all available choices and preselected option for variable names that can be used as \code{arm_var}.
 It defines the grouping variable in the results table.}
 
-\item{seq_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
-all available choices and preselected option for variable names that can be used as analysis sequence number
-variable. Used for counting the unique number of events.}
+\item{seq_var}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+object with all available choices and preselected option for variable names that can be used as analysis
+sequence number variable. Used for counting the unique number of events.}
 
-\item{hlt}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr name of the variable
-with high level term for events.}
+\item{hlt}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+name of the variable with high level term for events.}
 
-\item{llt}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr name of the variable
-with low level term for events.}
+\item{llt}{(\code{\link[teal.picks:variables]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+name of the variable with low level term for events.}
 
 \item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
 
@@ -157,15 +156,15 @@ app <- init(
     tm_t_mult_events(
       label = "Concomitant Medications by Medication Class and Preferred Name",
       dataname = "ADCM",
-      arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-      seq_var = choices_selected("CMSEQ", selected = "CMSEQ", fixed = TRUE),
-      hlt = choices_selected(
-        choices = variable_choices(ADCM, c("ATC1", "ATC2", "ATC3", "ATC4")),
+      arm_var = variables(choices = c("ARM", "ARMCD"), selected = "ARM"),
+      seq_var = variables(choices = "CMSEQ", selected = "CMSEQ", fixed = TRUE),
+      hlt = variables(
+        choices = c("ATC1", "ATC2", "ATC3", "ATC4"),
         selected = c("ATC1", "ATC2", "ATC3", "ATC4")
       ),
-      llt = choices_selected(
-        choices = variable_choices(ADCM, c("CMDECOD")),
-        selected = c("CMDECOD")
+      llt = variables(
+        choices = "CMDECOD",
+        selected = "CMDECOD"
       ),
       add_total = TRUE,
       event_type = "treatment"
@@ -184,8 +183,8 @@ apps implementing this module can be found.
 \section{Examples in Shinylive}{
 \describe{
   \item{example-1}{
-    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOyAYQBZIpKyyur+AhglAF9FCAArIni-AGs4VlFE0Jtw-jhjKGFSPwJ+WlEy0fGpmeBoeFmkuQBdJRreyenRIoJ2BTBc2wdsgE0ASWznlOeHLkHAAhABSPz+OmemVe2VsLUhz1auScAEVEWBMrYmgBGDFYpoAJnx2IAzCSmgAWZ5DPYQW4zOaeOTAaHNBF4KGY9nPc5Fa4wBmiVwQHIFIpJYCs7kFXmXUXsiWhKVs1pykVoVBFeLRJ4QDJJHQAXh0SVwDT4QhE9xNluEYj1GQyJT86xga3K2jIswaTp01Cg9Dg1GNXKaJGIMGiUDIOhacC2sg0JHu9FYcYTMg8ln1TQDonuMf4OgACoxlqpy8WAHKwOB-X1OpLHXQm1Uc836v06FiCzQsUMEGJjAhiPyiYNwdQJ9iPaFYDtczILpq-MByf6Yhc0zvdnQTgCOfn7jEHw5kY4nImn-CeYGRaMhV6n5GLbfvLRR6M5xloFQTob2M4G6NhkMTUKQZ4jpek43o6e46EO0E2joJ60IGIgbOeo6zDkrQpHOmLYninLQtixKkURTTkpRBLUuuIFdnuz43oOd4EiRm4EhRXFkhS9FDHujF7tQEFQReojjrBr7wXuSESaGaEYXAWHIeweEtARd6tNkThNAA8mucjCQhLGvmxSItLpBlGaBOgmX6NT8K6RCeCGJpAU4u7dnAXrrKQrCoK2XKkOWHjwGQzyNoJ9lKEMtDGDo7DxOQagaNo1g2GkXaiHEECsJk6DsJqAAkgi0CkpUTow2iMEM-RKGA-TnEAA}{Open in Shinylive}
-    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOyAYQBZIpKyyur+AhglAF9FCAArIni-AGs4VlFE0Jtw-jhjKGFSPwJ+WlEy0fGpmeBoeFmkuQBdJRreyenRIoJ2BTBc2wdsgE0ASWznlOeHLkHAAhABSPz+OmemVe2VsLUhz1auScAEVEWBMrYmgBGDFYpoAJnx2IAzCSmgAWZ5DPYQW4zOaeOTAaHNBF4KGY9nPc5Fa4wBmiVwQHIFIpJYCs7kFXmXUXsiWhKVs1pykVoVBFeLRJ4QDJJHQAXh0SVwDT4QhE9xNluEYj1GQyJT86xga3K2jIswaTp01Cg9Dg1GNXKaJGIMGiUDIOhacC2sg0JHu9FYcYTMg8ln1TQDonuMf4OgACoxlqpy8WAHKwOB-X1OpLHXQm1Uc836v06FiCzQsUMEGJjAhiPyiYNwdQJ9iPaFYDtczILpq-MByf6Yhc0zvdnQTgCOfn7jEHw5kY4nImn-CeYGRaMhV6n5GLbfvLRR6M5xloFQTob2M4G6NhkMTUKQZ4jpek43o6e46EO0E2joJ60IGIgbOeo6zDkrQpHOmLYninLQtixKkURTTkpRBLUuuIFdnuz43oOd4EiRm4EhRXFkhS9FDHujF7tQEFQReojjrBr7wXuSESaGaEYXAWHIeweEtARd6tNkThNAA8mucjCQhLGvmxSItLpBlGaBOgmX6NT8K6RCeCGJpAU4u7dnAXrrKQrCoK2XKkOWHjwGQzyNoJ9lKEMtDGDo7DxOQagaNo1g2GkXaiHEECsJk6DsJqAAkgi0CkpUTow2iMEM-RKGA-TnEAA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOyAYQBZIpKyyur+AhglAF9FCAArIni-AGs4VlFE0Jtw-jhjKGFSPwJ+WlEy0fGpmeBoeFmkuQBdJRreyenRIoJ2BTBc2wdsgE0ASWznlOeHLkHAAhABSPz+OmemVe2VsLUhz1auScAEVEWBMrYmgBGDFYpoAJnx2IAzCSmgAWZ5DPYQW4zOaeOTAaHNBF4KGY9nPc5Fa4wBmiVwQHIFIpJYCs7kFXmXUXsiWhKVs1pykVoVBFeLRJ4QDJJHQAXh0SVwDT4QhE9xNluEYj1GQyJT86xga3K2jIswaTp01Cg9Dg1GNXKaJGIMGiUDIOhacC2sg0JHu9FYcYTMg8ln1TQDonuMf4OgACoxlqpy8WAHKwOB-X1OpLHXQm1Uc836v06FiCzQsUP9xi0QPW9gEGJjAhiUOPaFYDtczILpq-MByFKiYNwdQJ0PzjkbxsZLcARz8Q8HLBH9DHE6nM7bYGRaMhW5Eu+LT5f6M5xloFR7ia9jOEeXZ+jE1CkFew6jg6x5OveMiPjoc6YtieKctC2LElh6FNOSeEEtS66dt2Trvju5BfqhTz4Zh-z4bhjEEoRLHYiRQzkWB5HUFBME3mOCEZEh042mGLTZE4TQAPJrmR5E6JRn77s+knSXJzwITx3Y1PwrpEJ4IbAY4TgKX6cBeuspCsKgrZcqQ5YePAZBaeBOhcR5ShDLQxg6Ow8TkGoGjaNYNhpF2ohxBArCZOg7CagAJIItApElW6MNojBDP0ShgP05xAA}{Open in Shinylive}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOyAYQBZIpKyyur+AhglAF9FCAArIni-AGs4VlFE0Jtw-jhjKGFSPwJ+WlEy0fGpmeBoeFmkuQBdJRreyenRIoJ2BTBc2wdsgE0ASWznlOeHLkHAAhABSPz+OmemVe2VsLUhz1auScAEVEWBMrYmgBGDFYpoAJnx2IAzCSmgAWZ5DPYQW4zOaeOTAaHNBF4KGY9nPc5Fa4wBmiVwQHIFIpJYCs7kFXmXUXsiWhKVs1pykVoVBFeLRJ4QDJJHQAXh0SVwDT4QhE9xNluEYj1GQyJT86xga3K2jIswaTp01Cg9Dg1GNXKaJGIMGiUDIOhacC2sg0JHu9FYcYTMg8ln1TQDonuMf4OgACoxlqpy8WAHKwOB-X1OpLHXQm1Uc836v06FiCzQsUP9xi0QPW9gEGJjAhiUOPaFYDtczILpq-MByFKiYNwdQJ0PzjkbxsZLcARz8Q8HLBH9DHE6nM7bYGRaMhW5Eu+LT5f6M5xloFR7ia9jOEeXZ+jE1CkFew6jg6x5OveMiPjoc6YtieKctC2LElh6FNOSeEEtS66dt2Trvju5BfqhTz4Zh-z4bhjEEoRLHYiRQzkWB5HUFBME3mOCEZEh042mGLTZE4TQAPJrmR5E6JRn77s+knSXJzwITx3Y1PwrpEJ4IbAY4TgKX6cBeuspCsKgrZcqQ5YePAZBaeBOhcR5ShDLQxg6Ow8TkGoGjaNYNhpF2ohxBArCZOg7CagAJIItApElW6MNojBDP0ShgP05xAA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
     \if{html}{\out{<a style='height: 800px; display: block;'></a>}}
   }
 }

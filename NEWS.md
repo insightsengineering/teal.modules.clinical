@@ -1,5 +1,9 @@
 # teal.modules.clinical 0.13.0.9000
 
+### Enhancements
+
+* Introduced `teal.picks` as the primary method to select dataset, variables and values in modules.
+
 # teal.modules.clinical 0.13.0
 
 ### Enhancements
@@ -516,7 +520,7 @@ display a summary for individual response categories.
 # teal.oncology 0.0.2
 
 * Split `teal.oncology` into two packages: `tern` and `teal.oncology` where `tern` contains all the analysis code and `teal.oncology` contains the teal modules that make the analysis
-  function interactive with encodings and filtering. Find the `tern` package here: [https://github.com/insightsengineering/tern](https://github.com/insightsengineering/tern).
+  function interactive with encodings and filtering. Find the `tern` package here: [https://github.com/pharmaverse/tern](https://github.com/pharmaverse/tern).
 
 # teal.oncology 0.0.1
 
