@@ -9,22 +9,14 @@ highest grade post-baseline
 tm_t_abnormality_by_worst_grade(
   label,
   dataname,
-  parentname = ifelse(inherits(arm_var, "data_extract_spec"),
-    teal.transform::datanames_input(arm_var), "ADSL"),
+  parentname = "ADSL",
   arm_var,
-  id_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
-    subset = "USUBJID"), selected = "USUBJID", fixed = TRUE),
+  id_var = teal.picks::variables("USUBJID", "USUBJID", fixed = TRUE),
   paramcd,
-  atoxgr_var =
-    teal.transform::choices_selected(teal.transform::variable_choices(dataname, subset =
-    "ATOXGR"), selected = "ATOXGR", fixed = TRUE),
-  worst_high_flag_var =
-    teal.transform::choices_selected(teal.transform::variable_choices(dataname, subset =
-    "WGRHIFL"), selected = "WGRHIFL", fixed = TRUE),
-  worst_low_flag_var =
-    teal.transform::choices_selected(teal.transform::variable_choices(dataname, subset =
-    "WGRLOFL"), selected = "WGRLOFL", fixed = TRUE),
-  worst_flag_indicator = teal.transform::choices_selected("Y"),
+  atoxgr_var = teal.picks::variables("ATOXGR", "ATOXGR", fixed = TRUE),
+  worst_high_flag_var = teal.picks::variables("WGRHIFL", "WGRHIFL", fixed = TRUE),
+  worst_low_flag_var = teal.picks::variables("WGRLOFL", "WGRLOFL", fixed = TRUE),
+  worst_flag_indicator = teal.picks::values("Y", "Y", fixed = FALSE, multiple = FALSE),
   add_total = TRUE,
   total_label = default_total_label(),
   drop_arm_levels = TRUE,
@@ -56,44 +48,57 @@ tm_t_abnormality_by_worst_grade(
 
 - arm_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for variable
   names that can be used as `arm_var`. It defines the grouping variable
   in the results table.
 
 - id_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   object specifying the variable name for subject id.
 
 - paramcd:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
-  object with all available choices and preselected option for the
-  parameter code variable from `dataname`.
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
+  variable used to filter the analysis dataset (typically `PARAMCD`).
+  The `values()` element is added internally to allow users to pick
+  laboratory parameter value(s) interactively.
 
 - atoxgr_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
-  object with all available choices and preselected option for variable
-  names that can be used as Analysis Toxicity Grade.
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
+  object with all available choices and preselected option for the
+  analysis toxicity grade variable.
 
 - worst_high_flag_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
-  object with all available choices and preselected option for variable
-  names that can be used as Worst High Grade flag.
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
+  object with all available choices and preselected option for the worst
+  high grade flag variable.
 
 - worst_low_flag_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
-  object with all available choices and preselected option for variable
-  names that can be used as Worst Low Grade flag.
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
+  object with all available choices and preselected option for the worst
+  low grade flag variable.
 
 - worst_flag_indicator:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
-  value indicating worst grade.
+  ([`teal.picks::values()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy
+  [`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html)
+  is deprecated but still accepted)\
+  Value(s) matching the worst high/low flag variables (default `"Y"`).
+  Uses explicit candidate levels including an empty string where needed.
+  The UI shows the selected value as static text (not an interactive
+  control).
 
 - add_total:
 
@@ -166,7 +171,7 @@ This module generates the following objects, which can be modified in
 place using decorators:
 
 - `table` (`TableTree` - output of
-  [`rtables::build_table()`](https://insightsengineering.github.io/rtables/latest-tag/reference/build_table.html))
+  [`rtables::build_table()`](https://rdrr.io/pkg/rtables/man/build_table.html))
 
 A Decorator is applied to the specific output using a named list of
 `teal_transform_module` objects. The name of this list corresponds to
@@ -214,7 +219,7 @@ where additional example apps implementing this module can be found.
 - example-1:
 
   [Open in
-  Shinylive](https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsO-VNVaNFEEr8UKRQ+kZc1AD6waHWQSFhhjoA7rSkABa0EOyxULg6IEo6OgCCACIAygAy4TqkMARRcAAeUVD8otTFZeXVAEJ1DU2t7fzU9DoApAB8Uz0lxrTU5IzsAISlAGoAkpU7ttPZUzoE7ApglQDCWE5OAHI79wDiFwUX-aWVTtVPLmByAIAXwCACsiNkogBrOCsUS5RI2ZL8ODGKDCUhRAj8WiiJrgyEwuHAaDweF5OQAXVcEAqNTqeWAwAudOqF0p1NpfUGyMSTJZ3PZnKUaFQdWy6XOEBKeR0AF4dHlcD0+EIRKJ5TpVcIxFKSiUGlFMVB6BAiIwYNx0qwovQbSlzaJMQBzZgovX6krUE1waiai7VE3mkLm1h2MSkHRYMQYjVpTI6AAStGdGQjOmebt0AAUiE6DP0oKJfdk4G8Fvq8qTdAqBQNy9LPToWDAopoWJqCBkIQQxFFiyJ1HB+B6m6duzIxJr24xaCaRFiJ734ayCqJBPRi5GFWcWVgALJvHR7-dXcoXQHKxtjgdwIf8f1gUoHi4VkpyK9j1AsWDYztLvtb3vUcmy7HspwVdtqEEOBF3AlduXeMBs2fUpT3PPBj2Q1DDwBT8xx0IDyAfHdzifapbCPC4bmzKiwB2Z5SgvN8dA-FiOn4I0iFCP0FQAMVKapvgrAJ33wpYVlUTVIn7OhlxAmSuknMjWToypSj4vi2Uwojh0fABNC98INOBuFk5S636OiAHl7nsWwtKPXSSKwwyAR6AIAloYwdHYbJVigCxtGsGwikbUQsggVhSnQdhRQAEkEWgCgS4tGG0fwlCBJQwCBSkgA)
+  Shinylive](https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsO-VNVaNFEEr8UKRQ+kZc1AD6waHWQSFhhjoA7rSkABa0EOyxULg6IEo6OgCCACIAygAy4TqkMARRcAAeUVD8otTFZeXVAEJ1DU2t7fzU9DoApAB8Uz0lxrTU5IzsAISlAGoAkpU7ttPZUzoE7ApglQDCWE5OAHI79wDiFwUX-aWVTtVPLmByAIAXwCACsiNkogBrOCsUS5RI2ZL8ODGKDCUhRAj8WiiJrgyEwuHAaDweF5OQAXVcEAqNTqeWAwAudOqF0p1NpfUGyMSTJZ3PZnKUaFQdWy6XOEBKeR0AF4dHlcD0+EIRKJ5TpVcIxFKSiUGlFMVB6BAiIwYNx0qwovQbSlzaJMQBzZgovX6krUE1waiai7VE3mkLm1h2MSkHRYMQYjVpTI6AAStGdGQjOmebt0AAUiE6DP0oKJfdk4G8Fvq8qTdAqBQNy9LPToWDAopoWJr24xaCb1ewCBkIQQxJqziysABZN46ccTq7lC5yArFkTqOD8f1gUqTxfKxue1AsWDYzssHv0PsDocj2tgbPb0pzhcAvdN5v8fhGoihP0KgBipTVN8FYBCUS49EsKyqJqkRRF0Mi6hWsHwcO5xblUbJ4DOlylH+f6YcuvpwGuG63gAmruSFwNwcF0Khdb9NOFwAPL3PYtj4dOK7EeQpHYRRAI9AEAS0MYOjsNkqxQBY2jWDYRSNqIWQQKwpToOwooACSCLQBRacWjDaP4ShAkoYBApSQA)
 
 ## Examples
 
@@ -238,14 +243,8 @@ app <- init(
     tm_t_abnormality_by_worst_grade(
       label = "Laboratory Test Results with Highest Grade Post-Baseline",
       dataname = "ADLB",
-      arm_var = choices_selected(
-        choices = variable_choices(ADSL, subset = c("ARM", "ARMCD")),
-        selected = "ARM"
-      ),
-      paramcd = choices_selected(
-        choices = value_choices(ADLB, "PARAMCD", "PARAM"),
-        selected = c("ALT", "CRP", "IGA")
-      ),
+      arm_var = variables(choices = c("ARM", "ARMCD"), selected = "ARM"),
+      paramcd = variables(choices = "PARAMCD"),
       add_total = FALSE
     )
   ),

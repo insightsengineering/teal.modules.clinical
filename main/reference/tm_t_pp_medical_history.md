@@ -46,19 +46,25 @@ tm_t_pp_medical_history(
 
 - mhterm:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([teal.picks::variables](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html)
+  or
+  [`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   object with all available choices and preselected option for the
   `MHTERM` variable from `dataname`.
 
 - mhbodsys:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([teal.picks::variables](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html)
+  or
+  [`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   object with all available choices and preselected option for the
   `MHBODSYS` variable from `dataname`.
 
 - mhdistat:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([teal.picks::variables](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html)
+  or
+  [`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   object with all available choices and preselected option for the
   `MHDISTAT` variable from `dataname`.
 
@@ -101,7 +107,7 @@ This module generates the following objects, which can be modified in
 place using decorators:
 
 - `table` (`TableTree` - output of
-  [`rtables::build_table()`](https://insightsengineering.github.io/rtables/latest-tag/reference/build_table.html))
+  [`rtables::build_table()`](https://rdrr.io/pkg/rtables/man/build_table.html))
 
 A Decorator is applied to the specific output using a named list of
 `teal_transform_module` objects. The name of this list corresponds to
@@ -143,7 +149,7 @@ For more information on reporting in `teal`, see the vignettes:
 - example-1:
 
   [Open in
-  Shinylive](https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOyAWQAJIpKyyur+GBilAF9FCAArIni-AGs4VlFE0Jtw-jhjKGFSPwJ+WlEy0fGpmeBoeFmkuQBdVwgcgqKk4GAFMBv8p-PL6+a2xdCHp5zWm8Pko0KgivFouwGkkdABeHRJXANPhCESiOE6FHCMRQiAZDIlPzrdB+eBbWT+OKiUhENi4-H46hQehwagYp5NODk7g6FrbGlsJ5IvEMhGhY66eH-L5ChoM1AsCikCXs555V54OX4hUaJUbIhsqVgBy5BwAIQAUgBJbKykUM3rkRgwDEEGJjAhiPyiVlwdRc+mijJuj1iDGaFi0ZkiDbumQ4gEtFIEKFgVq2JxYJpPORyYVBjI+kT+-iq9OZ7NgLUZPPVzExegCUQzV1xz2ib2+kuBoMh+Po+ERxhR+gxvvt9iJlIclpmgDyeQAmrkc-mC0W-eRS0bWvOlyuq-b8bWjxleltqR5W6GOxvu3Xg22w4PI9G4LGb5OvtO0y1slbclsTJbFXB8dDvLcyz-ACgJAw8gyGBlEJ0IYhloYwdHYeInSgCxtGsGw0hFUQ4ggVhMnQdhQQAEkEWgUhon1GG0Rghn6JQwH6c4gA)
+  Shinylive](https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOyAWQAJIpKyyur+GBilAF9FCAArIni-AGs4VlFE0Jtw-jhjKGFSPwJ+WlEy0fGpmeBoeFmkuQBdVwgcgqKk4GAFMBv8p-PL6+a2xdCHp5zWm8Pko0KgivFouwGkkdABeHRJXANPhCESiOE6FHCMRQiAZDIlPzrdB+eBbWT+OKiUhENi4-H46hQehwagYp5NODk7g6FrbGlsJ5IvEMhGhY66eH-L5ChoM1AsCikCXs555V54OX4hUaJUbIhsqVgBy5BwAIQAUgBJbKykUM3rkRgwDGaFi0ZloqFgVq2JxYJpCky0CpcjH2ZxyYWizExegCUQzV3uz04jktM0AeTyAE1ckHjCGw-CI04o1qMr0ttSPMnGB76F709krblbJlbAWi-xw44y9H8UMMkMhrRjDp2PEnVALNprDY0iLRHEIKxMuh2KCACSCWgpbeiVTaRhDfpKMD9c5AA)
 
 ## Examples
 
@@ -166,18 +172,9 @@ app <- init(
       dataname = "ADMH",
       parentname = "ADSL",
       patient_col = "USUBJID",
-      mhterm = choices_selected(
-        choices = variable_choices(ADMH, c("MHTERM")),
-        selected = "MHTERM"
-      ),
-      mhbodsys = choices_selected(
-        choices = variable_choices(ADMH, "MHBODSYS"),
-        selected = "MHBODSYS"
-      ),
-      mhdistat = choices_selected(
-        choices = variable_choices(ADMH, "MHDISTAT"),
-        selected = "MHDISTAT"
-      )
+      mhterm = variables("MHTERM", fixed = TRUE),
+      mhbodsys = variables("MHBODSYS", fixed = TRUE),
+      mhdistat = variables("MHDISTAT", fixed = TRUE),
     )
   )
 )

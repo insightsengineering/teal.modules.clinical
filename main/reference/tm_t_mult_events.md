@@ -8,8 +8,7 @@ This module produces a table of multiple events by term.
 tm_t_mult_events(
   label,
   dataname,
-  parentname = ifelse(inherits(arm_var, "data_extract_spec"),
-    teal.transform::datanames_input(arm_var), "ADSL"),
+  parentname = "ADSL",
   arm_var,
   seq_var,
   hlt,
@@ -48,26 +47,30 @@ tm_t_mult_events(
 
 - arm_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for variable
   names that can be used as `arm_var`. It defines the grouping variable
   in the results table.
 
 - seq_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for variable
   names that can be used as analysis sequence number variable. Used for
   counting the unique number of events.
 
 - hlt:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   name of the variable with high level term for events.
 
 - llt:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   name of the variable with low level term for events.
 
 - add_total:
@@ -162,7 +165,7 @@ This module generates the following objects, which can be modified in
 place using decorators:
 
 - `table` (`TableTree` - output of
-  [`rtables::build_table()`](https://insightsengineering.github.io/rtables/latest-tag/reference/build_table.html))
+  [`rtables::build_table()`](https://rdrr.io/pkg/rtables/man/build_table.html))
 
 A Decorator is applied to the specific output using a named list of
 `teal_transform_module` objects. The name of this list corresponds to
@@ -210,7 +213,7 @@ where additional example apps implementing this module can be found.
 - example-1:
 
   [Open in
-  Shinylive](https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOyAYQBZIpKyyur+AhglAF9FCAArIni-AGs4VlFE0Jtw-jhjKGFSPwJ+WlEy0fGpmeBoeFmkuQBdJRreyenRIoJ2BTBc2wdsgE0ASWznlOeHLkHAAhABSPz+OmemVe2VsLUhz1auScAEVEWBMrYmgBGDFYpoAJnx2IAzCSmgAWZ5DPYQW4zOaeOTAaHNBF4KGY9nPc5Fa4wBmiVwQHIFIpJYCs7kFXmXUXsiWhKVs1pykVoVBFeLRJ4QDJJHQAXh0SVwDT4QhE9xNluEYj1GQyJT86xga3K2jIswaTp01Cg9Dg1GNXKaJGIMGiUDIOhacC2sg0JHu9FYcYTMg8ln1TQDonuMf4OgACoxlqpy8WAHKwOB-X1OpLHXQm1Uc836v06FiCzQsUMEGJjAhiPyiYNwdQJ9iPaFYDtczILpq-MByf6Yhc0zvdnQTgCOfn7jEHw5kY4nImn-CeYGRaMhV6n5GLbfvLRR6M5xloFQTob2M4G6NhkMTUKQZ4jpek43o6e46EO0E2joJ60IGIgbOeo6zDkrQpHOmLYninLQtixKkURTTkpRBLUuuIFdnuz43oOd4EiRm4EhRXFkhS9FDHujF7tQEFQReojjrBr7wXuSESaGaEYXAWHIeweEtARd6tNkThNAA8mucjCQhLGvmxSItLpBlGaBOgmX6NT8K6RCeCGJpAU4u7dnAXrrKQrCoK2XKkOWHjwGQzyNoJ9lKEMtDGDo7DxOQagaNo1g2GkXaiHEECsJk6DsJqAAkgi0CkpUTow2iMEM-RKGA-TnEAA)
+  Shinylive](https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOyAYQBZIpKyyur+AhglAF9FCAArIni-AGs4VlFE0Jtw-jhjKGFSPwJ+WlEy0fGpmeBoeFmkuQBdJRreyenRIoJ2BTBc2wdsgE0ASWznlOeHLkHAAhABSPz+OmemVe2VsLUhz1auScAEVEWBMrYmgBGDFYpoAJnx2IAzCSmgAWZ5DPYQW4zOaeOTAaHNBF4KGY9nPc5Fa4wBmiVwQHIFIpJYCs7kFXmXUXsiWhKVs1pykVoVBFeLRJ4QDJJHQAXh0SVwDT4QhE9xNluEYj1GQyJT86xga3K2jIswaTp01Cg9Dg1GNXKaJGIMGiUDIOhacC2sg0JHu9FYcYTMg8ln1TQDonuMf4OgACoxlqpy8WAHKwOB-X1OpLHXQm1Uc836v06FiCzQsUP9xi0QPW9gEGJjAhiUOPaFYDtczILpq-MByFKiYNwdQJ0PzjkbxsZLcARz8Q8HLBH9DHE6nM7bYGRaMhW5Eu+LT5f6M5xloFR7ia9jOEeXZ+jE1CkFew6jg6x5OveMiPjoc6YtieKctC2LElh6FNOSeEEtS66dt2Trvju5BfqhTz4Zh-z4bhjEEoRLHYiRQzkWB5HUFBME3mOCEZEh042mGLTZE4TQAPJrmR5E6JRn77s+knSXJzwITx3Y1PwrpEJ4IbAY4TgKX6cBeuspCsKgrZcqQ5YePAZBaeBOhcR5ShDLQxg6Ow8TkGoGjaNYNhpF2ohxBArCZOg7CagAJIItApElW6MNojBDP0ShgP05xAA)
 
 ## Examples
 
@@ -233,15 +236,15 @@ app <- init(
     tm_t_mult_events(
       label = "Concomitant Medications by Medication Class and Preferred Name",
       dataname = "ADCM",
-      arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-      seq_var = choices_selected("CMSEQ", selected = "CMSEQ", fixed = TRUE),
-      hlt = choices_selected(
-        choices = variable_choices(ADCM, c("ATC1", "ATC2", "ATC3", "ATC4")),
+      arm_var = variables(choices = c("ARM", "ARMCD"), selected = "ARM"),
+      seq_var = variables(choices = "CMSEQ", selected = "CMSEQ", fixed = TRUE),
+      hlt = variables(
+        choices = c("ATC1", "ATC2", "ATC3", "ATC4"),
         selected = c("ATC1", "ATC2", "ATC3", "ATC4")
       ),
-      llt = choices_selected(
-        choices = variable_choices(ADCM, c("CMDECOD")),
-        selected = c("CMDECOD")
+      llt = variables(
+        choices = "CMDECOD",
+        selected = "CMDECOD"
       ),
       add_total = TRUE,
       event_type = "treatment"

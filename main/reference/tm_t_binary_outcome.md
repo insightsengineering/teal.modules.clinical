@@ -11,17 +11,13 @@ the TLG Catalog
 tm_t_binary_outcome(
   label,
   dataname,
-  parentname = ifelse(test = inherits(arm_var, "data_extract_spec"), yes =
-    teal.transform::datanames_input(arm_var), no = "ADSL"),
+  parentname = "ADSL",
   arm_var,
   arm_ref_comp = NULL,
   paramcd,
   strata_var,
-  aval_var = teal.transform::choices_selected(choices =
-    teal.transform::variable_choices(dataname, c("AVALC", "SEX")), selected = "AVALC",
-    fixed = FALSE),
-  conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order =
-    TRUE),
+  aval_var = teal.picks::variables(c("AVALC", "SEX"), "AVALC", fixed = FALSE),
+  conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95),
   default_responses = c("CR", "PR", "Y", "Complete Response (CR)",
     "Partial Response (PR)", "M"),
   rsp_table = FALSE,
@@ -61,7 +57,8 @@ tm_t_binary_outcome(
 
 - arm_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for variable
   names that can be used as `arm_var`. It defines the grouping variable
   in the results table.
@@ -72,34 +69,47 @@ tm_t_binary_outcome(
   if specified it must be a named list with each element corresponding
   to an arm variable in `ADSL` and the element must be another list
   (possibly with delayed
+  [`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html)
+  or
+  [`teal.picks::values()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy
   [`teal.transform::variable_choices()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/variable_choices.html)
-  or delayed
+  and
   [`teal.transform::value_choices()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/value_choices.html)
-  with the elements named `ref` and `comp` that the defined the default
-  reference and comparison arms when the arm variable is changed.
+  are deprecated but still accepted) with the elements named `ref` and
+  `comp` that define the default reference and comparison arms when the
+  arm variable is changed.
 
 - paramcd:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for the
   parameter code variable from `dataname`.
 
 - strata_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   names of the variables for stratified analysis.
 
 - aval_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and pre-selected option for the
   analysis variable.
 
 - conf_level:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
-  object with all available choices and pre-selected option for the
-  confidence level, each within range of (0, 1).
+  ([`teal.picks::values()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy
+  [`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html)
+  is deprecated but still accepted)\
+  available confidence levels and default selection in (0, 1). Choice
+  order follows the vector passed to
+  [`teal.picks::values()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html)
+  (there is no `keep_order` argument).
 
 - default_responses:
 
@@ -127,18 +137,18 @@ tm_t_binary_outcome(
 
   - `unstrat`: a list of settings for unstratified analysis with 3 named
     elements `method_ci` and `method_test`, and `odds`. See
-    [`tern::estimate_proportion_diff()`](https://insightsengineering.github.io/tern/latest-tag/reference/prop_diff.html),
-    [`tern::test_proportion_diff()`](https://insightsengineering.github.io/tern/latest-tag/reference/prop_diff_test.html),
+    [`tern::estimate_proportion_diff()`](https://rdrr.io/pkg/tern/man/prop_diff.html),
+    [`tern::test_proportion_diff()`](https://rdrr.io/pkg/tern/man/prop_diff_test.html),
     and
-    [`tern::estimate_odds_ratio()`](https://insightsengineering.github.io/tern/latest-tag/reference/odds_ratio.html),
+    [`tern::estimate_odds_ratio()`](https://rdrr.io/pkg/tern/man/odds_ratio.html),
     respectively, for options and details on how these settings are
     implemented in the analysis.
 
   - `strat`: a list of settings for stratified analysis with elements
     `method_ci` and `method_test`. See
-    [`tern::estimate_proportion_diff()`](https://insightsengineering.github.io/tern/latest-tag/reference/prop_diff.html)
+    [`tern::estimate_proportion_diff()`](https://rdrr.io/pkg/tern/man/prop_diff.html)
     and
-    [`tern::test_proportion_diff()`](https://insightsengineering.github.io/tern/latest-tag/reference/prop_diff_test.html),
+    [`tern::test_proportion_diff()`](https://rdrr.io/pkg/tern/man/prop_diff_test.html),
     respectively, for options and details on how these settings are
     implemented in the analysis.
 
@@ -237,7 +247,7 @@ This module generates the following objects, which can be modified in
 place using decorators:
 
 - `table` (`TableTree` - output of
-  [`rtables::build_table()`](https://insightsengineering.github.io/rtables/latest-tag/reference/build_table.html))
+  [`rtables::build_table()`](https://rdrr.io/pkg/rtables/man/build_table.html))
 
 A Decorator is applied to the specific output using a named list of
 `teal_transform_module` objects. The name of this list corresponds to
@@ -285,7 +295,7 @@ where additional example apps implementing this module can be found.
 - example-1:
 
   [Open in
-  Shinylive](https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiS1xH5RSUfUa7UA+h5e1kpB3oY6AO60pAAWtBDsYbg6IEo6OnRMLBz8qNSsjIoQGVnMbOzGRIwwnuSMosUZAIIAIgDKADI+OqQwBP5wAB7+UPyi1Ok6bVjtPX0Dw6P8DToApAB8a1MZMIJe5Ow7GdMAas2dAMI6ALw6-P4kxP4NqP7UUPRw1OzN51c2TbbEonUHROLvT7fI5gS6xFhQdSqHRYMTCUgAegAYgl+AkAOYKMBNE6ArbHYy0aj1dgABWaWGaAFlLq0dABCO5EgDypywAEkAHKnIk6AA+Z357X5tluXLAWO5nU63IA6joHLSicUAL7FABWRAS-gA1nBWKIkp4oDYIvw4MYoOj-AQ8aIBobjWaLcBoPBLWE5ABdNxtLo9MLAYBEsOdIlBkMQGZzO3WqMx1qzeOJpQsGAvB0uogwVA9OiiUhHEEMllsu7lyuMB23HQxrBMnQAISJKWIJZbBBhNemPdbYGHl21clwU2H9doFfYTeMLaJncQOlpHwIcHoRFHfdLd0HMY3rUYgnxOgAGqOiZcN5di-QEp5LBAp0pimhSxEEjEqwyMIW2SKY+CEERRBbcDhDEQCTj6fxSH8F9oDYR59j7OB4NBD4vmoVcwFRURUBIe0Gh7Y4gOtP1dHlZNKJBUFUARfp+AHWIjR3UR-FEb44CRfgcNBHQCE4mQxBbTRuEEOAXXE7jfkzdoUiJelGVrO8wHU5ltRnJiRL4kRBMIzsnHaWZaX5IkqJ0adbLzfxpMYDiuLEXj+ME4TQTEtyoLuZzaE+ER5L8pTZl7Id2y0mtWRiy5bFi1op30kSTiMgTyHY+jorAWz7IMjJHOXIt+zuYrC0PVLDNIZgvCclhXIkniMq82yMl85qpJYIL6BCzrFOTSKiXaJxbzwMdOyZLAAGksAAJi0xlLhcYkCrSjJWqywjltW-LqtBe1HWdJsSJIPj-MyBdK3artzMs-kWwbbyRNeAcYSfEsRHIFExFIiA+J0dhLiwRQJrUlgNG4X6zoB3Q6VBvTbtKOBtGoS6T0Kjb72LfI4B+4j-sB4HEfB7TIaCgjCfO+HaVJg6NoyEavD63RWgXOAoGJ9pWjB1TtMYIh8VO0QtDZjmudp3mbKx0ESTS9aNqFU4nFledF2RnQ3uPGF2hZkQdHZvjJaBnm+bHQUiFIHQnGk6hBGC+HBScMHFcZkQ0Yxl60pxr78d0am4aBkHzaJS3rdtmTHaB53Q-Jxgoapv6aaBum+c1pmBaFkWxcNiXidpaWyb16Ojc57mi81+WRLdkTeQFYUnuu72Tm10SYVpQXhbEUXtDz42C6L-mS9Z-vy-hs2kdlk4Pe+L21K7nO+7Lk26SHscR4NleK7j8Obbth3R-YWPtVu6uMlroCKGLQjBSLSY8oMklimKWgV3YBJ6kRDRtGsGw0hBKIeIEBWDNHQOwH8AASQQtAUhQL4owbQRQlA6iUGAHUQYgA)
+  Shinylive](https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiS1xH5RSUfUa7UA+h5e1kpB3oY6AO60pAAWtBDsYbg6IEo6OnRMLBz8qNSsjIoQGVnMbOzGRIwwnuSMosUZAIIAIgDKADI+OqQwBP5wAB7+UPyi1Ok6bVjtPX0Dw6P8DToApAB8a1MZMIJe5Ow7GdMAas2dAMI6ALw6-P4kxP4NqP7UUPRw1OzN51c2TbbEonUHROLvT7fI5gS6xFhQdSqHRYMTCUgAegAYgl+AkAOYKMBNE6ArbHYy0aj1dgABWaWGaAFlLq0dABCO5EgDypywAEkAHKnIk6AA+Z357X5tluXLAWO5nU63IA6joHLSicUAL7FABWRAS-gA1nBWKIkp4oDYIvw4MYoOj-AQ8aIBobjWaLcBoPBLWE5ABdNxtLo9MLAYBEsOdIlBkMQGZzO3WqMx1qzeOJpQsGAvB0uogwVA9OiiUhHEEMllsu7lyuMB23HQxrBMnQAISJKWIJZbBBhNemPdbYGHl21clwU2H9doFfYTeMLaJncQOlpHwIcHoRFHfdLd0HMY3rUYgnxOgAGqOiZcN5di-QEp5LBAp0pimhSxEEjEqwyMIW2SKY+CEERRBbcDhDEQCTj6fxSH8F9oDYR59j7OB4NBD4vmoVcwFRURUBIe0Gh7Y4gOtP1dHlZNKJBUFUARfp+BbTQWFoT5IPYAhYiNHcoPlelGVrbUZyYk4838TjGA4rieLgqiTn4wSxAHId2zvcd21ZHTmkuWwa304lJNBUFRG+OAkXY+jtLAFTpxUmTlyLfs7lcwtD3MiyK2YLxZJYBTGG4+heJUjI1JkDTjxhdonFvPAx07JksAAaSwAAmHTGUuFwzMinQrJEWzCLygqnN80F7UdZ0mxIkgrOEzIF0rIrOycdpZlpfkWwbHCLIyV5NPvYt8jgcgUTEUiICsnR2EuLBFGSolaRYDRuGmxq5t0OllokorSjgbRqBak8pKGjIxpLEQpuI2b5sWg7VrAdbGE2giHqavbaRe6qruusB2i8cLdFaBc4CgJ72laFaUjWxgiHxBrRC0cHIeh364aJI6dBJIbnMuk4hVOJxZXnRc8ZGuKiRBpSdAhqysYW2H4bHQUiFIHQnE46hBAZ9hBScFaicB47TvOwbAZuib7pmn6FqW9miU57nee4AWwYW4WVbejbuK+hXdoWv74bxoHaSRlGxDR7RGcxp7aRx176e1pmoZhl28YJiyxau3kBWFfq2uliyaZ0E83ut1H0Yd5mnZdhHgdBkR489va2cO4ncJO74pcR5HY-tj2WbpJOxzdtPS69vW1Z5vmtbToWRe1IrfYyf2aooYtCMFItJkcqSSWKYpaBXdgEnqRENG0awbDSEFRHiCBWGadB2B-AASQRaBSberMYbQiiUHUlDAHUgyAA)
 
 ## Examples
 
@@ -318,17 +328,14 @@ app <- init(
     tm_t_binary_outcome(
       label = "Responders",
       dataname = "ADRS",
-      paramcd = choices_selected(
-        choices = value_choices(ADRS, "PARAMCD", "PARAM"),
-        selected = "BESRSPI"
-      ),
-      arm_var = choices_selected(
-        choices = variable_choices(ADRS, c("ARM", "ARMCD", "ACTARMCD")),
+      paramcd = variables(choices = "PARAMCD"),
+      arm_var = variables(
+        choices = c("ARM", "ARMCD", "ACTARMCD"),
         selected = "ARM"
       ),
       arm_ref_comp = arm_ref_comp,
-      strata_var = choices_selected(
-        choices = variable_choices(ADRS, c("SEX", "BMRKR2", "RACE")),
+      strata_var = variables(
+        choices = c("SEX", "BMRKR2", "RACE"),
         selected = "RACE"
       ),
       default_responses = list(

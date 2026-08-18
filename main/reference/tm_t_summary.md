@@ -8,8 +8,7 @@ This module produces a table to summarize variables.
 tm_t_summary(
   label,
   dataname,
-  parentname = ifelse(inherits(arm_var, "data_extract_spec"),
-    teal.transform::datanames_input(arm_var), "ADSL"),
+  parentname = "ADSL",
   arm_var,
   summarize_vars,
   add_total = TRUE,
@@ -50,16 +49,15 @@ tm_t_summary(
 
 - arm_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
-  object with all available choices and preselected option for variable
-  names that can be used as `arm_var`. It defines the grouping
-  variable(s) in the results table. If there are two elements selected
-  for `arm_var`, second variable will be nested under the first
-  variable.
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
+  If there are two elements selected for `arm_var`, the second variable
+  is nested under the first.
 
 - summarize_vars:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   names of the variables that should be summarized.
 
 - add_total:
@@ -105,7 +103,7 @@ tm_t_summary(
   (named `list` or `NULL`)\
   format patterns for numeric statistics. Names should match the
   statistics in `numeric_stats`. If `NULL`, defaults from
-  [`tern::analyze_vars()`](https://insightsengineering.github.io/tern/latest-tag/reference/analyze_variables.html)
+  [`tern::analyze_vars()`](https://rdrr.io/pkg/tern/man/analyze_variables.html)
   are used.
 
 - denominator:
@@ -175,7 +173,7 @@ This module generates the following objects, which can be modified in
 place using decorators:
 
 - `table` (`TableTree` - output of
-  [`rtables::build_table()`](https://insightsengineering.github.io/rtables/latest-tag/reference/build_table.html))
+  [`rtables::build_table()`](https://rdrr.io/pkg/rtables/man/build_table.html))
 
 A Decorator is applied to the specific output using a named list of
 `teal_transform_module` objects. The name of this list corresponds to
@@ -223,7 +221,7 @@ where additional example apps implementing this module can be found.
 - example-1:
 
   [Open in
-  Shinylive](https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpQGIdABUZxULKBokOkTGOqQAFrrkoqQ6sqK6RoIJOgAGTgDyAMoAIgCaqTpQEPxpOQDCWVhOAIJZhZostFD0IqJhRDr8cHwQMczkOjC0oqK0EADmXQFQGEr8M-pGXNQA+gukUNbzi4Y6AO60EePsG1C4OiBKOjo1OVkAMkthMASrcAAeq1D8otTXt3uDwAJJlcnlgABGAC6zwAcjVVuNyBNVKslABfRQQABWRHGqwA1nBWKJTjMbHtusYoMJSKsCPwRm88QTiaTgNB4GSznJoa4IHdHs8zsBgAowEKHhLofyIEo0KhnuMjuwAWcdABeaabXAAvhCNpaoYCYRiNUQG43UgwVb00SCGAwFgcAFWnTUFpwajGiU5HpECbMVDhGR2FoiCV6y3unXFWC6bUSqVRt1Wli2xqMY0EcL4ghiVYJETqOD8dgENWSrAAWSjOmTtfKOQlcgujbrYDbaZuP34dqImx92vszmjsZ0DqdTQAXnBVln2trc-nC8W4KXyz2rZWJVknAANesSrA1couPANsAAIRrWAA0lgAEzHsBg-KvipVWpZV81ADiF7djGE67mA+5HpeJ5nkB27AROECOqoMirMYRCMM6pBLh6IykBaE43BK8DFAytASr6YDsB8HwYB8FzUbRihgHB46xskcAIhRtA0hArASmm2I3Ni2LcTo7DIqoUAWNo1g2FcMaiKGvE1Og7CKsCgi0Bc6kJIw2iMNiGJKGAGLQkAA)
+  Shinylive](https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpQGIdABUZxULKBokOkTGOqQAFrrkoqQ6sqK6RoIJOgAGTgDyAMoAIgCaqTpQEPxpOQDCWVhOAIJZhZostFD0IqJhRDr8cHwQMczkOjC0oqK0EADmXQFQGEr8M-pGXNQA+gukUNbzi4Y6AO60EePsG1C4OiBKOjo1OVkAMkthMASrcAAeq1D8otTXt3uDwAJJlcnlgABGAC6zwAcjVVuNyBNVKslABfRQQABWRHGqwA1nBWKJTjMbHtusYoMJSKsCPwRm88QTiaTgNB4GSznJoa4IHdHs8zsBgAowEKHhLofyIEo0KhnuMjuwAWcdABeaabXAAvhCNpaoYCYRiNUQG43UgwVb00SCGAwFgcAFWnTUFpwajGiU5HpECbMVDhGR2FoiCV6y3unXFWC6bUSqVRt1Wli2xqMY1Z5qtc0EcL4ghiY0ENWSrAAWSjOmT1fKOQlcguCRE6jgpSTlZrYBbaZuP34dqImx92vszmjsZ0DqdTQAXnBVln2trcxHzQOrYXi6XteWJVknAANWsSrA1couPB1sAAISrWAA0lgAEznsBg-KfipVWpZJ+NQAOI3v2MYzm2cAdl2cQVseZ63heV5gdu4EzskcAIr6YC0DSECsBKabYjc2LYnhOjsMiqhQBY2jWDYVwxqIoYETU6DsIqwKCLQFxcQkjDaIw2IYkoYAYtCQA)
 
 ## Examples
 
@@ -244,14 +242,11 @@ app <- init(
     tm_t_summary(
       label = "Demographic Table",
       dataname = "ADSL",
-      arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
+      arm_var = variables(choices = c("ARM", "ARMCD"), selected = "ARM"),
       add_total = TRUE,
-      summarize_vars = choices_selected(
-        c("SEX", "RACE", "BMRKR2", "EOSDY", "DCSREAS", "AGE"),
-        c("SEX", "RACE")
-      ),
-      numeric_formats = list(
-        "mean_ci" = "(xx.x, xx.x)"
+      summarize_vars = variables(
+        choices = c("SEX", "RACE", "BMRKR2", "EOSDY", "DCSREAS", "AGE"),
+        selected = c("SEX", "RACE")
       ),
       useNA = "ifany"
     )

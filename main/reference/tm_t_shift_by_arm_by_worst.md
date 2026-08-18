@@ -9,8 +9,7 @@ variable level per subject by arm.
 tm_t_shift_by_arm_by_worst(
   label,
   dataname,
-  parentname = ifelse(inherits(arm_var, "data_extract_spec"),
-    teal.transform::datanames_input(arm_var), "ADSL"),
+  parentname = "ADSL",
   arm_var,
   paramcd,
   aval_var,
@@ -18,9 +17,8 @@ tm_t_shift_by_arm_by_worst(
   baseline_var,
   worst_flag_var,
   worst_flag,
-  treatment_flag_var = teal.transform::choices_selected(choices =
-    teal.transform::variable_choices(dataname, subset = "ONTRTFL"), selected = "ONTRTFL"),
-  treatment_flag = teal.transform::choices_selected("Y"),
+  treatment_flag_var = teal.picks::variables("ONTRTFL", "ONTRTFL"),
+  treatment_flag = teal.picks::values("Y", "Y", fixed = TRUE, multiple = FALSE),
   useNA = c("ifany", "no"),
   na_level = tern::default_na_str(),
   add_total = FALSE,
@@ -53,20 +51,24 @@ tm_t_shift_by_arm_by_worst(
 
 - arm_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for variable
   names that can be used as `arm_var`. It defines the grouping variable
   in the results table.
 
 - paramcd:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
-  object with all available choices and preselected option for the
-  parameter code variable from `dataname`.
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
+  variable for lab parameter code. The `values()` element is added
+  internally to allow users to filter the parameter values
+  interactively.
 
 - aval_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and pre-selected option for the
   analysis variable.
 
@@ -76,13 +78,15 @@ tm_t_shift_by_arm_by_worst(
 
 - baseline_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for variable
   values that can be used as `baseline_var`.
 
 - worst_flag_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for variable
   names that can be used as worst flag variable.
 
@@ -93,13 +97,18 @@ tm_t_shift_by_arm_by_worst(
 
 - treatment_flag_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   on treatment flag variable.
 
 - treatment_flag:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
-  value indicating on treatment records in `treatment_flag_var`.
+  ([`teal.picks::values()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy
+  [`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html)
+  is deprecated but still accepted)\
+  value matching `treatment_flag_var` for on-treatment records (default
+  `"Y"`).
 
 - useNA:
 
@@ -117,7 +126,7 @@ tm_t_shift_by_arm_by_worst(
 - add_total:
 
   (`logical`)\
-  whether to include row with total number of patients.
+  whether to include column with total number of patients.
 
 - total_label:
 
@@ -176,7 +185,7 @@ This module generates the following objects, which can be modified in
 place using decorators:
 
 - `table` (`TableTree` - output of
-  [`rtables::build_table()`](https://insightsengineering.github.io/rtables/latest-tag/reference/build_table.html))
+  [`rtables::build_table()`](https://rdrr.io/pkg/rtables/man/build_table.html))
 
 A Decorator is applied to the specific output using a named list of
 `teal_transform_module` objects. The name of this list corresponds to
@@ -218,7 +227,7 @@ For more information on reporting in `teal`, see the vignettes:
 - example-1:
 
   [Open in
-  Shinylive](https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOynAHEikrLK6v44AHMlAF9FCAArIni-AGs4VlFE0Jtw7uMoYVI-An5aUTLR8amZ4Gh4WaS5AF1XCByCoqTgYAUwa-zHs4urptbF0PvHnJbXu8lGhUEV4tF2A0kjoALw6JK4Bp8IQiUSwnTI4RiSEQDIZEp+NaiOLGNb0VjVRgwPzkvwRIiMUSkHF4vHUKD0ODUdGPXIk0g6clZKl2DkiR6I3Gs+GhI66OF-T4ShqsljUzQsdEEGJjAhiPyiLlwdRwfgs6UZDWMWhiuDrHUybHPFKiQT0Q0CuEESFPLAAWQlOj+-oAwtlHnI5JKLRlDSITfweb6A2AVXio2mMqgWLANlqHXrRAajQnzRaNdRBHbtbqnZ8Uo8AAqZLCZP1hiPRmNx43kRMKsBOEPNACSADlbI3HpmdBmpaz6Yy1sZ2T0-Fb87Wiz3SzPLSwbfQRPat+x-s0Ut7HgB1ADyWFyAAYAEwAMReeCDYDvD8fAEZ3wjOcYx0Hc+yTH8nzfD8Z2A6VFyZPwVygHpN0dbcSz7MtpQrKsT3Qs96y-SCX0AsA4ItMDTSTABNZV52lYxaAqai4XsZxYK7VUK3XTUvQLfUqLNPcdCtQ9jxrAjz0vH1MgANUyfIQ0DP4xywcdw3IijpSEpN5MU5TUwYjJtIyegoDjeI7Q3fit2LeMsJEsTbXwwtCJaGTHgAIUyXIhxUsAvLUjSgK4nTMNYr8fL8wzOJnQRDTHTIk1oZYIFYacGKGEylCGVKdHYeJyDUDRtGsGw0ilYl4lYTJ0HYEEABJBFoFImsNRhtEYIZ+iUMB+jOIA)
+  Shinylive](https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOynAHEikrLK6v44AHMlAF9FCAArIni-AGs4VlFE0Jtw7uMoYVI-An5aUTLR8amZ4Gh4WaS5AF1XaHQi+Oj2BqSdAF4dJNwGviERUWedT+ExPcIBkMiU-GtRHFjGt6KxqowYH5YX4IkRGKJSECQSDqFB6HBqL8FGBclDSDpYVkEXY8SJie9gdjXqEjroXsSci16Q1sSxEZoWL8BYxaLTAQQYmMCGJfgR7mBMlgALL0nQc5UAYWyxLkcgZTJ0qBYsA2QpYovo33YEqlMvZYAACorMkqtTr9UzUei1sZcT0-MKzSKxbMeUybTI7To5cSAOoAeSwuQADABGABi+VVccTKYATJn3WHsaICXB1HB+ESwAmk8mC1mwMWdHrm16MX5fVAembqIJAcSAJrZsDDvAmWgVSu-ezOVuM3kC-yBl7Ci1WiPSn4vGMKgBqmXyGpHmQAclgAJKn7VgPU6UsiCtV+1ny-XosLkH0KAP+JwAOCqu5ohtakqRtu0bygAQpkuROMe47ElB55Xjed4PuW5DPmqYDIW+aEetigilqemTVrQywQKwxJhkMGRDEMFE6Ow8TkGoGjaNYNhpIykLxKwmToOwaCoAAJIItApCJomlow2iMEM-RKGA-RnEAA)
 
 ## Examples
 
@@ -230,40 +239,21 @@ data <- within(data, {
 })
 join_keys(data) <- default_cdisc_join_keys[names(data)]
 
-ADSL <- data[["ADSL"]]
-ADEG <- data[["ADEG"]]
-
 app <- init(
   data = data,
   modules = modules(
     tm_t_shift_by_arm_by_worst(
       label = "Shift by Arm Table",
       dataname = "ADEG",
-      arm_var = choices_selected(
-        variable_choices(ADSL, subset = c("ARM", "ARMCD")),
-        selected = "ARM"
-      ),
-      paramcd = choices_selected(
-        value_choices(ADEG, "PARAMCD"),
-        selected = "ECGINTP"
-      ),
-      worst_flag_var = choices_selected(
-        variable_choices(ADEG, c("WORS02FL", "WORS01FL")),
+      arm_var = variables(choices = c("ARM", "ARMCD")),
+      paramcd = variables(choices = "PARAMCD"),
+      worst_flag_var = variables(
+        choices = c("WORS01FL", "WORS02FL"),
         selected = "WORS02FL"
       ),
-      worst_flag = choices_selected(
-        value_choices(ADEG, "WORS02FL"),
-        selected = "Y",
-        fixed = TRUE
-      ),
-      aval_var = choices_selected(
-        variable_choices(ADEG, c("AVALC", "ANRIND")),
-        selected = "AVALC"
-      ),
-      baseline_var = choices_selected(
-        variable_choices(ADEG, c("BASEC", "BNRIND")),
-        selected = "BASEC"
-      ),
+      worst_flag = values("Y", "Y", fixed = TRUE),
+      aval_var = variables(choices = c("AVALC", "ANRIND"), selected = "ANRIND"),
+      baseline_var = variables(choices = c("BASEC", "BNRIND"), selected = "BNRIND"),
       useNA = "ifany"
     )
   )

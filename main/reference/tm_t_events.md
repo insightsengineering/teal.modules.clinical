@@ -8,8 +8,7 @@ This module produces a table of events by term.
 tm_t_events(
   label,
   dataname,
-  parentname = ifelse(inherits(arm_var, "data_extract_spec"),
-    teal.transform::datanames_input(arm_var), "ADSL"),
+  parentname = "ADSL",
   arm_var,
   hlt,
   llt,
@@ -51,21 +50,21 @@ tm_t_events(
 
 - arm_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
-  object with all available choices and preselected option for variable
-  names that can be used as `arm_var`. It defines the grouping
-  variable(s) in the results table. If there are two elements selected
-  for `arm_var`, second variable will be nested under the first
-  variable.
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
+  If there are two elements selected for `arm_var`, the second variable
+  is nested under the first.
 
 - hlt:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   name of the variable with high level term for events.
 
 - llt:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   name of the variable with low level term for events.
 
 - add_total:
@@ -184,7 +183,7 @@ This module generates the following objects, which can be modified in
 place using decorators:
 
 - `table` (`TableTree` as created from
-  [`rtables::build_table`](https://insightsengineering.github.io/rtables/latest-tag/reference/build_table.html))
+  [`rtables::build_table`](https://rdrr.io/pkg/rtables/man/build_table.html))
 
 A Decorator is applied to the specific output using a named list of
 `teal_transform_module` objects. The name of this list corresponds to
@@ -232,7 +231,7 @@ where additional example apps implementing this module can be found.
 - example-1:
 
   [Open in
-  Shinylive](https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOzMpyKSssrq9zglAF9FCAArIni-AGs4VlFE0Jtw-jhjKGFSPwJ+WlEyoZHxyeBoeCmkuQBdVwgcgqKk4GAFMEv8+5Ozi6aWudDb+5zm59elGhUEV4tF2A0kjoALw6JK4Bp8IQiUTQnSI4RicEQDIZEp+FZwbRkKYNHE6ahQehwaion78bSMUS6JxE0h2Skie7w7Fk2GhA66GE-d5c0k4lgwPyaFioggxYYEMR+JkidRwfjsAjgh5YACyXJ0Pz1AGFsvc5CkjfqwBaxRlqNQ2TC5QqlSq4GqNXacS6ZGJUdLGLQOXBVvK-VNfk4Ulqfk5bE49Qa49knMaAPJmm22nm8nTuz2y7XNVMZrP9PM5vMxR2y8OK0TK6ke8he3O830NgMsYP0ERh12R94x4tOABCmdyAE1csmHk5cunjeaq3n883C0L5xO8jP7t7V2Savx8URPDSYfZnNy84SKCtSKxUILDSh6aomTo72R9+2Kzp+n6WhjB0dh4nINQNG0awbDSHlRDiCBWEydB2CBAASQRaBSDCmUYBl+h6JQwB6E4gA)
+  Shinylive](https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOzMpyKSssrq9zglAF9FCAArIni-AGs4VlFE0Jtw-jhjKGFSPwJ+WlEyoZHxyeBoeCmkuQBdVwgcgqKk4GAFMEv8+5Ozi6aWudDb+5zm59elGhUEV4tF2A0kjoALw6JK4Bp8IQiUTQnSI4RicEQDIZEp+FZwbRkKYNHE6ahQehwaion78bSMUS6JxE0h2Skie7w7Fk2GhA66GE-d5c0k4lgwPyaFio6WMWgczFiskEGLDAhiVEEcEPLAAWS5Oh++oAwtl7nJubycUyROo4PxabqDWBlTpLW7qNQ2TC5Qr6MisdaMqr1ZqYdqfk5bE59Yao9knCaAPLmsAennW21we2OoUPJyJlNpt0Z60xb2ylj+wNukNqmThnSRgsAIVTuQAmrl4wXcsmTRarcHs7mnc123lu-dS8OyTV+PiiJ4aTD7M45zjCRQVqRWKhBUaUPTVEydNuyDPM+6Gv1+rRjDp2PFyGoNNprDY0jzRHEIKxMnQdggQAEkEWgUlAplGAZfoeiUMAehOIA)
 
 ## Examples
 
@@ -253,13 +252,16 @@ app <- init(
     tm_t_events(
       label = "Adverse Event Table",
       dataname = "ADAE",
-      arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-      llt = choices_selected(
-        choices = variable_choices(ADAE, c("AETERM", "AEDECOD")),
-        selected = c("AEDECOD")
+      arm_var = variables(
+        choices = c("ARM", "ARMCD"),
+        selected = "ARM"
       ),
-      hlt = choices_selected(
-        choices = variable_choices(ADAE, c("AEBODSYS", "AESOC")),
+      llt = variables(
+        choices = c("AETERM", "AEDECOD"),
+        selected = "AEDECOD"
+      ),
+      hlt = variables(
+        choices = c("AEBODSYS", "AESOC"),
         selected = "AEBODSYS"
       ),
       add_total = TRUE,

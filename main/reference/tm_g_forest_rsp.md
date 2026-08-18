@@ -9,20 +9,17 @@ ADaM structure.
 tm_g_forest_rsp(
   label,
   dataname,
-  parentname = ifelse(inherits(arm_var, "data_extract_spec"),
-    teal.transform::datanames_input(arm_var), "ADSL"),
+  parentname = "ADSL",
   arm_var,
   arm_ref_comp = NULL,
   paramcd,
-  aval_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
-    "AVALC"), "AVALC", fixed = TRUE),
+  aval_var = teal.picks::variables("AVALC", "AVALC", fixed = TRUE),
   subgroup_var,
   strata_var,
   stats = c("n_tot", "n", "n_rsp", "prop", "or", "ci"),
   riskdiff = NULL,
   fixed_symbol_size = TRUE,
-  conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order =
-    TRUE),
+  conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95),
   default_responses = c("CR", "PR", "Y", "Complete Response (CR)",
     "Partial Response (PR)"),
   plot_height = c(500L, 200L, 2000L),
@@ -57,7 +54,8 @@ tm_g_forest_rsp(
 
 - arm_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for variable
   names that can be used as `arm_var`. It defines the grouping variable
   in the results table.
@@ -68,33 +66,42 @@ tm_g_forest_rsp(
   if specified it must be a named list with each element corresponding
   to an arm variable in `ADSL` and the element must be another list
   (possibly with delayed
+  [`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html)
+  or
+  [`teal.picks::values()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy
   [`teal.transform::variable_choices()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/variable_choices.html)
-  or delayed
+  and
   [`teal.transform::value_choices()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/value_choices.html)
-  with the elements named `ref` and `comp` that the defined the default
-  reference and comparison arms when the arm variable is changed.
+  are deprecated but still accepted) with the elements named `ref` and
+  `comp` that define the default reference and comparison arms when the
+  arm variable is changed.
 
 - paramcd:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for the
   parameter code variable from `dataname`.
 
 - aval_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and pre-selected option for the
   analysis variable.
 
 - subgroup_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for variable
   names that can be used as the default subgroups.
 
 - strata_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   names of the variables for stratified analysis.
 
 - stats:
@@ -122,7 +129,7 @@ tm_g_forest_rsp(
   (`list`)\
   if a risk (proportion) difference column should be added, a list of
   settings to apply within the column. See
-  [`tern::control_riskdiff()`](https://insightsengineering.github.io/tern/latest-tag/reference/control_riskdiff.html)
+  [`tern::control_riskdiff()`](https://rdrr.io/pkg/tern/man/control_riskdiff.html)
   for details. If `NULL`, no risk difference column will be added.
 
 - fixed_symbol_size:
@@ -134,9 +141,12 @@ tm_g_forest_rsp(
 
 - conf_level:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
-  object with all available choices and pre-selected option for the
-  confidence level, each within range of (0, 1).
+  ([`teal.picks::values()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy
+  [`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html)
+  is deprecated but still accepted)\
+  available confidence levels and default selection, each in the range
+  (0, 1).
 
 - default_responses:
 
@@ -274,7 +284,7 @@ where additional example apps implementing this module can be found.
 - example-1:
 
   [Open in
-  Shinylive](https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo67sxsnHDcvALCYhJSMvKl5QyVHMYBMGHkjKJBZRWe+ajUrIFtAIIAIgDKADKROqQwBDFwAB4xUPyi1DOzWPMraxvbu-wDOgCkAHy3bWUwguHk7NMAatOLAMI6AC8On4MRIxBiA1QMWoUHocGonx+-xsDyeEDKmPSmSyMLhCPYCjAfyyLCg6lUOiwYmEpAA9AAxXL8XIAcyJclRj2eJlo1H67AACtMsNMALJ-WY6ACEwKJAHkvlgAJIAOS+RJ0AB8dN9lfNlbYgXKwAz5YtFvKAOo6ByCjlKAC+QQAVkRcjEANZwViifLJGypfhwYxQWkxAgs0QbN0e72+4DQeB+gpyAC6rggcyWKwKwGAROziyJaYzWeOpyDyXzhYrJbLShYMEhIYjRBgqBWdFEpEJGN1WDFQPaPb7WMYIeHRIAQogdILYQQ4PQiETcDziB3hwRCWBpnPZoxBKydAANNc6Il-Od-dv0XJhSzBMBDHRydf9kUSqXA7u9nkTsYU57oOOjTmuG7tp2wI7oWoHTBecFDn8Dr9kEQSNugKy5JkY4gskw4FB+Lz1CIojDnwQhkXhZRrDErIxN0E49pCoioDRmKwvC1DAQyAQ+FSYioCQohwBB-ZYgUSa6CacwnOJWJlE2MSaCw25ZO6S6iDEokiBS-AcViqmMLQcIiBGGkyGInwLIsRSwSBYqIY5kocu+PJYkhrlgB5b7EYpymAW2W7AoFrabqg-lYqgZLrPw6maWIOkInA+mGZiqnUIIcAWYlfpyfMRREsKorfs5JXihyUWKUSapfE4thEr57kSZioiCPQrKMEQgjQsZCVWdpumpeQBm+WUxmmfQ5kEJZWk2UsRTSfltmctVWIOdOYpYAA0lgABMznzE454vs1606D2zDhCpakwXNSXDWl406JNZk5bNeULXZOgOfM9jTLY0wAIxHQDQOHS+LWKZiRL-aKENNa1ZTQ4p4xEKQMRZHAtCslkpDbuwABsAAMJM-ftZMU2T5Oo5JIZhvyLZsSJYjDn+6VlNOTjzCcgrKuztCji9ZRQoTcPhNNuizELNSiTo7DzLMih4JeYCqhjOhOJlgjvQrqpOCrdMw+UcDaNQ5EwZzNXElBIjkIJLMQPL7B-FgKtFWAgosBo3CO8Jzu6EK7tHZLIg6DLolQC7SseyLsNe91XViKIWjS7L0dB4KyvORrBPa9wutS-rhtIybmKvjDxtYnVDWC8LyOKWLVtXnbcAO9STsu27Htq97jC+zxncBy7gohy+F1YiI5uW791uebbHb27ow+swrPe55rBdZXr7AG73xU+6ZQ9CWvwdx43MPFUnzGp9oEcZ6POeqxLeuR3LQex2X5dvi91eYoqFU6p67-kvpiZuc9r5EGTqIO+6co5PwPmAeYYd4EfwVl-Ce8dp4Ilng5QUN8U5pwfggrOz9PYoLfo-T+5C1Z5y1jrXe+9ULl0rhXHkr50JKFoEBdguR+jkg0NoawNgSj9lEDkCArBpjoHYGgVAAASQQtAijyIUaJRg2gpgQEdEoMAjo0xAA)
+  Shinylive](https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo67sxs7MYBMGHkjKJBZRWe+ajUrIGlOgCCACIAygAykTrRvALCYhJSMtyIiKQwBDFwAB4xUPyi1D0DWINjE3xCIuKSufPUi8urG1v8jToApAB8Lz1lMILh5Oy9ABqvWGAGEdABeHT8GIkYgxRqoGLUKD0ODUAHAsE2d6fCBlAnpTJZZGo9HsBRgUFZFhQdSqHRYMTCUgAegAYrl+LkAOaUuQ4j5fEy0agNdgABV6WF6AFlQf0dABCKGUgDygKwAEkAHKAyk6AA+fUBWsGWtskNVYHZauGwzVAHUdA4JfylABfIIAKyIuRiAGs4KxRPlkjZUvw4MYoCyYgRuaJVr7-UGQ8BoPBQwU5ABdVzQRgwBHR+NEGCoMZ0USkCn4vpYWWQ8q0Gt1wmMaPNykAIUQOglKIIcHoREpuGFxArzYIFLAvX7-UYgh5OgAGuOdJTQf3QeX6LkwpZgmBmjo5BP69L5YqodXa8LO8Zu-PGzoe+PJ+XK1DZ5Tr30m7-m+oLuvWQRBEoaCVqkVwPvWBTNgUl7fFM5zNqc0yhsKywxDyMQ1J2NYIqIqDtoS5RktQL7sgEPiMmIqAkKIcCfvWhIFJmujWgcgxsRROgsMWmgsM2ImMLQqLnOwf6vrKQFyQq-JFMBN7KcKZRCSWxhltOUJaU+umoChFGoLSKz8M2qAyAG2HsRR4mSfQ0mUlKMpqXgW5gG5cpKaeJkCSJ1CCGI7AsSI9KWdauqAk4tibj8Yq0B03E6OyIKDE4F4aQSBBZHABABnEyQsaQzbpcMmU5dl9llKIgj0DyjBEIISLiWJLBOdJsk9rKWAANJYAATApmUbv5Xm9QNw0JSyyUiM29jODVAk1sw4QxO1UKOVJoWyYM9i9LYvQAIyjYdx0jRNlIHTKl2zUlKWLY4WUBQSHREKQMT5bQPJZGVv7sAAbAADCDwxFENYMQzoUPQytFFRjGcZEUxEAsaIzb3uRAk9k4gyHBKWpY628ECR2pEznOgzhM5uj9K2cBQCxOjsIM-SKJ5lI6p9OhOEFgi7azOpZeptUUSI2jUJjgM5QJ27fiI5AMaRzG6OwoJYJzKneSwGjcCraMs5KWujbTC0MyxzPq+z2tyxRrnNU1YiiFo9OM9brMShzCk82V-PcILdPC6LYD22UZ4CQjAkxXFJNtuHOiIlTCsVkruhMqr6Pq5r2teRKeuSdRmdG+rEqm-5ieS+iMs6H+4vy1SitwMrJdq6zue+7zAfBUL7Ai3nrmFwbbfZ17FdveT+dO0RrvaDoltM8b3uD2ANNC4vntsz7YcNwSkcUdHFEatqerx2TU9J5TsveTPLtuwvHvLzvOvr8Hm-G7bYuX+UcBS7XskJR31EHPd2Vtn6rzfhbJ+NsX5eT9nzAWfcB5gSngfCOwozwQSULQZ87BcgNDpBobQ1gbAlHrKIHIEBWC9HQOwaCAASQQtAiiMJYowbQ3QIAeiUGAD0uYgA)
 
 ## Examples
 
@@ -283,19 +293,15 @@ library(nestcolor)
 
 data <- teal_data()
 data <- within(data, {
-  library(teal.modules.clinical)
   library(formatters)
   library(dplyr)
-  ADSL <- tmc_ex_adsl
-  ADRS <- tmc_ex_adrs %>%
+  ADSL <- teal.modules.clinical::tmc_ex_adsl
+  ADRS <- teal.modules.clinical::tmc_ex_adrs %>%
     mutate(AVALC = d_onco_rsp_label(AVALC) %>%
       with_label("Character Result/Finding")) %>%
     filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")
 })
 join_keys(data) <- default_cdisc_join_keys[names(data)]
-
-ADSL <- data[["ADSL"]]
-ADRS <- data[["ADRS"]]
 
 arm_ref_comp <- list(
   ARM = list(
@@ -314,23 +320,15 @@ app <- init(
     tm_g_forest_rsp(
       label = "Forest Response",
       dataname = "ADRS",
-      arm_var = choices_selected(
-        variable_choices(ADSL, c("ARM", "ARMCD")),
-        "ARMCD"
-      ),
+      arm_var = variables(c("ARM", "ARMCD"), "ARMCD"),
       arm_ref_comp = arm_ref_comp,
-      paramcd = choices_selected(
-        value_choices(ADRS, "PARAMCD", "PARAM"),
-        "INVET"
+      paramcd = picks(
+        variables("PARAMCD", "PARAMCD"),
+        values(selected = "INVET", multiple = FALSE),
+        check_dataset = FALSE
       ),
-      subgroup_var = choices_selected(
-        variable_choices(ADSL, names(ADSL)),
-        c("BMRKR2", "SEX")
-      ),
-      strata_var = choices_selected(
-        variable_choices(ADSL, c("STRATA1", "STRATA2")),
-        "STRATA2"
-      ),
+      subgroup_var = variables(c("BMRKR2", "SEX"), "BMRKR2", multiple = TRUE),
+      strata_var = variables(c("STRATA1", "STRATA2"), "STRATA2", multiple = TRUE),
       plot_height = c(600L, 200L, 2000L),
       default_responses = list(
         BESRSPI = list(
@@ -356,6 +354,8 @@ app <- init(
   )
 )
 #> Initializing tm_g_forest_rsp
+#> Warning: rlang::dots_list(..., .ignore_empty = "trailing")
+#>  - Setting explicit `selected` while `choices` are delayed (set using `tidyselect`) doesn't guarantee that `selected` is a subset of `choices`.
 if (interactive()) {
   shinyApp(app$ui, app$server)
 }

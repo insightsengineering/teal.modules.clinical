@@ -8,8 +8,7 @@ This module produces a table to summarize events by grade.
 tm_t_events_by_grade(
   label,
   dataname,
-  parentname = ifelse(inherits(arm_var, "data_extract_spec"),
-    teal.transform::datanames_input(arm_var), "ADSL"),
+  parentname = "ADSL",
   arm_var,
   hlt,
   llt,
@@ -51,25 +50,27 @@ tm_t_events_by_grade(
 
 - arm_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
-  object with all available choices and preselected option for variable
-  names that can be used as `arm_var`. It defines the grouping variable
-  in the results table.
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
+  treatment arm variable on `parentname`.
 
 - hlt:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
-  name of the variable with high level term for events.
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
+  high-level term variable on `dataname` (optional).
 
 - llt:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
-  name of the variable with low level term for events.
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
+  low-level term variable on `dataname` (optional).
 
 - grade:
 
-  (`character`)\
-  name of the severity level variable.
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
+  grade variable on `dataname`.
 
 - grading_groups:
 
@@ -172,7 +173,7 @@ This module generates the following objects, which can be modified in
 place using decorators:
 
 - `table` (`TableTree` as created from
-  [`rtables::build_table`](https://insightsengineering.github.io/rtables/latest-tag/reference/build_table.html))
+  [`rtables::build_table`](https://rdrr.io/pkg/rtables/man/build_table.html))
 
 A Decorator is applied to the specific output using a named list of
 `teal_transform_module` objects. The name of this list corresponds to
@@ -220,7 +221,7 @@ where additional example apps implementing this module can be found.
 - example-1:
 
   [Open in
-  Shinylive](https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHTomFg5fXgFhMQkpGXl0zIZmNk44bgwkxQgMrKqORk96EVFG5sqcxNRqVkYenQBBABEAZQAZbx1SGAI-OAAPPyh+UWpyjGpO0Q33XXDif2ooejhqUU4llfXNqDhRybGnecXltaPnnQBSAB8-3KGRggk85D8tGM7Fo4gIMRYUHUqhSUHExhRpCIIx0AGIAOQ6K46AiqTzxHREYw6JGaeIAcxM2NxonKZz8FyuN3YbycNnCewOvzgSgAvo0AFZEeJ+ADWcFYtwa834cCxwlIfgI-HhyxlcsVyuA0HgKtCcgAuq4IJNZmrQsBgAowPaZq6rTa7RN3o7PM7XfzPd6lGhUPN4tF2OUkjoALw6JK4cp8IRdBM6NOFW6ghYwPzauDaMiHeisPyM5jqmNNDL17nXTNB-jaRiiXROEukUQk1g6ADi1d0tkuIldKbr9aToTNukTQd9LjweYyLALmhYmcRsvJhw7IlR-HYBBjbqwAFkJzog5eAMITV1yFK3q9gZ+rzLUUjbmK7sR+AecBHrW07TjuMhiJmm6MLQY5wDqf6Qbc-IpKeQZOLYTiXteGETE4d4APKPu+H5TmBQFHtuZ7vPhREkaM05kWBdLfr+-77tcwHkMen4ZBBe7QSwcGdAhAliHyS5oTRTgAELEVMACaUy4W6ThTIRd5PsxLE6JRPHNmp8nTMprqfjp05Vps85kkhe6AVxIF8bZHFCbB8GIRxknvNJGG2IRAAaA5YKp7xTE4ABq2mTrpemOQZC5qf5QUhWA5l5qMjSNDCOhwioagaNo1g2GkdaiHEECsGM6DsOGAAkgi0Oi6B1R2jBto04pKGA4pWkAA)
+  Shinylive](https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHTomFg5fXgFhMQkpGXl0zIZmNk44bgwkxQgMrKqORk96EVFG5sqcxNRqVkYenQBBABEAZQAZbx1SGAI-OAAPPyh+UWpyjGpO0Q33XXDif2ooejhqUU4llfXNqDhRybGnecXltaPnnQBSAB8-3KGRggk85D8tGM7Fo4gIMRYUHUqhSUHExhRpCIIx0AGIAOQ6K46AiqTzxHREYw6JGaeIAcxM2NxonKZz8FyuN3YbycNnCewOvzgSgAvo0AFZEeJ+ADWcFYtwa834cCxwlIfgI-HhyxlcsVyuA0HgKtCcgAuq4IJNZmrQsBgAowPaZq6rTa7RN3o7PM7XfzPd6lGhUPN4tF2OUkjoALw6JK4cp8IRdBM6NOFW6ghYwPzauDaMiHeisPyM5jqmNNDL17nXTNB-jaRiiXROEukUQk1g6ADi1d0tkuIldKbr9aToTNukTQd9LjweYyLALmhYmc3jFoY7E7ERsvJvcTBBjbqwAFkJzog9eAMITV1yFIdkSo-jNy83sCv1eZNQpDbiwe6dAeAEZEeMhiJm55Bk4thONet4IRMTgPgA8s+f6TtO07vnAn7fu86FYThAH-lO9YxEBIG7vuubUdO0EnnBF7vAAQthUwAJpTKhbpOFMmEPi+eH4RkhHEQuQncdM-GupREnTlWmzzjoO5gV0taSVBMTHrBZ4cYhmEABoDlggnvFMTgAGriZBOjSeQX6ye8tjmZZSnMToowZKMjSNDCOhwioagaNo1g2GkdaiHEECsGM6DsOGAAkgi0Oi6BpR2jBto04pKGA4pWkAA)
 
 ## Examples
 
@@ -248,17 +249,17 @@ app <- init(
     tm_t_events_by_grade(
       label = "Adverse Events by Grade Table",
       dataname = "ADAE",
-      arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-      llt = choices_selected(
-        choices = variable_choices(ADAE, c("AETERM", "AEDECOD")),
-        selected = c("AEDECOD")
+      arm_var = variables(choices = c("ARM", "ARMCD"), selected = "ARM"),
+      llt = variables(
+        choices = c("AETERM", "AEDECOD"),
+        selected = "AEDECOD"
       ),
-      hlt = choices_selected(
-        choices = variable_choices(ADAE, c("AEBODSYS", "AESOC")),
+      hlt = variables(
+        choices = c("AEBODSYS", "AESOC"),
         selected = "AEBODSYS"
       ),
-      grade = choices_selected(
-        choices = variable_choices(ADAE, c("AETOXGR", "AESEV")),
+      grade = variables(
+        choices = c("AETOXGR", "AESEV"),
         selected = "AETOXGR"
       )
     )

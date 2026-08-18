@@ -9,8 +9,7 @@ Measurements.
 tm_a_mmrm(
   label,
   dataname,
-  parentname = ifelse(inherits(arm_var, "data_extract_spec"),
-    teal.transform::datanames_input(arm_var), "ADSL"),
+  parentname = "ADSL",
   aval_var,
   id_var,
   arm_var,
@@ -18,10 +17,9 @@ tm_a_mmrm(
   cov_var,
   arm_ref_comp = NULL,
   paramcd,
-  method = teal.transform::choices_selected(c("Satterthwaite", "Kenward-Roger",
-    "Kenward-Roger-Linear"), "Satterthwaite", keep_order = TRUE),
-  conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order =
-    TRUE),
+  method = teal.picks::values(c("Satterthwaite", "Kenward-Roger",
+    "Kenward-Roger-Linear"), "Satterthwaite"),
+  conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95),
   plot_height = c(700L, 200L, 2000L),
   plot_width = NULL,
   total_label = default_total_label(),
@@ -54,32 +52,37 @@ tm_a_mmrm(
 
 - aval_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and pre-selected option for the
   analysis variable.
 
 - id_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   object specifying the variable name for subject id.
 
 - arm_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for variable
   names that can be used as `arm_var`. It defines the grouping variable
   in the results table.
 
 - visit_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for variable
   names that can be used as `visit` variable. Must be a factor in
   `dataname`.
 
 - cov_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for the
   covariates variables.
 
@@ -89,29 +92,40 @@ tm_a_mmrm(
   if specified it must be a named list with each element corresponding
   to an arm variable in `ADSL` and the element must be another list
   (possibly with delayed
+  [`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html)
+  or
+  [`teal.picks::values()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy
   [`teal.transform::variable_choices()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/variable_choices.html)
-  or delayed
+  and
   [`teal.transform::value_choices()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/value_choices.html)
-  with the elements named `ref` and `comp` that the defined the default
-  reference and comparison arms when the arm variable is changed.
+  are deprecated but still accepted) with the elements named `ref` and
+  `comp` that define the default reference and comparison arms when the
+  arm variable is changed.
 
 - paramcd:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for the
   parameter code variable from `dataname`.
 
 - method:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([teal.picks::values](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html)
+  or
+  [`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   object with all available choices and pre-selected option for the
   adjustment method.
 
 - conf_level:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
-  object with all available choices and pre-selected option for the
-  confidence level, each within range of (0, 1).
+  ([`teal.picks::values()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy
+  [`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html)
+  is deprecated but still accepted)\
+  available confidence levels and default selection, each in the range
+  (0, 1).
 
 - plot_height:
 
@@ -208,16 +222,16 @@ place using decorators:
 - `diagnostic_plot` (`ggplot`)
 
 - `lsmeans_table` (`TableTree`- output from
-  [`rtables::build_table`](https://insightsengineering.github.io/rtables/latest-tag/reference/build_table.html))
+  [`rtables::build_table`](https://rdrr.io/pkg/rtables/man/build_table.html))
 
 - `covariance_table` (`ElementaryTable`- output from
-  [`rtables::build_table`](https://insightsengineering.github.io/rtables/latest-tag/reference/build_table.html))
+  [`rtables::build_table`](https://rdrr.io/pkg/rtables/man/build_table.html))
 
 - `fixed_effects_table` (`ElementaryTable`- output from
-  [`rtables::build_table`](https://insightsengineering.github.io/rtables/latest-tag/reference/build_table.html))
+  [`rtables::build_table`](https://rdrr.io/pkg/rtables/man/build_table.html))
 
 - `diagnostic_table` (`ElementaryTable`- output from
-  [`rtables::build_table`](https://insightsengineering.github.io/rtables/latest-tag/reference/build_table.html))
+  [`rtables::build_table`](https://rdrr.io/pkg/rtables/man/build_table.html))
 
 A Decorator is applied to the specific output using a named list of
 `teal_transform_module` objects. The name of this list corresponds to
@@ -270,7 +284,7 @@ where additional example apps implementing this module can be found.
 - example-1:
 
   [Open in
-  Shinylive](https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiS19EYwA+ozjHPxGFR9IzpRUnYlHR0AQSwAWQBhABEdAF4dUPDIqJ0fYzSdBTBYuJ0AISLcbKiAoPSCCOL4mMrCptKEosUIKO7upX4oUihgnS5qT0Hh6wGhkcMdAHdaUgALWgh2KahcHRBsuiYWDnHeAWExCSkZeQOGZjYt1GpWRm6o6KSAZQAZUdIYARPHAAB6eKD8UTUbKfACKX3+gOBYIhAEdRDoAKQAPkx1RMtGo5EY7GiZR+ADE-gBCdJFACaRR0ADIYuSqQAmHS0tqMsA2HF4no5YyE4mkgBqAEkvlLbFiNpidA0igB1JxOADSOgAjDoktF6ToABytNUa7Vcg1GnUAVjNYHVWp0AGZ9YadByOV0Bbj8TBBMNyBFhTkYtLZfL0lBxMYoOoiCTohG5XIqqGcsmZXKAHIFZgQADWkuzthzvqFYbDMYwcYTJIr+Or4gggngjBk1ixfozzdr8dIia7AGIdDAoIWNgBzZUkURwAiBrS6VvtmQmAeJ-HdAC+3QAVkQNp5C3BWKItnMbAt+L4oMJSP5+LRREDD8fT+fgNB4BftnIAF03DQIIFg2FYQyibYCm2dMoj4IQRAxdIEIuC98QBcFPBgGAPEgqtqCgeg4GoAoijiOJ4kqJsdG2H9dDpYoknhajex0KBNG4TxOMYAoCFWI8CDETx5xEdQ4H4dgVWKCVoh+B0EgACQAcS6XYimTOS1Jo2h+G4lg+IEmRhNEhdyEk6SHC+BwygAKSlJIHWsuyHLUtorJs+zHP5OCqxYLweMMwSTJIsyJKkxoSgdEpkjcjSqJ8mjNBfFZ9N4+ojKE0QRNC8SLMilNbGiwqczimTS20tj-O8Xx-CIQICmqvI6sCXyw1QFhYAIfgguM7LTLy-Cq2VTKxAKTjqEEOB-FGv85mAYANOYr4igAgD1LAAAFWJokSbyNu2rBdsq4aogG8yyLAClNVlAwKVVCowBotMaOITQ0t6rKcrE8yIqKMpoi+Fw8DaaJlOBjagYADQdAGgcQLNIzcnMHB+H53hyDG+iUWh8nYDZiQHZdrBsfZhVEdYIFYaJ0HYECABJBFoXYGfnRhtDeJQdyUMAdwAoA)
+  Shinylive](https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiS19EYwA+ozjHPxGFR9IzpRUnYlHR0AQSwAWQBhABEdAF4dUPDIqJ0fYzSdBTBYuJ0AISLcbKiAoPSCCOL4mMrCptKEosUIKO7upX4oUihgnS5qT0Hh6wGhkcMdAHdaUgALWgh2KahcHRBsuiYWDnHeAWExCSkZeQOGZjYt1GpWRm6o6KSAZQAZUdIYARPHAAB6eKD8UTUbKfACKX3+gOBYIhAEdRDoAKQAPkx1RMtGo5EY7GiZR+ADE-gBCdJFACaRR0ADIYuSqQAmHS0tqMsA2HF4no5YyE4mkgBqAEkvlLbFiNpidA0igB1JxOADSOgAjDoktF6ToABytNUa7Vcg1GnUAVjNYHVWp0AGZ9YadByOV0Bbj8TBBMNyBFhTkYtLZfL0lBxMYoOoiCTohG5XIqqGcsmZXKAHIFZgQADWkuzthzvqFYbDMYwcYTJIr+Or4gggngjBk1ixfozzdr8dIia7AGIdDAoIWNgBzZUkURwAiBrS6VvtmQmAeJ-HdAC+3QAVkQNp5C3BWKItnMbAt+L4oMJSP5+LRREDD8fT+fgNB4BftnIAF03DQIIFg2FYQyibYCm2dMoj4IQRAxdIEIuC98QBcFPBgGAPEgqtqCgeg4GoAoijiOJ4kqJsdG2H9dDpYoknhajex0KBNG4TxOMYAoeNoIikPYFViglaIfgdBIAAkAHEul2AMiVoZ4GJ0ClxK+Jw0xo2h+G4lg+JYAT6CEkSHC+BwygAKSlJIHQs6zbPkscH2UkQCnUn5NO0tiWC8HjDI7QSxGExoSgdEpkh9OCq00F8Vn03j0n44KLxErNIwilMy2imi-O8Xx-CIQICnyvIisCGKw1QFhYAIfgClQGRC3QtiohSkyQqKAAFWJokSOy8DaXqsH6qL+Sq2LuEEEL5xEdQ4AaxiKU1WUDApVUKiGxSNBUjyNK0yawwIVYF0LSY5nnUh9q8lw2J8qtZ00RLAuM0zGjKaJNIimSXCGopNIADVaDZiQHSwIES9CwE+77-tE0top0HMHB+H53hyDG+iUWh8nYUHVHB7RrBsfZhVEdYIFYaJ0HYECABJBFoXYGfnRhtDeJQdyUMAdwAoA)
 
 ## Examples
 
@@ -307,20 +321,23 @@ app <- init(
     tm_a_mmrm(
       label = "MMRM",
       dataname = "ADQS",
-      aval_var = choices_selected(c("AVAL", "CHG"), "AVAL"),
-      id_var = choices_selected(c("USUBJID", "SUBJID"), "USUBJID"),
-      arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-      visit_var = choices_selected(c("AVISIT", "AVISITN"), "AVISIT"),
+      aval_var = variables(c("AVAL", "CHG"), multiple = FALSE),
+      id_var = variables(c("USUBJID", "SUBJID"), multiple = FALSE),
+      arm_var = variables(c("ARM", "ARMCD")),
+      visit_var = variables(c("AVISIT", "AVISITN")),
       arm_ref_comp = arm_ref_comp,
-      paramcd = choices_selected(
-        choices = value_choices(data[["ADQS"]], "PARAMCD", "PARAM"),
-        selected = "FKSI-FWB"
+      paramcd = picks(
+        variables("PARAMCD", "PARAMCD"),
+        values(selected = "FKSI-FWB", multiple = FALSE),
+        check_dataset = FALSE
       ),
-      cov_var = choices_selected(c("BASE", "AGE", "SEX", "BASE:AVISIT"), NULL)
+      cov_var = variables(c("BASE", "AGE", "SEX", interaction_vars("BASE", "AVISIT")), NULL)
     )
   )
 )
 #> Initializing tm_a_mmrm
+#> Warning: rlang::dots_list(..., .ignore_empty = "trailing")
+#>  - Setting explicit `selected` while `choices` are delayed (set using `tidyselect`) doesn't guarantee that `selected` is a subset of `choices`.
 if (interactive()) {
   shinyApp(app$ui, app$server)
 }

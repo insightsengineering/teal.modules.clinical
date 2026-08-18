@@ -87,7 +87,7 @@ template_smq(
 
   (`character`)\
   label to use for new column `SMQ` created by
-  [`tern::h_stack_by_baskets()`](https://insightsengineering.github.io/tern/latest-tag/reference/h_stack_by_baskets.html).
+  [`tern::h_stack_by_baskets()`](https://rdrr.io/pkg/tern/man/h_stack_by_baskets.html).
 
 - baskets:
 

@@ -10,16 +10,13 @@ consistent with the TLG Catalog template `LGRT02` available
 tm_t_logistic(
   label,
   dataname,
-  parentname = ifelse(inherits(arm_var, "data_extract_spec"),
-    teal.transform::datanames_input(arm_var), "ADSL"),
+  parentname = "ADSL",
   arm_var = NULL,
   arm_ref_comp = NULL,
   paramcd,
   cov_var = NULL,
-  avalc_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
-    "AVALC"), "AVALC", fixed = TRUE),
-  conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order =
-    TRUE),
+  avalc_var = teal.picks::variables("AVALC", "AVALC", fixed = TRUE),
+  conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95),
   pre_output = NULL,
   post_output = NULL,
   basic_table_args = teal.widgets::basic_table_args(),
@@ -48,7 +45,9 @@ tm_t_logistic(
 
 - arm_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html)
+  ([teal.picks::variables](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html)
+  or
+  [`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html)
   or `NULL`)\
   object with all available choices and preselected option for variable
   names that can be used as `arm_var`. This defines the grouping
@@ -63,35 +62,47 @@ tm_t_logistic(
   if specified it must be a named list with each element corresponding
   to an arm variable in `ADSL` and the element must be another list
   (possibly with delayed
+  [`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html)
+  or
+  [`teal.picks::values()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy
   [`teal.transform::variable_choices()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/variable_choices.html)
-  or delayed
+  and
   [`teal.transform::value_choices()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/value_choices.html)
-  with the elements named `ref` and `comp` that the defined the default
-  reference and comparison arms when the arm variable is changed.
+  are deprecated but still accepted) with the elements named `ref` and
+  `comp` that define the default reference and comparison arms when the
+  arm variable is changed.
 
 - paramcd:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for the
   parameter code variable from `dataname`.
 
 - cov_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for the
   covariates variables.
 
 - avalc_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([teal.picks::variables](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html)
+  or
+  [`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   object with all available choices and preselected option for the
   analysis variable (categorical).
 
 - conf_level:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
-  object with all available choices and pre-selected option for the
-  confidence level, each within range of (0, 1).
+  ([`teal.picks::values()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy
+  [`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html)
+  is deprecated but still accepted)\
+  available confidence levels and default selection, each in the range
+  (0, 1).
 
 - pre_output:
 
@@ -142,7 +153,7 @@ This module generates the following objects, which can be modified in
 place using decorators:
 
 - `table` (`TableTree` - output of
-  [`rtables::build_table()`](https://insightsengineering.github.io/rtables/latest-tag/reference/build_table.html))
+  [`rtables::build_table()`](https://rdrr.io/pkg/rtables/man/build_table.html))
 
 A Decorator is applied to the specific output using a named list of
 `teal_transform_module` objects. The name of this list corresponds to
@@ -190,7 +201,7 @@ where additional example apps implementing this module can be found.
 - example-1:
 
   [Open in
-  Shinylive](https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsO-VNVaNFEEr8UKRQ+kZc1AD6waHWQSFhhjoA7rSkABa0EOyxULg6IEo6OgCCACIAygAy4TqkMARRcAAeUVD8otTFZeVYlXUNTa3t-IyiOgCkAHyTPSXGtNTkjOwACqVYpQCyAMLlU9mTOgTsCmAAQk6V-WsAkucF53cAcgBqTrbncgEAvgEAKyI2SiAGs4KxRLlEjZkvw4MYoMJSFECPxaKImkCQeDIcBoPAoXk5ABdVwQCo1Op5YDAc6U6rnElkil9AZwxK0+lspkspQsGBRRgI1FEGCoOp0USkM4QEqlXa2TZ7A4AXh0Upl8x0wuMOnV9Kw2x0F0e2uI4v1JzOYGVZUeOkNxt23x6clwPTt6s1spKJV1VvOF0QOjW1CgBDg9CIZrlfotEvVp3pIfKjEEAHMdAANB3nXYh3Zi+jZEKWQJgAIlAIBfnoOrZdK+nR5K15D1xvhCEQTdVd4RiZslBpRFHUIgZjEaZNxv0aqD0ODUQNgaoTqcyHRYOAZ4WiUTl2Nzkp5Am6A22nl4bUlAVRTQsK0EDLAyOiKKiJdwdRwfhD4-Pq+YhWg+jC0AuIioi+MiDhU-QFMmtpGnmSEqt87o3n6n4iD+-Arsq5yYRhs5+neuqipa6pkSKCYdseOioCwsBok+0Fvh+X64f+c6ATBvY6A+1CCHAUFAVCcGVE8YAbFsaF4I60mbDs3x0fROjYd+5B4ReVw3JU9yESR1aqTxRCaPej5JmxYgcThWncfG1n8YhlROLm8n0gA4i4HmXNsWAANJYAAjChFz+UFABMKmYSUGm4SurnuUR2pVjoNZKLQersNkKwRho2jWDYRRxqIWQQKwpToOwaCoAAJIItAFLVdWfow2j+EovxKGAvwkkAA)
+  Shinylive](https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsO-VNVaNFEEr8UKRQ+kZc1AD6waHWQSFhhjoA7rSkABa0EOyxULg6IEo6OgCCACIAygAy4TqkMARRcAAeUVD8otTFZeVYlXUNTa3t-IyiOgCkAHyTPSXGtNTkjOwACqVYpQCyAMLlU9mTOgTsCmAAQk6V-WsAkucF53cAcgBqTrbncgEAvgEAKyI2SiAGs4KxRLlEjZkvw4MYoMJSFECPxaKImkCQeDIcBoPAoXk5ABdVwQCo1Op5YDAc6U6rnElkil9AZwxK0+lspkspQsGBRRgI1FEGCoOp0USkM4QEqlXa2TZ7A4AXh0Upl8x0wuMOnV9Kw2x0F0e2uI4v1JzOYGVZUeOkNxt23x6clwPTt6s1spKJV1VvOF0QOjW1CgBDg9CIZrlfotEvVp3pIfKjEEAHMdAANB3nXYh3Zi+jZEKWQJgAIlAIBfnoOrZdK+nR5K15D1xvhCEQTdVd4RiZslBpRFHUIgZjEaZNxv0aqD0ODUQNgaoTqcyHRYOAZ4WiUTl2Nzkp5Am6A22nl4bUlVAsWBoq2oGSgqGaFi0Bc9m0bLYqvNgL+Oz7N8HbHn677UIIg4wMitA+OeOgAGKlNUlROO6N7xhkcAEKCMSJKIcCkFaKFoS4s5+phlElMQmhRO+jBWoxn70N+REiOocD8CuyqgVhUCQU0jHMR+X6DvSbyoS6eAmLQLTcVa9jONR4HEBAxhRCI2jLuqkHQVCpwAAwYAAnAArAUJmmVZGAABzujo1nmVWVFukoAS0Hq7DZCsEYaNo1g2EUcaiFkECsKU6DsGgqAACSCLQBSxXFRGMNo-hKL8ShgL8JJAA)
 
 ## Examples
 
@@ -225,23 +236,19 @@ app <- init(
     tm_t_logistic(
       label = "Logistic Regression",
       dataname = "ADRS",
-      arm_var = choices_selected(
-        choices = variable_choices(ADRS, c("ARM", "ARMCD")),
-        selected = "ARM"
+      paramcd = picks(variables("PARAMCD", "PARAMCD"),
+        values(multiple = FALSE),
+        check_dataset = FALSE
       ),
-      arm_ref_comp = arm_ref_comp,
-      paramcd = choices_selected(
-        choices = value_choices(ADRS, "PARAMCD", "PARAM"),
-        selected = "BESRSPI"
-      ),
-      cov_var = choices_selected(
-        choices = c("SEX", "AGE", "BMRKR1", "BMRKR2"),
-        selected = "SEX"
-      )
+      cov_var = variables(selected = "ARM"),
+      avalc_var = variables("AVALC", fixed = TRUE),
+      conf_level = values(c(0.95, 0.9, 0.8), 0.95)
     )
   )
 )
 #> Initializing tm_t_logistic
+#> Warning: variables(selected = "ARM")
+#>  - Setting explicit `selected` while `choices` are delayed (set using `tidyselect`) doesn't guarantee that `selected` is a subset of `choices`.
 if (interactive()) {
   shinyApp(app$ui, app$server)
 }

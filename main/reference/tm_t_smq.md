@@ -9,11 +9,9 @@ Query.
 tm_t_smq(
   label,
   dataname,
-  parentname = ifelse(inherits(arm_var, "data_extract_spec"),
-    teal.transform::datanames_input(arm_var), "ADSL"),
+  parentname = "ADSL",
   arm_var,
-  id_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
-    subset = "USUBJID"), selected = "USUBJID", fixed = TRUE),
+  id_var = teal.picks::variables("USUBJID", "USUBJID", fixed = TRUE),
   llt,
   add_total = TRUE,
   total_label = default_total_label(),
@@ -51,21 +49,21 @@ tm_t_smq(
 
 - arm_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
-  object with all available choices and preselected option for variable
-  names that can be used as `arm_var`. It defines the grouping
-  variable(s) in the results table. If there are two elements selected
-  for `arm_var`, second variable will be nested under the first
-  variable.
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
+  If there are two elements selected for `arm_var`, the second variable
+  is nested under the first.
 
 - id_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   object specifying the variable name for subject id.
 
 - llt:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   name of the variable with low level term for events.
 
 - add_total:
@@ -109,17 +107,21 @@ tm_t_smq(
 
   (`character`)\
   label to use for new column `SMQ` created by
-  [`tern::h_stack_by_baskets()`](https://insightsengineering.github.io/tern/latest-tag/reference/h_stack_by_baskets.html).
+  [`tern::h_stack_by_baskets()`](https://rdrr.io/pkg/tern/man/h_stack_by_baskets.html).
 
 - baskets:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected options for
   standardized/customized queries.
 
 - scopes:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::values()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy
+  [`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html)
+  is deprecated but still accepted)\
   object with all available choices for the scopes of standardized
   queries.
 
@@ -172,7 +174,7 @@ This module generates the following objects, which can be modified in
 place using decorators:
 
 - `table` (`TableTree` - output of
-  [`rtables::build_table()`](https://insightsengineering.github.io/rtables/latest-tag/reference/build_table.html))
+  [`rtables::build_table()`](https://rdrr.io/pkg/rtables/man/build_table.html))
 
 A Decorator is applied to the specific output using a named list of
 `teal_transform_module` objects. The name of this list corresponds to
@@ -220,7 +222,7 @@ where additional example apps implementing this module can be found.
 - example-1:
 
   [Open in
-  Shinylive](https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHTomFg5fXgFhMQkpGXl0zIZmNkTUalZGRQgMrKqORk96EVFGjIBBABEAZQAZbx1SGAI-OAAPPyh+UWpygd6nMYmp2fn3OFcmnQxoeFE-eihRAGs4UlExgHNGOFR2BTAAPXZBgFkARQAfADCvzkGAAVAA5XrfAAkbxSxzE7FWTjkKU03EEugAvHZHKjykdYGI-KJiKgxA8ni83u8fr9wYNAXC8DpEaJkf01midBjqFidLj7M5GoSCKdzlcbndwgQYkQZCTRHAROo4PxXgcMnKFQRKbiMYxaFBOnA-DrFRyUSlRIJ6MrSILDuyzhdrrc0eUMsrVeR+E6iSdXVLbuVRQcJKcyUQKTKjBa9VGVXA1RqvToE-reSxjabzfLLZy1ja7Q6Ay7o7HPVqdD6U37y8So+SxLh08ZaDN1U7hS4Do0AL6NABWCogfmurA5SRs4X4cGMUGEpHN-FoZL8o-iE7gU+A7MSoTkAF19mhUGN4tFNRkkk6km2DnwhF0nc-Chz0xM-CvRDAAI43hkwHUCaKpOm8vT8NojDKjoTjaGQdz0KwOj0nYJoiPC6a3qEiIQWAKLYTWGQsDAfiGk6mZJr66pAcBwHUU6hq5iI+a6kiSTAMAkFDMMbzHseJb2jcVGvIRWDfPCOhvIMTgABpvHI1YMQxdapgRvSSW8OE6CpqkLPwP5EJ41BOgAYr0wxyY+qk6JK7p3LiXE8WAkbBo5AlCbplZZi5bzub5ohebZqnUNQjq4tRpLJqm9GqUxBo5phZrUYenjcbxawhbWpaiVF4lrP0TiAgA8v0Sn6XZ6kNrikFOMVZUVWAuk9MBbWNI0tDGDo7DxOQagaNo1g2GkByiHEECsL06DsOeMKCLQKTzcqjAwYOShgAOx5AA)
+  Shinylive](https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHTomFg5fXgFhMQkpGXl0zIZmNkTUalZGRQgMrKqORk96EVFGjIBBABEAZQAZbx1SGAI-OAAPPyh+UWpygd6nMYmp2fn3OFcmnQxoeFE-eihRAGs4UlExgHNGOFR2BTAAPXZBgFkARQAfADCvzkGAAVAA5XrfAAkbxSxzE7FWTjkKU03EEugAvHZHKjykdYGI-KJiKgxA8ni83u8fr9wYNAXC8DpEaJkf01midBjqFidLj7M5GgBfRoAKyI8T811YHKSNnC-DgxigwlIfgI-FoZL8UplctEwHZiVCcgAuvs0KgxvFoq8DklBTokrhynwhF0XZ7ChzyhkJn5NaIYABHR0ZKOZKD0ODUF1vXr8bSMUS6JzaMh3eisHT0uyxkTwgNRpKIxNgFElg7RlgwPwYxgupu0ItIggxaUESm4givKtYb7wnRJoeA-ojt6DJwADTecjRpYyC34waIngTuIAYr1hjP3bWo+crjc7rjW+2OZ3u72dKJPO1TlFYgP6QudP974-bn4XzEB2BBclyPDIySIClz15Fg206DsuxkO8KEWP9ogA6dAWAw9o2aahSBbGCr3YG9EKgpMnH6JxAQAeUnMAeijBjGkaWhjB0dh4nINQNG0awbDSA5RDiCBWF6dB2BtGFBFoFJJPTRhUzFJQwFFC0gA)
 
 ## Examples
 
@@ -235,17 +237,6 @@ data <- within(data, {
 
   .names_baskets <- grep("^(SMQ|CQ).*NAM$", names(ADAE), value = TRUE)
   .names_scopes <- grep("^SMQ.*SC$", names(ADAE), value = TRUE)
-
-  .cs_baskets <- choices_selected(
-    choices = variable_choices(ADAE, subset = .names_baskets),
-    selected = .names_baskets
-  )
-
-  .cs_scopes <- choices_selected(
-    choices = variable_choices(ADAE, subset = .names_scopes),
-    selected = .names_scopes,
-    fixed = TRUE
-  )
 })
 join_keys(data) <- default_cdisc_join_keys[names(data)]
 
@@ -255,17 +246,11 @@ app <- init(
     tm_t_smq(
       label = "Adverse Events by SMQ Table",
       dataname = "ADAE",
-      arm_var = choices_selected(
-        choices = variable_choices(data[["ADSL"]], subset = c("ARM", "SEX")),
-        selected = "ARM"
-      ),
+      arm_var = variables(choices = c("ARM", "ARMCD", "SEX")),
       add_total = FALSE,
-      baskets = data[[".cs_baskets"]],
-      scopes = data[[".cs_scopes"]],
-      llt = choices_selected(
-        choices = variable_choices(data[["ADAE"]], subset = c("AEDECOD")),
-        selected = "AEDECOD"
-      )
+      baskets = variables(choices = starts_with("SMQ") | starts_with("CQ")),
+      scopes = variables(choices = ends_with("SC")),
+      llt = variables(choices = "AEDECOD")
     )
   )
 )

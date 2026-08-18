@@ -88,7 +88,7 @@ template_coxreg_u(
 
   (`list`)\
   list of settings for the analysis (see
-  [`tern::control_coxreg()`](https://insightsengineering.github.io/tern/latest-tag/reference/control_coxreg.html)).
+  [`tern::control_coxreg()`](https://rdrr.io/pkg/tern/man/control_coxreg.html)).
 
 - na_level:
 

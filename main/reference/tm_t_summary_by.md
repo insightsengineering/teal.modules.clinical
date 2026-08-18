@@ -8,13 +8,11 @@ This module produces a table to summarize variables by row groups.
 tm_t_summary_by(
   label,
   dataname,
-  parentname = ifelse(inherits(arm_var, "data_extract_spec"),
-    teal.transform::datanames_input(arm_var), "ADSL"),
+  parentname = "ADSL",
   arm_var,
   by_vars,
   summarize_vars,
-  id_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
-    subset = "USUBJID"), selected = "USUBJID", fixed = TRUE),
+  id_var = teal.picks::variables("USUBJID", "USUBJID", fixed = TRUE),
   paramcd = NULL,
   add_total = TRUE,
   total_label = default_total_label(),
@@ -24,8 +22,7 @@ tm_t_summary_by(
   na_level = tern::default_na_str(),
   numeric_stats = c("n", "mean_sd", "median", "range"),
   categorical_stats = c("n", "count"),
-  denominator = teal.transform::choices_selected(c("n", "N", "omit"), "omit", fixed =
-    TRUE),
+  denominator = teal.picks::values(c("n", "N", "omit"), "omit", fixed = TRUE),
   drop_arm_levels = TRUE,
   drop_zero_levels = TRUE,
   pre_output = NULL,
@@ -56,34 +53,37 @@ tm_t_summary_by(
 
 - arm_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
-  object with all available choices and preselected option for variable
-  names that can be used as `arm_var`. It defines the grouping
-  variable(s) in the results table. If there are two elements selected
-  for `arm_var`, second variable will be nested under the first
-  variable.
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
+  If there are two elements selected for `arm_var`, the second variable
+  is nested under the first.
 
 - by_vars:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for variable
   names used to split the summary by rows.
 
 - summarize_vars:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   names of the variables that should be summarized.
 
 - id_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   object specifying the variable name for subject id.
 
 - paramcd:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
-  object with all available choices and preselected option for the
-  parameter code variable from `dataname`.
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
+  optional variable for parameter code filter. When provided, a
+  `values()` selector is added with `multiple = FALSE`, so one parameter
+  level is selected by default.
 
 - add_total:
 
@@ -209,7 +209,7 @@ This module generates the following objects, which can be modified in
 place using decorators:
 
 - `table` (`TableTree` - output of
-  [`rtables::build_table()`](https://insightsengineering.github.io/rtables/latest-tag/reference/build_table.html))
+  [`rtables::build_table()`](https://rdrr.io/pkg/rtables/man/build_table.html))
 
 A Decorator is applied to the specific output using a named list of
 `teal_transform_module` objects. The name of this list corresponds to
@@ -257,7 +257,7 @@ where additional example apps implementing this module can be found.
 - example-1:
 
   [Open in
-  Shinylive](https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOz8gCEikrLK6v5qeiUAX0UIACsieL8AazhWUUTQm3D+OGMoYVI-An5aUTKRscnp4Gh4GaS5AF1XCByCoqTgYAUwa-zHs4urptaF0PvHnJbXu8lGhUEV4tF2A0kjoALw6JK4Bp8IQiUSwnTI4RiSEQDIZEp+NaiQQwGAsVh+egcBp4nTUKD0ODUdGPXIkslsHRUnRYIgRHQAcUYREEqDRtgZIkeiNxtPhoSOujhf0+0ppeJYMD8mhY6IIMVGBDEflETLg6jg-Bxcrx+sNYnROsYtElcHWBpk2OeKQIkKeWAAstKdH9AwBhbKPORyGU2jKmkQW-gs-1BsDqjIxjM6Gr8QlETzMuH2ZyxuVU7UsNFwu2e0Qms1J61x2tG6s6J0u+gid32mb-Zo+v0ABUyWEyaZSfwAagBJXKz2xRrOym0J83kZM1v2ZOcLpdgQY2ldr9ksWgALzdTvbreN66b2Yyd-bnddvbr7AHQ5nmReeBDMAwwACQFZcyzXRtNz1Hdpz-KNsxPOVBFNAA5TIU1oZYIFYNVVzxVAWFgDY9Q9NsG0TTdmxtF9HW4QQ3RfL9PinMBR3HAMI2DR52InKMILlB9oOVJ58gPRD1SPHRBkGLCdHYeJyDUDRtGsGw0llUQ4hwzJ0HYEEABJBFoFJDNNRhtEYQY+iUMA+jOIA)
+  Shinylive](https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOz8gCEikrLK6v5qeiUAX0UIACsieL8AazhWUUTQm3D+OGMoYVI-An5aUTKRscnp4Gh4GaS5AF1XaHQi+Oj2BqSdAF4dJNwGviERUWedT+ExPcIBkMiU-GtRIIYDAWKw-PQOA0QTpqFB6HBqL8FGBclCYWwdAidFgiBEdABxRhEQSoH62NEibHvYHI16hI66F7YnItJlIkEsGB+TQsX4ixi0BmAggxUYEMS-Aj3MCZLAAWSZOm56oAwtlsXIUjBVrRUCJfvZnIb+RkavxwURPJiXpanMzWYS4eKfi9xZL6N92DK5QqXkrsQAFVWZDV4LUqgBqAElcknbAaUqIMXB1HB+FjEym05rjdQNGbOXZHE5rSzkZDoSxaAAvODClg+nR+qUzYMyUM6cOJzL5TXYnUACXJGZ0WZEufzXOHo7jpfL5pd1drHsEWYAcpkC7RlhBWHy6yDUCxYBtfqgZOMZjaQd2A9LZf3O5Ho2q9RnnxkIrUIIgJzjm5CLvGI7pquJoVhaW7uh6g4xDm4wBKEWakL8ABiI65C4F4ZIMyIkTogyDMeOjsPE5BqBo2jWDYaQsqIcSnpk6DsGgqAACSCLQKQ8bxWaMNojCDH0ShgH0ZxAA)
 
 ## Examples
 
@@ -269,37 +269,28 @@ data <- within(data, {
 })
 join_keys(data) <- default_cdisc_join_keys[names(data)]
 
-ADSL <- data[["ADSL"]]
-ADLB <- data[["ADLB"]]
-
 app <- init(
   data = data,
   modules = modules(
     tm_t_summary_by(
       label = "Summary by Row Groups Table",
       dataname = "ADLB",
-      arm_var = choices_selected(
-        choices = variable_choices(ADSL, c("ARM", "ARMCD")),
-        selected = "ARM"
-      ),
+      arm_var = variables(choices = c("ARM", "ARMCD"), multiple = TRUE),
       add_total = TRUE,
-      by_vars = choices_selected(
-        choices = variable_choices(ADLB, c("PARAM", "AVISIT")),
-        selected = c("AVISIT")
-      ),
-      summarize_vars = choices_selected(
-        choices = variable_choices(ADLB, c("AVAL", "CHG")),
-        selected = c("AVAL")
-      ),
+      by_vars = variables(choices = c("PARAM", "AVISIT"), selected = "AVISIT", multiple = TRUE),
+      summarize_vars = variables(choices = c("AVAL", "CHG"), selected = "AVAL", multiple = TRUE),
       useNA = "ifany",
-      paramcd = choices_selected(
-        choices = value_choices(ADLB, "PARAMCD", "PARAM"),
-        selected = "ALT"
+      paramcd = picks(
+        variables(choices = "PARAMCD"),
+        values(selected = "ALT", multiple = TRUE),
+        check_dataset = FALSE
       )
     )
   )
 )
 #> Initializing tm_t_summary_by
+#> Warning: rlang::dots_list(..., .ignore_empty = "trailing")
+#>  - Setting explicit `selected` while `choices` are delayed (set using `tidyselect`) doesn't guarantee that `selected` is a subset of `choices`.
 if (interactive()) {
   shinyApp(app$ui, app$server)
 }

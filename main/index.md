@@ -78,8 +78,8 @@ These modules include, but are not limited to:
   - …
 
 Most modules in the package are implemented using functions from the R
-package [`tern`](https://insightsengineering.github.io/tern/) in order
-to produce their output.
+package [`tern`](https://pharmaverse.github.io/tern/latest-tag/) in
+order to produce their output.
 
 Please see the [Teal
 Gallery](https://insightsengineering.github.io/teal.gallery/) and [TLG

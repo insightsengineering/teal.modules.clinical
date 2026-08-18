@@ -10,25 +10,18 @@ with the TLG Catalog template for `TTET01` available
 tm_t_tte(
   label,
   dataname,
-  parentname = ifelse(inherits(arm_var, "data_extract_spec"),
-    teal.transform::datanames_input(arm_var), "ADSL"),
+  parentname = "ADSL",
   arm_var,
   arm_ref_comp = NULL,
   paramcd,
   strata_var,
-  aval_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
-    "AVAL"), "AVAL", fixed = TRUE),
-  cnsr_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
-    "CNSR"), "CNSR", fixed = TRUE),
-  conf_level_coxph = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order
-    = TRUE),
-  conf_level_survfit = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95,
-    keep_order = TRUE),
+  aval_var = teal.picks::variables("AVAL", "AVAL", fixed = TRUE),
+  cnsr_var = teal.picks::variables("CNSR", "CNSR", fixed = TRUE),
+  conf_level_coxph = teal.picks::values(c(0.95, 0.9, 0.8), 0.95),
+  conf_level_survfit = teal.picks::values(c(0.95, 0.9, 0.8), 0.95),
   time_points,
-  time_unit_var =
-    teal.transform::choices_selected(teal.transform::variable_choices(dataname, "AVALU"),
-    "AVALU", fixed = TRUE),
-  event_desc_var = teal.transform::choices_selected("EVNTDESC", "EVNTDESC", fixed = TRUE),
+  time_unit_var = teal.picks::variables("AVALU", "AVALU", fixed = TRUE),
+  event_desc_var = teal.picks::variables("EVNTDESC", "EVNTDESC", fixed = TRUE),
   add_total = FALSE,
   total_label = default_total_label(),
   na_level = tern::default_na_str(),
@@ -60,7 +53,8 @@ tm_t_tte(
 
 - arm_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for variable
   names that can be used as `arm_var`. It defines the grouping variable
   in the results table.
@@ -71,32 +65,41 @@ tm_t_tte(
   if specified it must be a named list with each element corresponding
   to an arm variable in `ADSL` and the element must be another list
   (possibly with delayed
+  [`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html)
+  or
+  [`teal.picks::values()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy
   [`teal.transform::variable_choices()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/variable_choices.html)
-  or delayed
+  and
   [`teal.transform::value_choices()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/value_choices.html)
-  with the elements named `ref` and `comp` that the defined the default
-  reference and comparison arms when the arm variable is changed.
+  are deprecated but still accepted) with the elements named `ref` and
+  `comp` that define the default reference and comparison arms when the
+  arm variable is changed.
 
 - paramcd:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for the
   parameter code variable from `dataname`.
 
 - strata_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   names of the variables for stratified analysis.
 
 - aval_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and pre-selected option for the
   analysis variable.
 
 - cnsr_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for the
   censoring variable.
 
@@ -114,22 +117,28 @@ tm_t_tte(
 
 - time_points:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::values()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy
+  [`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html)
+  is deprecated but still accepted)\
   object with all available choices and preselected option for time
   points that can be used in
-  [`tern::surv_timepoint()`](https://insightsengineering.github.io/tern/latest-tag/reference/survival_timepoint.html).
+  [`tern::surv_timepoint()`](https://rdrr.io/pkg/tern/man/survival_timepoint.html).
 
 - time_unit_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and pre-selected option for the time
   unit variable.
 
 - event_desc_var:
 
-  (`character` or
-  [`teal.transform::data_extract_spec()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/data_extract_spec.html))\
-  variable name with the event description information, optional.
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html),
+  legacy
+  [`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html)
+  objects are deprecated but still accepted\
+  variable for event description.
 
 - add_total:
 
@@ -198,10 +207,10 @@ a `teal_module` object.
 ## Details
 
 - The core functionality of this module is based on
-  [`tern::coxph_pairwise()`](https://insightsengineering.github.io/tern/latest-tag/reference/survival_coxph_pairwise.html),
-  [`tern::surv_timepoint()`](https://insightsengineering.github.io/tern/latest-tag/reference/survival_timepoint.html),
+  [`tern::coxph_pairwise()`](https://rdrr.io/pkg/tern/man/survival_coxph_pairwise.html),
+  [`tern::surv_timepoint()`](https://rdrr.io/pkg/tern/man/survival_timepoint.html),
   and
-  [`tern::surv_time()`](https://insightsengineering.github.io/tern/latest-tag/reference/survival_time.html)
+  [`tern::surv_time()`](https://rdrr.io/pkg/tern/man/survival_time.html)
   from the `tern` package.
 
 - The arm and stratification variables are taken from the `parentname`
@@ -222,7 +231,7 @@ This module generates the following objects, which can be modified in
 place using decorators:
 
 - `table` (`TableTree` - output of
-  [`rtables::build_table()`](https://insightsengineering.github.io/rtables/latest-tag/reference/build_table.html))
+  [`rtables::build_table()`](https://rdrr.io/pkg/rtables/man/build_table.html))
 
 A Decorator is applied to the specific output using a named list of
 `teal_transform_module` objects. The name of this list corresponds to
@@ -270,7 +279,7 @@ where additional example apps implementing this module can be found.
 - example-1:
 
   [Open in
-  Shinylive](https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOzbWycikrLK6v5SciUAX0UIACsieL8AazhWUUTQm3D+OGMoYVI-An5aUTKRscnp4Gh4GaS5AF1XCByCoqTgYAUwa-zHs4urppbb0PvHnOaXGA3pcWDA-IwlusiDBUEU6KJSOwGpkAMK2TJYACyKOyOgAvDp4YiGhkIcZ8To-lidAAhR64Ek6YgwikEJFPamZemUjmYnQox6DDJyBkQDIYvkEolIsUZHRkimPGmIHQABWoUAIcHoRHpjOZsIJbL+KuyjEEAHMdAANbmPFEqlHQ+jxDyWCCChqDQZKNCw8LxaIyjJJClJUUZPhCESiClR4RiYNykp+NY9OBJuWEqD0ODURVgWy0eB2Ig6JzaMh2HMiPWyrNJI66Al-T6AiNZnSgvyaFismKjLWiPyiPNwdRwfiZzu9xi0GtwdYDmSJ54pY28u28nFb1HorE7sByEWMrNUzGPU86E-1uXdslQlkE++Qg0drOoFiwDb9wdiEdjhOU5XhkvbUIIi4EMuQ7sP8LQpI8qoYpk2LZFuSFYChgrvp2jwAPK5Jet7CjhGQIswng9n2RrQf+o4iEB05ZrO870CIS5-jMa5MuyuROLaeA8jSmJYAA0lgABMgo3p2cqPHxAlXjJnYaPAfioKMZCxjRnEAQx5BTmyACMAAcEkpBJAAsADMIo6KZEnKVmcCVmsizbFRjC-iuw70eOBlMXKLELhxPmwW2CFgE4ABqABytjZE4uQCkepFyVFcUJUlKVpRkxi0BUk4UvYzhKYyQrXkogy0OS7DxOQagaNo1g2GksqiHEECsJk6DsH6AAkgi0CkA2jow2iMIMfRKGAfRnEAA)
+  Shinylive](https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOzbWycikrLK6v5SciUAX0UIACsieL8AazhWUUTQm3D+OGMoYVI-An5aUTKRscnp4Gh4GaS5AF1XaEYYP0Yl9aIYVCK6UVJ2BsyAYVtMrABZL7ZHQAXh0r3eDQyd2MoJ0CjAf3+OgAQgjcFCdMQnnCCB9EQCsuj4QTkV8EYMMnIMRAMki4RCPrSMjoYXCESjEDoAArUKAEOD0IjozHY55gvEIzJc7KMQQAcx0AA1iQivlyvo96PEPJYIBSGoNBko0M9wvFokyMkk4UkaRk+EIRKI4Y7hGIrSySn41j04J6WeCoPQ4NR2WBbLR4HYiDonNoyHZgyIRczA0kjrowVKmi1U4GMiwbpoWHCS4xaMmPZLSarSUC699fgCG2A5NTMYXrrd7mK4UWe8YHk97QXUCxYBsyyxK-Rnewa9y-plAdk60usCuKR20yy3sxPH5y9OK1WZjXck4VXgSSj-lgANJYABMFJSCMv153BeKUbgflQUYyBdMFfAwVAZHGUREEQEtqEEat2AARgADmfFJnwAFgAZmpHRUOfSkWSIo0lFoWF2Hicg1A0bRrBsNJmVEOIIFYTJ0HYU0ABJBFoFJuNEVRtEYQY+iUMA+jOIA)
 
 ## Examples
 
@@ -281,9 +290,6 @@ data <- within(data, {
   ADTTE <- tmc_ex_adtte
 })
 join_keys(data) <- default_cdisc_join_keys[names(data)]
-
-ADSL <- data[["ADSL"]]
-ADTTE <- data[["ADTTE"]]
 
 arm_ref_comp <- list(
   ACTARMCD = list(
@@ -302,29 +308,14 @@ app <- init(
     tm_t_tte(
       label = "Time To Event Table",
       dataname = "ADTTE",
-      arm_var = choices_selected(
-        variable_choices(ADSL, c("ARM", "ARMCD", "ACTARMCD")),
-        "ARM"
-      ),
+      arm_var = variables(c("ARM", "ARMCD", "ACTARMCD")),
       arm_ref_comp = arm_ref_comp,
-      paramcd = choices_selected(
-        value_choices(ADTTE, "PARAMCD", "PARAM"),
-        "OS"
-      ),
-      strata_var = choices_selected(
-        variable_choices(ADSL, c("SEX", "BMRKR2")),
-        "SEX"
-      ),
-      time_points = choices_selected(c(182, 243), 182),
-      event_desc_var = choices_selected(
-        variable_choices(ADTTE, "EVNTDESC"),
-        "EVNTDESC",
-        fixed = TRUE
-      )
+      paramcd = variables(c("PARAMCD", "PARAM")),
+      strata_var = variables(c("SEX", "BMRKR2"), "SEX"),
+      time_points = teal.picks::values(c(182, 243), 182)
     )
   )
 )
-#> Initializing tm_t_tte
 if (interactive()) {
   shinyApp(app$ui, app$server)
 }

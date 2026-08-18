@@ -8,21 +8,14 @@ This module produces an adverse events summary table.
 tm_t_events_summary(
   label,
   dataname,
-  parentname = ifelse(inherits(arm_var, "data_extract_spec"),
-    teal.transform::datanames_input(arm_var), "ADSL"),
+  parentname = "ADSL",
   arm_var,
   flag_var_anl = NULL,
   flag_var_aesi = NULL,
-  dthfl_var =
-    teal.transform::choices_selected(teal.transform::variable_choices(parentname,
-    "DTHFL"), "DTHFL", fixed = TRUE),
-  dcsreas_var =
-    teal.transform::choices_selected(teal.transform::variable_choices(parentname,
-    "DCSREAS"), "DCSREAS", fixed = TRUE),
-  llt = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
-    "AEDECOD"), "AEDECOD", fixed = TRUE),
-  aeseq_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
-    "AESEQ"), "AESEQ", fixed = TRUE),
+  dthfl_var = teal.picks::variables("DTHFL", "DTHFL", fixed = TRUE),
+  dcsreas_var = teal.picks::variables("DCSREAS", "DCSREAS", fixed = TRUE),
+  llt = teal.picks::variables("AEDECOD", "AEDECOD", fixed = TRUE),
+  aeseq_var = teal.picks::variables("AESEQ", "AESEQ", fixed = TRUE),
   add_total = TRUE,
   total_label = default_total_label(),
   na_level = tern::default_na_str(),
@@ -59,25 +52,25 @@ tm_t_events_summary(
 
 - arm_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
-  object with all available choices and preselected option for variable
-  names that can be used as `arm_var`. It defines the grouping
-  variable(s) in the results table. If there are two elements selected
-  for `arm_var`, second variable will be nested under the first
-  variable.
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
+  If there are two elements selected for `arm_var`, the second variable
+  is nested under the first.
 
 - flag_var_anl:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html)
-  or `NULL`)\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted or
+  `NULL`)\
   vector with names of flag variables from `dataset` used to count
   adverse event sub-groups (e.g. Serious events, Related events, etc.).
   Variable labels are used as table row names if they exist.
 
 - flag_var_aesi:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html)
-  or `NULL`)\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted or
+  `NULL`)\
   vector with names of flag variables from `dataset` used to count
   adverse event special interest groups. All flag variables must be of
   type `logical`. Variable labels are used as table row names if they
@@ -85,27 +78,32 @@ tm_t_events_summary(
 
 - dthfl_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for variable
   names that can be used as death flag variable. Records with \`"Y"“ are
   summarized in the table row for "Total number of deaths".
 
 - dcsreas_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
-  object with all available choices and preselected option for variable
-  names that can be used as study discontinuation reason variable.
-  Records with `"ADVERSE EVENTS"` are summarized in the table row for
-  "Total number of patients withdrawn from study due to an AE".
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
+  object with all available choices and preselected with all available
+  choices and preselected option for variable names that can be used as
+  study discontinuation reason variable. Records with `"ADVERSE EVENTS"`
+  are summarized in the table row for "Total number of patients
+  withdrawn from study due to an AE".
 
 - llt:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   name of the variable with low level term for events.
 
 - aeseq_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   variable for adverse events sequence number from `dataset`. Used for
   counting total number of events.
 
@@ -209,7 +207,7 @@ This module generates the following objects, which can be modified in
 place using decorators:
 
 - `table` (`TableTree` as created from
-  [`rtables::build_table`](https://insightsengineering.github.io/rtables/latest-tag/reference/build_table.html))
+  [`rtables::build_table`](https://rdrr.io/pkg/rtables/man/build_table.html))
 
 A Decorator is applied to the specific output using a named list of
 `teal_transform_module` objects. The name of this list corresponds to
@@ -257,7 +255,7 @@ where additional example apps implementing this module can be found.
 - example-1:
 
   [Open in
-  Shinylive](https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHTomFg5fXgFhMQkpGXl0zIZmNkTUalZGRQgMrKrc1QhG5sqc9mMiRhgPckZRTp0AQQARAGUAGW8dUhgCPzgADz8oflFqHQBSAD498oyYQU9ydhOMnUnbAAkAMXmAXh1ZUTg-CJiKK6aboCAIS0cTQdh3e53GwAPx0CjAAE0EbhroD7M4dHCETiAYCbIc9pFojE-NQoPQ4NQrmBpoJ6AArODqW5wDwxHSPckAcwRYwyYym4ycCyWK3Wm3ccFcAIwW34q20ZD8xh5ogWpnMGisgRsaTxOkCCyNhLROjOFzg-0B6IAsgAFZ5+aZOLA6N7Cl1ul5vBHIvBmjK2B1OrBOV4TV3h92+pEowN2EOzPwAcSwAFZ3ZHbAB5AAaaZj8LA6fjBrt9udtoAigAGACMWZBYKg7GmNYbADlxra5Kjyzdg5X23WAExN0EYcEj2uj7u9-s2wcOvwAYTrjbezanrfXXZ7-Juh+I1EEMAgZIpVPV4ToolI1ptQ6dXqzCOmqksgnVwrLS+fyZhhGCJYFSHhwPwkZ-k+Saphmb5gCmzD8Loma-gGA5DlWG5ZlAYi0JelLUoEwDAO+Hb1vOCIALrUSkJFkbSFHTKuNHUX2ZpYTO45vHhogEeSRE0oiGAAJxiRJokAPQAFqSZJkbTAAknyi4wZWe6bjofECVexEeKRCKaVRYC0Yex5EP4gnXokHhyMA0DwKI7AnmeF7WdQozUQsUDiAQMQsFA6iqC5lluYR16HoE5QAL4yhkADEADkOgphQqgePE3I6N+qgGChxjxBBOhwEqpAmGqGDlEKIrhDV+xHDocr8AqpUUKQKpqsEEDlHKXxQBA-iaCwN5GI5YjsDV9n3iwpCiAA6iS7Djc5U0pAiAF+Hy1G9TpfjDSMCwrZNkzCtNniMHNi2xMtsATWtxZYdtSgxY0DJEPEfgANZwKwzlJDY4QFVAwgdQQ-Cgis72fT9f0OXd-2hHIO09dA6ALPE0SPkkWZJGpfBCCI6pvAThTOdcSx+B1bVkKIfiiGegzVGaHkIeM-DaCMuhOGV6p0jATOsNBgJJONbOnS4GFLiwMD7SwWb+R9BBiPTVLMuQ-CPkuisyGIWYHbQFIiH4OvK+TYBTHMKLvDS4xYLa1sInbtqrpMfIcQOGSfCIwWQbGzu4kuHtLqqUDcnLjCbINCsxErKve+rEFazapt628BtG18qfmzV1tJIZYB9VHQ0jWxwdLjoCe+7joQF0XA0lyMbHAPWdEJj9cCoH4-QoYwWYYk4akh7QazFW8jzjLMLpmuXgKh+HB2bPhMdx3TVca8ngLZ-rLCG-QxvZ7bEt57XjF9fxEeiGXQ82uvY+GqfCLnwRB1X6Z1Et23ns6B3Xc96o-dHCDwTIVUeftOST2ngOWeNx5RUyIJ4XYbwB7XDGI0RotBjA6HYPEYYQUNDaGsHqcoog4gQFYOMdA7A0CoAACSCFoCkGhtDPiME5o0OKEAwAxWokAA)
+  Shinylive](https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHTomFg5fXgFhMQkpGXl0zIZmNkTUalZGRQgMrKrc1QhG5sqc9mMiRhgPckZRTp0AQQARAGUAGW8dUhgCPzgADz8oflFqHQBSAD498oyYQU9ydhOMnUnbAAkAMXmAXh1ZUTg-CJiKK6aboCAIS0cTQdh3e53GwAPx0CjAAE0EbhroD7M4dHCETiAYCbIc9pFojE-NQoPQ4NQrmBpoJ6AArODqW5wDwxHSPckAcwRYwyYym4ycCyWK3Wm3ccFcAIwW34q20ZD8xh5ogWpnMGisgRsaTxOkCCyNhLROjOFzg-0B6IAsgAFZ5+aZOLA6N7Cl1ul5vBHIvBmjK2B1OrBOV4TV3h92+pEowN2EOzPwAcSwAFZ3ZHbAB5AAaaZj8LA6fjBrt9udtoAigAGACMWZBYKg7GmNYbADlxra5Kjyzdg5X23WAExN0EYcEj2uj7u9-s2wcOvwAYTrjbezanrfXXZ7-Juh+I1EEMAgZIpVPV4ToolI1ptQ6dXqzCOmqksgnVwrLS+fyZhhGCJYFSHhwPwkZ-k+Saphmb5gCmzD8Loma-gGA5DlWG5ZlAYi0JelLUoEwDAO+Hb1vOCIALrUSkJFkbSFHTKuNHUX2ZpYTO45vHhogEeSRE0oiGAAJxiRJokAPQAFqSZJkbTAAknyi4wZWe6bjofECVexEeKRCKaVRYC0Yex5EP4gnXokHhyMA0DwKI7AnmeF7WdQozUQsUDiAQMQsFA6iqC5lluYR16HoE5QAL4yhkADEADkOgphQqgePE3I6N+qgGChxjxBBOhwEqpAmGqGDlEKIrhDV+xHDocr8AqpUUKQKpqsEEDlHKXxQBA-iaCwN5GI5YjsDV9n3iwpCiAA6iS7Djc5U0pAiAF+Hy1G9TpfjDSMCwrZNkzCtNniMHNi2xMtsATWtxZYdtSgxY0DJEPEfgANZwKwzlJDY4QFVAwgdQQ-Cgis72fT9f0OXd-2hHIO09dA6ALPE0SPkkWZJGpfBCCI6pvAThTOdcSx+B1bVkKIfiiGegzVGaHkIeM-DaCMuhOGV6p0jATOsNBgJJONbOnS4GFLiwMD7SwWYHbQFJEy5MQfQQYhZgQNLjFgtoosWuu2qukx8hxA6qlA3Jy4wmyDQrLBK-QKsJv56ua28SSGWAfV20NI1sWpS6fCIwWQZ7oTe77A3+yMbHAPWdEJmc1AaLUuhvBiThBza-QoYwxWZ442cJoVayF5y4yzC6Zrm0ulvWwdmz4Q7jBOy7A4ZG7Mge4akeMX1-E26IgcJiHzLkOHfeeFHe0HSPpnUQnSed+aoO0OnWZZzngJ56oFfb6XtDl1PjxVzXA51za8pU0Qni7EXzjXGMjSNLQxg6Ow8TDEFGjaNYepyiiDiBAVg4x0DsDQKgAAJIIWgKQoHQM+IwTmjQ4oQDADFaiQA)
 
 ## Examples
 
@@ -313,20 +311,19 @@ app <- init(
     tm_t_events_summary(
       label = "Adverse Events Summary",
       dataname = "ADAE",
-      arm_var = choices_selected(
-        choices = variable_choices("ADSL", c("ARM", "ARMCD")),
-        selected = "ARM"
-      ),
-      flag_var_anl = choices_selected(
-        choices = variable_choices("ADAE", data[[".ae_anl_vars"]]),
+      arm_var = variables(choices = c("ARM", "ARMCD")),
+      flag_var_anl = variables(
+        choices = data[[".ae_anl_vars"]],
         selected = data[[".ae_anl_vars"]][1],
-        keep_order = TRUE,
+        multiple = TRUE,
+        ordered = TRUE,
         fixed = FALSE
       ),
-      flag_var_aesi = choices_selected(
-        choices = variable_choices("ADAE", data[[".aesi_vars"]]),
+      flag_var_aesi = variables(
+        choices = data[[".aesi_vars"]],
         selected = data[[".aesi_vars"]][1],
-        keep_order = TRUE,
+        multiple = TRUE,
+        ordered = TRUE,
         fixed = FALSE
       ),
       add_total = TRUE

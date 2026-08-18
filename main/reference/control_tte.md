@@ -19,21 +19,21 @@ control_tte(
 
   (`list`)\
   control parameters for `survfit` model. See
-  [`tern::control_surv_time()`](https://insightsengineering.github.io/tern/latest-tag/reference/control_surv_time.html)
+  [`tern::control_surv_time()`](https://rdrr.io/pkg/tern/man/control_surv_time.html)
   for details.
 
 - coxph:
 
   (`list`)\
   control parameters for Cox-PH model. See
-  [`tern::control_coxph()`](https://insightsengineering.github.io/tern/latest-tag/reference/control_coxph.html)
+  [`tern::control_coxph()`](https://rdrr.io/pkg/tern/man/control_coxph.html)
   for details.
 
 - surv_timepoint:
 
   (`list`)\
   control parameters for `survfit` model at time point. See
-  [`tern::control_surv_timepoint()`](https://insightsengineering.github.io/tern/latest-tag/reference/control_surv_timepoint.html)
+  [`tern::control_surv_timepoint()`](https://rdrr.io/pkg/tern/man/control_surv_timepoint.html)
   for details.
 
 ## See also

@@ -11,7 +11,7 @@ template_laboratory(
   paramcd = "PARAMCD",
   param = "PARAM",
   anrind = "ANRIND",
-  timepoints = "ADY",
+  time_points = "ADY",
   aval_var = "AVAL",
   avalu_var = "AVALU",
   patient_id = NULL,
@@ -41,7 +41,7 @@ template_laboratory(
   (`character`)\
   name of the analysis reference range indicator variable.
 
-- timepoints:
+- time_points:
 
   (`character`)\
   name of time variable.

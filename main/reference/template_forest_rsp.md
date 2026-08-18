@@ -103,7 +103,7 @@ template_forest_rsp(
   (`list`)\
   if a risk (proportion) difference column should be added, a list of
   settings to apply within the column. See
-  [`tern::control_riskdiff()`](https://insightsengineering.github.io/tern/latest-tag/reference/control_riskdiff.html)
+  [`tern::control_riskdiff()`](https://rdrr.io/pkg/tern/man/control_riskdiff.html)
   for details. If `NULL`, no risk difference column will be added.
 
 - conf_level:

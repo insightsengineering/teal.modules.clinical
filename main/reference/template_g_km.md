@@ -97,7 +97,7 @@ template_g_km(
 
   (`character`)\
   time points that can be used in
-  [`tern::surv_timepoint()`](https://insightsengineering.github.io/tern/latest-tag/reference/survival_timepoint.html).
+  [`tern::surv_timepoint()`](https://rdrr.io/pkg/tern/man/survival_timepoint.html).
 
 - facet_var:
 
@@ -174,9 +174,9 @@ template_g_km(
   (`list`)\
   parameters to control the position and size of the annotation table
   added to the plot when `annot_surv_med = TRUE`, specified using the
-  [`control_surv_med_annot()`](https://insightsengineering.github.io/tern/latest-tag/reference/control_annot.html)
+  [`control_surv_med_annot()`](https://rdrr.io/pkg/tern/man/control_annot.html)
   function. Parameter options are: `x`, `y`, `w`, `h`, and `fill`. See
-  [`control_surv_med_annot()`](https://insightsengineering.github.io/tern/latest-tag/reference/control_annot.html)
+  [`control_surv_med_annot()`](https://rdrr.io/pkg/tern/man/control_annot.html)
   for details.
 
 - control_annot_coxph:
@@ -184,10 +184,10 @@ template_g_km(
   (`list`)\
   parameters to control the position and size of the annotation table
   added to the plot when `annot_coxph = TRUE`, specified using the
-  [`control_coxph_annot()`](https://insightsengineering.github.io/tern/latest-tag/reference/control_annot.html)
+  [`control_coxph_annot()`](https://rdrr.io/pkg/tern/man/control_annot.html)
   function. Parameter options are: `x`, `y`, `w`, `h`, `fill`, and
   `ref_lbls`. See
-  [`control_coxph_annot()`](https://insightsengineering.github.io/tern/latest-tag/reference/control_annot.html)
+  [`control_coxph_annot()`](https://rdrr.io/pkg/tern/man/control_annot.html)
   for details.
 
 - legend_pos:

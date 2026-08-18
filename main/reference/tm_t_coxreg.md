@@ -13,21 +13,17 @@ and `COXT02`
 tm_t_coxreg(
   label,
   dataname,
-  parentname = ifelse(inherits(arm_var, "data_extract_spec"),
-    teal.transform::datanames_input(arm_var), "ADSL"),
+  parentname = "ADSL",
   arm_var,
   arm_ref_comp = NULL,
   paramcd,
   cov_var,
   strata_var,
-  aval_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
-    "AVAL"), "AVAL", fixed = TRUE),
-  cnsr_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
-    "CNSR"), "CNSR", fixed = TRUE),
+  aval_var = teal.picks::variables(choices = "AVAL", "AVAL", fixed = TRUE),
+  cnsr_var = teal.picks::variables(choices = "CNSR", "CNSR", fixed = TRUE),
   multivariate = TRUE,
   na_level = tern::default_na_str(),
-  conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order =
-    TRUE),
+  conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95),
   pre_output = NULL,
   post_output = NULL,
   basic_table_args = teal.widgets::basic_table_args(),
@@ -56,7 +52,8 @@ tm_t_coxreg(
 
 - arm_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for variable
   names that can be used as `arm_var`. It defines the grouping variable
   in the results table.
@@ -67,38 +64,48 @@ tm_t_coxreg(
   if specified it must be a named list with each element corresponding
   to an arm variable in `ADSL` and the element must be another list
   (possibly with delayed
+  [`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html)
+  or
+  [`teal.picks::values()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy
   [`teal.transform::variable_choices()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/variable_choices.html)
-  or delayed
+  and
   [`teal.transform::value_choices()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/value_choices.html)
-  with the elements named `ref` and `comp` that the defined the default
-  reference and comparison arms when the arm variable is changed.
+  are deprecated but still accepted) with the elements named `ref` and
+  `comp` that define the default reference and comparison arms when the
+  arm variable is changed.
 
 - paramcd:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for the
   parameter code variable from `dataname`.
 
 - cov_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for the
   covariates variables.
 
 - strata_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   names of the variables for stratified analysis.
 
 - aval_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and pre-selected option for the
   analysis variable.
 
 - cnsr_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for the
   censoring variable.
 
@@ -118,9 +125,14 @@ tm_t_coxreg(
 
 - conf_level:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
-  object with all available choices and pre-selected option for the
-  confidence level, each within range of (0, 1).
+  ([`teal.picks::values()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy
+  [`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html)
+  is deprecated but still accepted)\
+  available confidence levels and default selection, each in the range
+  (0, 1). Choice order follows the vector passed to
+  [`teal.picks::values()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html)
+  (there is no `keep_order` argument).
 
 - pre_output:
 
@@ -199,7 +211,7 @@ This module generates the following objects, which can be modified in
 place using decorators:
 
 - `table` (`TableTree` as created from
-  [`rtables::build_table`](https://insightsengineering.github.io/rtables/latest-tag/reference/build_table.html))
+  [`rtables::build_table`](https://rdrr.io/pkg/rtables/man/build_table.html))
 
 A Decorator is applied to the specific output using a named list of
 `teal_transform_module` objects. The name of this list corresponds to
@@ -247,12 +259,12 @@ where additional example apps implementing this module can be found.
 - example-1:
 
   [Open in
-  Shinylive](https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpQGI3OgGK1Go0jpwAB6wqCLungC80TGxMRF2ABa6waEiOvRw1EQA7jq0ohlQonD8OiQ6pMk6gqKC3DpoqIxEUASJ+RCaRNSatBAA5joEjHBQGhVExglQOswQ-EQwOgDCACIAkgDKKzr848VwAVALlckQc2bKQ1W6TXSyExAYrtCMMAD6o8YfxDCo+iMdH87CUOh0AEEVrYIVgALLrHSRHTA0igi7guZwYxInQKMCwuE6ABC+NwYMxfwByIIoIJ8MhZLx9KJK3xigxcnJGMJuNR6MxWJxyPxxMQOgACtQ2nB6EQyRTwVTcbT8RDxWtGIIhgANJn4lbilZLej9caWCDsikcjlKfakWaGSpjagfe1Qax2g6AnQ5WhVfrsd24HQgCkQtZbAAyPtIMAIH2CHyg-FE1HDa1sticsfjiaCyf4pHISgAvhyAFZEfofADWcFYoiDBxsTv42KgwlIv34BQTVZr9cbwGg8Cb7rkAF1XhHoz73cBgGrI1H8ZPpxAI1mc22Dovl9u1xulE0ff1-QK9t7kcGKXwhCJCsj78IxJfwXGPt3iEFRgN35i0qZNQuIGkQQQ6FgcADC8eCKpi7qjroIoEpm2YKhigosJ8mgsCqiTVgQYgfCUIjqKU7Cqiy+osusNFQjC8J0WAXLMoS7LcoK4LYV82K-Es1KNO8vE-FSnFcagLCwAQZQ0gRMjEaRcDkfwAGCrh1CCHAvzyURTZbtmIb4hKsIQgiaw0SZWBmRxzIAPJbPi8Hglyzk6P4zAOh8uGMPhhGKVkynkKpblKnSKx2Q4ABy9gAJo0Vs9gQjCACMCVJTCABMtn4ol1mpU5mGYq5RVKkQmjeXhcn+aIJGBSpamUnSEIAOIuHgzLEnCWAANJYGlHWit1fXZYNYBYE4LUbHZUUDaxaptYVXE6CVy0wF2WgsLQ4zIXYjguEVHIuUoHK0Di7D9OQagaNo1g2GGGKiIk-SsBC6DsE0AAkgi0CGX0lIw2iMBypZKGApaTkAA)
+  Shinylive](https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpQGI3OgGK1Go0jpwAB6wqCLungC80TGxMRF2ABa6waEiOvRw1EQA7jq0ohlQonD8OiQ6pMk6gqKC3DpoqIxEUASJ+RCaRNSatBAA5joEjHBQGhVExglQOswQ-EQwOgDCACIAkgDKKzr848VwAVALlckQc2bKQ1W6TXSyExAYrtCMMAD6o8YfxDCo+iMdH87CUOh0AEEVrYIVgALLrHSRHTA0igi7guZwYxInQKMCwuE6ABC+NwYMxfwByIIoIJ8MhZLx9KJK3xigxcnJGMJuNR6MxWJxyPxxMQOgACtQ2nB6EQyRTwVTcbT8RDxWtGIIhgANJn4lbilZLej9caWCDsikcjlKfakWaGSpjagfe1Qax2g6AnQ5WhVfrsd24HQgCkQtZbAAyPtIMAIH2CHyg-FE1HDa1sticsfjiaCyf4pHISgAvhyAFZEfofADWcFYoiDBxsTv42KgwlIv34BQTVZr9cbwGg8Cb7rkAF1XhHoz73cBgGrI1H8ZPpxAI1mc22Dovl9u1xulE0ff1-QK9t7kcGKXwhCJCsj78IxJfwXGPt3iEFRgN35i0qZNQuIGkQQQ6FgcADC8eCKpi7qjroIoEpm2YKhigosJ8mgsLiuGMLQUD0I+AGCu01YEGIKp0oS+osus9FQjC8KMWAXLwYKJQiOopSgSy+KcToHGYZi2FfNivxLNSjTvBJPxUtygrgqgLCwAQZTIgRREkW+FEyNRKESrCEIIms7JKcp-jMA6HwEfhLA6aRQlKoklGGcMdIrAA8g4ABy9gAJr0Vs9gQjCACMIVhTCABMFkuTo3FwLxmnMqFWDhRCUVgEJInKcMRCaHZeFaY5xHOaJ5FuQZT6eWqADiLh4MyxJwlgADSWA5SGortV18UtfiWBOA1GzeX5OX5QVSVZCl5BpY1zWWQVMBdrQYTIXYjhOCtylEIw7ajGl9jOHle3gmt1AaNp4xbadLiiRy4I2kotA4uw-TkGoN1wNYNhhhioiJP0rAQug7BNAAJIItAhtDJSMNojAcqWShgKWk5AA)
 
 - example-2:
 
   [Open in
-  Shinylive](https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpQGI3OgMpxiEfjpwAB6wqCLungC80TGxsRF2ABa0ojoa8Lg6UDqirGSJcBoEOqhQtIw6RMY6AIIAIra2TgD09V4AMjr8UKTZKSZQTDI9cAHGRBUAwkRBOoxwAObzoqKWEAkA7gXzabRiWf4lmtwA+vCkiQI6MD3kjBhKdEwsHPxhrIyK6-492YZpcFO3V61iUwL+Rg2tAutAg7HBmRASh0tQaTX0RnBGGMzHg7GRKO8tgcdQAmgBJOo6SI6BRgdoOAByAHE6bgCSiagA1GqdGkEdgAFkyAGZMgBGCWZABMMtFUp00rk7IghJ0k0ZXiw1J0AslOn1+oADArjZkTTojcqObUsABZSZUmnGKDqCb41Vq3XsC2G03mgOW83Wz1q6iDODUVL8-FgGr22ps2lxhMAITpXzVIbVXicAA0dS63YwPV7vRaK4G-QbTdmveH6JHo966QAxJN0u0Zm11lHkzW2Quu0jugV0moduOT9N4ZMzzLj6eTiezunz5MruS9nKkRiwhaiGqiVvDibN1u83MEzOoxpODFzeiw-jsep3zJvpoftFOb93m+fve-xQKIJwaPQ9AiK+P43qIhQYHBozsOKAE-gAJP2XiDv8oihFBgEYQOqF3mhNTMkBRi4TAYRwOwcEAI7sAArJkADsLE6Exyo5LQABeug0hAjBEBs0H-pk8xhK6Al2I4TjEU0aEOF4DipgAUpSD6lKI5CxqIgj0Em4qIEJIliU03EEZhtiZHBqA6nSBjdp6BEAArxjUdoPm5HkOlS-x0gA8l4dIEm0nQ4QZcGkKWhKASqapwSI6g6mOYDKapGl1JOWEkhS2Wrimfk5fmk7Wcu5HOSiXwAL5fEoABWRCwicADWcCsKI8K-DY-z8HALrCKQJwEPwKQECcTUte1nXANA8BdeCcgALquBA4UPuCwDAOOdQdHSy2retP6bb8227XeB1HQkAAGXDUDdWToHQsgaCQCQGJ9X3fT9TkQB4OiMkQ5BpIkPSg7o2rEP1gRBKgEzkAE9CsDoN1eJcGw6Nq0z9Y9-BEPsEDAzosKSIIMMXLo4IJKg8wGLTRAEGIqwQAsGA6KSRCCDoULUNQOgQHAoxpEQurzCMENdL80VZKkgxENoOiNuM8wJIwZjKAskvBPDjCI1juoCHADzfCwMAnPMxgjUQ1EPnQOmvvajo6vbMWWw5RWJrOxC2zG45phmW5rWg9n-LC0KxeCOoIgSfBCCIzZx8IYixSipDm8NxBBPMCyp4SDaRh70yzFgiwPHgNoouC80yRdTRspXWSMObxwVPylwyGIJxJb4iPsGl8bFWA3H+0P24ombFsDdbvtN+blsz6gCVeqUuKjalHdM6BPfqEhjcosc1CCHAI2byn8XJu5WCeY6k5X55GYLmAwWhaGhLjzuzC9Ccrcb81W-d0jL3JCaVyrD0yIyBw7R2gf2IJoH+LA-6d23kA3eL40q5jzBVFw4DkyYMfo3GAQ0tAsFoBLGk9hnA9mvEoL4tBqjsFhHcYcWhaJbh0EiT0ohkgQFYDUdA7AQ5oUELQTIQi4KMG0J8JQNUlBgBqstIAA)
+  Shinylive](https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpQGI3OgMpxiEfjpwAB6wqCLungC80TGxsRF2ABa0ojoa8Lg6UDqirGSJcBoEOqhQtIw6RMY6AIIAIra2TgD09V4AMjr8UKTZKSZQTDI9cAHGRBUAwkRBOoxwAObzoqKWEAkA7gXzabRiWf4lmtwA+vCkiQI6MD3kjBhKdEwsHPxhrIyK6-492YZpcFO3V61iUwL+Rg2tAutAg7HBmRASh0tQaTX0RnBGGMzHg7GRKO8tgcdQAmgBJOo6SI6BRgdoOAByAHE6bgCSiagA1GqdGkEdgAFkyAGZMgBGCWZABMMtFUp00rk7IghJ0k0ZXiw1J0AslOn1+oADArjZkTTojcqObUsABZSZUmnGKDqCb41Vq3XsC2G03mgOW83Wz1q6iDODUVL8-FgGr22ps2lxhMAITpXzVIbVXicAA0dS63YwPV7vRaK4G-QbTdmveH6JHo966QAxJN0u0Zm11lHkzW2Quu0jugV0moduOT9N4ZMzzLj6eTiezunz5MruS9nKkRiwhaiGqiVvDibN1u83MEzOoxpODFzeiw-jsep3zJvpoftFOb93m+fve-xQKIJwaPQ9AiK+P43qIhQYHBozsOKAE-gAJP2XiDv8oihFBgEYQOqF3mhNTMkBRi4TAYRwOwcEAI7sAArJkADsLE6Exyo5LQABeug0hAjBEBs0H-pk8xhK6Al2I4TjEU0aEOF4DipgAUpSD6lKI5CxqIgj0Em4qIEJIliU03EEZhtiZHBqA6nSBjdp6BEAArxjUdoPm5HkOlS-x0gA8l4dIEm0nQ4QZcGkKWhKASqapwSI6g6mOYDKapGl1JOWEkhS2Wrimfk5fmk7Wcu5HOSiXwAL5fEoABWRCwicADWcCsKI8K-DY-z8HALrCKQJwEPwKQECcTUte1nXANA8BdeCcgALquBA4UPuCwDAOOdQdHSy2retP6bb8227XeB1HQkAAGXDUDdWToHQsgaCQCQGJ9X3fT9TkQB4OiMkQ5BpIkPSg7o2rEP1gRBKgEzkAE9CsDoN1eJcGw6Nq0z9Y9-BEPsEDAzosKSIIMMXLo4IJKg8wGLTRAEGIqwQAsGA6KSRCCDoULUNQOgQHAoxpEQurzCMENdL80VZKkgxENoOiNuM8wJIwZjKAskvBPDjCI1juoCHADzfCwMAnPMxgjUQ1EPnQOmvvajo6vbMWWw5RWJrOxC2zG45phmW5rWg9n-LC0KxeCOoIgSfBCCIzZx8IYixSipDm8NxBBPMCyp4SDaRh70yzFgiwPHgNoouC80yRdTRspXWSMObxwVDSre0IMCfsAQlwyPsNL+8VYDbiiZsWwN1u+035uW1PqAJV6pS4qNOod13Ke981TPNnS7lYJ5joZoviW7r8Jyt2vLCd5Bm99zvHvlbOSW+PrNKMg47TtKPhuaBfLBXz3BvLqjcURb37s2NKuY8wVRcCPE+XoX7qGFoPMA0CG6hi9DAIatAaI6nsM4BBaoJj9XmAEGkBCXCYOqkQ64OD14gwoXJHs14lBfFoNUdgsI7jDi0LRLcOgkSelEMkCArAajoHYCHNCghaCZGkXBRg2hPhKBqkoMANVlpAA)
 
 ## Examples
 
@@ -289,16 +301,21 @@ app <- init(
     tm_t_coxreg(
       label = "Cox Reg.",
       dataname = "ADTTE",
-      arm_var = choices_selected(c("ARM", "ARMCD", "ACTARMCD"), "ARM"),
+      arm_var = variables(
+        choices = c("ARM", "ARMCD", "ACTARMCD"),
+        selected = "ARM"
+      ),
       arm_ref_comp = arm_ref_comp,
-      paramcd = choices_selected(
-        value_choices(ADTTE, "PARAMCD", "PARAM"), "OS"
+      paramcd = variables(choices = "PARAMCD"),
+      strata_var = variables(
+        choices = c("COUNTRY", "STRATA1", "STRATA2"),
+        selected = "STRATA1"
       ),
-      strata_var = choices_selected(
-        c("COUNTRY", "STRATA1", "STRATA2"), "STRATA1"
-      ),
-      cov_var = choices_selected(
-        c("AGE", "BMRKR1", "BMRKR2", "REGION1"), "AGE"
+      cov_var = variables(
+        choices = c("AGE", "BMRKR1", "BMRKR2", "REGION1"),
+        selected = "AGE",
+        multiple = TRUE,
+        ordered = TRUE
       ),
       multivariate = TRUE
     )
@@ -364,13 +381,16 @@ app <- init(
     tm_t_coxreg(
       label = "Cox Reg.",
       dataname = "ADTTE",
-      arm_var = choices_selected(c("ARMCD"), "ARMCD"),
+      arm_var = variables(choices = "ARMCD"),
       arm_ref_comp = arm_ref_comp,
-      paramcd = choices_selected(
-        value_choices(ADTTE, "PARAMCD", "PARAM"), "OS"
+      paramcd = variables(choices = "PARAMCD"),
+      strata_var = variables(choices = "INST", selected = NULL),
+      cov_var = variables(
+        choices = c("SEX", "AGE"),
+        selected = "SEX",
+        multiple = TRUE,
+        ordered = TRUE
       ),
-      strata_var = choices_selected(c("INST"), NULL),
-      cov_var = choices_selected(c("SEX", "AGE"), "SEX"),
       multivariate = TRUE
     )
   )

@@ -90,7 +90,7 @@ template_tte(
 
   (`character`)\
   time points that can be used in
-  [`tern::surv_timepoint()`](https://insightsengineering.github.io/tern/latest-tag/reference/survival_timepoint.html).
+  [`tern::surv_timepoint()`](https://rdrr.io/pkg/tern/man/survival_timepoint.html).
 
 - time_unit_var:
 

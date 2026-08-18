@@ -13,10 +13,50 @@ tm_g_ci(
   label,
   x_var,
   y_var,
+  paramcd = NULL,
+  avisit = NULL,
+  color,
+  stat = c("mean", "median"),
+  conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95),
+  plot_height = c(700L, 200L, 2000L),
+  plot_width = NULL,
+  pre_output = NULL,
+  post_output = NULL,
+  ggplot2_args = teal.widgets::ggplot2_args(),
+  transformators = list(),
+  decorators = list()
+)
+
+# S3 method for class 'data_extract_spec'
+tm_g_ci(
+  label,
+  x_var,
+  y_var,
+  paramcd = NULL,
+  avisit = NULL,
   color,
   stat = c("mean", "median"),
   conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order =
     TRUE),
+  plot_height = c(700L, 200L, 2000L),
+  plot_width = NULL,
+  pre_output = NULL,
+  post_output = NULL,
+  ggplot2_args = teal.widgets::ggplot2_args(),
+  transformators = list(),
+  decorators = list()
+)
+
+# Default S3 method
+tm_g_ci(
+  label,
+  x_var,
+  y_var,
+  paramcd,
+  avisit,
+  color,
+  stat = c("mean", "median"),
+  conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95),
   plot_height = c(700L, 200L, 2000L),
   plot_width = NULL,
   pre_output = NULL,
@@ -36,19 +76,37 @@ tm_g_ci(
 
 - x_var:
 
-  (`character`)\
-  name of the treatment variable to put on the x-axis.
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html),
+  [`teal.picks::picks()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html),
+  or legacy `data_extract_spec`)\
+  treatment-axis encoding.
 
 - y_var:
 
-  (`character`)\
-  name of the response variable to put on the y-axis.
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html),
+  [`teal.picks::picks()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html),
+  or legacy `data_extract_spec`)\
+  analysis-value encoding.
+
+- paramcd:
+
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
+  object with all available choices and preselected option for the
+  parameter code variable from `dataname`.
+
+- avisit:
+
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
+  value of analysis visit `AVISIT` of interest.
 
 - color:
 
-  (`data_extract_spec`)\
-  the group variable used to determine the plot colors, shapes, and line
-  types.
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html),
+  [`teal.picks::picks()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html),
+  or legacy `data_extract_spec`)\
+  grouping variable for colors, shapes, and line types.
 
 - stat:
 
@@ -57,9 +115,12 @@ tm_g_ci(
 
 - conf_level:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
-  object with all available choices and pre-selected option for the
-  confidence level, each within range of (0, 1).
+  ([`teal.picks::values()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy
+  [`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html)
+  is deprecated but still accepted)\
+  available confidence levels and default selection, each in the range
+  (0, 1).
 
 - plot_height:
 
@@ -118,6 +179,16 @@ tm_g_ci(
 
 a `teal_module` object.
 
+## Methods (by class)
+
+- `tm_g_ci(data_extract_spec)`: Legacy encodings via `data_extract_spec`
+  (merge-based UI).
+
+- `tm_g_ci(default)`: teal.picks encodings via `picks` objects for
+  `x_var`, `y_var`, and `color` (use `tm_g_ci()` to pass
+  [`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html)
+  objects; they are wrapped into `picks`).
+
 ## Decorating Module
 
 This module generates the following objects, which can be modified in
@@ -171,7 +242,7 @@ where additional example apps implementing this module can be found.
 - example-1:
 
   [Open in
-  Shinylive](https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo67sxsnHDcvALCYhJSMvKl5QyVHPyo1KyBbQCCACIAygAykTqkMAQxcAAeMVD8otSDQ2MAQpPTswtL-NT0SgC+QQBWRLkxANZwrKL5yTap-HDGUMKkMQT8tKKzS7XO4PYDQeCPApyAC6rggw3GkwKwGACjACLGaOhsPhG22r2SKLRwy2WJxSjQqEmuUy7DaBR0AF4dAVcG0+EIRKImToOQ1Hm0ytMYgBzH60OkQMrS8pQehwag8tEAYRIxlob3MugAkipGJpuDoAAr+UhotlSmU6RYGxg8gpzeakNTfUSoOAESVW6UFcG6ZnE0aYvCCq2iBUe0g88MidQxN0er3e6UELJXAhiHme4lYACyyqG5p0aM2uawAGksAAmNFyC3J6UxyNwfhZunovMF2v1hu8r60Hr+nQAMQGYxGTh7DfV8xbPNH45clu9QRXU+lrBitvtyUdzqgcYT2eXVt9sCHgdJIZPMvV1HIduZdFEpCT09o99U8fdx970tt3IBmARoDFgAz5oW15-mUqbppmT5wNo1CPCSmwACQgWBEF1qGDZNuoc4IUhKF4hhoHgQWcjAAAjNC64NjA-aDvOY4TvRybUHKCpKmAIwRuosr0IgaK4VaOE3lad4Pt+iaid6AE8QMABq2ojNqtjmnJVqwTI8HlIhCokVsaHKap6nidBOj4eQrZEYZ7CoSZKlqbYVG0ex3qMfeA4iCxi4eVanHyoqQF8bGUaaP8mTCWAWllKuyYWcm1nRvxro-m+HFcSFxbotAvQAF5zkp3CCHAmkSTKOkZoBOjZuiSljkWKoABIAOLdnFVlpYRuXKU1UG9l5GjMcyC5sV1M69eNS4NglMpJVVRD+I+LK7gs+6HhlWlnvAilBhVeFpal4Uyb+vZBdxQGqitOj0KwOi2rQcoiIdvbVXp9UTgAGs1vH2AMtgDNRf0jADQM1mAi3JT1tl1e2YNgUDINQwFZTDT5Q4zWjJi0LOcMzVp83SsTCVBEEtDGDo7C5A+B4aNo1g2CUlqiDkECsAM6DsJSaGCLQRS8+G+qqEEJxKGAJzQkAA)
+  Shinylive](https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo67sxs+ajUrIGlOgCCACIAygAykTqkMAQxcAAeMVD8otQNLe0AQl09fYPD-NT0SgC+QQBWRLkxANZwrKL5yTap-HDGUMKkMQT8tKJ9Wzv7h8DQ8EcFcgC6rtDoLq5TLsBoFHQAXh0BVwDT4QhEokhOnhwjEoIgZTKPRiAHNbrQMVisdQoPQ4NRkQowABhEjGWjncy6ACSKkYmm4OgACv5SNTYZjiTohpzGMjUDJdkcGsLoclRHBSDKwC0OgKdNS1e1qXJBXKymLaGTEewCKDVVgALI05oa6lTK1YADSWAATLqilrrbbdbKsXr-WVWDExRKpTKhXKCorlRbJlN7armtNPUGsUaTejzVqAGqNHV4TW0gASAHFPcXGvnC0E5YGo1i-AFwwRpUSDTGlSrtUne2AGwadJn6Kac2BWk4ABpJ1r2Rq2RoARln88XHoHXona+XfsbZUHwtQLFgd1b7fTZS7ca1KcTRdvqc3l+HLGNo-R1O5jSwjRtdofMBv1-f8033DNuEEdFFREdQ4H4KlVXaWwNRga5aBqXQoQAMQLSc62FQ9iSgTQHkyc9IyHa8ezvPtaOfcDDTfLMe1zFlWhZFDAOrdjOLAodOWoKCjhguA4IQqFqVaGksCcJwADkWXkisizQ6gNEw5FcPafD0wIg8GiCIJaGMHR2Fycg1A0bRrBsEohVEHIIFYRp0HYNBUAAEkEWgig8zzFQ5VQglWJQwFWH4gA)
 
 ## Examples
 
@@ -180,70 +251,47 @@ library(nestcolor)
 
 data <- teal_data()
 data <- within(data, {
-  library(teal.modules.clinical)
   library(dplyr)
   ADSL <- tmc_ex_adsl
   ADLB <- tmc_ex_adlb
 })
 join_keys(data) <- default_cdisc_join_keys[names(data)]
 
-ADSL <- data[["ADSL"]]
-ADLB <- data[["ADLB"]]
-
 app <- init(
   data = data,
   modules = modules(
     tm_g_ci(
       label = "Confidence Interval Plot",
-      x_var = data_extract_spec(
-        dataname = "ADSL",
-        select = select_spec(
-          choices = c("ARMCD", "BMRKR2"),
-          selected = c("ARMCD"),
-          multiple = FALSE,
-          fixed = FALSE
-        )
+      x_var = picks(
+        datasets("ADSL", "ADSL"),
+        variables(c("ARMCD", "BMRKR2"), "ARMCD")
       ),
-      y_var = data_extract_spec(
-        dataname = "ADLB",
-        filter = list(
-          filter_spec(
-            vars = "PARAMCD",
-            choices = levels(ADLB$PARAMCD),
-            selected = levels(ADLB$PARAMCD)[1],
-            multiple = FALSE,
-            label = "Select lab:"
-          ),
-          filter_spec(
-            vars = "AVISIT",
-            choices = levels(ADLB$AVISIT),
-            selected = levels(ADLB$AVISIT)[1],
-            multiple = FALSE,
-            label = "Select visit:"
-          )
-        ),
-        select = select_spec(
-          label = "Analyzed Value",
-          choices = c("AVAL", "CHG"),
-          selected = "AVAL",
-          multiple = FALSE,
-          fixed = FALSE
-        )
+      y_var = picks(
+        datasets("ADLB", "ADLB"),
+        variables(c("AVAL", "CHG"), "AVAL")
       ),
-      color = data_extract_spec(
-        dataname = "ADSL",
-        select = select_spec(
-          label = "Color by variable",
-          choices = c("SEX", "STRATA1", "STRATA2"),
-          selected = c("STRATA1"),
-          multiple = FALSE,
-          fixed = FALSE
-        )
+      color = picks(
+        datasets("ADSL", "ADSL"),
+        variables(c("SEX", "STRATA1", "STRATA2"), "STRATA1")
+      ),
+      paramcd = picks(
+        datasets("ADLB", "ADLB"),
+        variables("PARAMCD", "PARAMCD"),
+        values(selected = "ALT", multiple = FALSE)
+      ),
+      avisit = picks(
+        datasets("ADLB", "ADLB"),
+        variables("AVISIT", "AVISIT"),
+        values(selected = "SCREENING", multiple = FALSE)
       )
     )
   )
 )
 #> Initializing tm_g_ci
+#> Warning: rlang::dots_list(..., .ignore_empty = "trailing")
+#>  - Setting explicit `selected` while `choices` are delayed (set using `tidyselect`) doesn't guarantee that `selected` is a subset of `choices`.
+#> Warning: rlang::dots_list(..., .ignore_empty = "trailing")
+#>  - Setting explicit `selected` while `choices` are delayed (set using `tidyselect`) doesn't guarantee that `selected` is a subset of `choices`.
 if (interactive()) {
   shinyApp(app$ui, app$server)
 }

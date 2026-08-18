@@ -9,18 +9,15 @@ arm.
 tm_t_shift_by_arm(
   label,
   dataname,
-  parentname = ifelse(inherits(arm_var, "data_extract_spec"),
-    teal.transform::datanames_input(arm_var), "ADSL"),
+  parentname = "ADSL",
   arm_var,
   paramcd,
   visit_var,
   aval_var,
   base_var = lifecycle::deprecated(),
   baseline_var,
-  treatment_flag_var =
-    teal.transform::choices_selected(teal.transform::variable_choices(dataname, subset =
-    "ONTRTFL"), selected = "ONTRTFL"),
-  treatment_flag = teal.transform::choices_selected("Y"),
+  treatment_flag_var = teal.picks::variables("ONTRTFL", "ONTRTFL"),
+  treatment_flag = teal.picks::values("Y", "Y", fixed = TRUE, multiple = FALSE),
   useNA = c("ifany", "no"),
   na_level = tern::default_na_str(),
   add_total = FALSE,
@@ -53,27 +50,31 @@ tm_t_shift_by_arm(
 
 - arm_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for variable
   names that can be used as `arm_var`. It defines the grouping variable
   in the results table.
 
 - paramcd:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
-  object with all available choices and preselected option for the
-  parameter code variable from `dataname`.
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
+  variable for lab parameter code. The `values()` element is added
+  internally to allow users to filter the parameter values
+  interactively.
 
 - visit_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
-  object with all available choices and preselected option for variable
-  names that can be used as `visit` variable. Must be a factor in
-  `dataname`.
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
+  variable for analysis visit. The `values()` element is added
+  internally to allow users to filter the visit values interactively.
 
 - aval_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and pre-selected option for the
   analysis variable.
 
@@ -83,19 +84,24 @@ tm_t_shift_by_arm(
 
 - baseline_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for variable
   values that can be used as `baseline_var`.
 
 - treatment_flag_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   on treatment flag variable.
 
 - treatment_flag:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
-  value indicating on treatment records in `treatment_flag_var`.
+  ([`teal.picks::values()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy
+  [`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html)
+  is deprecated but still accepted) value matching `treatment_flag_var`
+  for on-treatment records (default `"Y"`).
 
 - useNA:
 
@@ -113,7 +119,7 @@ tm_t_shift_by_arm(
 - add_total:
 
   (`logical`)\
-  whether to include row with total number of patients.
+  whether to include column with total number of patients.
 
 - total_label:
 
@@ -172,7 +178,7 @@ This module generates the following objects, which can be modified in
 place using decorators:
 
 - `table` (`TableTree` - output of
-  [`rtables::build_table()`](https://insightsengineering.github.io/rtables/latest-tag/reference/build_table.html))
+  [`rtables::build_table()`](https://rdrr.io/pkg/rtables/man/build_table.html))
 
 A Decorator is applied to the specific output using a named list of
 `teal_transform_module` objects. The name of this list corresponds to
@@ -220,7 +226,7 @@ where additional example apps implementing this module can be found.
 - example-1:
 
   [Open in
-  Shinylive](https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOynAHEikrLK6v44AHMlAF9FCAArIni-AGs4VlFE0Jtw7uMoYVI-An5aUTLR8amZ4Gh4WaS5AF1XCByCoqTgYAUwa-zHs4urptbF0PvHnJbXu8lGhUEV4tF2A0kjoALw6JK4Bp8IQiUSwnTI4RiSEQDIZEp+NaiOLGNb0VjVRgwHF4vHUKD0ODUdGPXIk0g6clZKl2BkiR6I3G0+GhI66OF-T4Chq0lgwPyaFjoggxMYEMR+URMuDqOD8GnCjKKxi0PlwdaqmTY54pUSCehajlwgiQp5YACyAp0fw9AGFso85HJBYaMlqRLr+Cy3Z6wDK8cH4xlUCxYBtlZb1aJNdrIwbDYrqIJzSq1dbPilHgAFTJYTLu-2BkOh8M68hRiVgAASWEeSZ0iaFtM0W2iCqVzszGtbef7Ru4xYtZdm-2alaeADUAJK5Le2JtznQz9vRqsAeVytgMACFMrknPktwA5Jw6d3Prfuhyx-uDw1QQtx0YDNlxzCN23zYVjVNegRCXK0VwrI97UdaNMifLBnwDMA-xbXMT07dDMKfbDm0NYxaAqPV0XsZxfzIvF6CgcN4nNY0QIQsC2z1SDhxYGC4NLBD2FXW0ULgJ1vTAa8MKwg8h2FY9qM7GTiNIw8KKojs7EcFwFIyXDaUELUn0yaNaGWCBWD7BShgMpQhgsnR2Hicg1A0bRrBsNIhWJeJWEydB2BBAASQRaBSUKtUYbRGCGfolDAfoziAA)
+  Shinylive](https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOynAHEikrLK6v44AHMlAF9FCAArIni-AGs4VlFE0Jtw7uMoYVI-An5aUTLR8amZ4Gh4WaS5AF1XaHQi+Oj2BqSdAF4dJNwGviERUWedT+ExPcIBkMiU-GtRHFjGt6KxqowYECQSDqFB6HBqL8FGBclDSDpYVkEXY0SJse9gcjXqEjroXtici1yQ1kSwYH5NCxfpzGLRSYCCDExgQxL8CPcwJksABZck6BkygDC2WxcjkFKpOlQLFgG25LD59G+7EFwtF9LAAAUpZlpcrVRqqZottEOVyXjzDcbTTJzfLJQA1ACSuSDtgdLJBUE5-h5+t5-NmPpFPwtmQAclgg+mVWB1ZGMvQoKIMfE4G7GPGvQKhb7U-6AEKZ7O5-OU5GCEvpzJYsC0ZYQVjYyNDDJDIb9nTseLkNQabTWGxpSmQ+KsTLodhoVAAEkEtBS253JcY2kYQ36SjA-TOQA)
 
 ## Examples
 
@@ -232,37 +238,17 @@ data <- within(data, {
 })
 join_keys(data) <- default_cdisc_join_keys[names(data)]
 
-ADSL <- data[["ADSL"]]
-ADEG <- data[["ADEG"]]
-
 app <- init(
   data = data,
   modules = modules(
     tm_t_shift_by_arm(
       label = "Shift by Arm Table",
       dataname = "ADEG",
-      arm_var = choices_selected(
-        variable_choices(ADSL, subset = c("ARM", "ARMCD")),
-        selected = "ARM"
-      ),
-      paramcd = choices_selected(
-        value_choices(ADEG, "PARAMCD"),
-        selected = "HR"
-      ),
-      visit_var = choices_selected(
-        value_choices(ADEG, "AVISIT"),
-        selected = "POST-BASELINE MINIMUM"
-      ),
-      aval_var = choices_selected(
-        variable_choices(ADEG, subset = "ANRIND"),
-        selected = "ANRIND",
-        fixed = TRUE
-      ),
-      baseline_var = choices_selected(
-        variable_choices(ADEG, subset = "BNRIND"),
-        selected = "BNRIND",
-        fixed = TRUE
-      ),
+      arm_var = variables(choices = c("ARM", "ARMCD")),
+      paramcd = variables(choices = "PARAMCD"),
+      visit_var = variables(choices = "AVISIT"),
+      aval_var = variables(choices = "ANRIND"),
+      baseline_var = variables(choices = "BNRIND"),
       useNA = "ifany"
     )
   )

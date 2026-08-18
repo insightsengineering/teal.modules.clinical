@@ -8,20 +8,15 @@ The module produces an exposure table for risk management plan.
 tm_t_exposure(
   label,
   dataname,
-  parentname = ifelse(inherits(col_by_var, "data_extract_spec"),
-    teal.transform::datanames_input(col_by_var), "ADSL"),
+  parentname = "ADSL",
   row_by_var,
   col_by_var,
-  paramcd = teal.transform::choices_selected(choices =
-    teal.transform::value_choices(dataname, "PARAMCD", "PARAM"), selected = "TDURD"),
+  paramcd = teal.picks::variables("PARAMCD"),
   paramcd_label = "PARAM",
-  id_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
-    subset = "USUBJID"), selected = "USUBJID", fixed = TRUE),
+  id_var = teal.picks::variables("USUBJID", "USUBJID", fixed = TRUE),
   parcat,
-  aval_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
-    subset = "AVAL"), selected = "AVAL", fixed = TRUE),
-  avalu_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
-    subset = "AVALU"), selected = "AVALU", fixed = TRUE),
+  aval_var = teal.picks::variables("AVAL", "AVAL", fixed = TRUE),
+  avalu_var = teal.picks::variables("AVALU", "AVALU", fixed = TRUE),
   add_total,
   total_label = default_total_label(),
   add_total_row = TRUE,
@@ -55,48 +50,52 @@ tm_t_exposure(
 
 - row_by_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
-  object with all available choices and preselected option for variable
-  names that can be used to split rows.
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
+  variable names that can be used to split rows (`dataname`).
 
 - col_by_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
-  object with all available choices and preselected option for variable
-  names that can be used to split columns.
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
+  variable names that can be used to split columns (`parentname`).
 
 - paramcd:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
-  object with all available choices and preselected option for the
-  parameter code variable from `dataname`.
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
+  variable used to filter by parameter (`dataname`); `values()` is added
+  internally.
 
 - paramcd_label:
 
-  (`character`)\
-  the column from the dataset where the value will be used to label the
-  argument `paramcd`.
+  (`character`) the column from the dataset where the value will be used
+  to label the argument `paramcd`.
 
 - id_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   object specifying the variable name for subject id.
 
 - parcat:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
-  object with all available choices and preselected option for parameter
-  category values.
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
+  parameter category column on `dataname`; `values()` is added
+  internally.
 
 - aval_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and pre-selected option for the
   analysis variable.
 
 - avalu_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for the
   analysis unit variable.
 
@@ -183,7 +182,7 @@ This module generates the following objects, which can be modified in
 place using decorators:
 
 - `table` (`ElementaryTable` as created from
-  [`rtables::build_table`](https://insightsengineering.github.io/rtables/latest-tag/reference/build_table.html))
+  [`rtables::build_table`](https://rdrr.io/pkg/rtables/man/build_table.html))
 
 A Decorator is applied to the specific output using a named list of
 `teal_transform_module` objects. The name of this list corresponds to
@@ -231,7 +230,7 @@ where additional example apps implementing this module can be found.
 - example-1:
 
   [Open in
-  Shinylive](https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsO-VNVaNFEEr8UKRQ+kZc1AD6waHWQSFhhjoA7rSkABa0EOyxULg6IEo6OgCCACIAygAy4TqkMARRcAAeUVD8otTFZeVOABp1DU2t7fytrhAlonCkGDNw-OwAjAUA1tn8OgC8OgpgALKqMxAQcAa2aaLkjPsBJRjUUPRw1KJ1xNFPL2-sFQMFYy0ajUHY6ABipWqlSc916Azq-0GAFIAHzInolfi0a7ZdTsByVBwAIQAUgBJcoFDBrOBwVDtEFg+zOGxojFTEo6GCCULkdiYrkABVKWFKBwAwuUwftbOUHFhyvtcIKSiKxQcZWAAPLaZhMoTMDQkHS5KCsUSKPCqsoANShYNEsB8cHYLUdcAAjisCgAmAAM-rkBVEtAAXrpdjlgzpGPSngRI3ZHLCVZyuXaoQ4teVzaJ9oK2ejBfRNlFGEQUqI-n1+nDPlFvq9q0ibMlHs9m0oAL4BABWRGyUVpFrNoTbRnGxigwlIUQI2NETQHQ5HomA0Hg1bycgAupM0Kg6tl0gLOXkwXk0yU+EIRO9drfhGIzxmGlE561UERRII46+Mx0JtQV2fZyj-EJLCmIhjB0JwWm-X84zsZ4RGVG08k3JN9iRdD0y5VAWFgBcwQIDJB0TUQohmER1EWADAJ0MiKLEMFNG4QQ4HnciZBfPJgGAHDa32XddwKfZ1XFKVlT2MBJIOO5r0YnQaLgOitlAsA5QVJUwBtYMbQbehWCidjGFInjKOo141PIJYbRKZjeIfHQzNoVCuKcyixygAShIGESxJUwR6BmUhSIFMAYX6GScKwBSwDkAz8IzVT1K1aKCxSnRksYisUiiYzTJYCyWKotK7IYwCvNY3Y3I87iyp8vywFwsBRJDEKwoi-YxQlFw8FkrAnAAcXJbUADllliqL7FKWxSmmwb9kyxLcuUirFi1PqBv0pSM0IxhZHC3YavKmz1KqjMzrYjjPMsvjEhatqOtk9UJXm31FIclSLrsnNGEEABzMossY9aMw6fgPyIUIQIhKEYULHp1qBagbjBSJqLobysa6XjIoqGoZsqUpwXBaoZM2jTZIATTuAIAloWD2GyG4oAsbRrBsIpOVELIIFYUp0HYQ8ABJBFoApxZmRg9QCbslDAbtdyAA)
+  Shinylive](https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsO-VNVaNFEEr8UKRQ+kZc1AD6waHWQSFhhjoA7rSkABa0EOyxULg6IEo6OgCCACIAygAy4TqkMARRcAAeUVD8otTFZeVOABp1DU2t7fytrhAlonCkGDNw-OwAjAUA1tn8OgC8OgpgALKqMxAQcAa2aaLkjPsBJRjUUPRw1KJ1xNFPL2-sFQMFYy0ajUHY6ABipWqlSc916Azq-0GAFIAHzInolfi0a7ZdTsByVBwAIQAUgBJcoFDBrOBwVDtEFg+zOGxojFTEo6GCCULkdiYrkABVKWFKBwAwuUwftbOUHFhyvtcIKSiKxQcZWAAPLaZhMoTMDQkHS5KCsUSKPCqsoANShYNEsB8cHYLUdcAAjisCgAmAAM-rkBVEtAAXrpdjlgzpGPSngRI3ZHLCVZyuXaoQ4teVzaJ9oK2ejBfRNlFGEQUqI-n1+nDPlFvq9q0ibMlHs9m0oAL4BABWRGyUVpFrNoTbRnGxigwlIUQI2NETQHQ5HomA0Hg1bycgAupM0Kg6tl0gLOXkwXk0yU+EIRO9drfhGIzxmGlE561UERRII46+Mx0JtQV2fZyj-EJLCmIhjB0JwWm-X84zsZ4RGVG08k3JN9iRdD0y5VAWFgBcwU0FhaFQl8CAyQdEwfPYwHVcUpTua9AIbehWCiMjGFI8jKOrG0Smo2ixDBAgBTAGF+mVBjRQOVihJ0GYRHURYtWkgt8JKYMbQrFIok47iWD4xgKPoe8AMAnQRJkMTdgk-YxQlFw8AYrAnAAcXJbUADlllk-ZKnsUpbFKAK3KCgZFO0rkVLgNStlAsBnNcm1dNiwjGFkUgwVQGQ1mrHjzMs2y6K1dUJVC31WJ0MjqEEF8Y2ohK1hiRIZly3ZIWhVMbQ6fgPyIUIQIhKEYULHoMpKIFqBuMFIiiLo7OrRblsTSSKhqQKpNKcFwWqWT4sSrUAE07gCAJaFg9hshuKALG0awbCKTlRCyCBWFKdB2EPAASQRaAKf6ZkYPUAm7JQwG7XcgA)
 
 ## Examples
 
@@ -264,22 +263,16 @@ app <- init(
     tm_t_exposure(
       label = "Duration of Exposure Table",
       dataname = "ADEX",
-      paramcd = choices_selected(
-        choices = value_choices(data[["ADEX"]], "PARAMCD", "PARAM"),
-        selected = "TDURD"
-      ),
-      col_by_var = choices_selected(
-        choices = variable_choices(data[["ADEX"]], subset = c("SEX", "ARM")),
+      paramcd = variables(choices = "PARAMCD"),
+      col_by_var = variables(
+        choices = c("SEX", "ARM"),
         selected = "SEX"
       ),
-      row_by_var = choices_selected(
-        choices = variable_choices(data[["ADEX"]], subset = c("RACE", "REGION1", "STRATA1", "SEX")),
+      row_by_var = variables(
+        choices = c("RACE", "REGION1", "STRATA1", "SEX"),
         selected = "RACE"
       ),
-      parcat = choices_selected(
-        choices = value_choices(data[["ADEX"]], "PARCAT2"),
-        selected = "Drug A"
-      ),
+      parcat = picks(variables(choices = "PARCAT2"), values(), check_dataset = FALSE),
       add_total = FALSE
     )
   ),

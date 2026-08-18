@@ -40,7 +40,7 @@ template_a_gee(
 
   (`character`)\
   dataset used for `alt_counts_df` argument of
-  [`rtables::build_table()`](https://insightsengineering.github.io/rtables/latest-tag/reference/build_table.html).
+  [`rtables::build_table()`](https://rdrr.io/pkg/rtables/man/build_table.html).
 
 - aval_var:
 

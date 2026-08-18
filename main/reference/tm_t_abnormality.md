@@ -8,21 +8,15 @@ This module produces a table to summarize abnormality.
 tm_t_abnormality(
   label,
   dataname,
-  parentname = ifelse(inherits(arm_var, "data_extract_spec"),
-    teal.transform::datanames_input(arm_var), "ADSL"),
+  parentname = "ADSL",
   arm_var,
   by_vars,
   grade,
   abnormal = list(low = c("LOW", "LOW LOW"), high = c("HIGH", "HIGH HIGH")),
-  id_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
-    subset = "USUBJID"), selected = "USUBJID", fixed = TRUE),
-  baseline_var =
-    teal.transform::choices_selected(teal.transform::variable_choices(dataname, subset =
-    "BNRIND"), selected = "BNRIND", fixed = TRUE),
-  treatment_flag_var =
-    teal.transform::choices_selected(teal.transform::variable_choices(dataname, subset =
-    "ONTRTFL"), selected = "ONTRTFL", fixed = TRUE),
-  treatment_flag = teal.transform::choices_selected("Y"),
+  id_var = teal.picks::variables("USUBJID", "USUBJID", fixed = TRUE),
+  baseline_var = teal.picks::variables("BNRIND", "BNRIND", fixed = TRUE),
+  treatment_flag_var = teal.picks::variables("ONTRTFL", "ONTRTFL", fixed = TRUE),
+  treatment_flag = teal.picks::values("Y", "Y", fixed = TRUE, multiple = FALSE),
   add_total = TRUE,
   total_label = default_total_label(),
   exclude_base_abn = FALSE,
@@ -56,23 +50,25 @@ tm_t_abnormality(
 
 - arm_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for variable
   names that can be used as `arm_var`. It defines the grouping variable
   in the results table.
 
 - by_vars:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
-  object with all available choices and preselected option for variable
-  names used to split the summary by rows.
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
+  object with all available choices and preselected option(s) for row-by
+  variables (`multiple = TRUE`, `ordered = TRUE` recommended).
 
 - grade:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
-  object with all available choices and preselected option for variable
-  names that can be used to specify the abnormality grade. Variable must
-  be factor.
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
+  object with all available choices and preselected option for the
+  abnormality grade variable. Variable must be factor.
 
 - abnormal:
 
@@ -81,23 +77,30 @@ tm_t_abnormality(
 
 - id_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   object specifying the variable name for subject id.
 
 - baseline_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   variable for baseline abnormality grade.
 
 - treatment_flag_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   on treatment flag variable.
 
 - treatment_flag:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
-  value indicating on treatment records in `treatment_flag_var`.
+  ([`teal.picks::values()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy
+  [`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html)
+  is deprecated but still accepted)\
+  value(s) indicating on-treatment records in `treatment_flag_var` (e.g.
+  `"Y"`).
 
 - add_total:
 
@@ -143,7 +146,7 @@ tm_t_abnormality(
 - na_level:
 
   (`character`)\
-  the NA level in the input dataset, default to `"<Missing>"`.
+  the NA level in the input dataset, defaults to `"<Missing>"`.
 
 - basic_table_args:
 
@@ -186,7 +189,7 @@ This module generates the following objects, which can be modified in
 place using decorators:
 
 - `table` (`TableTree` - output of
-  [`rtables::build_table()`](https://insightsengineering.github.io/rtables/latest-tag/reference/build_table.html))
+  [`rtables::build_table()`](https://rdrr.io/pkg/rtables/man/build_table.html))
 
 A Decorator is applied to the specific output using a named list of
 `teal_transform_module` objects. The name of this list corresponds to
@@ -234,7 +237,7 @@ where additional example apps implementing this module can be found.
 - example-1:
 
   [Open in
-  Shinylive](https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiS1xH5RSUfUa7UA+h5e1kpB3oY6AO60pAAWtBDsYbg6IEo6OnRMLBx+vALCYhJSMvLpmQzMbOzGRIwwnuSMoooQGVlVHPyo1KyMrRkAggAiAMoAMj46pDAE-nAAHv5Q-KLU5SPjAEJTM3OLy-zU9DoApAB8p+UZMIJe5OzXGToA8gBy9rYAYpMAvDqyURwfyRWIUR5tZ5QwYANQAkqM4bYzglTgDHmBRgBhLBOJxvOFvADiCjwOlJW0Goyc40JLjANgAfuSwKTcE8ofZnDpmaSAJqkjk6GwXNHROL+ahQehwagYl5tWyMOCeeBkHRYODERj8HRfKUAc1JA2erQAvq0AFZEBL+ADWcFYoiSnigNgi-DgxigwlI-gI-Foojm1ttDqdwGg8GdYTkAF03CMJlMwsBgKSk+NSXGExBNjsPa60xnhtts7mlGhUFMEjEIRkwjp-slynwhCJRE2dG3Cs6njN-H7pRA6g06KQOEKpTLqF2M-QR-VuDFWHZpSI2UKwlHdP8S2W8EKWDB-JoWF2CLEbQQxP4gSJ1HB+PWoc9L9exF2z4xaOvge+ZDEdhMxSURBHoIFSAvDFBiwABZNkWVguCsWGY05HZSFXx0e8tXIXU9zAZDBSw01MOwlZ+EHIgvFnf4vkGcZqXI196FYU8WE7f4AJvUQ71lPCnxfbCeM-f5v1-egRH9K9AOdfNQPAyDoNJbYsUGWxENJAAFWDBgQskM3hRFNIZDChQyXDHwI9FVK2dTTJSHS9IM8zSKhB04FQfw6k9Rguy5Fx3OFFioXoKB7wSYFvwvWTeP4h98OE18JL-GSP3k0stkUiC4CgwitjeLBCTQhlQtfKz8LnMBCuKt5SpSYxaAWJ8AscILsLc7CDWYT1YoyhLBOfCyATisSdFSqT-zGzLthy5TCMGIqSuNcqoUq1rFuW+rN2CjImpamzAqFLrX2HUduC7OhRFIdhqCISJqvGF4AHVEPiA1YmqgAJOEiW+1ahUWSRBE9fxwqBZYFy7BimI601ylaVpaGMHR2ASJooAsbRrBsNJIVEeIIFYQZ0HYKsABJBFoFJKaBRhtH6JQzSUMAzTjIA)
+  Shinylive](https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiS1xH5RSUfUa7UA+h5e1kpB3oY6AO60pAAWtBDsYbg6IEo6OnRMLBx+vALCYhJSMvLpmQzMbOzGRIwwnuSMoooQGVlVHPyo1KyMrRkAggAiAMoAMj46pDAE-nAAHv5Q-KLU5SPjAEJTM3OLy-zU9DoApAB8p+UZMIJe5OzXGToA8gBy9rYAYpMAvDqyURwfyRWIUR5tZ5QwYANQAkqM4bYzglTgDHmBRgBhLBOJxvOFvADiCjwOlJW0Goyc40JLjANgAfuSwKTcE8ofZnDpmaSAJqkjk6GwXNHROL+ahQehwagYl5tWyMOCeeBkHRYODERj8HRfKUAc1JA2erQAvq0AFZEBL+ADWcFYoiSnigNgi-DgxigwlI-gI-Foojm1ttDqdwGg8GdYTkAF03CMJlMwsBgKSk+NSXGExBNjsPa60xnhtts7mlGhUFMEjEIRkwjp-slynwhCJRE2dG3Cs6njN-H7pRA6g06KQOEKpTLqF2M-QR-VuDFWHZpSI2UKwlHdP8S2W8EKWDB-JoWF2z4xaOuxOwCLEbQQxF2CBjBlgALJslnvj9Y4bGikQIiOocC6nuYC-oBR78Pwg5EF4s7-F8gzjNS7KQlC9CsKeLCdv8l7XvQHb1lCzz3o+z7-K+pLbFigy2N+pIAArvoMX5khm8KIoxDIYWRzzAVq5DgeitFbPRvEpCxbEcXI-ECd2vq0D0u52I4TgKQJdSesqolci4mGmlpzz0FAwEJMCl4XiwREkRRMhUSyWxvFghIAWSxi0AsYFdgZ8lCgazCejZV43s6DlPvhP6ue535eT5+kaQFRkZMOo7cF2dCiKQ7DUEQkRzmA4wvAA6t+8QGrERUABJwkSNXQalOiLJIgiev4ZlAssC5dihaGGVCJqtK0tDGDo7AJE0UAWNo1g2GkkKiPEECsIM6DsFWAAkgi0Ck21Aow2j9EoZpKGAZpxkAA)
 
 ## Examples
 
@@ -265,25 +268,16 @@ app <- init(
     tm_t_abnormality(
       label = "Abnormality Table",
       dataname = "ADLB",
-      arm_var = choices_selected(
-        choices = variable_choices(ADSL, subset = c("ARM", "ARMCD")),
-        selected = "ARM"
-      ),
+      arm_var = variables(choices = c("ARM", "ARMCD"), selected = "ARM"),
       add_total = FALSE,
-      by_vars = choices_selected(
-        choices = variable_choices(ADLB, subset = c("LBCAT", "PARAM", "AVISIT")),
+      by_vars = variables(
+        choices = c("LBCAT", "PARAM", "AVISIT"),
         selected = c("LBCAT", "PARAM"),
-        keep_order = TRUE
+        multiple = TRUE,
+        ordered = TRUE
       ),
-      baseline_var = choices_selected(
-        variable_choices(ADLB, subset = "BNRIND"),
-        selected = "BNRIND", fixed = TRUE
-      ),
-      grade = choices_selected(
-        choices = variable_choices(ADLB, subset = "ANRIND"),
-        selected = "ANRIND",
-        fixed = TRUE
-      ),
+      baseline_var = variables(choices = "BNRIND", fixed = TRUE),
+      grade = variables(choices = "ANRIND", fixed = TRUE),
       abnormal = list(low = "LOW", high = "HIGH"),
       exclude_base_abn = FALSE
     )

@@ -10,10 +10,8 @@ covariates.
 tm_t_glm_counts(
   label = "Counts Module",
   dataname,
-  parentname = ifelse(inherits(arm_var, "data_extract_spec"),
-    teal.transform::datanames_input(arm_var), "ADSL"),
-  aval_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
-    "AVAL"), "AVAL", fixed = TRUE),
+  parentname = "ADSL",
+  aval_var = teal.picks::variables("AVAL", "AVAL", fixed = TRUE),
   arm_var,
   strata_var,
   rate_mean_method = c("emmeans", "ppmeans"),
@@ -21,8 +19,8 @@ tm_t_glm_counts(
   offset_var,
   cov_var,
   arm_ref_comp = NULL,
-  conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order =
-    TRUE),
+  conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95),
+  add_total = FALSE,
   pre_output = NULL,
   post_output = NULL,
   basic_table_args = teal.widgets::basic_table_args(),
@@ -51,24 +49,30 @@ tm_t_glm_counts(
 
 - aval_var:
 
-  (`character`)\
-  name of the analysis value variable.
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
+  object with all available choices and pre-selected option for the
+  analysis variable.
 
 - arm_var:
 
-  (`character`)\
-  variable names that can be used as `arm_var`.
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
+  object with all available choices and preselected option for variable
+  names that can be used as `arm_var`. It defines the grouping variable
+  in the results table.
 
 - strata_var:
 
-  (`character`)\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   names of the variables for stratified analysis.
 
 - rate_mean_method:
 
   (`character`) method used to estimate the mean odds ratio. Either
   "emmeans" or "ppmeans" (as in
-  [`summarize_glm_count()`](https://insightsengineering.github.io/tern/latest-tag/reference/summarize_glm_count.html)).
+  [`summarize_glm_count()`](https://rdrr.io/pkg/tern/man/summarize_glm_count.html)).
 
 - distribution:
 
@@ -78,12 +82,16 @@ tm_t_glm_counts(
 
 - offset_var:
 
-  (`character`) a name of the numeric variable to be used as an offset?
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
+  optional offset column (`dataname`).
 
 - cov_var:
 
-  (`character`)\
-  names of the covariates variables.
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
+  object with all available choices and preselected option for the
+  covariates variables.
 
 - arm_ref_comp:
 
@@ -91,17 +99,31 @@ tm_t_glm_counts(
   if specified it must be a named list with each element corresponding
   to an arm variable in `ADSL` and the element must be another list
   (possibly with delayed
+  [`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html)
+  or
+  [`teal.picks::values()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy
   [`teal.transform::variable_choices()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/variable_choices.html)
-  or delayed
+  and
   [`teal.transform::value_choices()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/value_choices.html)
-  with the elements named `ref` and `comp` that the defined the default
-  reference and comparison arms when the arm variable is changed.
+  are deprecated but still accepted) with the elements named `ref` and
+  `comp` that define the default reference and comparison arms when the
+  arm variable is changed.
 
 - conf_level:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
-  object with all available choices and pre-selected option for
-  confidence level, each within range of (0, 1).
+  ([`teal.picks::values()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy
+  [`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html)
+  is deprecated but still accepted)\
+  available confidence levels and default selection, each in the range
+  (0, 1).
+
+- add_total:
+
+  (`logical`)\
+  initial value for the “Add All Patients column” checkbox when
+  comparing arms.
 
 - pre_output:
 
@@ -149,7 +171,7 @@ a `teal_module` object.
 ## Details
 
 - Teal module for
-  [`tern::summarize_glm_count()`](https://insightsengineering.github.io/tern/latest-tag/reference/summarize_glm_count.html)
+  [`tern::summarize_glm_count()`](https://rdrr.io/pkg/tern/man/summarize_glm_count.html)
   analysis, that summarizes results of a Poisson negative binomial
   regression.
 
@@ -162,7 +184,7 @@ This module generates the following objects, which can be modified in
 place using decorators:
 
 - `table` (`TableTree` - output of
-  [`rtables::build_table()`](https://insightsengineering.github.io/rtables/latest-tag/reference/build_table.html))
+  [`rtables::build_table()`](https://rdrr.io/pkg/rtables/man/build_table.html))
 
 A Decorator is applied to the specific output using a named list of
 `teal_transform_module` objects. The name of this list corresponds to
@@ -201,14 +223,14 @@ For more information on reporting in `teal`, see the vignettes:
 
 ## See also
 
-[`summarize_glm_count()`](https://insightsengineering.github.io/tern/latest-tag/reference/summarize_glm_count.html)
+[`summarize_glm_count()`](https://rdrr.io/pkg/tern/man/summarize_glm_count.html)
 
 ## Examples in Shinylive
 
 - example-1:
 
   [Open in
-  Shinylive](https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+owHdapAAtaCE44bgB9d09rXB0QJR0dAEEAEQBlABlvHXJGCEREXIhwuAAPcKh+UWoE5JTbWydsooKikvLK0nIlAF9FCCUAKyJg8IBrOFZRdiioG0MdfjhjKGFScIJ+WlECcOHRiangaHhp2bkAXVdoRhhwxmWNohhUbLpRUnZapIBhWySsABZH4pHQAXh070+tUSD2M4J0CjAAMBOgAQkjcDCdMQXgiCF9kUDkpjEUTUT8kf1EnIsRBEiiEVCvvTEjo4QikWjEDoAArUKAEOD0IiY7G414QglIpI8lKMQQAcx0AA1SUifjyfs96MEPJYBmBqTp+v0lKlMtlZsBgDL0hkkRcrhBUg0mgtrbbkfVGo7nQBiHQASWkGm4tAAXrpAtGwtQdGhUEpE9lgv4WYlZgjZnTEnwhCJRAj88IxBm2aQ7utFdQ7sQzKRptjMx4oCddBC7W6xay2QnbuFNCx8QERkLROFRHAROo4Pxy33EkPGLQoPQRBtRzIy67GrFpeT1eSQUffv8gSejbTm2yZReUkib9fe2yWHc4U88RC3-dHhLc4uUBDtQg7DlKW7jpO05wLO843kuLCruucCbmOO4+k4sQygAakkDpGgBi5kkkuH4U+hFsh8zCeKBjAjmhE5TjO5BwS+fbLkhG4EBB6GZFhYBpE4aoEfBOgAHIOBkDpsSaFGJEQxjGFO6zLvR26MdBsELouHFrlxPHTBaGT8UkADiLgiTJiQSVJ5E3sQmi0WpkFMTBLHaexiF6Sh3EMewu6YWSaRBo0QYPpZRHWZJ0lEcaNK1Ka1y0PC7DBLkgoaNo1g2PErKiEEECsEk6DsImAAkgi0LE5VTow2iMP0PRgD0FxAA)
+  Shinylive](https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+owHdapAAtaCE44bgB9d09rXB0QJR0dAEEAEQBlABlvHXJGCEREXIhwuAAPcKh+UWoE5JTbWydsooKikvLK0nIlAF9FCCUAKyJg8IBrOFZRdiioG0MdfjhjKGFScIJ+WlECcOHRiangaHhp2bkAXVdoRhhwxmWNohhUbLpRUnZapIBhWySsABZH4pHQAXh070+tUSD2M4J0CjAAMBOgAQkjcDCdMQXgiCF9kUDkpjEUTUT8kf1EnIsRBEiiEVCvvTEjo4QikWjEDoAArUKAEOD0IiY7G414QglIpI8lKMQQAcx0AA1SUifjyfs96MEPJYBmBqTp+v0lKlMtlZsBgDL0hkkRcrhBUg0mgtrbbkfVGo7nQBiHQASWkGm4tAAXrpAtGwtQdGhUEpE9lgv4WYlZgjZnTEnwhCJRAj88IxBm2aQ7utFdQ7sQzKRptjMx4oCddBC7W6xay2QnbuFNCwEUPGLQoPRC+W+4kCAERkKi1LCSj1eSQWvfv8gRujbmZ4lRHAROo4PxOeuUkjmyb932WHc4U88RCH-dHhK72yoEPqIPhxCo7jpOZZzguYgXkkABqSQOngJi0KUZ4IvYzi0jeHzMJ4-6MCOLDAVOYEyBBnZgGkThqvBR4nuQ54QgAcg4GQZOhvZskQxjGEe6yjnhY4ToR87EUuZJJAA4i4VHHnAp50TojHMaxB7EJoOF8QRoFCYuF5pEGjRBleUk0chDFMSx2LGqa1y0PC7DBLkgoaNo1g2PErKiEEECsEk6DsImAAkgi0LEAVHow2iMP0PRgD0FxAA)
 
 ## Examples
 
@@ -239,27 +261,15 @@ app <- init(
   modules = modules(
     tm_t_glm_counts(
       dataname = "ADTTE",
-      arm_var = choices_selected(
-        variable_choices(ADTTE, c("ARM", "ARMCD", "ACTARMCD")),
-        "ARMCD"
+      arm_var = variables(
+        choices = c("ARM", "ARMCD", "ACTARMCD"),
+        selected = "ARMCD"
       ),
       arm_ref_comp = arm_ref_comp,
-      aval_var = choices_selected(
-        variable_choices(ADTTE, "AVAL"),
-        "AVAL"
-      ),
-      strata_var = choices_selected(
-        variable_choices(ADSL, "SEX"),
-        NULL
-      ),
-      offset_var = choices_selected(
-        variable_choices(ADSL, "AGE"),
-        NULL
-      ),
-      cov_var = choices_selected(
-        variable_choices(ADTTE, "SITEID"),
-        NULL
-      )
+      aval_var = variables(choices = "AVAL", fixed = TRUE),
+      strata_var = variables(choices = "SEX", selected = NULL),
+      offset_var = variables(choices = "AGE", selected = NULL),
+      cov_var = variables(choices = "SITEID", selected = NULL)
     )
   )
 )
