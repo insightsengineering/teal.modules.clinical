@@ -525,8 +525,8 @@ template_shift_by_grade <- function(parentname,
 #'     tm_t_shift_by_grade(
 #'       label = "Grade Laboratory Abnormality Table",
 #'       dataname = "ADLB",
-#'       arm_var = variables(choices = c("ARM", "ARMCD")),
-#'       paramcd = variables(choices = "PARAMCD"),
+#'       arm_var = variables(c("ARM", "ARMCD")),
+#'       paramcd = picks(variables("PARAMCD"), values(selected = "ALT"), check_dataset = FALSE),
 #'       worst_flag_var = variables(
 #'         choices = c("WGRLOVFL", "WGRLOFL", "WGRHIVFL", "WGRHIFL"),
 #'         selected = "WGRLOVFL"
@@ -568,7 +568,7 @@ tm_t_shift_by_grade <- function(label,
   message("Initializing tm_t_shift_by_grade")
   arm_var <- migrate_choices_selected_to_variables(arm_var)
   visit_var <- migrate_choices_selected_to_variables(visit_var)
-  paramcd <- migrate_choices_selected_to_variables(paramcd)
+  paramcd <- migrate_value_choices_to_picks(paramcd)
   worst_flag_var <- migrate_choices_selected_to_variables(worst_flag_var)
   anl_toxgrade_var <- migrate_choices_selected_to_variables(anl_toxgrade_var)
   base_toxgrade_var <- migrate_choices_selected_to_variables(base_toxgrade_var)
@@ -594,7 +594,7 @@ tm_t_shift_by_grade <- function(label,
   arm_var <- create_picks_helper(teal.picks::datasets(parentname, parentname), arm_var)
   visit_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), visit_var)
   # PARAMCD needs a `values()` step for level selection; `create_picks_helper` only binds datasets + variables.
-  paramcd <- teal.picks::picks(teal.picks::datasets(dataname, dataname), paramcd, teal.picks::values())
+  paramcd <- create_picks_helper(teal.picks::datasets(dataname, dataname), paramcd)
   worst_flag_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), worst_flag_var)
   anl_toxgrade_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), anl_toxgrade_var)
   base_toxgrade_var <- create_picks_helper(teal.picks::datasets(dataname, dataname), base_toxgrade_var)
