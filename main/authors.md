@@ -44,13 +44,13 @@ Source:
 Unardi D, Zhu J, Stoilova J, Garolini D, de la Rua E, Yogasekaram A,
 Hallal M, Kaledkowski D, Li R, Wang H, Rucki P, Burkoff N, Pagacz K
 (2026). *teal.modules.clinical: 'teal' Modules for Standard Clinical
-Outputs*. R package version 0.13.0.9001,
+Outputs*. R package version 0.13.0.9002,
 <https://insightsengineering.github.io/teal.modules.clinical/>.
 
     @Manual{,
       title = {teal.modules.clinical: 'teal' Modules for Standard Clinical Outputs},
       author = {Dony Unardi and Joe Zhu and Jana Stoilova and Davide Garolini and Emily {de la Rua} and Abinaya Yogasekaram and Mahmoud Hallal and Dawid Kaledkowski and Rosemary Li and Heng Wang and Pawel Rucki and Nikolas Burkoff and Konrad Pagacz},
       year = {2026},
-      note = {R package version 0.13.0.9001},
+      note = {R package version 0.13.0.9002},
       url = {https://insightsengineering.github.io/teal.modules.clinical/},
     }

@@ -238,7 +238,7 @@ where additional example apps implementing this module can be found.
 - example-1:
 
   [Open in
-  Shinylive](https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOz8gCEikrLK6v5qeiUAX0UIACsieL8AazhWUUTQm3D+OGMoYVI-An5aUTKRscnp4Gh4GaS5AF1XaHQi+Oj2BqSdAF4dJNwGviERUWedT+ExPcIBkMiU-GtRHFjGt6Kw-ABzZiLIEgkHUKD0ODUX4KMAAcSRunyGKIzFIpNYWXoEFJMG40UptgxIlx72BqNeoSOuheuJyLVZDVRLBgfk0LF+4sYtGZgIIMVGBDEvwI9zAmSwAFlWTo+VqAMLZXFyORsjk6VAsWAbSUsGX0b7seWK5W8sAABQ1mU1huNZo5EVJojWxnR8LFEpeUvtjqFHOdMldOlVuIA6nisPkAPIANQAYvkdWmM9mC0WwOmsAAJACS+cLeF1FYztbLYFNcdRoixcHUcH4OObmdzbc7Og77OF-H44KInmxLzzmXyuRck-HDQnGWMtGo5EYv18fjqiZmR5PSrVOQK5dymTzbZS3ZEfYHboAmsbBoNaMYdOx4n3KALG0awbDSdlIXiVhMnQdg0FQAASQRaBSBDEO7RhtEYQY+iUMA+jOIA)
+  Shinylive](https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOz8gCEikrLK6v5qeiUAX0UIACsieL8AazhWUUTQm3D+OGMoYVI-An5aUTKRscnp4Gh4GaS5AF1XaHQi+Oj2BqSdAF4dJNwGviERUWedT+ExPcIBkMiU-GtRHFjGt6Kw-ABzZiLIEgkHUKD0ODUX4KMAAcSRunyGKIzFIpNYWXoEFJMG40UptgxIlx72BqNeoSOuheuJyLVZDVRLBgfk0LF+4sYtGZgII9zAmSwAFlWTo+SqAMLZXFyORsjk6VAsWAbX6oGTjGZSmX0b4KgAKSsyyu1upS4uogkBoixcHUcH4OMV+Vs7p0BBi-vGAVCvtIvwAYpl8rknPqhSCIqTRGtjOj4WKJS8bbKZpnUZHRgQxL95biAOp4rD5ADyADVE-k1Y3m22uz2wE2sAAJACSne7eHVQ+b44HYAz7MNvpEAaDvNnLY7C4rOiXhpq-HBRE82JeydTLmX+4aB5MtGo5EYv18fjqMkBb4-NYVOQKg65JkiYLikq7+uQG4zgAmrqgyDLQxg6Ow8TPlAFjaNYNhpOykLxKwmToOwaCoAAJIItApCRpG+ow2iMIMfRKGAfRnEAA)
 
 ## Examples
 
@@ -256,8 +256,8 @@ app <- init(
     tm_t_shift_by_grade(
       label = "Grade Laboratory Abnormality Table",
       dataname = "ADLB",
-      arm_var = variables(choices = c("ARM", "ARMCD")),
-      paramcd = variables(choices = "PARAMCD"),
+      arm_var = variables(c("ARM", "ARMCD")),
+      paramcd = picks(variables("PARAMCD"), values(selected = "ALT"), check_dataset = FALSE),
       worst_flag_var = variables(
         choices = c("WGRLOVFL", "WGRLOFL", "WGRHIVFL", "WGRHIFL"),
         selected = "WGRLOVFL"
@@ -268,6 +268,8 @@ app <- init(
   filter = teal_slices(teal_slice("ADSL", "SAFFL", selected = "Y"))
 )
 #> Initializing tm_t_shift_by_grade
+#> Warning: rlang::dots_list(..., .ignore_empty = "trailing")
+#>  - Setting explicit `selected` while `choices` are delayed (set using `tidyselect`) doesn't guarantee that `selected` is a subset of `choices`.
 if (interactive()) {
   shinyApp(app$ui, app$server)
 }
