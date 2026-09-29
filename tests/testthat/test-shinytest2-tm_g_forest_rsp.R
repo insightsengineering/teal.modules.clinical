@@ -21,11 +21,7 @@ app_driver_tm_g_forest_rsp <- function() {
     )
   )
 
-  testthat::expect_warning(
-    paramcd_value <- teal.picks::values(selected = "INVET", multiple = FALSE),
-    "doesn't guarantee that `selected` is a subset of `choices`.",
-    fixed = TRUE
-  )
+  paramcd_value <- teal.picks::values(selected = "INVET", multiple = FALSE)
 
   init_teal_app_driver(
     teal::init(

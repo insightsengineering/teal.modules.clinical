@@ -74,12 +74,8 @@ import(teal)
 import(teal.picks)
 import(teal.transform)
 import(tern)
-importFrom(dplyr,
-  "%>%",
-  .data
-)
-importFrom(tidyselect,
-  ends_with,
-  starts_with,
-  where
-)
+importFrom(dplyr,"%>%")
+importFrom(dplyr,.data)
+importFrom(tidyselect,ends_with)
+importFrom(tidyselect,starts_with)
+importFrom(tidyselect,where)
