@@ -17,11 +17,7 @@ app_driver_tm_a_mmrm <- function(fit_model = TRUE) {
   })
   teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
 
-  testthat::expect_warning(
-    paramcd_values <- teal.picks::values(selected = "FKSI-FWB", multiple = FALSE),
-    "doesn't guarantee that `selected` is a subset of `choices`.",
-    fixed = TRUE
-  )
+  paramcd_values <- teal.picks::values(selected = "FKSI-FWB", multiple = FALSE)
 
   app_driver <- init_teal_app_driver(
     teal::init(
