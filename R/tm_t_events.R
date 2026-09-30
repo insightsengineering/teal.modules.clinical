@@ -6,6 +6,10 @@
 #' @param sort_freq_col (`character`)\cr column to sort by frequency on if `sort_criteria` is set to `freq_desc`.
 #' @param incl_overall_sum (`flag`)\cr  whether two rows which summarize the overall number of adverse events
 #'   should be included at the top of the table.
+#' @param incl_num_patients_hlt (`flag`)\cr whether to include a summary row for the total number of
+#'   patients with at least one event under each HLT split when both HLT and LLT are selected.
+#' @param incl_num_events_hlt (`flag`)\cr whether to include a summary row for the overall total number
+#'   of events under each HLT split when both HLT and LLT are selected.
 #'
 #' @inherit template_arguments return
 #'
@@ -29,6 +33,8 @@ template_events <- function(dataname,
                             prune_diff = 0,
                             drop_arm_levels = TRUE,
                             incl_overall_sum = TRUE,
+                            incl_num_patients_hlt = TRUE,
+                            incl_num_events_hlt = TRUE,
                             basic_table_args = teal.widgets::basic_table_args()) {
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
@@ -45,6 +51,8 @@ template_events <- function(dataname,
   checkmate::assert_flag(drop_arm_levels)
   checkmate::assert_scalar(prune_freq)
   checkmate::assert_scalar(prune_diff)
+  checkmate::assert_flag(incl_num_patients_hlt)
+  checkmate::assert_flag(incl_num_events_hlt)
 
   sort_criteria <- match.arg(sort_criteria)
 
@@ -221,42 +229,114 @@ template_events <- function(dataname,
     )
   } else {
     # Case when both hlt and llt are used.
-
     y$layout_prep <- quote(split_fun <- rtables::drop_split_levels)
 
-    layout_list <- add_expr(
-      layout_list,
-      substitute(
-        expr = rtables::split_rows_by(
-          hlt,
-          child_labels = "visible",
-          nested = FALSE,
-          indent_mod = -1L,
-          split_fun = split_fun,
-          label_pos = "topleft",
-          split_label = teal.data::col_labels(dataname[hlt])
-        ) %>%
-          tern::summarize_num_patients(
-            var = "USUBJID",
-            .stats = c("unique", "nonunique"),
-            .labels = c(
-              unique = unique_label,
-              nonunique = nonunique_label
-            ),
-            na_str = na_str
+    # Frequency sorting scores the first HLT content row. Keep the patient row
+    # first while sorting, then drop it when it should not be displayed.
+    include_patients <- incl_num_patients_hlt || sort_criteria != "alpha"
+    include_events <- incl_num_events_hlt
+    has_hlt_sum <- include_patients || include_events
+    drop_hlt_patient_rows <- include_patients && !incl_num_patients_hlt
+
+    if (include_patients && include_events) {
+      layout_list <- add_expr(
+        layout_list,
+        substitute(
+          expr = rtables::split_rows_by(
+            hlt,
+            child_labels = "visible",
+            nested = FALSE,
+            indent_mod = -1L,
+            split_fun = split_fun,
+            label_pos = "topleft",
+            split_label = teal.data::col_labels(dataname[hlt])
           ) %>%
-          tern::count_occurrences(vars = llt, .indent_mods = c(count_fraction = 1L)) %>%
-          tern::append_varlabels(dataname, llt, indent = 1L),
-        env = list(
-          dataname = as.name(dataname),
-          hlt = hlt,
-          llt = llt,
-          unique_label = unique_label,
-          nonunique_label = nonunique_label,
-          na_str = na_level
+            tern::summarize_num_patients(
+              var = "USUBJID",
+              .stats = c("unique", "nonunique"),
+              .labels = c(
+                unique = unique_label,
+                nonunique = nonunique_label
+              ),
+              na_str = na_str
+            ) %>%
+            tern::count_occurrences(vars = llt, .indent_mods = c(count_fraction = 1L)) %>%
+            tern::append_varlabels(dataname, llt, indent = 1L),
+          env = list(
+            dataname = as.name(dataname),
+            hlt = hlt,
+            llt = llt,
+            unique_label = unique_label,
+            nonunique_label = nonunique_label,
+            na_str = na_level
+          )
         )
       )
-    )
+    } else if (has_hlt_sum) {
+      hlt_stats <- character(0)
+      hlt_labels <- character(0)
+      if (include_patients) {
+        hlt_stats <- c(hlt_stats, "unique")
+        hlt_labels <- c(hlt_labels, unique = unique_label)
+      }
+      if (include_events) {
+        hlt_stats <- c(hlt_stats, "nonunique")
+        hlt_labels <- c(hlt_labels, nonunique = nonunique_label)
+      }
+
+      layout_list <- add_expr(
+        layout_list,
+        substitute(
+          expr = rtables::split_rows_by(
+            hlt,
+            child_labels = "visible",
+            nested = FALSE,
+            indent_mod = -1L,
+            split_fun = split_fun,
+            label_pos = "topleft",
+            split_label = teal.data::col_labels(dataname[hlt])
+          ) %>%
+            tern::summarize_num_patients(
+              var = "USUBJID",
+              .stats = hlt_stats_val,
+              .labels = hlt_labels_val,
+              na_str = na_str
+            ) %>%
+            tern::count_occurrences(vars = llt, .indent_mods = c(count_fraction = 1L)) %>%
+            tern::append_varlabels(dataname, llt, indent = 1L),
+          env = list(
+            dataname = as.name(dataname),
+            hlt = hlt,
+            llt = llt,
+            hlt_stats_val = hlt_stats,
+            hlt_labels_val = hlt_labels,
+            na_str = na_level
+          )
+        )
+      )
+    } else {
+      layout_list <- add_expr(
+        layout_list,
+        substitute(
+          expr = rtables::split_rows_by(
+            hlt,
+            child_labels = "visible",
+            nested = FALSE,
+            indent_mod = -1L,
+            split_fun = split_fun,
+            label_pos = "topleft",
+            split_label = teal.data::col_labels(dataname[hlt])
+          ) %>%
+            tern::count_occurrences(vars = llt, .indent_mods = c(count_fraction = 1L)) %>%
+            tern::append_varlabels(dataname, llt, indent = 1L),
+          env = list(
+            dataname = as.name(dataname),
+            hlt = hlt,
+            llt = llt
+          )
+        )
+      )
+    }
   }
 
   y$layout <- substitute(
@@ -399,7 +479,7 @@ template_events <- function(dataname,
           )
         )
       )
-    } else {
+    } else if (has_hlt_sum) {
       sort_list <- add_expr(
         sort_list,
         substitute(
@@ -416,6 +496,32 @@ template_events <- function(dataname,
           )
         )
       )
+
+      if (drop_hlt_patient_rows) {
+        sort_list <- add_expr(
+          sort_list,
+          substitute(
+            expr = {
+              hlt_row_paths <- rtables::row_paths(pruned_and_sorted_result)
+              drop_rows <- vapply(
+                hlt_row_paths,
+                function(path) {
+                  "@content" %in% path && length(path) > 3L && tail(path, 1) == patient_row_label
+                },
+                logical(1)
+              )
+              pruned_and_sorted_result <- pruned_and_sorted_result[
+                !drop_rows, ,
+                keep_topleft = TRUE,
+                keep_titles = TRUE,
+                keep_footers = TRUE,
+                reindex_refs = TRUE
+              ]
+            },
+            env = list(patient_row_label = unique_label)
+          )
+        )
+      }
 
       if (prune_freq > 0 || prune_diff > 0) {
         sort_list <- add_expr(
@@ -539,6 +645,8 @@ tm_t_events <- function(label,
                         prune_diff = 0,
                         drop_arm_levels = TRUE,
                         incl_overall_sum = TRUE,
+                        incl_num_patients_hlt = TRUE,
+                        incl_num_events_hlt = TRUE,
                         pre_output = NULL,
                         post_output = NULL,
                         basic_table_args = teal.widgets::basic_table_args(),
@@ -560,6 +668,8 @@ tm_t_events <- function(label,
   checkmate::assert_scalar(prune_diff)
   checkmate::assert_flag(drop_arm_levels)
   checkmate::assert_flag(incl_overall_sum)
+  checkmate::assert_flag(incl_num_patients_hlt)
+  checkmate::assert_flag(incl_num_events_hlt)
   sort_criteria <- match.arg(sort_criteria)
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
@@ -590,6 +700,8 @@ ui_t_events_byterm <- function(id,
                                hlt,
                                llt,
                                add_total,
+                               incl_num_patients_hlt,
+                               incl_num_events_hlt,
                                drop_arm_levels,
                                sort_criteria,
                                prune_freq,
@@ -618,6 +730,16 @@ ui_t_events_byterm <- function(id,
         teal.picks::picks_ui(ns("llt"), llt)
       ),
       checkboxInput(ns("add_total"), "Add All Patients columns", value = add_total),
+      checkboxInput(
+        ns("incl_num_patients_hlt"),
+        "Show patients with >= 1 event per SOC/HLT",
+        value = incl_num_patients_hlt
+      ),
+      checkboxInput(
+        ns("incl_num_events_hlt"),
+        "Show total events per SOC/HLT",
+        value = incl_num_events_hlt
+      ),
       teal::ui_transform_teal_data(ns("decorator"), transformators = select_decorators(decorators, "table")),
       bslib::accordion_panel(
         "Additional table settings",
@@ -781,6 +903,8 @@ srv_t_events_byterm <- function(id,
         prune_diff = input$prune_diff / 100,
         drop_arm_levels = input$drop_arm_levels,
         incl_overall_sum = incl_overall_sum,
+        incl_num_patients_hlt = input$incl_num_patients_hlt,
+        incl_num_events_hlt = input$incl_num_events_hlt,
         basic_table_args = basic_table_args
       )
 
