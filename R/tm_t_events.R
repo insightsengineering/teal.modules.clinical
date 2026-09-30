@@ -511,8 +511,7 @@ template_events <- function(dataname,
                 logical(1)
               )
               pruned_and_sorted_result <- pruned_and_sorted_result[
-                !drop_rows,
-                ,
+                !drop_rows, ,
                 keep_topleft = TRUE,
                 keep_titles = TRUE,
                 keep_footers = TRUE,
