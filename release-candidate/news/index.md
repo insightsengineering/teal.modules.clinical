@@ -1,6 +1,20 @@
 # Changelog
 
+## teal.modules.clinical 0.14.0
+
+#### Enhancements
+
+- Introduced `teal.picks` as the primary method to select dataset,
+  variables and values in modules.
+
+#### Miscellaneous
+
+- Added `teal.picks` and `tidyselect` as dependencies.
+- Updated the vignettes to use `teal.picks`.
+
 ## teal.modules.clinical 0.13.0
+
+CRAN release: 2026-07-02
 
 #### Enhancements
 
@@ -124,7 +138,7 @@ CRAN release: 2025-02-28
 - Began deprecation cycle for the `show_labels` argument of
   `template_summary` which has no effect on the `tm_t_summary` module.
 - Replaced instances of deprecated `strata` argument to
-  [`tern::control_lineplot_vars()`](https://insightsengineering.github.io/tern/latest-tag/reference/control_lineplot_vars.html)
+  [`tern::control_lineplot_vars()`](https://pharmaverse.github.io/tern/latest-tag/reference/control_lineplot_vars.html)
   with `group_var`.
 - Added an assertion to
   [`tm_t_events_summary()`](https://insightsengineering.github.io/teal.modules.clinical/reference/tm_t_events_summary.md)
@@ -207,9 +221,9 @@ CRAN release: 2024-02-23
 - Added `default_total_label` and `set_default_total_label` functions to
   get and set default total column label (`total_label`) for modules.
 - Implemented
-  [`tern::default_na_str`](https://insightsengineering.github.io/tern/latest-tag/reference/default_na_str.html)
+  [`tern::default_na_str`](https://pharmaverse.github.io/tern/latest-tag/reference/default_na_str.html)
   and
-  [`tern::set_default_na_str`](https://insightsengineering.github.io/tern/latest-tag/reference/default_na_str.html)
+  [`tern::set_default_na_str`](https://pharmaverse.github.io/tern/latest-tag/reference/default_na_str.html)
   functions to get and set default missing value replacement string
   (`na_level`) for modules.
 

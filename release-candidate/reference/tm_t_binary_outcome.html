@@ -27,7 +27,7 @@ response table RSPT01 available in the TLG Catalog here.">
 
     <a class="navbar-brand me-2" href="../index.html">teal.modules.clinical</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.13.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.14.0</small>
 
     <div style="width: 140px; margin-left: 0.5rem;"> <small class="nav-text text-muted me-auto">part of</small> <img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/nest.png?raw=true" alt="NEST" style="height: 30px;"><a href="https://pharmaverse.org/" class="external-link"><img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/pharmaverse.png?raw=true" alt="pharmaverse" style="height: 28px;"></a> </div>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -61,6 +61,7 @@ response table RSPT01 available in the TLG Catalog here.">
     <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/release-candidate">release-candidate</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/main">main</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/latest-tag">latest-tag</a>
+<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.14.0-rc1">v0.14.0-rc1</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.13.0">v0.13.0</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.13.0-rc2">v0.13.0-rc2</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.12.0">v0.12.0</a>
@@ -91,7 +92,7 @@ response table RSPT01 available in the TLG Catalog here.">
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>teal Module: Binary Outcome Table</h1>
-      <small class="dont-index">Source: <a href="https://github.com/insightsengineering/teal.modules.clinical/blob/v0.13.0-rc2/R/tm_t_binary_outcome.R" class="external-link"><code>R/tm_t_binary_outcome.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/insightsengineering/teal.modules.clinical/blob/v0.14.0-rc1/R/tm_t_binary_outcome.R" class="external-link"><code>R/tm_t_binary_outcome.R</code></a></small>
       <div class="d-none name"><code>tm_t_binary_outcome.Rd</code></div>
     </div>
 
@@ -106,17 +107,13 @@ response table <code>RSPT01</code> available in the TLG Catalog <a href="https:/
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">tm_t_binary_outcome</span><span class="op">(</span></span>
 <span>  <span class="va">label</span>,</span>
 <span>  <span class="va">dataname</span>,</span>
-<span>  parentname <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span>test <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">inherits</a></span><span class="op">(</span><span class="va">arm_var</span>, <span class="st">"data_extract_spec"</span><span class="op">)</span>, yes <span class="op">=</span></span>
-<span>    <span class="fu">teal.transform</span><span class="fu">::</span><span class="fu"><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/datanames_input.html" class="external-link">datanames_input</a></span><span class="op">(</span><span class="va">arm_var</span><span class="op">)</span>, no <span class="op">=</span> <span class="st">"ADSL"</span><span class="op">)</span>,</span>
+<span>  parentname <span class="op">=</span> <span class="st">"ADSL"</span>,</span>
 <span>  <span class="va">arm_var</span>,</span>
 <span>  arm_ref_comp <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">paramcd</span>,</span>
 <span>  <span class="va">strata_var</span>,</span>
-<span>  aval_var <span class="op">=</span> <span class="fu">teal.transform</span><span class="fu">::</span><span class="fu"><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html" class="external-link">choices_selected</a></span><span class="op">(</span>choices <span class="op">=</span></span>
-<span>    <span class="fu">teal.transform</span><span class="fu">::</span><span class="fu"><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/variable_choices.html" class="external-link">variable_choices</a></span><span class="op">(</span><span class="va">dataname</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AVALC"</span>, <span class="st">"SEX"</span><span class="op">)</span><span class="op">)</span>, selected <span class="op">=</span> <span class="st">"AVALC"</span>,</span>
-<span>    fixed <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,</span>
-<span>  conf_level <span class="op">=</span> <span class="fu">teal.transform</span><span class="fu">::</span><span class="fu"><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html" class="external-link">choices_selected</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.95</span>, <span class="fl">0.9</span>, <span class="fl">0.8</span><span class="op">)</span>, <span class="fl">0.95</span>, keep_order <span class="op">=</span></span>
-<span>    <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>  aval_var <span class="op">=</span> <span class="fu">teal.picks</span><span class="fu">::</span><span class="fu"><a href="https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html" class="external-link">variables</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AVALC"</span>, <span class="st">"SEX"</span><span class="op">)</span>, <span class="st">"AVALC"</span>, fixed <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,</span>
+<span>  conf_level <span class="op">=</span> <span class="fu">teal.picks</span><span class="fu">::</span><span class="fu"><a href="https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html" class="external-link">values</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.95</span>, <span class="fl">0.9</span>, <span class="fl">0.8</span><span class="op">)</span>, <span class="fl">0.95</span><span class="op">)</span>,</span>
 <span>  default_responses <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CR"</span>, <span class="st">"PR"</span>, <span class="st">"Y"</span>, <span class="st">"Complete Response (CR)"</span>,</span>
 <span>    <span class="st">"Partial Response (PR)"</span>, <span class="st">"M"</span><span class="op">)</span>,</span>
 <span>  rsp_table <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -126,7 +123,7 @@ response table <code>RSPT01</code> available in the TLG Catalog <a href="https:/
 <span>    <span class="st">"cmh"</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  add_total <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  total_label <span class="op">=</span> <span class="fu"><a href="default_total_label.html">default_total_label</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>  na_level <span class="op">=</span> <span class="fu">tern</span><span class="fu">::</span><span class="fu"><a href="https://insightsengineering.github.io/tern/latest-tag/reference/default_na_str.html" class="external-link">default_na_str</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  na_level <span class="op">=</span> <span class="fu">tern</span><span class="fu">::</span><span class="fu"><a href="https://pharmaverse.github.io/tern/latest-tag/reference/default_na_str.html" class="external-link">default_na_str</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  denom <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"N_col"</span>, <span class="st">"n"</span>, <span class="st">"N_row"</span><span class="op">)</span>,</span>
 <span>  pre_output <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  post_output <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -159,8 +156,8 @@ response table <code>RSPT01</code> available in the TLG Catalog <a href="https:/
 
 <dt id="arg-arm-var">arm_var<a class="anchor" aria-label="anchor" href="#arg-arm-var"></a>
 </dt>
-<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code>)<br> object with all
-available choices and preselected option for variable names that can be used as <code>arm_var</code>.
+<dd><p>(<code><a href="https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html" class="external-link">teal.picks::variables()</a></code>; legacy <code>teal.transform</code> objects are deprecated but still accepted)<br>
+object with all available choices and preselected option for variable names that can be used as <code>arm_var</code>.
 It defines the grouping variable in the results table.</p></dd>
 
 
@@ -168,33 +165,36 @@ It defines the grouping variable in the results table.</p></dd>
 </dt>
 <dd><p>(<code>list</code>) optional,<br> if specified it must be a named list with each element corresponding to
 an arm variable in <code>ADSL</code> and the element must be another list (possibly
-with delayed <code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/variable_choices.html" class="external-link">teal.transform::variable_choices()</a></code> or delayed <code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/value_choices.html" class="external-link">teal.transform::value_choices()</a></code>
-with the elements named <code>ref</code> and <code>comp</code> that the defined the default
-reference and comparison arms when the arm variable is changed.</p></dd>
+with delayed <code><a href="https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html" class="external-link">teal.picks::variables()</a></code> or <code><a href="https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html" class="external-link">teal.picks::values()</a></code>; legacy
+<code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/variable_choices.html" class="external-link">teal.transform::variable_choices()</a></code> and <code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/value_choices.html" class="external-link">teal.transform::value_choices()</a></code> are deprecated but still accepted)
+with the elements named <code>ref</code> and <code>comp</code> that define the default reference and comparison arms when the arm
+variable is changed.</p></dd>
 
 
 <dt id="arg-paramcd">paramcd<a class="anchor" aria-label="anchor" href="#arg-paramcd"></a>
 </dt>
-<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code>)<br> object with all
-available choices and preselected option for the parameter code variable from <code>dataname</code>.</p></dd>
+<dd><p>(<code><a href="https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html" class="external-link">teal.picks::variables()</a></code>; legacy <code>teal.transform</code> objects are deprecated but still accepted)<br>
+object with all available choices and preselected option for the parameter code variable from <code>dataname</code>.</p></dd>
 
 
 <dt id="arg-strata-var">strata_var<a class="anchor" aria-label="anchor" href="#arg-strata-var"></a>
 </dt>
-<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code>)<br> names of
-the variables for stratified analysis.</p></dd>
+<dd><p>(<code><a href="https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html" class="external-link">teal.picks::variables()</a></code>; legacy <code>teal.transform</code> objects are deprecated but still accepted)<br>
+names of the variables for stratified analysis.</p></dd>
 
 
 <dt id="arg-aval-var">aval_var<a class="anchor" aria-label="anchor" href="#arg-aval-var"></a>
 </dt>
-<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code>)<br> object with
-all available choices and pre-selected option for the analysis variable.</p></dd>
+<dd><p>(<code><a href="https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html" class="external-link">teal.picks::variables()</a></code>; legacy <code>teal.transform</code> objects are deprecated but still accepted)<br>
+object with all available choices and pre-selected option for the analysis variable.</p></dd>
 
 
 <dt id="arg-conf-level">conf_level<a class="anchor" aria-label="anchor" href="#arg-conf-level"></a>
 </dt>
-<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code>)<br> object with
-all available choices and pre-selected option for the confidence level, each within range of (0, 1).</p></dd>
+<dd><p>(<code><a href="https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html" class="external-link">teal.picks::values()</a></code>; legacy <code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code> is deprecated but still
+accepted)<br>
+available confidence levels and default selection in (0, 1). Choice order follows the vector passed to
+<code><a href="https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html" class="external-link">teal.picks::values()</a></code> (there is no <code>keep_order</code> argument).</p></dd>
 
 
 <dt id="arg-default-responses">default_responses<a class="anchor" aria-label="anchor" href="#arg-default-responses"></a>
@@ -219,11 +219,11 @@ values and <code>levels</code> of default level choices.</p></dd>
 <ul>
 <li><p><code>global</code>: a list of settings for overall analysis with 2 named elements <code>method</code> and <code>conf_level</code>.</p></li>
 <li><p><code>unstrat</code>: a list of settings for unstratified analysis with 3 named elements <code>method_ci</code> and <code>method_test</code>, and
-<code>odds</code>. See <code><a href="https://insightsengineering.github.io/tern/latest-tag/reference/prop_diff.html" class="external-link">tern::estimate_proportion_diff()</a></code>, <code><a href="https://insightsengineering.github.io/tern/latest-tag/reference/prop_diff_test.html" class="external-link">tern::test_proportion_diff()</a></code>, and
-<code><a href="https://insightsengineering.github.io/tern/latest-tag/reference/odds_ratio.html" class="external-link">tern::estimate_odds_ratio()</a></code>, respectively, for options and details on how these settings are implemented in the
+<code>odds</code>. See <code><a href="https://pharmaverse.github.io/tern/latest-tag/reference/prop_diff.html" class="external-link">tern::estimate_proportion_diff()</a></code>, <code><a href="https://pharmaverse.github.io/tern/latest-tag/reference/prop_diff_test.html" class="external-link">tern::test_proportion_diff()</a></code>, and
+<code><a href="https://pharmaverse.github.io/tern/latest-tag/reference/odds_ratio.html" class="external-link">tern::estimate_odds_ratio()</a></code>, respectively, for options and details on how these settings are implemented in the
 analysis.</p></li>
 <li><p><code>strat</code>: a list of settings for stratified analysis with elements <code>method_ci</code> and <code>method_test</code>. See
-<code><a href="https://insightsengineering.github.io/tern/latest-tag/reference/prop_diff.html" class="external-link">tern::estimate_proportion_diff()</a></code> and <code><a href="https://insightsengineering.github.io/tern/latest-tag/reference/prop_diff_test.html" class="external-link">tern::test_proportion_diff()</a></code>, respectively, for options and details on
+<code><a href="https://pharmaverse.github.io/tern/latest-tag/reference/prop_diff.html" class="external-link">tern::estimate_proportion_diff()</a></code> and <code><a href="https://pharmaverse.github.io/tern/latest-tag/reference/prop_diff_test.html" class="external-link">tern::test_proportion_diff()</a></code>, respectively, for options and details on
 how these settings are implemented in the analysis.</p></li>
 </ul>
 </dd>
@@ -371,8 +371,8 @@ apps implementing this module can be found.</p></div>
 
 <dl>
 <dt>example-1</dt>
-<dd><p><a href="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiS1xH5RSUfUa7UA+h5e1kpB3oY6AO60pAAWtBDsYbg6IEo6OnRMLBz8qNSsjIoQGVnMbOzGRIwwnuSMosUZAIIAIgDKADI+OqQwBP5wAB7+UPyi1Ok6bVjtPX0Dw6P8DToApAB8a1MZMIJe5Ow7GdMAas2dAMI6ALw6-P4kxP4NqP7UUPRw1OzN51c2TbbEonUHROLvT7fI5gS6xFhQdSqHRYMTCUgAegAYgl+AkAOYKMBNE6ArbHYy0aj1dgABWaWGaAFlLq0dABCO5EgDypywAEkAHKnIk6AA+Z357X5tluXLAWO5nU63IA6joHLSicUAL7FABWRAS-gA1nBWKIkp4oDYIvw4MYoOj-AQ8aIBobjWaLcBoPBLWE5ABdNxtLo9MLAYBEsOdIlBkMQGZzO3WqMx1qzeOJpQsGAvB0uogwVA9OiiUhHEEMllsu7lyuMB23HQxrBMnQAISJKWIJZbBBhNemPdbYGHl21clwU2H9doFfYTeMLaJncQOlpHwIcHoRFHfdLd0HMY3rUYgnxOgAGqOiZcN5di-QEp5LBAp0pimhSxEEjEqwyMIW2SKY+CEERRBbcDhDEQCTj6fxSH8F9oDYR59j7OB4NBD4vmoVcwFRURUBIe0Gh7Y4gOtP1dHlZNKJBUFUARfp+AHWIjR3UR-FEb44CRfgcNBHQCE4mQxBbTRuEEOAXXE7jfkzdoUiJelGVrO8wHU5ltRnJiRL4kRBMIzsnHaWZaX5IkqJ0adbLzfxpMYDiuLEXj+ME4TQTEtyoLuZzaE+ER5L8pTZl7Id2y0mtWRiy5bFi1op30kSTiMgTyHY+jorAWz7IMjJHOXIt+zuYrC0PVLDNIZgvCclhXIkniMq82yMl85qpJYIL6BCzrFOTSKiXaJxbzwMdOyZLAAGksAAJi0xlLhcYkCrSjJWqywjltW-LqtBe1HWdJsSJIPj-MyBdK3artzMs-kWwbbyRNeAcYSfEsRHIFExFIiA+J0dhLiwRQJrUlgNG4X6zoB3Q6VBvTbtKOBtGoS6T0Kjb72LfI4B+4j-sB4HEfB7TIaCgjCfO+HaVJg6NoyEavD63RWgXOAoGJ9pWjB1TtMYIh8VO0QtDZjmudp3mbKx0ESTS9aNqFU4nFledF2RnQ3uPGF2hZkQdHZvjJaBnm+bHQUiFIHQnGk6hBGC+HBScMHFcZkQ0Yxl60pxr78d0am4aBkHzaJS3rdtmTHaB53Q-Jxgoapv6aaBum+c1pmBaFkWxcNiXidpaWyb16Ojc57mi81+WRLdkTeQFYUnuu72Tm10SYVpQXhbEUXtDz42C6L-mS9Z-vy-hs2kdlk4Pe+L21K7nO+7Lk26SHscR4NleK7j8Obbth3R-YWPtVu6uMlroCKGLQjBSLSY8oMklimKWgV3YBJ6kRDRtGsGw0hBKIeIEBWDNHQOwH8AASQQtAUhQL4owbQRQlA6iUGAHUQYgA" class="external-link">Open in Shinylive</a>
-    <iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiS1xH5RSUfUa7UA+h5e1kpB3oY6AO60pAAWtBDsYbg6IEo6OnRMLBz8qNSsjIoQGVnMbOzGRIwwnuSMosUZAIIAIgDKADI+OqQwBP5wAB7+UPyi1Ok6bVjtPX0Dw6P8DToApAB8a1MZMIJe5Ow7GdMAas2dAMI6ALw6-P4kxP4NqP7UUPRw1OzN51c2TbbEonUHROLvT7fI5gS6xFhQdSqHRYMTCUgAegAYgl+AkAOYKMBNE6ArbHYy0aj1dgABWaWGaAFlLq0dABCO5EgDypywAEkAHKnIk6AA+Z357X5tluXLAWO5nU63IA6joHLSicUAL7FABWRAS-gA1nBWKIkp4oDYIvw4MYoOj-AQ8aIBobjWaLcBoPBLWE5ABdNxtLo9MLAYBEsOdIlBkMQGZzO3WqMx1qzeOJpQsGAvB0uogwVA9OiiUhHEEMllsu7lyuMB23HQxrBMnQAISJKWIJZbBBhNemPdbYGHl21clwU2H9doFfYTeMLaJncQOlpHwIcHoRFHfdLd0HMY3rUYgnxOgAGqOiZcN5di-QEp5LBAp0pimhSxEEjEqwyMIW2SKY+CEERRBbcDhDEQCTj6fxSH8F9oDYR59j7OB4NBD4vmoVcwFRURUBIe0Gh7Y4gOtP1dHlZNKJBUFUARfp+AHWIjR3UR-FEb44CRfgcNBHQCE4mQxBbTRuEEOAXXE7jfkzdoUiJelGVrO8wHU5ltRnJiRL4kRBMIzsnHaWZaX5IkqJ0adbLzfxpMYDiuLEXj+ME4TQTEtyoLuZzaE+ER5L8pTZl7Id2y0mtWRiy5bFi1op30kSTiMgTyHY+jorAWz7IMjJHOXIt+zuYrC0PVLDNIZgvCclhXIkniMq82yMl85qpJYIL6BCzrFOTSKiXaJxbzwMdOyZLAAGksAAJi0xlLhcYkCrSjJWqywjltW-LqtBe1HWdJsSJIPj-MyBdK3artzMs-kWwbbyRNeAcYSfEsRHIFExFIiA+J0dhLiwRQJrUlgNG4X6zoB3Q6VBvTbtKOBtGoS6T0Kjb72LfI4B+4j-sB4HEfB7TIaCgjCfO+HaVJg6NoyEavD63RWgXOAoGJ9pWjB1TtMYIh8VO0QtDZjmudp3mbKx0ESTS9aNqFU4nFledF2RnQ3uPGF2hZkQdHZvjJaBnm+bHQUiFIHQnGk6hBGC+HBScMHFcZkQ0Yxl60pxr78d0am4aBkHzaJS3rdtmTHaB53Q-Jxgoapv6aaBum+c1pmBaFkWxcNiXidpaWyb16Ojc57mi81+WRLdkTeQFYUnuu72Tm10SYVpQXhbEUXtDz42C6L-mS9Z-vy-hs2kdlk4Pe+L21K7nO+7Lk26SHscR4NleK7j8Obbth3R-YWPtVu6uMlroCKGLQjBSLSY8oMklimKWgV3YBJ6kRDRtGsGw0hBKIeIEBWDNHQOwH8AASQQtAUhQL4owbQRQlA6iUGAHUQYgA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50%; margin-top: 30px; transform: translateX(-50%); z-index: 1"></iframe>
+<dd><p><a href="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiS1xH5RSUfUa7UA+h5e1kpB3oY6AO60pAAWtBDsYbg6IEo6OnRMLBz8qNSsjIoQGVnMbOzGRIwwnuSMosUZAIIAIgDKADI+OqQwBP5wAB7+UPyi1Ok6bVjtPX0Dw6P8DToApAB8a1MZMIJe5Ow7GdMAas2dAMI6ALw6-P4kxP4NqP7UUPRw1OzN51c2TbbEonUHROLvT7fI5gS6xFhQdSqHRYMTCUgAegAYgl+AkAOYKMBNE6ArbHYy0aj1dgABWaWGaAFlLq0dABCO5EgDypywAEkAHKnIk6AA+Z357X5tluXLAWO5nU63IA6joHLSicUAL7FABWRAS-gA1nBWKIkp4oDYIvw4MYoOj-AQ8aIBobjWaLcBoPBLWE5ABdNxtLo9MLAYBEsOdIlBkMQGZzO3WqMx1qzeOJpQsGAvB0uogwVA9OiiUhHEEMllsu7lyuMB23HQxrBMnQAISJKWIJZbBBhNemPdbYGHl21clwU2H9doFfYTeMLaJncQOlpHwIcHoRFHfdLd0HMY3rUYgnxOgAGqOiZcN5di-QEp5LBAp0pimhSxEEjEqwyMIW2SKY+CEERRBbcDhDEQCTj6fxSH8F9oDYR59j7OB4NBD4vmoVcwFRURUBIe0Gh7Y4gOtP1dHlZNKJBUFUARfp+BbTQWFoT5IPYAhYiNHcoPlelGVrbUZyYk4838TjGA4rieLgqiTn4wSxAHId2zvcd21ZHTmkuWwa304lJNBUFRG+OAkXY+jtLAFTpxUmTlyLfs7lcwtD3MiyK2YLxZJYBTGG4+heJUjI1JkDTjxhdonFvPAx07JksAAaSwAAmHTGUuFwzMinQrJEWzCLygqnN80F7UdZ0mxIkgrOEzIF0rIrOycdpZlpfkWwbHCLIyV5NPvYt8jgcgUTEUiICsnR2EuLBFGSolaRYDRuGmxq5t0OllokorSjgbRqBak8pKGjIxpLEQpuI2b5sWg7VrAdbGE2giHqavbaRe6qruusB2i8cLdFaBc4CgJ72laFaUjWxgiHxBrRC0cHIeh364aJI6dBJIbnMuk4hVOJxZXnRc8ZGuKiRBpSdAhqysYW2H4bHQUiFIHQnE46hBAZ9hBScFaicB47TvOwbAZuib7pmn6FqW9miU57nee4AWwYW4WVbejbuK+hXdoWv74bxoHaSRlGxDR7RGcxp7aRx176e1pmoZhl28YJiyxau3kBWFfq2uliyaZ0E83ut1H0Yd5mnZdhHgdBkR489va2cO4ncJO74pcR5HY-tj2WbpJOxzdtPS69vW1Z5vmtbToWRe1IrfYyf2aooYtCMFItJkcqSSWKYpaBXdgEnqRENG0awbDSEFRHiCBWGadB2B-AASQRaBSberMYbQiiUHUlDAHUgyAA" class="external-link">Open in Shinylive</a>
+    <iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiS1xH5RSUfUa7UA+h5e1kpB3oY6AO60pAAWtBDsYbg6IEo6OnRMLBz8qNSsjIoQGVnMbOzGRIwwnuSMosUZAIIAIgDKADI+OqQwBP5wAB7+UPyi1Ok6bVjtPX0Dw6P8DToApAB8a1MZMIJe5Ow7GdMAas2dAMI6ALw6-P4kxP4NqP7UUPRw1OzN51c2TbbEonUHROLvT7fI5gS6xFhQdSqHRYMTCUgAegAYgl+AkAOYKMBNE6ArbHYy0aj1dgABWaWGaAFlLq0dABCO5EgDypywAEkAHKnIk6AA+Z357X5tluXLAWO5nU63IA6joHLSicUAL7FABWRAS-gA1nBWKIkp4oDYIvw4MYoOj-AQ8aIBobjWaLcBoPBLWE5ABdNxtLo9MLAYBEsOdIlBkMQGZzO3WqMx1qzeOJpQsGAvB0uogwVA9OiiUhHEEMllsu7lyuMB23HQxrBMnQAISJKWIJZbBBhNemPdbYGHl21clwU2H9doFfYTeMLaJncQOlpHwIcHoRFHfdLd0HMY3rUYgnxOgAGqOiZcN5di-QEp5LBAp0pimhSxEEjEqwyMIW2SKY+CEERRBbcDhDEQCTj6fxSH8F9oDYR59j7OB4NBD4vmoVcwFRURUBIe0Gh7Y4gOtP1dHlZNKJBUFUARfp+BbTQWFoT5IPYAhYiNHcoPlelGVrbUZyYk4838TjGA4rieLgqiTn4wSxAHId2zvcd21ZHTmkuWwa304lJNBUFRG+OAkXY+jtLAFTpxUmTlyLfs7lcwtD3MiyK2YLxZJYBTGG4+heJUjI1JkDTjxhdonFvPAx07JksAAaSwAAmHTGUuFwzMinQrJEWzCLygqnN80F7UdZ0mxIkgrOEzIF0rIrOycdpZlpfkWwbHCLIyV5NPvYt8jgcgUTEUiICsnR2EuLBFGSolaRYDRuGmxq5t0OllokorSjgbRqBak8pKGjIxpLEQpuI2b5sWg7VrAdbGE2giHqavbaRe6qruusB2i8cLdFaBc4CgJ72laFaUjWxgiHxBrRC0cHIeh364aJI6dBJIbnMuk4hVOJxZXnRc8ZGuKiRBpSdAhqysYW2H4bHQUiFIHQnE46hBAZ9hBScFaicB47TvOwbAZuib7pmn6FqW9miU57nee4AWwYW4WVbejbuK+hXdoWv74bxoHaSRlGxDR7RGcxp7aRx176e1pmoZhl28YJiyxau3kBWFfq2uliyaZ0E83ut1H0Yd5mnZdhHgdBkR489va2cO4ncJO74pcR5HY-tj2WbpJOxzdtPS69vW1Z5vmtbToWRe1IrfYyf2aooYtCMFItJkcqSSWKYpaBXdgEnqRENG0awbDSEFRHiCBWGadB2B-AASQRaBSberMYbQiiUHUlDAHUgyAA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50%; margin-top: 30px; transform: translateX(-50%); z-index: 1"></iframe>
     <a style="height: 800px; display: block;"></a></p></dd>
 
 
@@ -386,12 +386,12 @@ apps implementing this module can be found.</p></div>
 <span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu">teal_data</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">within</a></span><span class="op">(</span><span class="va">data</span>, <span class="op">{</span></span></span>
 <span class="r-in"><span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://insightsengineering.github.io/formatters/" class="external-link">formatters</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://pharmaverse.github.io/formatters/" class="external-link">formatters</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="va">ADSL</span> <span class="op">&lt;-</span> <span class="va">tmc_ex_adsl</span></span></span>
 <span class="r-in"><span>  <span class="va">ADRS</span> <span class="op">&lt;-</span> <span class="va">tmc_ex_adrs</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>      AVALC <span class="op">=</span> <span class="fu"><a href="https://insightsengineering.github.io/tern/latest-tag/reference/d_onco_rsp_label.html" class="external-link">d_onco_rsp_label</a></span><span class="op">(</span><span class="va">AVALC</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
-<span class="r-in"><span>        <span class="fu"><a href="https://insightsengineering.github.io/formatters/latest-tag/reference/with_label.html" class="external-link">with_label</a></span><span class="op">(</span><span class="st">"Character Result/Finding"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>      AVALC <span class="op">=</span> <span class="fu"><a href="https://pharmaverse.github.io/tern/latest-tag/reference/d_onco_rsp_label.html" class="external-link">d_onco_rsp_label</a></span><span class="op">(</span><span class="va">AVALC</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>        <span class="fu"><a href="https://pharmaverse.github.io/formatters/latest-tag/reference/with_label.html" class="external-link">with_label</a></span><span class="op">(</span><span class="st">"Character Result/Finding"</span><span class="op">)</span></span></span>
 <span class="r-in"><span>    <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">PARAMCD</span> <span class="op">!=</span> <span class="st">"OVRINV"</span> <span class="op">|</span> <span class="va">AVISIT</span> <span class="op">==</span> <span class="st">"FOLLOW UP"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span><span class="op">)</span></span></span>
@@ -410,17 +410,14 @@ apps implementing this module can be found.</p></div>
 <span class="r-in"><span>    <span class="fu">tm_t_binary_outcome</span><span class="op">(</span></span></span>
 <span class="r-in"><span>      label <span class="op">=</span> <span class="st">"Responders"</span>,</span></span>
 <span class="r-in"><span>      dataname <span class="op">=</span> <span class="st">"ADRS"</span>,</span></span>
-<span class="r-in"><span>      paramcd <span class="op">=</span> <span class="fu">choices_selected</span><span class="op">(</span></span></span>
-<span class="r-in"><span>        choices <span class="op">=</span> <span class="fu">value_choices</span><span class="op">(</span><span class="va">ADRS</span>, <span class="st">"PARAMCD"</span>, <span class="st">"PARAM"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>        selected <span class="op">=</span> <span class="st">"BESRSPI"</span></span></span>
-<span class="r-in"><span>      <span class="op">)</span>,</span></span>
-<span class="r-in"><span>      arm_var <span class="op">=</span> <span class="fu">choices_selected</span><span class="op">(</span></span></span>
-<span class="r-in"><span>        choices <span class="op">=</span> <span class="fu">variable_choices</span><span class="op">(</span><span class="va">ADRS</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ARM"</span>, <span class="st">"ARMCD"</span>, <span class="st">"ACTARMCD"</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>      paramcd <span class="op">=</span> <span class="fu">variables</span><span class="op">(</span>choices <span class="op">=</span> <span class="st">"PARAMCD"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>      arm_var <span class="op">=</span> <span class="fu">variables</span><span class="op">(</span></span></span>
+<span class="r-in"><span>        choices <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ARM"</span>, <span class="st">"ARMCD"</span>, <span class="st">"ACTARMCD"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>        selected <span class="op">=</span> <span class="st">"ARM"</span></span></span>
 <span class="r-in"><span>      <span class="op">)</span>,</span></span>
 <span class="r-in"><span>      arm_ref_comp <span class="op">=</span> <span class="va">arm_ref_comp</span>,</span></span>
-<span class="r-in"><span>      strata_var <span class="op">=</span> <span class="fu">choices_selected</span><span class="op">(</span></span></span>
-<span class="r-in"><span>        choices <span class="op">=</span> <span class="fu">variable_choices</span><span class="op">(</span><span class="va">ADRS</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"SEX"</span>, <span class="st">"BMRKR2"</span>, <span class="st">"RACE"</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>      strata_var <span class="op">=</span> <span class="fu">variables</span><span class="op">(</span></span></span>
+<span class="r-in"><span>        choices <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"SEX"</span>, <span class="st">"BMRKR2"</span>, <span class="st">"RACE"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>        selected <span class="op">=</span> <span class="st">"RACE"</span></span></span>
 <span class="r-in"><span>      <span class="op">)</span>,</span></span>
 <span class="r-in"><span>      default_responses <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>

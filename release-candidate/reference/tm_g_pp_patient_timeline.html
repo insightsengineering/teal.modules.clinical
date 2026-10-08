@@ -25,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">teal.modules.clinical</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.13.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.14.0</small>
 
     <div style="width: 140px; margin-left: 0.5rem;"> <small class="nav-text text-muted me-auto">part of</small> <img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/nest.png?raw=true" alt="NEST" style="height: 30px;"><a href="https://pharmaverse.org/" class="external-link"><img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/pharmaverse.png?raw=true" alt="pharmaverse" style="height: 28px;"></a> </div>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -59,6 +59,7 @@
     <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/release-candidate">release-candidate</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/main">main</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/latest-tag">latest-tag</a>
+<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.14.0-rc1">v0.14.0-rc1</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.13.0">v0.13.0</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.13.0-rc2">v0.13.0-rc2</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.12.0">v0.12.0</a>
@@ -89,7 +90,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>teal Module: Patient Profile Timeline Plot</h1>
-      <small class="dont-index">Source: <a href="https://github.com/insightsengineering/teal.modules.clinical/blob/v0.13.0-rc2/R/tm_g_pp_patient_timeline.R" class="external-link"><code>R/tm_g_pp_patient_timeline.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/insightsengineering/teal.modules.clinical/blob/v0.14.0-rc1/R/tm_g_pp_patient_timeline.R" class="external-link"><code>R/tm_g_pp_patient_timeline.R</code></a></small>
       <div class="d-none name"><code>tm_g_pp_patient_timeline.Rd</code></div>
     </div>
 
@@ -160,62 +161,72 @@
 
 <dt id="arg-aeterm">aeterm<a class="anchor" aria-label="anchor" href="#arg-aeterm"></a>
 </dt>
-<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code>)<br> object with all
-available choices and preselected option for the <code>AETERM</code> variable from <code>dataname</code>.</p></dd>
+<dd><p>(<code><a href="https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html" class="external-link">teal.picks::variables()</a></code>; legacy <code>teal.transform</code> objects are deprecated but still accepted)<br>
+object with all available choices and preselected
+option for the <code>AETERM</code> variable from <code>dataname_adae</code>.</p></dd>
 
 
 <dt id="arg-cmdecod">cmdecod<a class="anchor" aria-label="anchor" href="#arg-cmdecod"></a>
 </dt>
-<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code>)<br> object with all
-available choices and preselected option for the <code>CMDECOD</code> variable from <code>dataname_adcm</code>.</p></dd>
+<dd><p>(<code><a href="https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html" class="external-link">teal.picks::variables()</a></code>; legacy <code>teal.transform</code> objects are deprecated but still accepted)<br>
+object with all available choices and preselected
+option for the <code>CMDECOD</code> variable from <code>dataname_adcm</code>.</p></dd>
 
 
 <dt id="arg-aetime-start">aetime_start<a class="anchor" aria-label="anchor" href="#arg-aetime-start"></a>
 </dt>
-<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code>)<br> object with
-all available choices and preselected option for the <code>ASTDTM</code> variable from <code>dataname_adae</code>.</p></dd>
+<dd><p>(<code><a href="https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html" class="external-link">teal.picks::variables()</a></code>; legacy <code>teal.transform</code> objects are deprecated but still accepted)<br>
+object with all available choices and preselected
+option for the <code>ASTDTM</code> variable from <code>dataname_adae</code>.</p></dd>
 
 
 <dt id="arg-aetime-end">aetime_end<a class="anchor" aria-label="anchor" href="#arg-aetime-end"></a>
 </dt>
-<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code>)<br> object with all
-available choices and preselected option for the <code>AENDTM</code> variable from <code>dataname_adae</code>.</p></dd>
+<dd><p>(<code><a href="https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html" class="external-link">teal.picks::variables()</a></code>; legacy <code>teal.transform</code> objects are deprecated but still accepted)<br>
+object with all available choices and preselected
+option for the <code>AENDTM</code> variable from <code>dataname_adae</code>.</p></dd>
 
 
 <dt id="arg-dstime-start">dstime_start<a class="anchor" aria-label="anchor" href="#arg-dstime-start"></a>
 </dt>
-<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code>)<br> object with
-all available choices and preselected option for the <code>CMASTDTM</code> variable from <code>dataname_adcm</code>.</p></dd>
+<dd><p>(<code><a href="https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html" class="external-link">teal.picks::variables()</a></code>; legacy <code>teal.transform</code> objects are deprecated but still accepted)<br>
+object with all available choices and preselected
+option for the <code>CMASTDTM</code> variable from <code>dataname_adcm</code>.</p></dd>
 
 
 <dt id="arg-dstime-end">dstime_end<a class="anchor" aria-label="anchor" href="#arg-dstime-end"></a>
 </dt>
-<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code>)<br> object with all
-available choices and preselected option for the <code>CMAENDTM</code> variable from <code>dataname_adcm</code>.</p></dd>
+<dd><p>(<code><a href="https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html" class="external-link">teal.picks::variables()</a></code>; legacy <code>teal.transform</code> objects are deprecated but still accepted)<br>
+object with all available choices and preselected
+option for the <code>CMAENDTM</code> variable from <code>dataname_adcm</code>.</p></dd>
 
 
 <dt id="arg-aerelday-start">aerelday_start<a class="anchor" aria-label="anchor" href="#arg-aerelday-start"></a>
 </dt>
-<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code>)<br> object
-with all available choices and preselected option for the <code>ASTDY</code> variable from <code>dataname_adae</code>.</p></dd>
+<dd><p>(<code><a href="https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html" class="external-link">teal.picks::variables()</a></code>; legacy <code>teal.transform</code> objects are deprecated
+but still accepted)<br> object with all available choices and preselected
+option for the <code>ASTDY</code> variable from <code>dataname_adae</code>.</p></dd>
 
 
 <dt id="arg-aerelday-end">aerelday_end<a class="anchor" aria-label="anchor" href="#arg-aerelday-end"></a>
 </dt>
-<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code>)<br> object
-with all available choices and preselected option for the <code>AENDY</code> variable from <code>dataname_adae</code>.</p></dd>
+<dd><p>(<code><a href="https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html" class="external-link">teal.picks::variables()</a></code>; legacy <code>teal.transform</code> objects are deprecated but still accepted)<br>
+object with all available choices and preselected
+option for the <code>AENDY</code> variable from <code>dataname_adae</code>.</p></dd>
 
 
 <dt id="arg-dsrelday-start">dsrelday_start<a class="anchor" aria-label="anchor" href="#arg-dsrelday-start"></a>
 </dt>
-<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code>)<br> object
-with all available choices and preselected option for the <code>ASTDY</code> variable from <code>dataname_adcm</code>.</p></dd>
+<dd><p>(<code><a href="https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html" class="external-link">teal.picks::variables()</a></code>; legacy <code>teal.transform</code> objects are deprecated
+but still accepted)<br> object with all available choices and preselected
+option for the <code>ASTDY</code> variable from <code>dataname_adcm</code>.</p></dd>
 
 
 <dt id="arg-dsrelday-end">dsrelday_end<a class="anchor" aria-label="anchor" href="#arg-dsrelday-end"></a>
 </dt>
-<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code>)<br> object
-with all available choices and preselected option for the <code>AENDY</code> variable from <code>dataname_adcm</code>.</p></dd>
+<dd><p>(<code><a href="https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html" class="external-link">teal.picks::variables()</a></code>; legacy <code>teal.transform</code> objects are deprecated but still accepted)<br>
+object with all available choices and preselected
+option for the <code>AENDY</code> variable from <code>dataname_adcm</code>.</p></dd>
 
 
 <dt id="arg-font-size">font_size<a class="anchor" aria-label="anchor" href="#arg-font-size"></a>
@@ -328,8 +339,8 @@ the reporting functionality will be turned on automatically by the <code>teal</c
 
 <dl>
 <dt>example-1</dt>
-<dd><p><a href="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo67sxsnHDcvALCYhJSMvKl5QyVHMYBMGHkjKJBZRWe+ajUrIFtAIIAItNOkTqkMAQxcAAeMVChcDOzAMoAMkvGtNT9nKvrWzui1EUOBw4AQgBSAJKzOgCkuT86OYLAAkT1en1mQ0BswAwgBZJYrNabbb8AgwX4APh+bTKMEE4XI7FxZR08IOtlmAE0dABeHSyURwGJpLIUYkQUlcslwmHTWx0+kKMDwNHUHQvYU6AB+OgATAAGXAkrnwvkC2lCkVwMVkqWygCMAFYlSrSfZnDKdAazTYftj0pksjFqFB6HBqMSwAdSIJ+KwdLMoAGiMYdD6WKQdKGdHCdS0NCRhXJlZzufCnAA5al0hlQJkstl5M1lNX8wU6YWiyQS-U6ADsCtNae5PPVFarOprMLrBqbzdbZQti1lJoVtqxAIy2Rdbo9Xp9foDQZDYacEH40bDcf4CcswTAKbN8OmFNmtgR9NPlIvqdbJ6z58vgMfF5JQQAvkElAArIi5GIAGs4FYUR8mSGxUn4OBjCgYRSBiAhd1ENY-wA4DQOAAgvTmY5hSKYUgRcPBKzAOZ4WTABdJQdnRICQNEJZsOFCkHGpL58NIsF3g4kjCLPN8+LAcknAARU4wjbBhG0hP5GE5QksipIAZkUuSABZk1-f8IHo0DwPCORgEI2E4TU0zhUopZaJgPTRG09CGIMqAjJMhZzIosArNSZjvVsNiqV4giwG4iEtOCaB0CWXJMg5MoClzAo7x0PghBERj6VShowJJFYYgAcxidAirCWgKAQjR4CkOA4u5V13XFLUAAVSvKuxaCq3I9jwM0CmgeBUSgXQtSI-DeuSfrmRs3MTM85KuVQFhysmmayMOI4xpbUlFo0crEKIRquOeHjZk21txiIBC2VofKsijelsIANibI4ikVBVXvlfsjiPLaynRaDiE3B6sn-AgxBiJkRHUHVatbAhQZkMRc00FhaDdEREMR8GwIKYBjLWzzKMo4L4VmJwYQAeVOw95u5KG4Bh4HSLJinqbO7lftbIb+gxEGwYhhmmbh7kEYFjKdFRxh0foTGxaR3HknxtziOJ4KFlsJwsDM2mSx0IXyGZ3yNa1nWoS5LnuR5jrmVEcJGHuhlscFj1GcNkWuXlnGUbRjHmS9sRnOVtb3K8knSOvJ9kzprkDZ1XNjYEs3bRjnRrYGigjed0RIdd4W9YDiWpZluXs6DgnRrD9XXzN1Oyjjo2cJr8LW0trl+Dtm3Iftx3C9z6H3YL7Ofelv2sfF8vZp1tWWbhSPBLb+m88NhOvRPJOW851OO8q5lM4T7P+7d2Gh-FkeS-9su8Yriyq9nhZswXuv9eX+OHrXufm8PFOzSGxgPVCKwbukYD7iyPvnP6pJC7nzHoXSeIdVbh34pSKk0c9YN1Xsg6km8Lapz-gA4M6wNygIVuAwekD-rD3pMXWBV8lY31DjPQij5UG6woS-Aeb8GRN2zKw82pJF7xVEP-aggDgEOxITjMhJ92HQOob7WWl8J7XynpZJBZEzx8Ofhg9+WC+E-0gR3ERYj9781IQ3D2UCqGSwUaXZR9DVF32YbwtB7CdHcOcdg7+kD+FQiCEEWgYZ2C5H6FACw2hrA2BKGmUQOQICsGmOgdgaBUDAkELQIoKTgRMkYNoKYEAPxKDAB+SiQA" class="external-link">Open in Shinylive</a>
-    <iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo67sxsnHDcvALCYhJSMvKl5QyVHMYBMGHkjKJBZRWe+ajUrIFtAIIAItNOkTqkMAQxcAAeMVChcDOzAMoAMkvGtNT9nKvrWzui1EUOBw4AQgBSAJKzOgCkuT86OYLAAkT1en1mQ0BswAwgBZJYrNabbb8AgwX4APh+bTKMEE4XI7FxZR08IOtlmAE0dABeHSyURwGJpLIUYkQUlcslwmHTWx0+kKMDwNHUHQvYU6AB+OgATAAGXAkrnwvkC2lCkVwMVkqWygCMAFYlSrSfZnDKdAazTYftj0pksjFqFB6HBqMSwAdSIJ+KwdLMoAGiMYdD6WKQdKGdHCdS0NCRhXJlZzufCnAA5al0hlQJkstl5M1lNX8wU6YWiyQS-U6ADsCtNae5PPVFarOprMLrBqbzdbZQti1lJoVtqxAIy2Rdbo9Xp9foDQZDYacEH40bDcf4CcswTAKbN8OmFNmtgR9NPlIvqdbJ6z58vgMfF5JQQAvkElAArIi5GIAGs4FYUR8mSGxUn4OBjCgYRSBiAhd1ENY-wA4DQOAAgvTmY5hSKYUgRcPBKzAOZ4WTABdJQdnRICQNEJZsOFCkHGpL58NIsF3g4kjCLPN8+LAcknAARU4wjbBhG0hP5GE5QksipIAZkUuSABZk1-f8IHo0DwPCORgEI2E4TU0zhUopZaJgPTRG09CGIMqAjJMhZzIosArNSZjvVsNiqV4giwG4iEtOCaB0CWXJMg5MoClzAo7x0PghBERj6VShowJJFYYgAcxidAirCWgKAQjR4CkOA4u5V13XFLUAAVSvKuxaCq3I9jwM0CmgeBUSgXQtSI-DeuSfrmRs3MTM85KuVQFhysmmayMOI4xpbUlFo0crEKIRquOeHjZk21txiIBC2VofKsijelsIANibI4ikVBVXvlfsjiPLaynRaDiE3B6sn-AgxBiJkRHUHVatbAhQZkMRc00FhaDdEREMR8GwIKYBjLWzzKMo4L4VmJwYQAeVOw95u5KG4Bh4HSLJinqbO7lftbIb+gxEGwYhhmmbh7kEYFjKdFRxh0foTGxaR3HknxtziOJ4KFlsJwsDM2mSx0IXyGZ3yNa1nWoS5LnuR5jrmVEcJGHuhlscFj1GcNkWuXlnGUbRjHmS9sRnOVtb3K8knSOvJ9kzprkDZ1XNjYEs3bRjnRrYGigjed0RIdd4W9YDiWpZluXs6DgnRrD9XXzN1Oyjjo2cJr8LW0trl+Dtm3Iftx3C9z6H3YL7Ofelv2sfF8vZp1tWWbhSPBLb+m88NhOvRPJOW851OO8q5lM4T7P+7d2Gh-FkeS-9su8Yriyq9nhZswXuv9eX+OHrXufm8PFOzSGxgPVCKwbukYD7iyPvnP6pJC7nzHoXSeIdVbh34pSKk0c9YN1Xsg6km8Lapz-gA4M6wNygIVuAwekD-rD3pMXWBV8lY31DjPQij5UG6woS-Aeb8GRN2zKw82pJF7xVEP-aggDgEOxITjMhJ92HQOob7WWl8J7XynpZJBZEzx8Ofhg9+WC+E-0gR3ERYj9781IQ3D2UCqGSwUaXZR9DVF32YbwtB7CdHcOcdg7+kD+FQiCEEWgYZ2C5H6FACw2hrA2BKGmUQOQICsGmOgdgaBUDAkELQIoKTgRMkYNoKYEAPxKDAB+SiQA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50%; margin-top: 30px; transform: translateX(-50%); z-index: 1"></iframe>
+<dd><p><a href="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo67sxsnHDcvALCYhJSMvKl5QyVHMYBMGHkjKJBZRWe+ajUrIFtAIIAItNOkTqkMAQxcAAeMVChcDOzAMoAMkvGtNT9nKvrWzui1EUOBw4AQgBSAJKzOgCkuT86OYLAAkT1en1mQ0BswAwgBZJYrNabbb8AgwX4APh+bTKMEE4XI7FxZR08IOtlmAE0dABeHSyURwGJpLIUYkQUlcslwmHTWx0+kKMDwNHUHQvYU6AB+OgATAAGXAkrnwvkC2lCkVwMVkqWygCMAFYlSrSfZnDKdAazTYftj0pksjFqFB6HBqMSwAdSIJ+KwdLMoAGiMYdD6WKQdKGdHCdS0NCRhXJlZzufCnAA5al0hlQJkstl5M1lNX8wU6YWiyQS-U6ADsCtNae5PPVFarOprMLrBqbzdbZQti1lJoVtqxAIy2Rdbo9Xp9foDQZDYacEH40bDcf4CcswTAKbN8OmFNmtgR9NPlIvqdbJ6z58vgMfF5JQQAvkElAArIi5GIAGs4FYUR8mSGxUn4OBjCgYRSBiAhd1ENY-wA4DQOAAgvTmY5hSKYUgRcPBKzAOZ4WTABdJQdnRICQNEJZsOFCkHGpL58NIsF3g4kjCLPN8+LAcknAARU4wjbBhG0hP5GE5QksipIAZkUuSABZk1-f8IHo0DwPCORgEI2E4TU0zhUopZaJgPTRG09CGIMqAjJMhZzIosArNSZjvVsNiqV4giwG4iEtOCaB0CWXJMg5MoClzAo7x0PghBERj6VShowJJFYYgAcxidAirCWgKAQjR4CkOA4u5V13XFLUAAVSvKuxaCq3I9jwM0CmgeBUSgXQtSI-DeuSfrmRs3MTM85KuVQFhysmmayMOI4xpbUlFo0crEKIRquOeHjZk21txiIBC2VofKsijelsIANibI4ikVBVXvlfsjiPLaynRaDiE3elNBYWg3XSr14VmJwYQAeVOoTodhhHk3m0khv6DEQbBiGxBwpxbCcLAzNkwnidJ37W0xjrmVEcJGHunRQcYcH6Eh-ib1J4LryfNGzRpgaKGB5ncfZ-HCNfbnSIWbNBKp7l+Hp2mYnpyNcxZtmOeEuFecE4KTwEyn0fi5WhY3DWxe1h85el4Ubb5w8TZ0IbGA9UJWFVhmmc1vGcrIs8qTUwP+b+l3VHd4N1gtnHWb9gnsyDsnE9D1slbd6gPa99XY61iWA8pJOeZDp3etEDOs+Fy24-F-3ZepNTHyTqEyihIIgloMN2FyfooAsbRrBsEo01EHIIFYaZ0HYNBUGBQRaCKGfgSZRhtCmCAPyUMAP0ooA" class="external-link">Open in Shinylive</a>
+    <iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo67sxsnHDcvALCYhJSMvKl5QyVHMYBMGHkjKJBZRWe+ajUrIFtAIIAItNOkTqkMAQxcAAeMVChcDOzAMoAMkvGtNT9nKvrWzui1EUOBw4AQgBSAJKzOgCkuT86OYLAAkT1en1mQ0BswAwgBZJYrNabbb8AgwX4APh+bTKMEE4XI7FxZR08IOtlmAE0dABeHSyURwGJpLIUYkQUlcslwmHTWx0+kKMDwNHUHQvYU6AB+OgATAAGXAkrnwvkC2lCkVwMVkqWygCMAFYlSrSfZnDKdAazTYftj0pksjFqFB6HBqMSwAdSIJ+KwdLMoAGiMYdD6WKQdKGdHCdS0NCRhXJlZzufCnAA5al0hlQJkstl5M1lNX8wU6YWiyQS-U6ADsCtNae5PPVFarOprMLrBqbzdbZQti1lJoVtqxAIy2Rdbo9Xp9foDQZDYacEH40bDcf4CcswTAKbN8OmFNmtgR9NPlIvqdbJ6z58vgMfF5JQQAvkElAArIi5GIAGs4FYUR8mSGxUn4OBjCgYRSBiAhd1ENY-wA4DQOAAgvTmY5hSKYUgRcPBKzAOZ4WTABdJQdnRICQNEJZsOFCkHGpL58NIsF3g4kjCLPN8+LAcknAARU4wjbBhG0hP5GE5QksipIAZkUuSABZk1-f8IHo0DwPCORgEI2E4TU0zhUopZaJgPTRG09CGIMqAjJMhZzIosArNSZjvVsNiqV4giwG4iEtOCaB0CWXJMg5MoClzAo7x0PghBERj6VShowJJFYYgAcxidAirCWgKAQjR4CkOA4u5V13XFLUAAVSvKuxaCq3I9jwM0CmgeBUSgXQtSI-DeuSfrmRs3MTM85KuVQFhysmmayMOI4xpbUlFo0crEKIRquOeHjZk21txiIBC2VofKsijelsIANibI4ikVBVXvlfsjiPLaynRaDiE3elNBYWg3XSr14VmJwYQAeVOoTodhhHk3m0khv6DEQbBiGxBwpxbCcLAzNkwnidJ37W0xjrmVEcJGHunRQcYcH6Eh-ib1J4LryfNGzRpgaKGB5ncfZ-HCNfbnSIWbNBKp7l+Hp2mYnpyNcxZtmOeEuFecE4KTwEyn0fi5WhY3DWxe1h85el4Ubb5w8TZ0IbGA9UJWFVhmmc1vGcrIs8qTUwP+b+l3VHd4N1gtnHWb9gnsyDsnE9D1slbd6gPa99XY61iWA8pJOeZDp3etEDOs+Fy24-F-3ZepNTHyTqEyihIIgloMN2FyfooAsbRrBsEo01EHIIFYaZ0HYNBUGBQRaCKGfgSZRhtCmCAPyUMAP0ooA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50%; margin-top: 30px; transform: translateX(-50%); z-index: 1"></iframe>
     <a style="height: 800px; display: block;"></a></p></dd>
 
 
@@ -344,7 +355,7 @@ the reporting functionality will be turned on automatically by the <code>teal</c
 <span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu">teal_data</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">within</a></span><span class="op">(</span><span class="va">data</span>, <span class="op">{</span></span></span>
 <span class="r-in"><span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://insightsengineering.github.io/teal.modules.clinical/">teal.modules.clinical</a></span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://insightsengineering.github.io/formatters/" class="external-link">formatters</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://pharmaverse.github.io/formatters/" class="external-link">formatters</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="va">ADAE</span> <span class="op">&lt;-</span> <span class="va">tmc_ex_adae</span></span></span>
 <span class="r-in"><span>  <span class="va">ADSL</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">tmc_ex_adsl</span>, <span class="va">USUBJID</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">ADAE</span><span class="op">$</span><span class="va">USUBJID</span><span class="op">)</span></span></span>
@@ -354,12 +365,12 @@ the reporting functionality will be turned on automatically by the <code>teal</c
 <span class="r-in"><span>        <span class="va">CMCAT</span> <span class="op">==</span> <span class="st">"medcl B"</span> <span class="op">~</span> <span class="fl">20</span>,</span></span>
 <span class="r-in"><span>        <span class="va">CMCAT</span> <span class="op">==</span> <span class="st">"medcl C"</span> <span class="op">~</span> <span class="fl">150</span>,</span></span>
 <span class="r-in"><span>        <span class="cn">TRUE</span> <span class="op">~</span> <span class="fl">1</span></span></span>
-<span class="r-in"><span>      <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://insightsengineering.github.io/formatters/latest-tag/reference/with_label.html" class="external-link">with_label</a></span><span class="op">(</span><span class="st">"Study Day of Start of Medication"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>      <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://pharmaverse.github.io/formatters/latest-tag/reference/with_label.html" class="external-link">with_label</a></span><span class="op">(</span><span class="st">"Study Day of Start of Medication"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>      CMENDY <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/case-and-replace-when.html" class="external-link">case_when</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>        <span class="va">CMCAT</span> <span class="op">==</span> <span class="st">"medcl B"</span> <span class="op">~</span> <span class="fl">700</span>,</span></span>
 <span class="r-in"><span>        <span class="va">CMCAT</span> <span class="op">==</span> <span class="st">"medcl C"</span> <span class="op">~</span> <span class="fl">1000</span>,</span></span>
 <span class="r-in"><span>        <span class="cn">TRUE</span> <span class="op">~</span> <span class="fl">500</span></span></span>
-<span class="r-in"><span>      <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://insightsengineering.github.io/formatters/latest-tag/reference/with_label.html" class="external-link">with_label</a></span><span class="op">(</span><span class="st">"Study Day of End of Medication"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>      <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://pharmaverse.github.io/formatters/latest-tag/reference/with_label.html" class="external-link">with_label</a></span><span class="op">(</span><span class="st">"Study Day of End of Medication"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>      CMASTDTM <span class="op">=</span> <span class="va">ASTDTM</span>,</span></span>
 <span class="r-in"><span>      CMAENDTM <span class="op">=</span> <span class="va">AENDTM</span></span></span>
 <span class="r-in"><span>    <span class="op">)</span></span></span>
@@ -380,46 +391,16 @@ the reporting functionality will be turned on automatically by the <code>teal</c
 <span class="r-in"><span>      parentname <span class="op">=</span> <span class="st">"ADSL"</span>,</span></span>
 <span class="r-in"><span>      patient_col <span class="op">=</span> <span class="st">"USUBJID"</span>,</span></span>
 <span class="r-in"><span>      plot_height <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">600L</span>, <span class="fl">200L</span>, <span class="fl">2000L</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>      cmdecod <span class="op">=</span> <span class="fu">choices_selected</span><span class="op">(</span></span></span>
-<span class="r-in"><span>        choices <span class="op">=</span> <span class="fu">variable_choices</span><span class="op">(</span><span class="va">data</span><span class="op">[[</span><span class="st">"ADCM"</span><span class="op">]</span><span class="op">]</span>, <span class="st">"CMDECOD"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>        selected <span class="op">=</span> <span class="st">"CMDECOD"</span>,</span></span>
-<span class="r-in"><span>      <span class="op">)</span>,</span></span>
-<span class="r-in"><span>      aeterm <span class="op">=</span> <span class="fu">choices_selected</span><span class="op">(</span></span></span>
-<span class="r-in"><span>        choices <span class="op">=</span> <span class="fu">variable_choices</span><span class="op">(</span><span class="va">data</span><span class="op">[[</span><span class="st">"ADAE"</span><span class="op">]</span><span class="op">]</span>, <span class="st">"AETERM"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>        selected <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AETERM"</span><span class="op">)</span></span></span>
-<span class="r-in"><span>      <span class="op">)</span>,</span></span>
-<span class="r-in"><span>      aetime_start <span class="op">=</span> <span class="fu">choices_selected</span><span class="op">(</span></span></span>
-<span class="r-in"><span>        choices <span class="op">=</span> <span class="fu">variable_choices</span><span class="op">(</span><span class="va">data</span><span class="op">[[</span><span class="st">"ADAE"</span><span class="op">]</span><span class="op">]</span>, <span class="st">"ASTDTM"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>        selected <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ASTDTM"</span><span class="op">)</span></span></span>
-<span class="r-in"><span>      <span class="op">)</span>,</span></span>
-<span class="r-in"><span>      aetime_end <span class="op">=</span> <span class="fu">choices_selected</span><span class="op">(</span></span></span>
-<span class="r-in"><span>        choices <span class="op">=</span> <span class="fu">variable_choices</span><span class="op">(</span><span class="va">data</span><span class="op">[[</span><span class="st">"ADAE"</span><span class="op">]</span><span class="op">]</span>, <span class="st">"AENDTM"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>        selected <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AENDTM"</span><span class="op">)</span></span></span>
-<span class="r-in"><span>      <span class="op">)</span>,</span></span>
-<span class="r-in"><span>      dstime_start <span class="op">=</span> <span class="fu">choices_selected</span><span class="op">(</span></span></span>
-<span class="r-in"><span>        choices <span class="op">=</span> <span class="fu">variable_choices</span><span class="op">(</span><span class="va">data</span><span class="op">[[</span><span class="st">"ADCM"</span><span class="op">]</span><span class="op">]</span>, <span class="st">"CMASTDTM"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>        selected <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CMASTDTM"</span><span class="op">)</span></span></span>
-<span class="r-in"><span>      <span class="op">)</span>,</span></span>
-<span class="r-in"><span>      dstime_end <span class="op">=</span> <span class="fu">choices_selected</span><span class="op">(</span></span></span>
-<span class="r-in"><span>        choices <span class="op">=</span> <span class="fu">variable_choices</span><span class="op">(</span><span class="va">data</span><span class="op">[[</span><span class="st">"ADCM"</span><span class="op">]</span><span class="op">]</span>, <span class="st">"CMAENDTM"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>        selected <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CMAENDTM"</span><span class="op">)</span></span></span>
-<span class="r-in"><span>      <span class="op">)</span>,</span></span>
-<span class="r-in"><span>      aerelday_start <span class="op">=</span> <span class="fu">choices_selected</span><span class="op">(</span></span></span>
-<span class="r-in"><span>        choices <span class="op">=</span> <span class="fu">variable_choices</span><span class="op">(</span><span class="va">data</span><span class="op">[[</span><span class="st">"ADAE"</span><span class="op">]</span><span class="op">]</span>, <span class="st">"ASTDY"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>        selected <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ASTDY"</span><span class="op">)</span></span></span>
-<span class="r-in"><span>      <span class="op">)</span>,</span></span>
-<span class="r-in"><span>      aerelday_end <span class="op">=</span> <span class="fu">choices_selected</span><span class="op">(</span></span></span>
-<span class="r-in"><span>        choices <span class="op">=</span> <span class="fu">variable_choices</span><span class="op">(</span><span class="va">data</span><span class="op">[[</span><span class="st">"ADAE"</span><span class="op">]</span><span class="op">]</span>, <span class="st">"AENDY"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>        selected <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AENDY"</span><span class="op">)</span></span></span>
-<span class="r-in"><span>      <span class="op">)</span>,</span></span>
-<span class="r-in"><span>      dsrelday_start <span class="op">=</span> <span class="fu">choices_selected</span><span class="op">(</span></span></span>
-<span class="r-in"><span>        choices <span class="op">=</span> <span class="fu">variable_choices</span><span class="op">(</span><span class="va">data</span><span class="op">[[</span><span class="st">"ADCM"</span><span class="op">]</span><span class="op">]</span>, <span class="st">"ASTDY"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>        selected <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ASTDY"</span><span class="op">)</span></span></span>
-<span class="r-in"><span>      <span class="op">)</span>,</span></span>
-<span class="r-in"><span>      dsrelday_end <span class="op">=</span> <span class="fu">choices_selected</span><span class="op">(</span></span></span>
-<span class="r-in"><span>        choices <span class="op">=</span> <span class="fu">variable_choices</span><span class="op">(</span><span class="va">data</span><span class="op">[[</span><span class="st">"ADCM"</span><span class="op">]</span><span class="op">]</span>, <span class="st">"AENDY"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>        selected <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AENDY"</span><span class="op">)</span></span></span>
-<span class="r-in"><span>      <span class="op">)</span></span></span>
+<span class="r-in"><span>      cmdecod <span class="op">=</span> <span class="fu">variables</span><span class="op">(</span><span class="st">"CMDECOD"</span>, <span class="st">"CMDECOD"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>      aeterm <span class="op">=</span> <span class="fu">variables</span><span class="op">(</span><span class="st">"AETERM"</span>, <span class="st">"AETERM"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>      aetime_start <span class="op">=</span> <span class="fu">variables</span><span class="op">(</span><span class="st">"ASTDTM"</span>, <span class="st">"ASTDTM"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>      aetime_end <span class="op">=</span> <span class="fu">variables</span><span class="op">(</span><span class="st">"AENDTM"</span>, <span class="st">"AENDTM"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>      dstime_start <span class="op">=</span> <span class="fu">variables</span><span class="op">(</span><span class="st">"CMASTDTM"</span>, <span class="st">"CMASTDTM"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>      dstime_end <span class="op">=</span> <span class="fu">variables</span><span class="op">(</span><span class="st">"CMAENDTM"</span>, <span class="st">"CMAENDTM"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>      aerelday_start <span class="op">=</span> <span class="fu">variables</span><span class="op">(</span><span class="st">"ASTDY"</span>, <span class="st">"ASTDY"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>      aerelday_end <span class="op">=</span> <span class="fu">variables</span><span class="op">(</span><span class="st">"AENDY"</span>, <span class="st">"AENDY"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>      dsrelday_start <span class="op">=</span> <span class="fu">variables</span><span class="op">(</span><span class="st">"ASTDY"</span>, <span class="st">"ASTDY"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>      dsrelday_end <span class="op">=</span> <span class="fu">variables</span><span class="op">(</span><span class="st">"AENDY"</span>, <span class="st">"AENDY"</span><span class="op">)</span></span></span>
 <span class="r-in"><span>    <span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>

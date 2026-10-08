@@ -37,9 +37,12 @@ tm_t_pp_basic_info(
 
 - vars:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
-  object with all available choices and preselected option for variables
-  from `dataname` to show in the table.
+  ([`teal.picks::variables`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html)
+  or
+  [`teal.transform::choices_selected`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))
+
+  object specifying available choices and preselected variables from
+  `dataname` to show in the table.
 
 - pre_output:
 
@@ -93,7 +96,7 @@ For more information on reporting in `teal`, see the vignettes:
 - example-1:
 
   [Open in
-  Shinylive](https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWolAF9FCAArIni-AGs4VlFE0Jtw-jhjKGFSPwJ+WlEyto7u3uBoeD6kuQBdVwgcgqKk4GAFMF38442tiCU0VCL46PZ0nSSdAF5n0NwnviERUTedD9hGJHhAMhkSn4Jug-PQoKIZH54sYiKDweDqFB6HBqADjgAheEyHQASQgKOOXzB6I+nhWunex1OlKe6NQHloFAmxFxjLADlyDnxACkSdkWdT0ZoWP93gQYu0CGI-KIcXB1HB+GiaRl5YqxADpYxaFiRJMFTIQac5FSdRlVSINfwAQRHicsABZSk6JkAcRceB9YFyTgAGt7jgBhADyDgAcvYAJoRsBYTKRgMpY5OaO5XK2WzHZo64vg0vNZq0Yw6djxchqDTaaw2NLU0RxCCsTLodg3AAkgloKX7qsY2kYzQaSjADQ2QA)
+  Shinylive](https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWolAF9FCAArIni-AGs4VlFE0Jtw-jhjKGFSPwJ+WlEyto7u3uBoeD6kuQBdV2h0Ivjo9nSdJJ0AXmPQ3CO+IRFRM50b4TFDiAyMkr8J9D96KFEZH54sYiK93u9qFB6HBqA8FGAAEL-GQ6ACSEBB8Kub3BF08K1053hOQKWKO4NQHloFAmxFhRLADlyDgRAClUdkyTjwZoWPdzrzGLQoXcwbiMgRDmBMlgALJYnTEgDiLjwirAuScAA0FfCAMIAeQcADl7ABNXVgLCZPWqlLwpwG3K5Wy2eFybHijIwca0VAiB72Zzk97NcFhnTNZq0Yw6djxchqDTaaw2NI40RxCCsTLodhoVAAEkEtBSBcLolU2kYzQaSjADQ2QA)
 
 ## Examples
 
@@ -104,8 +107,6 @@ data <- within(data, {
 })
 join_keys(data) <- default_cdisc_join_keys[names(data)]
 
-ADSL <- data[["ADSL"]]
-
 app <- init(
   data = data,
   modules = modules(
@@ -113,9 +114,9 @@ app <- init(
       label = "Basic Info",
       dataname = "ADSL",
       patient_col = "USUBJID",
-      vars = choices_selected(
-        choices = variable_choices(ADSL),
-        selected = c("ARM", "AGE", "SEX", "COUNTRY", "RACE", "EOSSTT")
+      vars = variables(
+        c("ARM", "AGE", "SEX", "COUNTRY", "RACE", "EOSSTT"),
+        multiple = TRUE
       )
     )
   )

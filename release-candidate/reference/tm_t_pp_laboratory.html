@@ -25,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">teal.modules.clinical</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.13.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.14.0</small>
 
     <div style="width: 140px; margin-left: 0.5rem;"> <small class="nav-text text-muted me-auto">part of</small> <img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/nest.png?raw=true" alt="NEST" style="height: 30px;"><a href="https://pharmaverse.org/" class="external-link"><img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/pharmaverse.png?raw=true" alt="pharmaverse" style="height: 28px;"></a> </div>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -59,6 +59,7 @@
     <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/release-candidate">release-candidate</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/main">main</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/latest-tag">latest-tag</a>
+<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.14.0-rc1">v0.14.0-rc1</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.13.0">v0.13.0</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.13.0-rc2">v0.13.0-rc2</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.12.0">v0.12.0</a>
@@ -89,7 +90,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>teal Module: Patient Profile Laboratory Table</h1>
-      <small class="dont-index">Source: <a href="https://github.com/insightsengineering/teal.modules.clinical/blob/v0.13.0-rc2/R/tm_t_pp_laboratory.R" class="external-link"><code>R/tm_t_pp_laboratory.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/insightsengineering/teal.modules.clinical/blob/v0.14.0-rc1/R/tm_t_pp_laboratory.R" class="external-link"><code>R/tm_t_pp_laboratory.R</code></a></small>
       <div class="d-none name"><code>tm_t_pp_laboratory.Rd</code></div>
     </div>
 
@@ -105,7 +106,7 @@
 <span>  dataname <span class="op">=</span> <span class="st">"ADLB"</span>,</span>
 <span>  parentname <span class="op">=</span> <span class="st">"ADSL"</span>,</span>
 <span>  patient_col <span class="op">=</span> <span class="st">"USUBJID"</span>,</span>
-<span>  timepoints <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  time_points <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  aval <span class="op">=</span> <span class="fu">lifecycle</span><span class="fu">::</span><span class="fu"><a href="https://lifecycle.r-lib.org/reference/deprecated.html" class="external-link">deprecated</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  aval_var <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  avalu <span class="op">=</span> <span class="fu">lifecycle</span><span class="fu">::</span><span class="fu"><a href="https://lifecycle.r-lib.org/reference/deprecated.html" class="external-link">deprecated</a></span><span class="op">(</span><span class="op">)</span>,</span>
@@ -146,9 +147,9 @@
 <dd><p>(<code>character</code>)<br> name of patient ID variable.</p></dd>
 
 
-<dt id="arg-timepoints">timepoints<a class="anchor" aria-label="anchor" href="#arg-timepoints"></a>
+<dt id="arg-time-points">time_points<a class="anchor" aria-label="anchor" href="#arg-time-points"></a>
 </dt>
-<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code>)<br> object with all
+<dd><p>(<a href="https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html" class="external-link">teal.picks::variables</a> or <code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code>)<br> object with all
 available choices and preselected option for the time variable from <code>dataname</code>.</p></dd>
 
 
@@ -159,8 +160,8 @@ available choices and preselected option for the time variable from <code>datana
 
 <dt id="arg-aval-var">aval_var<a class="anchor" aria-label="anchor" href="#arg-aval-var"></a>
 </dt>
-<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code>)<br> object with
-all available choices and pre-selected option for the analysis variable.</p></dd>
+<dd><p>(<code><a href="https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html" class="external-link">teal.picks::variables()</a></code>; legacy <code>teal.transform</code> objects are deprecated but still accepted)<br>
+object with all available choices and pre-selected option for the analysis variable.</p></dd>
 
 
 <dt id="arg-avalu">avalu<a class="anchor" aria-label="anchor" href="#arg-avalu"></a>
@@ -170,25 +171,25 @@ all available choices and pre-selected option for the analysis variable.</p></dd
 
 <dt id="arg-avalu-var">avalu_var<a class="anchor" aria-label="anchor" href="#arg-avalu-var"></a>
 </dt>
-<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code>)<br> object with
-all available choices and preselected option for the analysis unit variable.</p></dd>
+<dd><p>(<code><a href="https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html" class="external-link">teal.picks::variables()</a></code>; legacy <code>teal.transform</code> objects are deprecated but still accepted)<br>
+object with all available choices and preselected option for the analysis unit variable.</p></dd>
 
 
 <dt id="arg-param">param<a class="anchor" aria-label="anchor" href="#arg-param"></a>
 </dt>
-<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code>)<br> object with all
+<dd><p>(<a href="https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html" class="external-link">teal.picks::variables</a> or <code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code>)<br> object with all
 available choices and preselected option for the <code>PARAM</code> variable from <code>dataname</code>.</p></dd>
 
 
 <dt id="arg-paramcd">paramcd<a class="anchor" aria-label="anchor" href="#arg-paramcd"></a>
 </dt>
-<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code>)<br> object with all
-available choices and preselected option for the parameter code variable from <code>dataname</code>.</p></dd>
+<dd><p>(<code><a href="https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html" class="external-link">teal.picks::variables()</a></code>; legacy <code>teal.transform</code> objects are deprecated but still accepted)<br>
+object with all available choices and preselected option for the parameter code variable from <code>dataname</code>.</p></dd>
 
 
 <dt id="arg-anrind">anrind<a class="anchor" aria-label="anchor" href="#arg-anrind"></a>
 </dt>
-<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code>)<br> object with all
+<dd><p>(<a href="https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html" class="external-link">teal.picks::variables</a> or <code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code>)<br> object with all
 available choices and preselected option for the <code>ANRIND</code> variable from <code>dataname</code>. Variable should have the
 following 3 levels: <code>"HIGH"</code>, <code>"LOW"</code>, and <code>"NORMAL"</code>.</p></dd>
 
@@ -250,8 +251,8 @@ the reporting functionality will be turned on automatically by the <code>teal</c
 
 <dl>
 <dt>example-1</dt>
-<dd><p><a href="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOz8gCEikrLK6v5qeiUAX0UIACsieL8AazhWUUTQm3D+OGMoYVI-An5aUTKRscnp4Gh4GaS5AF1XCByCoqTgYAUwa-zHs4urptaF0PvHnJbXu8lGhUEV4tF2A0kjoALw6JK4Bp8IQiUSwnTI4RiSEQDIZEp+NboPzUKD0IjMUgUjgNPE6Un0ODUdGPABq0W4okeiNxdPhoSOujhf0+3NpeNQHloFDWxGZwrADlyDmaACkAJLZMW8umS5ilfjoggxUYEMR+URMuDqOD8HF8vHG01idGaFi0MkidYmmTY-7NFKPAAKmSwmQAsgBhLVgOQ8h0ZS0iG2GhUhsNRmPijJx7M6PWwI0+s2iC1WlP2hNO31ouFuxge+he6sl9j+wNgdMRx65nV8pPW8ipnTB0PdsB53sOjTwVCjMi1nQt80Dit5jLLxf1xvN4t+z4dnIATR78YTq6HLKe2RPE77ObPdKgEAbEGHm7LyaHlYdm9d7s9OBvWdGZ2xHJ4ADksHVCCYync9y0vBVMigmCs3vHR4KfN1-HrIsQM-QdbR-Pk-zrACmyAzc2wPcDMlZTIXljR9+0Q20r3oxjHknFiMigHDBD8PC4Q-C9iPXJc9y3CjdxAmiWkPBj8gcU8JLE4c-iUlS7wdQY6T0zClEGWhjB0dh4nINQNG0awbDSXlRDiCBWEydB2BBAASQRaBSTzLUYbRGEGPolDAPoziAA" class="external-link">Open in Shinylive</a>
-    <iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOz8gCEikrLK6v5qeiUAX0UIACsieL8AazhWUUTQm3D+OGMoYVI-An5aUTKRscnp4Gh4GaS5AF1XCByCoqTgYAUwa-zHs4urptaF0PvHnJbXu8lGhUEV4tF2A0kjoALw6JK4Bp8IQiUSwnTI4RiSEQDIZEp+NboPzUKD0IjMUgUjgNPE6Un0ODUdGPABq0W4okeiNxdPhoSOujhf0+3NpeNQHloFDWxGZwrADlyDmaACkAJLZMW8umS5ilfjoggxUYEMR+URMuDqOD8HF8vHG01idGaFi0MkidYmmTY-7NFKPAAKmSwmQAsgBhLVgOQ8h0ZS0iG2GhUhsNRmPijJx7M6PWwI0+s2iC1WlP2hNO31ouFuxge+he6sl9j+wNgdMRx65nV8pPW8ipnTB0PdsB53sOjTwVCjMi1nQt80Dit5jLLxf1xvN4t+z4dnIATR78YTq6HLKe2RPE77ObPdKgEAbEGHm7LyaHlYdm9d7s9OBvWdGZ2xHJ4ADksHVCCYync9y0vBVMigmCs3vHR4KfN1-HrIsQM-QdbR-Pk-zrACmyAzc2wPcDMlZTIXljR9+0Q20r3oxjHknFiMigHDBD8PC4Q-C9iPXJc9y3CjdxAmiWkPBj8gcU8JLE4c-iUlS7wdQY6T0zClEGWhjB0dh4nINQNG0awbDSXlRDiCBWEydB2BBAASQRaBSTzLUYbRGEGPolDAPoziAA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50%; margin-top: 30px; transform: translateX(-50%); z-index: 1"></iframe>
+<dd><p><a href="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOz8gCEikrLK6v5qeiUAX0UIACsieL8AazhWUUTQm3D+OGMoYVI-An5aUTKRscnp4Gh4GaS5AF1XCByCoqTgYAUwa-zHs4urptaF0PvHnJbXu8lGhUEV4tF2A0kjoALw6JK4Bp8IQiUSwnTI4RiSEQDIZEp+NboPzUKD0IjMUgUjgNPE6Un0ODUdGPABq0W4okeiNxdPhoSOujhf0+3NpeNQHloFDWxGZwrADlyDmaACkAJLZMW8ukaeB+VCjMhouGaFi0MmoyFPbIATW5JloFTg-HR9mcch5fJ0UDN-jNjHRAYt9Ctf1ZmReeEdztdcPdTk94oyvu4gj8AaD5st2PDkYcDuMTpdbscia9fMlzBgWcYIbDYAACpksJkALKF4txuxlpM6iUsWAbWv13NNlvtgDCWujRdjpY9FbpUAgdYg3eDOZmfwAclh1TuZyk5yX472lzpBhlBoNaMYdOx4uQ1BptNYbGleaI4hBWJl0OwIIACSCLQKTAaIqjaIwgx9EoYB9GcQA" class="external-link">Open in Shinylive</a>
+    <iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOz8gCEikrLK6v5qeiUAX0UIACsieL8AazhWUUTQm3D+OGMoYVI-An5aUTKRscnp4Gh4GaS5AF1XCByCoqTgYAUwa-zHs4urptaF0PvHnJbXu8lGhUEV4tF2A0kjoALw6JK4Bp8IQiUSwnTI4RiSEQDIZEp+NboPzUKD0IjMUgUjgNPE6Un0ODUdGPABq0W4okeiNxdPhoSOujhf0+3NpeNQHloFDWxGZwrADlyDmaACkAJLZMW8ukaeB+VCjMhouGaFi0MmoyFPbIATW5JloFTg-HR9mcch5fJ0UDN-jNjHRAYt9Ctf1ZmReeEdztdcPdTk94oyvu4gj8AaD5st2PDkYcDuMTpdbscia9fMlzBgWcYIbDYAACpksJkALKF4txuxlpM6iUsWAbWv13NNlvtgDCWujRdjpY9FbpUAgdYg3eDOZmfwAclh1TuZyk5yX472lzpBhlBoNaMYdOx4uQ1BptNYbGleaI4hBWJl0OwIIACSCLQKTAaIqjaIwgx9EoYB9GcQA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50%; margin-top: 30px; transform: translateX(-50%); z-index: 1"></iframe>
     <a style="height: 800px; display: block;"></a></p></dd>
 
 
@@ -278,30 +279,12 @@ the reporting functionality will be turned on automatically by the <code>teal</c
 <span class="r-in"><span>      label <span class="op">=</span> <span class="st">"Vitals"</span>,</span></span>
 <span class="r-in"><span>      dataname <span class="op">=</span> <span class="st">"ADLB"</span>,</span></span>
 <span class="r-in"><span>      patient_col <span class="op">=</span> <span class="st">"USUBJID"</span>,</span></span>
-<span class="r-in"><span>      paramcd <span class="op">=</span> <span class="fu">choices_selected</span><span class="op">(</span></span></span>
-<span class="r-in"><span>        choices <span class="op">=</span> <span class="fu">variable_choices</span><span class="op">(</span><span class="va">ADLB</span>, <span class="st">"PARAMCD"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>        selected <span class="op">=</span> <span class="st">"PARAMCD"</span></span></span>
-<span class="r-in"><span>      <span class="op">)</span>,</span></span>
-<span class="r-in"><span>      param <span class="op">=</span> <span class="fu">choices_selected</span><span class="op">(</span></span></span>
-<span class="r-in"><span>        choices <span class="op">=</span> <span class="fu">variable_choices</span><span class="op">(</span><span class="va">ADLB</span>, <span class="st">"PARAM"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>        selected <span class="op">=</span> <span class="st">"PARAM"</span></span></span>
-<span class="r-in"><span>      <span class="op">)</span>,</span></span>
-<span class="r-in"><span>      timepoints <span class="op">=</span> <span class="fu">choices_selected</span><span class="op">(</span></span></span>
-<span class="r-in"><span>        choices <span class="op">=</span> <span class="fu">variable_choices</span><span class="op">(</span><span class="va">ADLB</span>, <span class="st">"ADY"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>        selected <span class="op">=</span> <span class="st">"ADY"</span></span></span>
-<span class="r-in"><span>      <span class="op">)</span>,</span></span>
-<span class="r-in"><span>      anrind <span class="op">=</span> <span class="fu">choices_selected</span><span class="op">(</span></span></span>
-<span class="r-in"><span>        choices <span class="op">=</span> <span class="fu">variable_choices</span><span class="op">(</span><span class="va">ADLB</span>, <span class="st">"ANRIND"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>        selected <span class="op">=</span> <span class="st">"ANRIND"</span></span></span>
-<span class="r-in"><span>      <span class="op">)</span>,</span></span>
-<span class="r-in"><span>      aval_var <span class="op">=</span> <span class="fu">choices_selected</span><span class="op">(</span></span></span>
-<span class="r-in"><span>        choices <span class="op">=</span> <span class="fu">variable_choices</span><span class="op">(</span><span class="va">ADLB</span>, <span class="st">"AVAL"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>        selected <span class="op">=</span> <span class="st">"AVAL"</span></span></span>
-<span class="r-in"><span>      <span class="op">)</span>,</span></span>
-<span class="r-in"><span>      avalu_var <span class="op">=</span> <span class="fu">choices_selected</span><span class="op">(</span></span></span>
-<span class="r-in"><span>        choices <span class="op">=</span> <span class="fu">variable_choices</span><span class="op">(</span><span class="va">ADLB</span>, <span class="st">"AVALU"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>        selected <span class="op">=</span> <span class="st">"AVALU"</span></span></span>
-<span class="r-in"><span>      <span class="op">)</span></span></span>
+<span class="r-in"><span>      time_points <span class="op">=</span> <span class="fu">variables</span><span class="op">(</span><span class="st">"ADY"</span>, fixed <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>      aval_var <span class="op">=</span> <span class="fu">variables</span><span class="op">(</span><span class="st">"AVAL"</span>, fixed <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>      avalu_var <span class="op">=</span> <span class="fu">variables</span><span class="op">(</span><span class="st">"AVALU"</span>, fixed <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>      param <span class="op">=</span> <span class="fu">variables</span><span class="op">(</span><span class="st">"PARAM"</span>, fixed <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>      paramcd <span class="op">=</span> <span class="fu">variables</span><span class="op">(</span><span class="st">"PARAMCD"</span>, fixed <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>      anrind <span class="op">=</span> <span class="fu">variables</span><span class="op">(</span><span class="st">"ANRIND"</span>, fixed <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>    <span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>

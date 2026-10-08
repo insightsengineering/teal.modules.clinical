@@ -52,7 +52,8 @@ tm_g_pp_vitals(
 
 - paramcd:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for the
   parameter code variable from `dataname`.
 
@@ -62,13 +63,16 @@ tm_g_pp_vitals(
 
 - aval_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and pre-selected option for the
   analysis variable.
 
 - xaxis:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([teal.picks::variables](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html)
+  or
+  [`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   object with all available choices and preselected option for the time
   variable from `dataname` to be put on the plot x-axis.
 
@@ -188,7 +192,7 @@ For more information on reporting in `teal`, see the vignettes:
 - example-1:
 
   [Open in
-  Shinylive](https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo6AIIAIgDKADKROqQwBDFwAB4xUPyi1KUVlQBq1Q1NLe2d-JqiSgC+QQBWRLkxANZwrKL5yTap-HDGUMKkMQT8tKIti8trG8DQ8JsFcgC6rhBVdQ0FwMAKYB+1P7PV7vQbDXbJH5-KpDIEgpRoVANXKZdh9Ao6AC8OgKuD6fCEIlEWJ0BOEYjREDKZSaMQA5jF0DFNJluJs+tSdNQoPQ4NQSX8BqzqNM8BzqQV7rpsdCwX88VTOTpUCwKKQpQL-jVAWLFZyVRo1SciPyZWAHNUHAAhABSAElKvLxWVUP5jlk4LQ6VlSCSCOwAGwABiDtSKACYQ2GdJGo3IFUrlSxYKc-VklgQxDFRHy4Oo4PxKYmygR0zIxCTNCxaDyRCcy5nNjDqkU-gAFcpYcoAWQAwo6wPHndScyJ8-xNR2u32B8Oh3rqW0oG1zmmM1nR3nyIXhyWGxXsVXGDX6HXS+um2DW1qAJp-efFnSb8eaqp3sBzhNKqBV2JHtflqI2a5uORbFuegGVtWtZwPWF7sM217lAM5Q6g+xbPtur4oTqc7ikEZRBEEtDGDo7C5OQagaNo1g2CUiqiDkECsOU6DsIiAAkgi0EUnE5ow2iBLMShgDMzxAA)
+  Shinylive](https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo6AIIAIgDKADKROqQwBDFwAB4xUPyi1KUVlQBq1Q1NLe2d-JqiSgC+QQBWRLkxANZwrKL5yTap-HDGUMKkMQT8tKIti8trG8DQ8JsFcgC6rhBVdQ0FwMAKYB+1P7PV7vQbDXbJH5-KpDIEgpRoVANXKZdh9Ao6AC8OgKuD6fCEIlEWJ0BOEYjREDKZSaMQA5jF0DFNJluJs+tSdNQoPQ4NQSX8BqzqNM8BzqQV7rpsdCwX88VTOTpUCwKKQpQL-jVAWLFZyVRo1SciPyZWAHNUHAAhABSAElKvLxWVUP5jlk4LQ6VlSCSCOwAGwABiDtSKACYQ2GdJGo3IFUrlSxYKcSZoWLQeUS0WAAArlLDlACyAGFHWB486dFB07F04w0xmsxToQNyjrK3rqW0oG1zo3GJn6NnZQBNP6dzlBMpBIK0Yw6di5chqDTaaw2EqK0Q5CCscrodiIgAkgloRRPolU2kCsyUYBmzyAA)
 
 ## Examples
 
@@ -214,18 +218,9 @@ app <- init(
       parentname = "ADSL",
       patient_col = "USUBJID",
       plot_height = c(600L, 200L, 2000L),
-      paramcd = choices_selected(
-        choices = variable_choices(ADVS, "PARAMCD"),
-        selected = "PARAMCD"
-      ),
-      xaxis = choices_selected(
-        choices = variable_choices(ADVS, "ADY"),
-        selected = "ADY"
-      ),
-      aval_var = choices_selected(
-        choices = variable_choices(ADVS, "AVAL"),
-        selected = "AVAL"
-      )
+      paramcd = variables("PARAMCD"),
+      aval_var = variables("AVAL"),
+      xaxis = variables("ADY"),
     )
   )
 )

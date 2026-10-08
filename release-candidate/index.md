@@ -78,8 +78,8 @@ These modules include, but are not limited to:
   - …
 
 Most modules in the package are implemented using functions from the R
-package [`tern`](https://insightsengineering.github.io/tern/) in order
-to produce their output.
+package [`tern`](https://pharmaverse.github.io/tern/latest-tag/) in
+order to produce their output.
 
 Please see the [Teal
 Gallery](https://insightsengineering.github.io/teal.gallery/) and [TLG
@@ -88,18 +88,14 @@ examples of `shiny` apps created using modules from this package.
 
 ## Installation
 
-``` r
-
-install.packages('teal.modules.clinical')
-```
+\
+[`install.packages`](https://rdrr.io/r/utils/install.packages.html)`(``'teal.modules.clinical'``)`
 
 Alternatively, you might want to use the development version.
 
-``` r
-
-# install.packages("pak")
-pak::pak("insightsengineering/teal.modules.clinical")
-```
+\
+`# install.packages("pak")`\
+`pak``::`[`pak`](https://pak.r-lib.org/reference/pak.html)`(``"insightsengineering/teal.modules.clinical"``)`
 
 ## Usage
 

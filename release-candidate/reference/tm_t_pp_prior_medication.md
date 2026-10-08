@@ -47,25 +47,29 @@ tm_t_pp_prior_medication(
 
 - atirel:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for the
   `ATIREL` variable from `dataname`.
 
 - cmdecod:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for the
   `CMDECOD` variable from `dataname`.
 
 - cmindc:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for the
   `CMINDC` variable from `dataname`.
 
 - cmstdy:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for the
   `CMSTDY` variable from `dataname`.
 
@@ -121,7 +125,7 @@ For more information on reporting in `teal`, see the vignettes:
 - example-1:
 
   [Open in
-  Shinylive](https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsO-VNVaNFEPxQpFD6RlzUAPpBIdZKMaGGOgDutKQAFrQQ7Am4OiBKOjoAggAiAMIAsmE6pDAEkXAAHpFQ-AQwhSWlAMoAMjV1Dc2t-KLUOgCkAHyTJrTU5IzsDj0OAEIAUgCSpVNZc2VVACSrGzulAUVHlcdVxT22pbbVSTfHD08vXe-3TgByz1eRnexQBQKUAF8AgArIhZSIAazgrFEOWCUBsSX4cGMUGEpEiBH4tFEDThCORqOA0HgaIScgAuko2h0kSjRDUCOwFGBHg5SgBNXa8vK8s5bEV4HS8z4Q6W8qo9JwARVFMrAxVs5QAjOrZdqAEz6zXagDMJq15QALLzYfCIOzUeiQnJgLKKpVLZ7eYyaqyYE7RK4IGV+jUEsB3Zren1fczQ56Ixiox6qvGQ2hUDUsmkeRAigkdABeHS5Lp8IQiTmlyvCMT5opFOqRQnoSKoRiWRiReAk2QaKxdJs6ahQehwCal3kABS7REYOkqcH7wUsEFFw6bCVpumnMfTeC3RVQLAopF3JY1YbjR4LI50p4056JRCnGolF0395Ha8Yk6vAh0nhAgxEiURJzgdQV0bB8iiAkCxCvTQWFoccRCJYCZAbG4xVNbYsCcW85FwY8mwgkRoP4K8DQIojeTIkiyI6HFiGo0sEOw0RwMgqjYLgzjQJrHQUK7dC4EwxC0VwjUqlKJxygAeVKO1SJ-B8KKg8h2Nkyp5KUlSwEYtSBJgLJ2kArChJ4yjtP4h9BKQ0tRLQ+gMMc6TPTwqptkBcpVLIopNKomiwB8vyGPUoomKinQOlEUh+FYSypJsrSYMCuKrKckTUPEySuPYGTZUeIUAtioLeO00K5UFSK4KuJtGoCAJaGMHR2CyJYoAsbRrBsAp71ETIIFYYp0HYLNjkEWg8imiDGG0fwoSUMBIUZIA)
+  Shinylive](https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsO-VNVaNFEPxQpFD6RlzUAPpBIdZKMaGGOgDutKQAFrQQ7Am4OiBKOjoAggAiAMIAsmE6pDAEkXAAHpFQ-AQwhSWlAMoAMjV1Dc2t-KLUOgCkAHyTJrTU5IzsDj0OAEIAUgCSpVNZc2VVACSrGzulAUVHlcdVxT22pbbVSTfHD08vXe-3TgByz1eRnexQBQKUAF8AgArIhZSIAazgrFEOWCUBsSX4cGMUGEpEiBH4tFEDThCORqOA0HgaIScgAuko2h0kSjRDUCOwFGBHg5SgBNXa8vK8s5bEV4HS8z4Q6W8qo9JwARVFMrAxVs5QAjOrZdqAEz6zXagDMJq15QALLzYfCIOzUeiQnJgLKKpVLZ7eYyaqyYE7RK4IGV+jUEsB3Zren1fczQ56Ixiox6qvGQ2hUDUsmkeRAigkdABeHS5Lp8IQiTmlyvCMT5opFOqRQnoSKoRiWRiReAk2QaKxdJs6ahQehwCal3kABS7REYOkqcH7wUsEFFw6bCVpumnMfTeC3RVQLAopF3JY1YbjR4LI50p4056JRCnGolF0395Ha8Yk6vTQWFocdqx5U1tiwJxbzyYxaCaFcr3sZw5FwY8dA6HFiH4QDgNAhtFUqUonHKAB5Up1TghCcNLZCnFQ9COiydpcK7fC0UI7ZAXKSj4MQ2jHHotCfybDpRFIfhWFYkD6DA2VHiFXjqKQwSGJEq4dACAJaGMHR2CyJYoAsbRrBsAp71ETIIFYYp0HYLNjkEWg8gc0RVG0fwoSUMBIUZIA)
 
 ## Examples
 
@@ -149,22 +153,10 @@ app <- init(
       dataname = "ADCM",
       parentname = "ADSL",
       patient_col = "USUBJID",
-      atirel = choices_selected(
-        choices = variable_choices(ADCM, "ATIREL"),
-        selected = "ATIREL"
-      ),
-      cmdecod = choices_selected(
-        choices = variable_choices(ADCM, "CMDECOD"),
-        selected = "CMDECOD"
-      ),
-      cmindc = choices_selected(
-        choices = variable_choices(ADCM, "CMINDC"),
-        selected = "CMINDC"
-      ),
-      cmstdy = choices_selected(
-        choices = variable_choices(ADCM, "ASTDY"),
-        selected = "ASTDY"
-      )
+      atirel = variables("ATIREL", fixed = TRUE),
+      cmdecod = variables("CMDECOD", fixed = TRUE),
+      cmindc = variables("CMINDC", fixed = TRUE),
+      cmstdy = variables("ASTDY", fixed = TRUE),
     )
   )
 )

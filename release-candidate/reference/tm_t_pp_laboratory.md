@@ -11,7 +11,7 @@ tm_t_pp_laboratory(
   dataname = "ADLB",
   parentname = "ADSL",
   patient_col = "USUBJID",
-  timepoints = NULL,
+  time_points = NULL,
   aval = lifecycle::deprecated(),
   aval_var = NULL,
   avalu = lifecycle::deprecated(),
@@ -49,9 +49,11 @@ tm_t_pp_laboratory(
   (`character`)\
   name of patient ID variable.
 
-- timepoints:
+- time_points:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([teal.picks::variables](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html)
+  or
+  [`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   object with all available choices and preselected option for the time
   variable from `dataname`.
 
@@ -61,7 +63,8 @@ tm_t_pp_laboratory(
 
 - aval_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and pre-selected option for the
   analysis variable.
 
@@ -71,25 +74,31 @@ tm_t_pp_laboratory(
 
 - avalu_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for the
   analysis unit variable.
 
 - param:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([teal.picks::variables](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html)
+  or
+  [`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   object with all available choices and preselected option for the
   `PARAM` variable from `dataname`.
 
 - paramcd:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for the
   parameter code variable from `dataname`.
 
 - anrind:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([teal.picks::variables](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html)
+  or
+  [`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   object with all available choices and preselected option for the
   `ANRIND` variable from `dataname`. Variable should have the following
   3 levels: `"HIGH"`, `"LOW"`, and `"NORMAL"`.
@@ -146,7 +155,7 @@ For more information on reporting in `teal`, see the vignettes:
 - example-1:
 
   [Open in
-  Shinylive](https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOz8gCEikrLK6v5qeiUAX0UIACsieL8AazhWUUTQm3D+OGMoYVI-An5aUTKRscnp4Gh4GaS5AF1XCByCoqTgYAUwa-zHs4urptaF0PvHnJbXu8lGhUEV4tF2A0kjoALw6JK4Bp8IQiUSwnTI4RiSEQDIZEp+NboPzUKD0IjMUgUjgNPE6Un0ODUdGPABq0W4okeiNxdPhoSOujhf0+3NpeNQHloFDWxGZwrADlyDmaACkAJLZMW8umS5ilfjoggxUYEMR+URMuDqOD8HF8vHG01idGaFi0MkidYmmTY-7NFKPAAKmSwmQAsgBhLVgOQ8h0ZS0iG2GhUhsNRmPijJx7M6PWwI0+s2iC1WlP2hNO31ouFuxge+he6sl9j+wNgdMRx65nV8pPW8ipnTB0PdsB53sOjTwVCjMi1nQt80Dit5jLLxf1xvN4t+z4dnIATR78YTq6HLKe2RPE77ObPdKgEAbEGHm7LyaHlYdm9d7s9OBvWdGZ2xHJ4ADksHVCCYync9y0vBVMigmCs3vHR4KfN1-HrIsQM-QdbR-Pk-zrACmyAzc2wPcDMlZTIXljR9+0Q20r3oxjHknFiMigHDBD8PC4Q-C9iPXJc9y3CjdxAmiWkPBj8gcU8JLE4c-iUlS7wdQY6T0zClEGWhjB0dh4nINQNG0awbDSXlRDiCBWEydB2BBAASQRaBSTzLUYbRGEGPolDAPoziAA)
+  Shinylive](https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOz8gCEikrLK6v5qeiUAX0UIACsieL8AazhWUUTQm3D+OGMoYVI-An5aUTKRscnp4Gh4GaS5AF1XCByCoqTgYAUwa-zHs4urptaF0PvHnJbXu8lGhUEV4tF2A0kjoALw6JK4Bp8IQiUSwnTI4RiSEQDIZEp+NboPzUKD0IjMUgUjgNPE6Un0ODUdGPABq0W4okeiNxdPhoSOujhf0+3NpeNQHloFDWxGZwrADlyDmaACkAJLZMW8ukaeB+VCjMhouGaFi0MmoyFPbIATW5JloFTg-HR9mcch5fJ0UDN-jNjHRAYt9Ctf1ZmReeEdztdcPdTk94oyvu4gj8AaD5st2PDkYcDuMTpdbscia9fMlzBgWcYIbDYAACpksJkALKF4txuxlpM6iUsWAbWv13NNlvtgDCWujRdjpY9FbpUAgdYg3eDOZmfwAclh1TuZyk5yX472lzpBhlBoNaMYdOx4uQ1BptNYbGleaI4hBWJl0OwIIACSCLQKTAaIqjaIwgx9EoYB9GcQA)
 
 ## Examples
 
@@ -168,30 +177,12 @@ app <- init(
       label = "Vitals",
       dataname = "ADLB",
       patient_col = "USUBJID",
-      paramcd = choices_selected(
-        choices = variable_choices(ADLB, "PARAMCD"),
-        selected = "PARAMCD"
-      ),
-      param = choices_selected(
-        choices = variable_choices(ADLB, "PARAM"),
-        selected = "PARAM"
-      ),
-      timepoints = choices_selected(
-        choices = variable_choices(ADLB, "ADY"),
-        selected = "ADY"
-      ),
-      anrind = choices_selected(
-        choices = variable_choices(ADLB, "ANRIND"),
-        selected = "ANRIND"
-      ),
-      aval_var = choices_selected(
-        choices = variable_choices(ADLB, "AVAL"),
-        selected = "AVAL"
-      ),
-      avalu_var = choices_selected(
-        choices = variable_choices(ADLB, "AVALU"),
-        selected = "AVALU"
-      )
+      time_points = variables("ADY", fixed = TRUE),
+      aval_var = variables("AVAL", fixed = TRUE),
+      avalu_var = variables("AVALU", fixed = TRUE),
+      param = variables("PARAM", fixed = TRUE),
+      paramcd = variables("PARAMCD", fixed = TRUE),
+      anrind = variables("ANRIND", fixed = TRUE),
     )
   )
 )

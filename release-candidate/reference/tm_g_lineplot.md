@@ -10,23 +10,18 @@ type line plot, with optional summary table, for standard ADaM data.
 tm_g_lineplot(
   label,
   dataname,
-  parentname = NULL,
+  parentname = "ADSL",
   strata = lifecycle::deprecated(),
-  group_var =
-    teal.transform::choices_selected(teal.transform::variable_choices(parentname,
-    c("ARM", "ARMCD", "ACTARMCD")), "ARM"),
-  x = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
-    "AVISIT"), "AVISIT", fixed = TRUE),
-  y = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
-    c("AVAL", "BASE", "CHG", "PCHG")), "AVAL"),
-  y_unit = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
-    "AVALU"), "AVALU", fixed = TRUE),
-  paramcd = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
-    "PARAMCD"), "PARAMCD", fixed = TRUE),
-  param = teal.transform::choices_selected(teal.transform::value_choices(dataname,
-    "PARAMCD", "PARAM"), "ALT"),
-  conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order =
-    TRUE),
+  group_var = teal.picks::variables(choices = c("ARM", "ARMCD", "ACTARMCD"), selected =
+    "ARM"),
+  x = teal.picks::variables("AVISIT", "AVISIT"),
+  y = teal.picks::variables(choices = c("AVAL", "BASE", "CHG", "PCHG"), selected =
+    "AVAL"),
+  y_unit = teal.picks::variables("AVALU", "AVALU"),
+  paramcd = teal.picks::picks(teal.picks::variables("PARAMCD", "PARAMCD", fixed = TRUE),
+    teal.picks::values(c("ALT", "CRP", "IGA"), "ALT", multiple = FALSE), check_dataset =
+    FALSE),
+  conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95),
   interval = "mean_ci",
   mid = "mean",
   whiskers = c("mean_ci_lwr", "mean_ci_upr"),
@@ -66,41 +61,29 @@ tm_g_lineplot(
 
   **\[deprecated\]** Please use the `group_var` argument instead.
 
-- group_var:
+- group_var, x, y, y_unit:
 
-  (`string` or `NA`)\
-  group variable name.
-
-- x:
-
-  (`teal_module` or `teal_modules`) Object to format/print.
-
-- y:
-
-  (`string`)\
-  y-variable name.
-
-- y_unit:
-
-  (`string` or `NA`)\
-  y-axis unit variable name.
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html),
+  [`teal.picks::picks()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html),
+  or legacy `choices_selected`)\
+  encodings; legacy inputs are coerced with a deprecation warning.
 
 - paramcd:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
-  object with all available choices and preselected option for the
-  parameter code variable from `dataname`.
-
-- param:
-
-  (`character`)\
-  parameter to filter the data by.
+  ([`teal.picks::picks()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html)
+  or legacy `choices_selected` from `value_choices()`)\
+  parameter code filter: a `picks()` chain with the `PARAMCD` variable
+  and biomarker `values()`; defaults to `ALT` / `CRP` / `IGA` with `ALT`
+  selected.
 
 - conf_level:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
-  object with all available choices and pre-selected option for the
-  confidence level, each within range of (0, 1).
+  ([`teal.picks::values()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy
+  [`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html)
+  is deprecated but still accepted)\
+  available confidence levels and default selection, each in the range
+  (0, 1).
 
 - interval:
 
@@ -266,7 +249,7 @@ where additional example apps implementing this module can be found.
 - example-1:
 
   [Open in
-  Shinylive](https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo67sxsnHDcvALCYhJSMvKl5QyVHPyo1KyBbRWe7MYBsqSiQWUAggAiAMoAMpE6pDAEMXAAHjFQ-KLUbbMLAELLq+tbO-zU9DoApAB8d21lMILh5OxTAGoAknO-Ww6AC8wJM6hijDgAX4qi+fwBtiKP3+gIAckUYLk5EEAL5BABWRFyMQA1nBWKJ8skbKlYcYoMJSDECPxaKJ1kSSeTKcBoPAqQU5ABdVwQWaLZYFYDABRgCULOXC0XimYnKXJGVyo7HJUqpRoVDLXKZdhtAognQFXBtPhCESiS12hpUl4rGAxADmMSkcB6RFIZogZRD5Sg9Dg1EtcoWuV0AAV-KQ5Tbg6Grcl+bowdq1bq8G6yp7GERBKgYpoWJaCFliQQxDFRJG4Oo4Pwg+mQ5XGLRwyIWbWZGIvvMFkUCGb5VgALIpnTamcAYRmc+1i9sUyXK7AONTnbKC9nYELOjke-TrGrg-rokbzdb7ZPZW7vfo-ZrdeHOvHk5+U0VeDzmAxxTHMLiAXKi4ABIAOKrmA8bQXBO5nk+QF-gBJ6oWmoaoCwsBXp+t5NiID4dvulbUIIcADkRI4nEUcrxpuUzTsu8HMVgrFyth+7oQsthylhbqTKeShBLQxg6OwuTkGoGjaNYNglGmog5BArBTOg7CGgAJIItBFHpTaMNo-QQLiShgLiwpAA)
+  Shinylive](https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo67sxsnHDcvALCYhJSMvKl5QyVHPyo1KyBbRWe7MYBsqSiQWUAggAiAMoAMpE6pDAEMXAAHjFQ-KLUbbMLAELLq+tbO-zU9DoApAB8d21lMILh5OxTAGoAknO-Ww6AC8wJM6hijDgAX4qi+fwBtiKP3+gIAckUYLk5EEAL5BABWRFyMQA1nBWKJ8skbKlYcYoMJSDECPxaKJ1kSSeTKcBoPAqQU5ABdVzQdDLXKZdhtAognQFXBtPhCESieUqhpUl4rGAxADmMSkcB6RFIMogZSt5Sg9Dg1HlCjAC1yugACv5SE6lZbrQrkvzdGCnUdjt6dWVUCwKKRA46wLNFuHfdb9YwiIJUDFNCx5TnGLRbWqLX6rQQssSCGJ5QQZQmsABZb06EONgDCM2bIbbtim7c7YDkPtLZVE9rg6jg-HjfabeAjVre1A0PSDOgAYlMFnMXCmrUOF6w8yxC-RiwuyuXK9WwbWQ98t12wMcpjun22ABIAcSfbs-P8HYcRzHERJ2nYMEwfBZkxHHQlxXER5U3bdd1LA890jFhYFZeVUBkUltQwq181Pc8wDdPspgbDtm2MWhNineV7GcdDYJzahBDEdgQInchwJbBMFlsZt4NoVckK3HdWJHcsJ1JOJkjHUgJJQhdJn3NogiCWhjB0dhcnINQNG0awbBKX1RByCBWCmdB2DQVAABJBFoIoHMcsdGG0foIFxJQwFxYUgA)
 
 ## Examples
 
@@ -284,31 +267,34 @@ data <- within(data, {
 })
 join_keys(data) <- default_cdisc_join_keys[names(data)]
 
-ADSL <- data[["ADSL"]]
-ADLB <- data[["ADLB"]]
-
 app <- init(
   data = data,
   modules = modules(
     tm_g_lineplot(
       label = "Line Plot",
       dataname = "ADLB",
-      group_var = choices_selected(
-        variable_choices(ADSL, c("ARM", "ARMCD", "ACTARMCD")),
-        "ARM"
+      parentname = "ADSL",
+      group_var = variables(
+        choices = c("ARM", "ARMCD", "ACTARMCD"),
+        selected = "ARM",
+        multiple = FALSE
       ),
-      y = choices_selected(
-        variable_choices(ADLB, c("AVAL", "BASE", "CHG", "PCHG")),
-        "AVAL"
+      y = variables(
+        choices = c("AVAL", "BASE", "CHG", "PCHG"),
+        selected = "AVAL",
+        multiple = FALSE
       ),
-      param = choices_selected(
-        value_choices(ADLB, "PARAMCD", "PARAM"),
-        "ALT"
+      paramcd = picks(
+        variables("PARAMCD", fixed = TRUE),
+        values(selected = "ALT", multiple = FALSE),
+        check_dataset = FALSE
       )
     )
   )
 )
 #> Initializing tm_g_lineplot
+#> Warning: rlang::dots_list(..., .ignore_empty = "trailing")
+#>  - Setting explicit `selected` while `choices` are delayed (set using `tidyselect`) doesn't guarantee that `selected` is a subset of `choices`.
 if (interactive()) {
   shinyApp(app$ui, app$server)
 }

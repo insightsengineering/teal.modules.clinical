@@ -9,26 +9,16 @@ visit and parameter.
 tm_t_shift_by_grade(
   label,
   dataname,
-  parentname = ifelse(inherits(arm_var, "data_extract_spec"),
-    teal.transform::datanames_input(arm_var), "ADSL"),
+  parentname = "ADSL",
   arm_var,
-  visit_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
-    subset = "AVISIT"), selected = "AVISIT", fixed = TRUE),
+  visit_var = teal.picks::variables("AVISIT", "AVISIT", fixed = TRUE),
   paramcd,
-  worst_flag_var =
-    teal.transform::choices_selected(teal.transform::variable_choices(dataname, subset =
-    c("WGRLOVFL", "WGRLOFL", "WGRHIVFL", "WGRHIFL")), selected = "WGRLOVFL"),
-  worst_flag_indicator =
-    teal.transform::choices_selected(teal.transform::value_choices(dataname, "WGRLOVFL"),
-    selected = "Y", fixed = TRUE),
-  anl_toxgrade_var =
-    teal.transform::choices_selected(teal.transform::variable_choices(dataname, subset =
-    c("ATOXGR")), selected = c("ATOXGR"), fixed = TRUE),
-  base_toxgrade_var =
-    teal.transform::choices_selected(teal.transform::variable_choices(dataname, subset =
-    c("BTOXGR")), selected = c("BTOXGR"), fixed = TRUE),
-  id_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
-    subset = "USUBJID"), selected = "USUBJID", fixed = TRUE),
+  worst_flag_var = teal.picks::variables(c("WGRLOVFL", "WGRLOFL", "WGRHIVFL", "WGRHIFL"),
+    "WGRLOVFL"),
+  worst_flag_indicator = teal.picks::values("Y", "Y", fixed = TRUE, multiple = FALSE),
+  anl_toxgrade_var = teal.picks::variables("ATOXGR", "ATOXGR", fixed = TRUE),
+  base_toxgrade_var = teal.picks::variables("BTOXGR", "BTOXGR", fixed = TRUE),
+  id_var = teal.picks::variables("USUBJID", "USUBJID", fixed = TRUE),
   add_total = FALSE,
   total_label = default_total_label(),
   drop_arm_levels = TRUE,
@@ -62,48 +52,58 @@ tm_t_shift_by_grade(
 
 - arm_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for variable
   names that can be used as `arm_var`. It defines the grouping variable
   in the results table.
 
 - visit_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for variable
   names that can be used as `visit` variable. Must be a factor in
   `dataname`.
 
 - paramcd:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
-  object with all available choices and preselected option for the
-  parameter code variable from `dataname`.
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
+  variable for lab parameter code. The `values()` element is added
+  internally to allow users to filter the parameter values
+  interactively.
 
 - worst_flag_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
-  object with all available choices and preselected option for variable
-  names that can be used as worst flag variable.
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
+  variable for worst grade flag.
 
 - worst_flag_indicator:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
-  value indicating worst grade.
+  ([`teal.picks::values()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy
+  [`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html)
+  is deprecated but still accepted)\
+  value(s) indicating worst grade records.
 
 - anl_toxgrade_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)
   variable for analysis toxicity grade.
 
 - base_toxgrade_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)
   variable for baseline toxicity grade.
 
 - id_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   object specifying the variable name for subject id.
 
 - add_total:
@@ -238,7 +238,7 @@ where additional example apps implementing this module can be found.
 - example-1:
 
   [Open in
-  Shinylive](https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOz8gCEikrLK6v5qeiUAX0UIACsieL8AazhWUUTQm3D+OGMoYVI-An5aUTKRscnp4Gh4GaS5AF1XCByCoqTgYAUwa-zHs4urptaF0PvHnJbXu8lGhUEV4tF2A0kjoALw6JK4Bp8IQiUSwnTI4RiSEQDIZEp+NaiOLGNb0Vh+ADmzEWOLxeOoUHocGo6MeAHEabp8kyiMxSHzWFl6BA+TBuNEhbYmSJHojcfT4aEjro4X9PnKGvSWDA-JoWOiCDFRgQxH5RCy4Oo4Pw6YqMkaTWJ0frGLQZXB1saZNjnilRIJ6BbSIbIU8sABZOU6P6RgDC2Uecjk8vtGQtImt-DZ4ajYC1eJTBYyqBYsA2hu9ptE5stWbt9sdPrRcP11EEnqb1fY-2aKUeAAVMlhMhGE9HB8PR0nU2mM1byNm1U98rZHsWdEWFfSInzRGtjIzKXqDXCu2b5-WNw6q87Wyx3fQRF6nTNe-7A8HQ48AOrsrD5AA8gAagAYi8eAxmAf4AYB4ETtB-4ABIAJJgRB-aIVgqHwWAyazval6Lt+WFAehSYblu9q7ow+5+IeUDHvEmyyAKjCVq+taZouDaKm2HYvs2PafJhMFkbhVFznWxHLgAmtGxi0BUNrovYziUQReJQBA-gChU1I1J6rocc2XELjavH0ueLY6K6j7PtZwktB+QZwCGZ5hpktiAQAGv+SaSYR0kqR5fzeX5WAzteJhKSFdiOC426FppGT0FAFqEkQ+lcie7FnreNZERZ0XWS6D4eoJ3bvjoAaue5OgEGGzThf5eGBYqRVLg1TUtZFeEpXiinKV1amJfa7UZDU-CZZ4rJwqBmT5LkY2Fg0kmKdQ5B5cUcDcOadDdr4+0+p5eQYVBuSZKBuH+sFXWPPJbVKIMtDGDo7DxFtUAWNo1g2GkCrEvErCZOg7AggAJIItApJDFqMNojCDH0ShgH0ZxAA)
+  Shinylive](https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOz8gCEikrLK6v5qeiUAX0UIACsieL8AazhWUUTQm3D+OGMoYVI-An5aUTKRscnp4Gh4GaS5AF1XaHQi+Oj2BqSdAF4dJNwGviERUWedT+ExPcIBkMiU-GtRHFjGt6Kw-ABzZiLIEgkHUKD0ODUX4KMAAcSRunyGKIzFIpNYWXoEFJMG40UptgxIlx72BqNeoSOuheuJyLVZDVRLBgfk0LF+4sYtGZgII9zAmSwAFlWTo+SqAMLZXFyORsjk6VAsWAbX6oGTjGZSmX0b4KgAKSsyyu1upS4uogkBoixcHUcH4OMV+Vs7p0BBi-vGAVCvtIvwAYpl8rknPqhSCIqTRGtjOj4WKJS8bbKZpnUZHRgQxL95biAOp4rD5ADyADVE-k1Y3m22uz2wE2sAAJACSne7eHVQ+b44HYAz7MNvpEAaDvNnLY7C4rOiXhpq-HBRE82JeydTLmX+4aB5MtGo5EYv18fjqMkBb4-NYVOQKg65JkiYLikq7+uQG4zgAmrqgyDLQxg6Ow8TPlAFjaNYNhpOykLxKwmToOwaCoAAJIItApCRpG+ow2iMIMfRKGAfRnEAA)
 
 ## Examples
 
@@ -250,40 +250,17 @@ data <- within(data, {
 })
 join_keys(data) <- default_cdisc_join_keys[names(data)]
 
-ADSL <- data[["ADSL"]]
-ADLB <- data[["ADLB"]]
-
 app <- init(
   data = data,
   modules = modules(
     tm_t_shift_by_grade(
       label = "Grade Laboratory Abnormality Table",
       dataname = "ADLB",
-      arm_var = choices_selected(
-        choices = variable_choices(ADSL, subset = c("ARM", "ARMCD")),
-        selected = "ARM"
-      ),
-      paramcd = choices_selected(
-        choices = value_choices(ADLB, "PARAMCD", "PARAM"),
-        selected = "ALT"
-      ),
-      worst_flag_var = choices_selected(
-        choices = variable_choices(ADLB, subset = c("WGRLOVFL", "WGRLOFL", "WGRHIVFL", "WGRHIFL")),
-        selected = c("WGRLOVFL")
-      ),
-      worst_flag_indicator = choices_selected(
-        value_choices(ADLB, "WGRLOVFL"),
-        selected = "Y", fixed = TRUE
-      ),
-      anl_toxgrade_var = choices_selected(
-        choices = variable_choices(ADLB, subset = c("ATOXGR")),
-        selected = c("ATOXGR"),
-        fixed = TRUE
-      ),
-      base_toxgrade_var = choices_selected(
-        choices = variable_choices(ADLB, subset = c("BTOXGR")),
-        selected = c("BTOXGR"),
-        fixed = TRUE
+      arm_var = variables(c("ARM", "ARMCD")),
+      paramcd = picks(variables("PARAMCD"), values(selected = "ALT"), check_dataset = FALSE),
+      worst_flag_var = variables(
+        choices = c("WGRLOVFL", "WGRLOFL", "WGRHIVFL", "WGRHIFL"),
+        selected = "WGRLOVFL"
       ),
       add_total = FALSE
     )
@@ -291,6 +268,8 @@ app <- init(
   filter = teal_slices(teal_slice("ADSL", "SAFFL", selected = "Y"))
 )
 #> Initializing tm_t_shift_by_grade
+#> Warning: rlang::dots_list(..., .ignore_empty = "trailing")
+#>  - Setting explicit `selected` while `choices` are delayed (set using `tidyselect`) doesn't guarantee that `selected` is a subset of `choices`.
 if (interactive()) {
   shinyApp(app$ui, app$server)
 }

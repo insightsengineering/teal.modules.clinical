@@ -55,43 +55,57 @@ tm_g_pp_adverse_events(
 
 - aeterm:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([teal.picks::variables](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html)
+  or
+  [`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   object with all available choices and preselected option for the
   `AETERM` variable from `dataname`.
 
 - tox_grade:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([teal.picks::variables](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html)
+  or
+  [`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   object with all available choices and preselected option for the
   `AETOXGR` variable from `dataname`.
 
 - causality:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([teal.picks::variables](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html)
+  or
+  [`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   object with all available choices and preselected option for the
   `AEREL` variable from `dataname`.
 
 - outcome:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([teal.picks::variables](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html)
+  or
+  [`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   object with all available choices and preselected option for the
   `AEOUT` variable from `dataname`.
 
 - action:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([teal.picks::variables](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html)
+  or
+  [`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   object with all available choices and preselected option for the
   `AEACN` variable from `dataname`.
 
 - time:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([teal.picks::variables](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html)
+  or
+  [`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   object with all available choices and preselected option for the
   `ASTDY` variable from `dataname`.
 
 - decod:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([teal.picks::variables](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html)
+  or
+  [`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   object with all available choices and preselected option for the
   `AEDECOD` variable from `dataname`.
 
@@ -205,7 +219,7 @@ For more information on reporting in `teal`, see the vignettes:
 - example-1:
 
   [Open in
-  Shinylive](https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo67sxsnHDcvALCYhJSMvKl5QyVHPyo1KyBbQCCACIDTpE6pDAEMXAAHjFQoXCDQwDKADLjxrTU5IycUzPzi6LURQ6rDgBCAFIAkkM6AKS5TzrDowAkF9f3Q0EAXyCACsiLkYgBrOCsUT5ZI2VL8ODGKDCUgxAj8Wiiaag8FQmHAaDwWEFOQAXVcEGGG3GBWAwAUYBp6yZ5Mp1JGY0RyQZTI+LjA7KpaFQ41ymXYbQKOgAvDoCrg2nwhCJRHKdCqGrC2mVJjEAOYxdALfjaRiiOAzbRkHUQMoO8pQehwaga-lm1SWnROG2kURMpX2x0K5LE3Ty-lcwO6h2oFgUUjh93MtasvCxsrxjSJjFEN2RsA-W4PGPBx09IjorJwWgGrKkDUEdgANgADG31kUAEwdrs6Xt9uRBkM6KBwPYwJtZMEEMQxS0idRwfhS8shggzmRiDWaFi0Z0iDFbuewgVFflOWxOLAAWSZw8zDsXcGX-BTo2vd6ZT8f671RDzAazBItOs7zi+b5rqOZSbuB6rynujAHvQR5wduZ5chezJXgA8gAGgA4lgD4jjBkHkO+hafgRxE-v+Oh-qOsiCKI3CZKwYEYQurqvpR0Ewehp67vuh5WkJYjsOeOiXlgTjpkx5G8W+H43vJ9GjopjpEIIvhEPAXGnjxS78U+sEnjuiGiah4kWZhozYaMuEOLYpFmToFErqpzmuWAv5kY6UAWCQhkQcppkMeZ8EichYnHvBUlYTJOEDAAwgAcm5kUeeFXnUU4aWZX5DFaQ6GgGfKEmiMZfErgJzF2TFKFoXZiUOclAyrLYQwAJpZTBOUmXlHVdb1GkhqVZRIsQVE6OlDjrKy65BGUQRBLQxg6OwuR7EFGjaNYNglMGog5BArADOg7Cip8gi0EUN2Wow5qAkoYAAuSQA)
+  Shinylive](https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo6AIIAIuVOkTrRvALCYhJSMtyIiKQwBDFwAB4xUKFwpRWVAMoAMnX8qNSsjJ3GtNTkjJxw3I1CIuKSue3Und29A0P8otRFDhMOAEIAUgCSlToApLnv4zUAJLcPF6VIIAXyCACsiLkYgBrOCsUT5ZI2VL8ODGKDCUgxAj8WiiXqQ6FwhHAaDwREFOQAXVcECq01myWAwAUYAZUzZ1Np9OqtVRzNZ7L5XJ5SjQqDqh1I7DGBR0AF4dAVcGM+LsxIqdOrmoixmVujEAOYxdAXbSMURwPraMh6iBlR06ahQehwahatnlfgWq06Jy20iiNmqh1O5XJcm6JVekV4fWO1AsCikKOe4XTEMJspJjQpnFED0xsAAp6vLNhp3zIjYrJwWhGrKkLUEdgANgADB2pkUAExdns6fsDuSh8M6KBwdYwLWaFi0V17WXspy2JxYACybNH2fqREGRuYaNn88XYmXNVsAHkABoAcSw27H4dkglE3EyrBPjAX9CXXvXJxOTAHdK0dIhBF8Ih4G-X9-xXK8HFsJ9dygCwSFgs89RXcoAGEADkULAg1aBgpU5x-LCLwmWxKgATSI8c0WIfgtXwhwpk5MCgjKIIgloYwdHYXJ1jQjRtGsGwSjDUQcggVhynQdgJV+QRaCKFSrUYC1QSUMAQWpIA)
 
 ## Examples
 
@@ -214,10 +228,8 @@ library(nestcolor)
 
 data <- teal_data()
 data <- within(data, {
-  library(teal.modules.clinical)
-  library(dplyr)
-  ADAE <- tmc_ex_adae
-  ADSL <- filter(tmc_ex_adsl, USUBJID %in% ADAE$USUBJID)
+  ADAE <- teal.modules.clinical::tmc_ex_adae
+  ADSL <- dplyr::filter(teal.modules.clinical::tmc_ex_adsl, USUBJID %in% ADAE$USUBJID)
 })
 join_keys(data) <- default_cdisc_join_keys[names(data)]
 
@@ -233,30 +245,12 @@ app <- init(
       parentname = "ADSL",
       patient_col = "USUBJID",
       plot_height = c(600L, 200L, 2000L),
-      aeterm = choices_selected(
-        choices = variable_choices(ADAE, "AETERM"),
-        selected = "AETERM"
-      ),
-      tox_grade = choices_selected(
-        choices = variable_choices(ADAE, "AETOXGR"),
-        selected = "AETOXGR"
-      ),
-      causality = choices_selected(
-        choices = variable_choices(ADAE, "AEREL"),
-        selected = "AEREL"
-      ),
-      outcome = choices_selected(
-        choices = variable_choices(ADAE, "AEOUT"),
-        selected = "AEOUT"
-      ),
-      action = choices_selected(
-        choices = variable_choices(ADAE, "AEACN"),
-        selected = "AEACN"
-      ),
-      time = choices_selected(
-        choices = variable_choices(ADAE, "ASTDY"),
-        selected = "ASTDY"
-      ),
+      aeterm = variables("AETERM"),
+      tox_grade = variables("AETOXGR"),
+      causality = variables("AEREL"),
+      outcome = variables("AEOUT"),
+      action = variables("AEACN"),
+      time = variables("ASTDY"),
       decod = NULL
     )
   )
