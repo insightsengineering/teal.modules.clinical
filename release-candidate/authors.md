@@ -39,7 +39,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/insightsengineering/teal.modules.clinical/blob/v0.14.0-rc2/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/insightsengineering/teal.modules.clinical/blob/v0.14.0-rc3/DESCRIPTION)
 
 Unardi D, Zhu J, Stoilova J, Garolini D, de la Rua E, Yogasekaram A,
 Hallal M, Kaledkowski D, Li R, Wang H, Rucki P, Burkoff N, Pagacz K
