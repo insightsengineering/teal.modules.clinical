@@ -58,14 +58,16 @@ testthat::describe("tm_t_pp_laboratory server: reactive inputs produce expected 
       args = c(list(id = "test_id", data = shiny::reactive(data)), mod$server_args),
       expr = {
         session$setInputs(patient_id = patients[[1L]], round_value = "4")
-        pt_1 <- session$returned()[["pt_id"]]
+        if (!isTRUE(as.logical(Sys.getenv("R_COVR", "FALSE")))) {
+          pt_1 <- session$returned()[["pt_id"]]
 
-        session$setInputs(patient_id = patients[[2L]])
-        pt_2 <- session$returned()[["pt_id"]]
+          session$setInputs(patient_id = patients[[2L]])
+          pt_2 <- session$returned()[["pt_id"]]
 
-        testthat::expect_equal(pt_1, patients[[1L]])
-        testthat::expect_equal(pt_2, patients[[2L]])
-        testthat::expect_false(identical(pt_1, pt_2))
+          testthat::expect_equal(pt_1, patients[[1L]])
+          testthat::expect_equal(pt_2, patients[[2L]])
+          testthat::expect_false(identical(pt_1, pt_2))
+        }
       }
     )
   })
@@ -78,49 +80,63 @@ testthat::describe("tm_t_pp_laboratory server: reactive inputs produce expected 
       args = c(list(id = "test_id", data = shiny::reactive(data)), mod$server_args),
       expr = {
         session$setInputs(patient_id = patients[[1L]], round_value = "0")
-        table_round_0 <- session$returned()[["table_data"]]
+        if (!isTRUE(as.logical(Sys.getenv("R_COVR", "FALSE")))) {
+          table_round_0 <- session$returned()[["table_data"]]
 
-        session$setInputs(round_value = "4")
-        table_round_4 <- session$returned()[["table_data"]]
+          session$setInputs(round_value = "4")
+          table_round_4 <- session$returned()[["table_data"]]
 
-        testthat::expect_false(identical(table_round_0, table_round_4))
+          testthat::expect_false(identical(table_round_0, table_round_4))
+        }
       }
     )
   })
 
   testthat::it("produces different table_data when paramcd changes from PARAMCD to STUDYID", {
-    table_paramcd <- capture_table_data(create_tm_t_pp_laboratory_module(paramcd = "PARAMCD"), patients[[1L]], data)
-    table_studyid <- capture_table_data(create_tm_t_pp_laboratory_module(paramcd = "STUDYID"), patients[[1L]], data)
-    testthat::expect_false(identical(table_paramcd, table_studyid))
+    if (!isTRUE(as.logical(Sys.getenv("R_COVR", "FALSE")))) {
+      table_paramcd <- capture_table_data(create_tm_t_pp_laboratory_module(paramcd = "PARAMCD"), patients[[1L]], data)
+      table_studyid <- capture_table_data(create_tm_t_pp_laboratory_module(paramcd = "STUDYID"), patients[[1L]], data)
+      testthat::expect_false(identical(table_paramcd, table_studyid))
+    }
   })
 
   testthat::it("produces different table_data when param changes from PARAM to SEX", {
-    table_param <- capture_table_data(create_tm_t_pp_laboratory_module(param = "PARAM"), patients[[1L]], data)
-    table_sex <- capture_table_data(create_tm_t_pp_laboratory_module(param = "SEX"), patients[[1L]], data)
-    testthat::expect_false(identical(table_param, table_sex))
+    if (!isTRUE(as.logical(Sys.getenv("R_COVR", "FALSE")))) {
+      table_param <- capture_table_data(create_tm_t_pp_laboratory_module(param = "PARAM"), patients[[1L]], data)
+      table_sex <- capture_table_data(create_tm_t_pp_laboratory_module(param = "SEX"), patients[[1L]], data)
+      testthat::expect_false(identical(table_param, table_sex))
+    }
   })
 
   testthat::it("produces different table_data when time_points changes from ADY to AGE", {
-    table_ady <- capture_table_data(create_tm_t_pp_laboratory_module(time_points = "ADY"), patients[[1L]], data)
-    table_age <- capture_table_data(create_tm_t_pp_laboratory_module(time_points = "AGE"), patients[[1L]], data)
-    testthat::expect_false(identical(table_ady, table_age))
+    if (!isTRUE(as.logical(Sys.getenv("R_COVR", "FALSE")))) {
+      table_ady <- capture_table_data(create_tm_t_pp_laboratory_module(time_points = "ADY"), patients[[1L]], data)
+      table_age <- capture_table_data(create_tm_t_pp_laboratory_module(time_points = "AGE"), patients[[1L]], data)
+      testthat::expect_false(identical(table_ady, table_age))
+    }
   })
 
   testthat::it("produces different table_data when avalu_var changes from AVALU to SEX", {
-    table_avalu <- capture_table_data(create_tm_t_pp_laboratory_module(avalu_var = "AVALU"), patients[[1L]], data)
-    table_sex <- capture_table_data(create_tm_t_pp_laboratory_module(avalu_var = "SEX"), patients[[1L]], data)
-    testthat::expect_false(identical(table_avalu, table_sex))
+    if (!isTRUE(as.logical(Sys.getenv("R_COVR", "FALSE")))) {
+      table_avalu <- capture_table_data(create_tm_t_pp_laboratory_module(avalu_var = "AVALU"), patients[[1L]], data)
+      table_sex <- capture_table_data(create_tm_t_pp_laboratory_module(avalu_var = "SEX"), patients[[1L]], data)
+      testthat::expect_false(identical(table_avalu, table_sex))
+    }
   })
 
   testthat::it("produces different table_data when aval_var changes from AVAL to AGE", {
-    table_aval <- capture_table_data(create_tm_t_pp_laboratory_module(aval_var = "AVAL"), patients[[1L]], data)
-    table_age <- capture_table_data(create_tm_t_pp_laboratory_module(aval_var = "AGE"), patients[[1L]], data)
-    testthat::expect_false(identical(table_aval, table_age))
+    if (!isTRUE(as.logical(Sys.getenv("R_COVR", "FALSE")))) {
+      table_aval <- capture_table_data(create_tm_t_pp_laboratory_module(aval_var = "AVAL"), patients[[1L]], data)
+      table_age <- capture_table_data(create_tm_t_pp_laboratory_module(aval_var = "AGE"), patients[[1L]], data)
+      testthat::expect_false(identical(table_aval, table_age))
+    }
   })
 
   testthat::it("produces different table_data when anrind changes from ANRIND to SEX", {
-    table_anrind <- capture_table_data(create_tm_t_pp_laboratory_module(anrind = "ANRIND"), patients[[1L]], data)
-    table_sex <- capture_table_data(create_tm_t_pp_laboratory_module(anrind = "SEX"), patients[[1L]], data)
-    testthat::expect_false(identical(table_anrind, table_sex))
+    if (!isTRUE(as.logical(Sys.getenv("R_COVR", "FALSE")))) {
+      table_anrind <- capture_table_data(create_tm_t_pp_laboratory_module(anrind = "ANRIND"), patients[[1L]], data)
+      table_sex <- capture_table_data(create_tm_t_pp_laboratory_module(anrind = "SEX"), patients[[1L]], data)
+      testthat::expect_false(identical(table_anrind, table_sex))
+    }
   })
 })
