@@ -1,0 +1,216 @@
+# Getting Started with {teal.modules.clinical}
+
+### Introduction
+
+`teal.modules.clinical` is a package implementing a number of `teal`
+modules helpful for exploring clinical trials data, specifically
+targeted towards data following the
+[ADaM](https://www.cdisc.org/standards/foundational/adam) standards.
+`teal.modules.clinical` modules can be used with data other than ADaM
+standard clinical data, but some features of the package are tailored
+towards data of this type.
+
+The concepts presented here require knowledge about the core features of
+`teal`, specifically on how to launch a `teal` application and how to
+pass data into it. Therefore, it is highly recommended to refer to the
+[home page](https://insightsengineering.github.io/teal/latest-tag/) and
+[introductory
+vignette](https://insightsengineering.github.io/teal/latest-tag/articles/getting-started-with-teal.html)
+of the `teal` package.
+
+### Main Features
+
+The package provides ready-to-use `teal` modules you can embed in your
+`teal` application. The modules generate highly customizable tables,
+plots, and outputs often used in exploratory data analysis, including:
+
+- ANCOVA -
+  [`tm_t_ancova()`](https://insightsengineering.github.io/teal.modules.clinical/reference/tm_t_ancova.md)
+- Cox regression -
+  [`tm_t_coxreg()`](https://insightsengineering.github.io/teal.modules.clinical/reference/tm_t_coxreg.md)
+- Kaplan-Meier plot -
+  [`tm_g_km()`](https://insightsengineering.github.io/teal.modules.clinical/reference/tm_g_km.md)
+- Logistic regression -
+  [`tm_t_logistic()`](https://insightsengineering.github.io/teal.modules.clinical/reference/tm_t_logistic.md)
+- Bar chart -
+  [`tm_g_barchart_simple()`](https://insightsengineering.github.io/teal.modules.clinical/reference/tm_g_barchart_simple.md)
+- Confidence interval plot -
+  [`tm_g_ci()`](https://insightsengineering.github.io/teal.modules.clinical/reference/tm_g_ci.md)
+- Binary outcome response table -
+  [`tm_t_binary_outcome()`](https://insightsengineering.github.io/teal.modules.clinical/reference/tm_t_binary_outcome.md)
+- Summary of adverse events table -
+  [`tm_t_events_summary()`](https://insightsengineering.github.io/teal.modules.clinical/reference/tm_t_events_summary.md)
+- SMQ table -
+  [`tm_t_smq()`](https://insightsengineering.github.io/teal.modules.clinical/reference/tm_t_smq.md)
+- Time-to-event table -
+  [`tm_t_tte()`](https://insightsengineering.github.io/teal.modules.clinical/reference/tm_t_tte.md)
+
+The library also offers a group of patient profile modules targeted for
+clinical statisticians and physicians who want to review data on a per
+patient basis. The modules present data about patient’s adverse events,
+their severity, the current therapy, their laboratory results and more.
+
+See the full index of package functions & modules
+[here](https://insightsengineering.github.io/teal.modules.clinical/latest-tag/reference/index.html).
+
+### A Simple Application
+
+A `teal.modules.clinical` module needs to be embedded inside a
+`shiny`/`teal` application to interact with it. A simple application
+including a bar chart module could look like this:
+
+\
+[`library`](https://rdrr.io/r/base/library.html)`(`[`teal.modules.clinical`](https://insightsengineering.github.io/teal.modules.clinical/)`)`\
+[`library`](https://rdrr.io/r/base/library.html)`(`[`nestcolor`](https://insightsengineering.github.io/nestcolor/)`)`\
+\
+`ADSL`` ``<-`` ``tmc_ex_adsl`\
+`ADAE`` ``<-`` ``tmc_ex_adae`\
+\
+`app`` ``<-`` `[`init`](https://insightsengineering.github.io/teal/latest-tag/reference/init.html)`(`\
+`  data ``=`` `[`cdisc_data`](https://insightsengineering.github.io/teal.data/latest-tag/reference/cdisc_data.html)`(`\
+`    ADSL ``=`` ``ADSL``,`\
+`    ADAE ``=`` ``ADAE``,`\
+`    code ``=`` ``"`\
+`      ADSL <- tmc_ex_adsl`\
+`      ADAE <- tmc_ex_adae`\
+`    "`\
+`  ``)``,`\
+`  modules ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(`\
+`    `[`tm_g_barchart_simple`](https://insightsengineering.github.io/teal.modules.clinical/reference/tm_g_barchart_simple.md)`(`\
+`      label ``=`` ``"ADAE Analysis"``,`\
+`      x ``=`` ``picks``(`\
+`        ``datasets``(``"ADAE"``)``,`\
+`        ``variables``(`\
+`          choices ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(`\
+`            ``"ARM"``, ``"ACTARM"``, ``"SEX"``,`\
+`            ``"RACE"``, ``"SAFFL"``, ``"STRATA2"`\
+`          ``)``,`\
+`          selected ``=`` ``"ACTARM"``,`\
+`          multiple ``=`` ``FALSE`\
+`        ``)`\
+`      ``)`\
+`    ``)`\
+`  ``)`\
+`)`\
+\
+[`shinyApp`](https://rdrr.io/pkg/shiny/man/shinyApp.html)`(``app``$``ui``, ``app``$``server``)`
+
+#### Try it out in Shinylive
+
+[Open in
+Shinylive](https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA6EOkxYcIY0sWpFGiiEoCCAEQDKAGQAEAHgC0l0jAIB9OAA9nUfqOpHjhgFEbe0cXd09+KDglJTRUYMtaaVJ2JUtLSNIoSwBeSwJ+WlEXTKhUiHT0kwtcy2rzXDTKk0DaloDGisrifjhahTAmyrqzKzsHJ1cPLx8h5v8g8dCpiKi5gaa5TvS+IRFRWrpRFLnHZwBzZ3oWAgALFlJnUVoYVBFy4fTqKHo4an6wO06tBqKxnqIBttPm5aqgZABrUQfT7pUqiOCkJEDdoDLZzYYANxYtB++2RKPSdyIMjEtQI5Ip6WxWAAspDLNiAMIAFUMrPZA1MAQAGpD8RSBlhDJyAgKwKZDAAxRXmOWmblS3kAJg2XUZeL1FPRIgI5H4AOlvP5eHFwxgwlItDefTyisM5iFtss+hRPsqfv0+iUoluSVYhnQ7DiABJBLRcJYY+jGAS4HowABfAC6QA)
+
+Consider consulting the documentation and examples of each module
+(e.g. [`?tm_g_barchart_simple`](https://insightsengineering.github.io/teal.modules.clinical/reference/tm_g_barchart_simple.md)).
+In many, you can also find useful links to the [TLG
+Catalog](https://insightsengineering.github.io/tlg-catalog/stable/)
+where additional example apps can be found.
+
+`teal.modules.clinical` exports modules and needs support from other
+libraries to run a `teal` app and flesh out its functionality. In the
+example above,
+[`tm_g_barchart_simple()`](https://insightsengineering.github.io/teal.modules.clinical/reference/tm_g_barchart_simple.md)
+is the only function from `teal.modules.clinical` whereas
+[`init()`](https://insightsengineering.github.io/teal/latest-tag/reference/init.html)
+is a `teal` function, `picks()`, `datasets()`, and `variables()` are
+`teal.picks` functions, and
+[`cdisc_data()`](https://insightsengineering.github.io/teal.data/latest-tag/reference/cdisc_data.html)
+is a `teal.data` function.
+
+Let’s break the above app down into pieces:
+
+\
+[`library`](https://rdrr.io/r/base/library.html)`(`[`teal.modules.clinical`](https://insightsengineering.github.io/teal.modules.clinical/)`)`\
+[`library`](https://rdrr.io/r/base/library.html)`(`[`nestcolor`](https://insightsengineering.github.io/nestcolor/)`)`
+
+The above lines load the libraries used in this example. We will use the
+example data provided in the `teal.modules.clinical` package:
+
+\
+`ADSL`` ``<-`` ``tmc_ex_adsl`\
+`ADAE`` ``<-`` ``tmc_ex_adae`
+
+`nestcolor` is an optional package that can be loaded in to apply the
+standardized NEST color palette to all module plots.
+
+There is no need to load `teal` as `teal.modules.clinical` already
+depends on it.
+
+In the next step, we use `teal` to create `shiny` UI and server
+functions that we can launch using `shiny`. The `data` argument tells
+`teal` about the input data - the ADaM datasets `ADSL` and `ADAE` - and
+the `modules` argument indicates the modules included in the
+application. Here, we include only one module:
+[`tm_g_barchart_simple()`](https://insightsengineering.github.io/teal.modules.clinical/reference/tm_g_barchart_simple.md).
+
+\
+`app`` ``<-`` `[`init`](https://insightsengineering.github.io/teal/latest-tag/reference/init.html)`(`\
+`  data ``=`` `[`cdisc_data`](https://insightsengineering.github.io/teal.data/latest-tag/reference/cdisc_data.html)`(`\
+`    ADSL ``=`` ``ADSL``,`\
+`    ADAE ``=`` ``ADAE``,`\
+`    code ``=`` ``"`\
+`      ADSL <- tmc_ex_adsl`\
+`      ADAE <- tmc_ex_adae`\
+`    "`\
+`  ``)``,`\
+`  modules ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(`\
+`    `[`tm_g_barchart_simple`](https://insightsengineering.github.io/teal.modules.clinical/reference/tm_g_barchart_simple.md)`(`\
+`      label ``=`` ``"ADAE Analysis"``,`\
+`      x ``=`` ``picks``(`\
+`        ``datasets``(``"ADAE"``)``,`\
+`        ``variables``(`\
+`          choices ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(`\
+`            ``"ARM"``, ``"ACTARM"``, ``"SEX"``,`\
+`            ``"RACE"``, ``"SAFFL"``, ``"STRATA2"`\
+`          ``)``,`\
+`          selected ``=`` ``"ACTARM"``,`\
+`          multiple ``=`` ``FALSE`\
+`        ``)`\
+`      ``)`\
+`    ``)`\
+`  ``)`\
+`)`
+
+Finally, we use `shiny` to launch the application:
+
+\
+[`shinyApp`](https://rdrr.io/pkg/shiny/man/shinyApp.html)`(``app``$``ui``, ``app``$``server``)`
+
+Many `teal.modules.clinical` modules take column choices via
+\[teal.picks::variables()\]. Literal column names are usually passed as
+character vectors; `tidyselect` expressions (for example
+\[tidyselect::starts_with()\]) are available when choices should be
+resolved dynamically against the data. Dataset-scoped encodings use
+\[teal.picks::picks()\] with \[teal.picks::datasets()\]. The
+[`tm_t_summary()`](https://insightsengineering.github.io/teal.modules.clinical/reference/tm_t_summary.md)
+module illustrates the `variables()` pattern:
+
+\
+[`library`](https://rdrr.io/r/base/library.html)`(`[`teal`](https://insightsengineering.github.io/teal/)`)`\
+[`library`](https://rdrr.io/r/base/library.html)`(`[`teal.modules.clinical`](https://insightsengineering.github.io/teal.modules.clinical/)`)`\
+\
+`ADSL`` ``<-`` ``tmc_ex_adsl`\
+\
+`app`` ``<-`` `[`init`](https://insightsengineering.github.io/teal/latest-tag/reference/init.html)`(`\
+`  data ``=`` `[`cdisc_data`](https://insightsengineering.github.io/teal.data/latest-tag/reference/cdisc_data.html)`(``ADSL ``=`` ``ADSL``, code ``=`` ``"ADSL <- tmc_ex_adsl"``)``,`\
+`  modules ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(`\
+`    `[`tm_t_summary`](https://insightsengineering.github.io/teal.modules.clinical/reference/tm_t_summary.md)`(`\
+`      label ``=`` ``"Demographic Table"``,`\
+`      dataname ``=`` ``"ADSL"``,`\
+`      arm_var ``=`` ``variables``(``choices ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``"ARM"``, ``"ARMCD"``)``, selected ``=`` ``"ARM"``)``,`\
+`      summarize_vars ``=`` ``variables``(`\
+`        choices ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``"SEX"``, ``"RACE"``, ``"BMRKR2"``, ``"EOSDY"``, ``"DCSREAS"``, ``"AGE"``)``,`\
+`        selected ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``"SEX"``, ``"RACE"``)``,`\
+`        multiple ``=`` ``TRUE``,`\
+`        ordered ``=`` ``TRUE`\
+`      ``)`\
+`    ``)`\
+`  ``)`\
+`)`\
+\
+[`shinyApp`](https://rdrr.io/pkg/shiny/man/shinyApp.html)`(``app``$``ui``, ``app``$``server``)`
+
+Please refer to the [API
+reference](https://insightsengineering.github.io/teal.modules.clinical/latest-tag/reference/)
+of specific modules for more examples and information on the
+customization options available.
