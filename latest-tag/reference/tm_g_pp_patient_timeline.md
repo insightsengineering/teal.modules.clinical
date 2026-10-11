@@ -64,61 +64,71 @@ tm_g_pp_patient_timeline(
 
 - aeterm:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for the
-  `AETERM` variable from `dataname`.
+  `AETERM` variable from `dataname_adae`.
 
 - cmdecod:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for the
   `CMDECOD` variable from `dataname_adcm`.
 
 - aetime_start:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for the
   `ASTDTM` variable from `dataname_adae`.
 
 - aetime_end:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for the
   `AENDTM` variable from `dataname_adae`.
 
 - dstime_start:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for the
   `CMASTDTM` variable from `dataname_adcm`.
 
 - dstime_end:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for the
   `CMAENDTM` variable from `dataname_adcm`.
 
 - aerelday_start:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for the
   `ASTDY` variable from `dataname_adae`.
 
 - aerelday_end:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for the
   `AENDY` variable from `dataname_adae`.
 
 - dsrelday_start:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for the
   `ASTDY` variable from `dataname_adcm`.
 
 - dsrelday_end:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for the
   `AENDY` variable from `dataname_adcm`.
 
@@ -232,7 +242,7 @@ For more information on reporting in `teal`, see the vignettes:
 - example-1:
 
   [Open in
-  Shinylive](https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo67sxsnHDcvALCYhJSMvKl5QyVHMYBMGHkjKJBZRWe+ajUrIFtAIIAItNOkTqkMAQxcAAeMVChcDOzAMoAMkvGtNT9nKvrWzui1EUOBw4AQgBSAJKzOgCkuT86OYLAAkT1en1mQ0BswAwgBZJYrNabbb8AgwX4APh+bTKMEE4XI7FxZR08IOtlmAE0dABeHSyURwGJpLIUYkQUlcslwmHTWx0+kKMDwNHUHQvYU6AB+OgATAAGXAkrnwvkC2lCkVwMVkqWygCMAFYlSrSfZnDKdAazTYftj0pksjFqFB6HBqMSwAdSIJ+KwdLMoAGiMYdD6WKQdKGdHCdS0NCRhXJlZzufCnAA5al0hlQJkstl5M1lNX8wU6YWiyQS-U6ADsCtNae5PPVFarOprMLrBqbzdbZQti1lJoVtqxAIy2Rdbo9Xp9foDQZDYacEH40bDcf4CcswTAKbN8OmFNmtgR9NPlIvqdbJ6z58vgMfF5JQQAvkElAArIi5GIAGs4FYUR8mSGxUn4OBjCgYRSBiAhd1ENY-wA4DQOAAgvTmY5hSKYUgRcPBKzAOZ4WTABdJQdnRICQNEJZsOFCkHGpL58NIsF3g4kjCLPN8+LAcknAARU4wjbBhG0hP5GE5QksipIAZkUuSABZk1-f8IHo0DwPCORgEI2E4TU0zhUopZaJgPTRG09CGIMqAjJMhZzIosArNSZjvVsNiqV4giwG4iEtOCaB0CWXJMg5MoClzAo7x0PghBERj6VShowJJFYYgAcxidAirCWgKAQjR4CkOA4u5V13XFLUAAVSvKuxaCq3I9jwM0CmgeBUSgXQtSI-DeuSfrmRs3MTM85KuVQFhysmmayMOI4xpbUlFo0crEKIRquOeHjZk21txiIBC2VofKsijelsIANibI4ikVBVXvlfsjiPLaynRaDiE3B6sn-AgxBiJkRHUHVatbAhQZkMRc00FhaDdEREMR8GwIKYBjLWzzKMo4L4VmJwYQAeVOw95u5KG4Bh4HSLJinqbO7lftbIb+gxEGwYhhmmbh7kEYFjKdFRxh0foTGxaR3HknxtziOJ4KFlsJwsDM2mSx0IXyGZ3yNa1nWoS5LnuR5jrmVEcJGHuhlscFj1GcNkWuXlnGUbRjHmS9sRnOVtb3K8knSOvJ9kzprkDZ1XNjYEs3bRjnRrYGigjed0RIdd4W9YDiWpZluXs6DgnRrD9XXzN1Oyjjo2cJr8LW0trl+Dtm3Iftx3C9z6H3YL7Ofelv2sfF8vZp1tWWbhSPBLb+m88NhOvRPJOW851OO8q5lM4T7P+7d2Gh-FkeS-9su8Yriyq9nhZswXuv9eX+OHrXufm8PFOzSGxgPVCKwbukYD7iyPvnP6pJC7nzHoXSeIdVbh34pSKk0c9YN1Xsg6km8Lapz-gA4M6wNygIVuAwekD-rD3pMXWBV8lY31DjPQij5UG6woS-Aeb8GRN2zKw82pJF7xVEP-aggDgEOxITjMhJ92HQOob7WWl8J7XynpZJBZEzx8Ofhg9+WC+E-0gR3ERYj9781IQ3D2UCqGSwUaXZR9DVF32YbwtB7CdHcOcdg7+kD+FQiCEEWgYZ2C5H6FACw2hrA2BKGmUQOQICsGmOgdgaBUDAkELQIoKTgRMkYNoKYEAPxKDAB+SiQA)
+  Shinylive](https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo67sxsnHDcvALCYhJSMvKl5QyVHMYBMGHkjKJBZRWe+ajUrIFtAIIAItNOkTqkMAQxcAAeMVChcDOzAMoAMkvGtNT9nKvrWzui1EUOBw4AQgBSAJKzOgCkuT86OYLAAkT1en1mQ0BswAwgBZJYrNabbb8AgwX4APh+bTKMEE4XI7FxZR08IOtlmAE0dABeHSyURwGJpLIUYkQUlcslwmHTWx0+kKMDwNHUHQvYU6AB+OgATAAGXAkrnwvkC2lCkVwMVkqWygCMAFYlSrSfZnDKdAazTYftj0pksjFqFB6HBqMSwAdSIJ+KwdLMoAGiMYdD6WKQdKGdHCdS0NCRhXJlZzufCnAA5al0hlQJkstl5M1lNX8wU6YWiyQS-U6ADsCtNae5PPVFarOprMLrBqbzdbZQti1lJoVtqxAIy2Rdbo9Xp9foDQZDYacEH40bDcf4CcswTAKbN8OmFNmtgR9NPlIvqdbJ6z58vgMfF5JQQAvkElAArIi5GIAGs4FYUR8mSGxUn4OBjCgYRSBiAhd1ENY-wA4DQOAAgvTmY5hSKYUgRcPBKzAOZ4WTABdJQdnRICQNEJZsOFCkHGpL58NIsF3g4kjCLPN8+LAcknAARU4wjbBhG0hP5GE5QksipIAZkUuSABZk1-f8IHo0DwPCORgEI2E4TU0zhUopZaJgPTRG09CGIMqAjJMhZzIosArNSZjvVsNiqV4giwG4iEtOCaB0CWXJMg5MoClzAo7x0PghBERj6VShowJJFYYgAcxidAirCWgKAQjR4CkOA4u5V13XFLUAAVSvKuxaCq3I9jwM0CmgeBUSgXQtSI-DeuSfrmRs3MTM85KuVQFhysmmayMOI4xpbUlFo0crEKIRquOeHjZk21txiIBC2VofKsijelsIANibI4ikVBVXvlfsjiPLaynRaDiE3elNBYWg3XSr14VmJwYQAeVOoTodhhHk3m0khv6DEQbBiGxBwpxbCcLAzNkwnidJ37W0xjrmVEcJGHunRQcYcH6Eh-ib1J4LryfNGzRpgaKGB5ncfZ-HCNfbnSIWbNBKp7l+Hp2mYnpyNcxZtmOeEuFecE4KTwEyn0fi5WhY3DWxe1h85el4Ubb5w8TZ0IbGA9UJWFVhmmc1vGcrIs8qTUwP+b+l3VHd4N1gtnHWb9gnsyDsnE9D1slbd6gPa99XY61iWA8pJOeZDp3etEDOs+Fy24-F-3ZepNTHyTqEyihIIgloMN2FyfooAsbRrBsEo01EHIIFYaZ0HYNBUGBQRaCKGfgSZRhtCmCAPyUMAP0ooA)
 
 ## Examples
 
@@ -278,46 +288,16 @@ app <- init(
       parentname = "ADSL",
       patient_col = "USUBJID",
       plot_height = c(600L, 200L, 2000L),
-      cmdecod = choices_selected(
-        choices = variable_choices(data[["ADCM"]], "CMDECOD"),
-        selected = "CMDECOD",
-      ),
-      aeterm = choices_selected(
-        choices = variable_choices(data[["ADAE"]], "AETERM"),
-        selected = c("AETERM")
-      ),
-      aetime_start = choices_selected(
-        choices = variable_choices(data[["ADAE"]], "ASTDTM"),
-        selected = c("ASTDTM")
-      ),
-      aetime_end = choices_selected(
-        choices = variable_choices(data[["ADAE"]], "AENDTM"),
-        selected = c("AENDTM")
-      ),
-      dstime_start = choices_selected(
-        choices = variable_choices(data[["ADCM"]], "CMASTDTM"),
-        selected = c("CMASTDTM")
-      ),
-      dstime_end = choices_selected(
-        choices = variable_choices(data[["ADCM"]], "CMAENDTM"),
-        selected = c("CMAENDTM")
-      ),
-      aerelday_start = choices_selected(
-        choices = variable_choices(data[["ADAE"]], "ASTDY"),
-        selected = c("ASTDY")
-      ),
-      aerelday_end = choices_selected(
-        choices = variable_choices(data[["ADAE"]], "AENDY"),
-        selected = c("AENDY")
-      ),
-      dsrelday_start = choices_selected(
-        choices = variable_choices(data[["ADCM"]], "ASTDY"),
-        selected = c("ASTDY")
-      ),
-      dsrelday_end = choices_selected(
-        choices = variable_choices(data[["ADCM"]], "AENDY"),
-        selected = c("AENDY")
-      )
+      cmdecod = variables("CMDECOD", "CMDECOD"),
+      aeterm = variables("AETERM", "AETERM"),
+      aetime_start = variables("ASTDTM", "ASTDTM"),
+      aetime_end = variables("AENDTM", "AENDTM"),
+      dstime_start = variables("CMASTDTM", "CMASTDTM"),
+      dstime_end = variables("CMAENDTM", "CMAENDTM"),
+      aerelday_start = variables("ASTDY", "ASTDY"),
+      aerelday_end = variables("AENDY", "AENDY"),
+      dsrelday_start = variables("ASTDY", "ASTDY"),
+      dsrelday_end = variables("AENDY", "AENDY")
     )
   )
 )

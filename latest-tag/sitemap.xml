@@ -13,7 +13,9 @@
 <url><loc>https://insightsengineering.github.io/teal.modules.clinical/index.html</loc></url>
 <url><loc>https://insightsengineering.github.io/teal.modules.clinical/news/index.html</loc></url>
 <url><loc>https://insightsengineering.github.io/teal.modules.clinical/reference/add_expr.html</loc></url>
+<url><loc>https://insightsengineering.github.io/teal.modules.clinical/reference/arm_bucket_values.html</loc></url>
 <url><loc>https://insightsengineering.github.io/teal.modules.clinical/reference/arm_ref_comp_observer.html</loc></url>
+<url><loc>https://insightsengineering.github.io/teal.modules.clinical/reference/arm_ref_comp_observer_picks.html</loc></url>
 <url><loc>https://insightsengineering.github.io/teal.modules.clinical/reference/as_num.html</loc></url>
 <url><loc>https://insightsengineering.github.io/teal.modules.clinical/reference/bracket_expr.html</loc></url>
 <url><loc>https://insightsengineering.github.io/teal.modules.clinical/reference/call_concatenate.html</loc></url>
@@ -38,6 +40,7 @@
 <url><loc>https://insightsengineering.github.io/teal.modules.clinical/reference/is.cs_or_des.html</loc></url>
 <url><loc>https://insightsengineering.github.io/teal.modules.clinical/reference/make_barchart_simple_call.html</loc></url>
 <url><loc>https://insightsengineering.github.io/teal.modules.clinical/reference/module_arguments.html</loc></url>
+<url><loc>https://insightsengineering.github.io/teal.modules.clinical/reference/paramcd_title_from_anl.html</loc></url>
 <url><loc>https://insightsengineering.github.io/teal.modules.clinical/reference/pipe_expr.html</loc></url>
 <url><loc>https://insightsengineering.github.io/teal.modules.clinical/reference/prepare_arm.html</loc></url>
 <url><loc>https://insightsengineering.github.io/teal.modules.clinical/reference/prepare_arm_levels.html</loc></url>

@@ -72,12 +72,12 @@ template_shift_by_arm_by_worst(
 - aval_var:
 
   (`character`)\
-  name of the analysis reference range indicator variable.
+  name of the analysis value variable.
 
 - baseline_var:
 
   (`character`)\
-  name of the baseline reference range indicator variable.
+  name of the variable for baseline values of the analysis variable.
 
 - na.rm:
 
@@ -95,7 +95,7 @@ template_shift_by_arm_by_worst(
 - add_total:
 
   (`logical`)\
-  whether to include row with total number of patients.
+  whether to include column with total number of patients.
 
 - total_label:
 

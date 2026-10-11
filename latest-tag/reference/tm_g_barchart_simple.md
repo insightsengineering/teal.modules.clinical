@@ -22,29 +22,63 @@ tm_g_barchart_simple(
   transformators = list(),
   decorators = list()
 )
+
+# Default S3 method
+tm_g_barchart_simple(
+  x = NULL,
+  fill = NULL,
+  x_facet = NULL,
+  y_facet = NULL,
+  label = "Count Barchart",
+  plot_options = NULL,
+  plot_height = c(600L, 200L, 2000L),
+  plot_width = NULL,
+  pre_output = NULL,
+  post_output = NULL,
+  ggplot2_args = teal.widgets::ggplot2_args(),
+  transformators = list(),
+  decorators = list()
+)
+
+# S3 method for class 'picks'
+tm_g_barchart_simple(
+  x = NULL,
+  fill = NULL,
+  x_facet = NULL,
+  y_facet = NULL,
+  label = "Count Barchart",
+  plot_options = NULL,
+  plot_height = c(600L, 200L, 2000L),
+  plot_width = NULL,
+  pre_output = NULL,
+  post_output = NULL,
+  ggplot2_args = teal.widgets::ggplot2_args(),
+  transformators = list(),
+  decorators = list()
+)
 ```
 
 ## Arguments
 
 - x:
 
-  (`data_extract_spec`)\
-  variable on the x-axis.
+  (`picks`, `data_extract_spec`, or `list` of `data_extract_spec`)\
+  variable on the x-axis (required).
 
 - fill:
 
-  (`data_extract_spec`)\
-  grouping variable to determine bar colors.
+  (`NULL`, `picks`, `data_extract_spec`, or `list` thereof)\
+  grouping variable for bar colors.
 
 - x_facet:
 
-  (`data_extract_spec`)\
-  row-wise faceting groups.
+  (`NULL`, `picks`, `data_extract_spec`, or `list` thereof)\
+  column-wise faceting groups.
 
 - y_facet:
 
-  (`data_extract_spec`)\
-  column-wise faceting groups.
+  (`NULL`, `picks`, `data_extract_spec`, or `list` thereof)\
+  row-wise faceting groups.
 
 - label:
 
@@ -115,9 +149,25 @@ a `teal_module` object.
 
 ## Details
 
-Categories can be defined up to four levels deep and are defined through
-the `x`, `fill`, `x_facet`, and `y_facet` parameters. Any parameters set
-to `NULL` (default) are ignored.
+Categories can be defined up to four levels deep through `x`, `fill`,
+`x_facet`, and `y_facet`. The `x` encoding is always required; `fill`,
+`x_facet`, and `y_facet` may be `NULL` to omit them.
+
+S3 dispatch uses the class of `x`: `tm_g_barchart_simple.default()` for
+[`teal.transform::data_extract_spec()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/data_extract_spec.html)
+(or `list` thereof) and `tm_g_barchart_simple.picks()` for
+[`teal.picks::picks()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html).
+Do not mix `data_extract_spec` and `picks` encodings in one call.
+
+## Methods (by class)
+
+- `tm_g_barchart_simple(default)`: Legacy
+  [`teal.transform::data_extract_spec()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/data_extract_spec.html)
+  encodings.
+
+- `tm_g_barchart_simple(picks)`:
+  [`teal.picks::picks()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html)-based
+  encodings (`picks`).
 
 ## Decorating Module
 
@@ -172,7 +222,7 @@ where additional example apps implementing this module can be found.
 - example-1:
 
   [Open in
-  Shinylive](https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo67sxsnHDcvALCYhJSMvKl5QyVHMYBMGHkjKJBZRWe+ajUrIFtAIIAIgDKADKROqQwBDFwAB4xUPyi1DoApAB8R21lMILh5OwAkra2AGLLALwmUOoB7ApgAJq-Gync4QMpg9KZLIxahQehwag-MB3FRkAy2Ihoxg1Ug6AAKRFQwjCllBTxhAHNAUMdHNpk4VmsNttdqFdMCLiZaNR+uwAITsdh02wAeQAGgBxLA6V7vACMNgAZDpBU55k4AGrS96-ACyd0Ws0BOiVgqwOq1Ol+00QOlmjEE5J0oqpQQAvkEAFZEXIxADWcFYonyyRsqX4cGMUGEpBiBH4tFEGy9Pv9geA0HgQYKcgAuq4IHMlisCsBgFaFotfjm8wXZnTi8lS+W6VWa0o0KgVrlMj9QToCtL+8lcG0+EIRKJB2OGkGOWsYuSYvQWAQsiwY6JaDBxnBe+DhrD4YPm-TptAJpvRL8R33wVtBwVNltSGoN6g4AQ9-uygUM7ptWAhaVngHLgqI8Ifji7zgSI6gxKI76fqB+6rt6BBiIOmgsLQsIiLGWRoWIX7fuCQE3iRKHERRYJWma16WoBADCtjTHReAMWqzogbe1FlL8WDTIxLjsb8DzPMBRS-PM0xPC89FSfY0wsQATL8yHftSFFyOR1EwZBcD8MeTEsWxOkUVc3K0Dug5PNMixqupOiaWC2nIcYXKHO8dCiKQVHgo+2wvp8b4fn5+6-rA-4MUB16OWUenqIOCUhUhPEUahMgYe8WGMDh9B4Rl6Gzml1FkXFlHld+tE6vJxmsTVIlgJxsUlbx-GCcJklIo8cmNdJskSRxikqWprUkc5WlmbpEHqAZRnNdxvGXNGVkiDZdkOWNZQTS5U3+ckT5BXBCGheVEXwEZtKdeVyVJTNKVhd+hVZToOV5QVBGZUGV1FEhgFOCKEpYLVdJquqIOqk4wNgHIrlbWCyVze8AByDiLIse0kRZGjWe8tn2S48M7dtyFw9+OyRuhUHtD5j1DuEh2vvBiF0z+yR-pddbXfDt3QfdzOnfDZTPZO2XYbhcD4YR31c79iJCmKkoQ2DytQ1SmPfojhkAQrQMtUtOjY6tUX45tvHE05Gv01AjPBQLqW8edUXlks+vTbB1PJfbrNgiLmHi-lksiz7pEVlbT0h-u1Ug8x9W1Qt4cke1Qm1WJvVdf16dDQJI1gJVLn52TS1a4OqPo4ny2WbjOim4T5uOTtRfgqwMSU3A1Peb5jkBc+TMnQ71FO5zLaLe7kF3R73v537Yu5RLUtfYKss6H9utK41oMaqr0OwxXOglzrkPg6PvFG9XtflRbTfhQdgV9yzZ3s5FnOuyfJG8-v-P95HM+vQHH3S0jmUMqQtfZAJooBUy0VY5QKkk4Lie9wTJ06gxNOg0pIySzgpHO0xVJ51ASTUB18KIHx0GXDG+cz5rTxhtOu1Er6kw5NSIIQRaDGGVLkfowUtC7lhsUNoogcgQFYNMdA7AOwABJBC0CKJI8CjBtBTAgK6JQYBXQ5iAA)
+  Shinylive](https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo67sxsnHDcvALCYhJSMvKl5QyVHMYBMGHkjKJBZRWe+ajUrIFtAIIAIgDKADKROqQwBDFwAB4xUPyi1DoApAB8R21lMILh5OwAkra2AGLLALwmUOoB7ApgAJq-Gync4QMpg9KZLIxahQehwag-MB3FRkAy2Ihoxg1Ug6AAKRFQwjCllBTxhAHNAUMdHNpk4VmsNttdqFdMCLiZaNR+uwAITsdh02wAeQAGgBxLA6V7vACMNgAZDpBU55k4AGrS96-ACyd0Ws0BOiVgqwOq1Ol+00QOlmjEE5J0oqpQQAvkEAFZEXIxADWcFYonyyRsqX4cGMUGEpBiBH4tFEGy9Pv9geA0HgQYKcgAuq4IHMlisCsBgFaFotfjm8wXZnTi8lS+W6VWa0o0KgVrlMj9QToCtL+8lcG0+EIRKJB2OGkGOWsYuSYvQWAQsiwY6JaDBxnBe+DhrD4YPm-TptAJpvRL8R33wVtB6gZL7Z7f9wVRHBSLOwIXK2A5De+5gpoLC0LCE57kBYKrt6BBiIOBCQVBYJWma16Wj+ADCtjTGheAYWqzp4ByyG-Fg0yYS4+G-A8zx-kUvzzNMTwvOhjH2NMOEAEy-CR+4AXx4IfiI6hwPwx5YTheGAchOhXNytA7oOTzTIsaqCTo1LggJr5lMYXKHO8j4EM+SFvskH5fuwMEyPB7yIeWSxsT+dZUXIOnISBjBgfQEEaWUNlwZO9lmaRP7SRhFFSTqzmEde-koWA5GUc5tGsdRYBMSx9EERx3HxbpUFWk4IoSlgzl0mq6oVaqTjlWACUebJwlwKJ4naplThETJyHyRoSnvCpakuIVZRaWCTV3jEkZwTiRlPi+yHvp+QaBXZOgOS5LYZb+VI9fuXk+X5o3QVksHrQ5J3gsVpWSjVVX3XVBWyYluExTt2FvbFXXPS9GHJVRDFIo86VA1loO5eR+UNVdmn7UBLVtRJQpindxGw31ikiMpqnqSd41jfDOisNNnyfg+C2hWCy1WWtwUbYitKA5FFZ7Rph3gWIVPgnTCHc-uN2o-VQOVRqj3CwlZSoe9IufRFjE-ejf3-RRzM0SDOWMcxEPsVD0w8TDL2TVBiPkO1kW1dVSuyZjA06ENePIQTmkctSQRBLQxjKrk-SfBo2jWDYJR9qIOQQKw0zoOwHYACSCLQRSxx+jDaFMECuvmADEOiLHA5KfKwOgAAbRBgpDMBAojdIwMCIIgBSbFs5d+zEoioK11hFzoFDEPGEDkpO+QRlG3I6PMADMcmfmd-ByIgrgKPwJDl2YwcDqk0RxMkiQQOvRgZNkuTBuERTB8MHSjPw4yTNSv4MusjcsgcxxnByVw3LuaVvB8XyMIiAL-hfkcCE2RoSHgRDRFEpA0QYlsFiMIeICREg0CQe2FIqRKHdEoZMEA-QBizCGYsw9oyxnjImGIOC8FpgzFzbMbZoDoC7NIUgkEBzvAKDJacE4pz1GOuCeci5lyMFXOuVuW4dxU3vO8UuzdK7V1rvXZIjdm7qFbu3S6S1kg0ORqza2CN4StTmqsGoPBZFVx6HXU2aiO4JV5tIkxZcK7mJrnXDmvk4CxjOrZb8u18KbS+hlOK-5jb6JEmbZG0kEq22xoNXGI0nZ8XGm7JQQRQ65FYJYsOEco6x3jondAMdk6pzdEoMArocxAA)
 
 ## Examples
 
@@ -200,97 +250,89 @@ app <- init(
   modules = modules(
     tm_g_barchart_simple(
       label = "ADAE Analysis",
-      x = data_extract_spec(
-        dataname = "ADSL",
-        select = select_spec(
-          choices = variable_choices(
-            ADSL,
-            c(
-              "ARM", "ACTARM", "SEX",
-              "RACE", "ITTFL", "SAFFL", "STRATA2"
-            )
+      x = picks(
+        datasets("ADSL"),
+        variables(
+          choices = c(
+            "ARM", "ACTARM", "SEX",
+            "RACE", "ITTFL", "SAFFL", "STRATA2"
           ),
           selected = "ACTARM",
           multiple = FALSE
         )
       ),
-      fill = list(
-        data_extract_spec(
-          dataname = "ADSL",
-          select = select_spec(
-            choices = variable_choices(
-              ADSL,
-              c(
-                "ARM", "ACTARM", "SEX",
-                "RACE", "ITTFL", "SAFFL", "STRATA2"
-              )
-            ),
-            selected = "SEX",
-            multiple = FALSE
-          )
-        ),
-        data_extract_spec(
-          dataname = "ADAE",
-          select = select_spec(
-            choices = variable_choices(ADAE, c("AETOXGR", "AESEV", "AESER")),
-            selected = NULL,
-            multiple = FALSE
-          )
+      fill = picks(
+        datasets(choices = c("ADSL", "ADAE")),
+        variables(
+          choices = c(
+            "ARM", "ACTARM", "SEX",
+            "RACE", "ITTFL", "SAFFL", "STRATA2",
+            "AETOXGR", "AESEV", "AESER"
+          ),
+          selected = "SEX",
+          multiple = FALSE
         )
       ),
-      x_facet = list(
-        data_extract_spec(
-          dataname = "ADAE",
-          select = select_spec(
-            choices = variable_choices(ADAE, c("AETOXGR", "AESEV", "AESER")),
-            selected = "AETOXGR",
-            multiple = FALSE
-          )
-        ),
-        data_extract_spec(
-          dataname = "ADSL",
-          select = select_spec(
-            choices = variable_choices(
-              ADSL,
-              c(
-                "ARM", "ACTARM", "SEX",
-                "RACE", "ITTFL", "SAFFL", "STRATA2"
-              )
-            ),
-            selected = NULL,
-            multiple = FALSE
-          )
+      x_facet = picks(
+        datasets(choices = c("ADAE", "ADSL")),
+        variables(
+          choices = c(
+            "AETOXGR", "AESEV", "AESER",
+            "ARM", "ACTARM", "SEX",
+            "RACE", "ITTFL", "SAFFL", "STRATA2"
+          ),
+          selected = "AETOXGR",
+          multiple = FALSE
         )
       ),
-      y_facet = list(
-        data_extract_spec(
-          dataname = "ADAE",
-          select = select_spec(
-            choices = variable_choices(ADAE, c("AETOXGR", "AESEV", "AESER")),
-            selected = "AESEV",
-            multiple = FALSE
-          )
-        ),
-        data_extract_spec(
-          dataname = "ADSL",
-          select = select_spec(
-            choices = variable_choices(
-              ADSL,
-              c(
-                "ARM", "ACTARM", "SEX",
-                "RACE", "ITTFL", "SAFFL", "STRATA2"
-              )
-            ),
-            selected = NULL,
-            multiple = FALSE
-          )
+      y_facet = picks(
+        datasets(choices = c("ADAE", "ADSL")),
+        variables(
+          choices = c(
+            "AETOXGR", "AESEV", "AESER",
+            "ARM", "ACTARM", "SEX",
+            "RACE", "ITTFL", "SAFFL", "STRATA2"
+          ),
+          selected = "AESEV",
+          multiple = FALSE
         )
       )
     )
   )
 )
-#> Initializing tm_g_barchart_simple
+#> Warning: variables has eager choices (character) while datasets has dynamic choices. It is not guaranteed that explicitly defined choices will be a subset of data selected in a previous element.
+#> Warning: variables has eager choices (character) while datasets has dynamic choices. It is not guaranteed that explicitly defined choices will be a subset of data selected in a previous element.
+#> Warning: variables has eager choices (character) while datasets has dynamic choices. It is not guaranteed that explicitly defined choices will be a subset of data selected in a previous element.
+#> Warning: variables has eager choices (character) while datasets has dynamic choices. It is not guaranteed that explicitly defined choices will be a subset of data selected in a previous element.
 if (interactive()) {
   shinyApp(app$ui, app$server)
 }
+
+# Legacy `teal.transform::data_extract_spec()` encodings (default S3 method):
+if (FALSE) { # \dontrun{
+data <- teal_data()
+data <- within(data, {
+  library(dplyr)
+  ADSL <- tmc_ex_adsl %>%
+    mutate(ITTFL = factor("Y") %>% with_label("Intent-To-Treat Population Flag"))
+})
+join_keys(data) <- default_cdisc_join_keys[names(data)]
+
+app <- init(
+  data = data,
+  modules = modules(
+    tm_g_barchart_simple(
+      x = teal.transform::data_extract_spec(
+        dataname = "ADSL",
+        select = teal.transform::select_spec(
+          choices = teal.transform::variable_choices("ADSL", c("ARM", "SEX")),
+          selected = "ARM",
+          multiple = FALSE
+        )
+      )
+    )
+  )
+)
+shiny::shinyApp(app$ui, app$server)
+} # }
 ```
