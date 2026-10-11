@@ -68,7 +68,6 @@ template_laboratory <- function(dataname = "ANL",
           default_formatting = list(all = formatters::fmt_config(align = "left"))
         )
         rtables::main_title(table) <- paste("Patient ID:", patient_id)
-        table
 
         table_data_html <- labor_table_base %>%
           dplyr::mutate(aval_anrind_col = color_lab_values(aval_anrind)) %>%
@@ -471,7 +470,7 @@ srv_g_laboratory <- function(id,
       obj <- obj |> teal.code::eval_code(as.expression(labor_calls))
       # Remove table_data_html — only needed for the display, not the report
       teal.reporter::teal_card(obj) <- utils::head(teal.reporter::teal_card(obj), -3)
-      obj
+      within(obj, table)
     })
 
     output$title <- renderText({

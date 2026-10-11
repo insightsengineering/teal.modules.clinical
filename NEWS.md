@@ -1,8 +1,11 @@
-# teal.modules.clinical 0.13.0.9003
+# teal.modules.clinical 0.14.0
 
 ### Enhancements
-
 * Introduced `teal.picks` as the primary method to select dataset, variables and values in modules.
+
+### Miscellaneous
+* Added `teal.picks` and `tidyselect` as dependencies.
+* Updated the vignettes to use `teal.picks`.
 
 # teal.modules.clinical 0.13.0
 
