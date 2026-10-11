@@ -107,7 +107,7 @@ tm_t_smq(
 
   (`character`)\
   label to use for new column `SMQ` created by
-  [`tern::h_stack_by_baskets()`](https://rdrr.io/pkg/tern/man/h_stack_by_baskets.html).
+  [`tern::h_stack_by_baskets()`](https://pharmaverse.github.io/tern/latest-tag/reference/h_stack_by_baskets.html).
 
 - baskets:
 
@@ -174,7 +174,7 @@ This module generates the following objects, which can be modified in
 place using decorators:
 
 - `table` (`TableTree` - output of
-  [`rtables::build_table()`](https://rdrr.io/pkg/rtables/man/build_table.html))
+  [`rtables::build_table()`](https://insightsengineering.github.io/rtables/latest-tag/reference/build_table.html))
 
 A Decorator is applied to the specific output using a named list of
 `teal_transform_module` objects. The name of this list corresponds to

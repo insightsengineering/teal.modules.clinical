@@ -103,7 +103,7 @@ tm_t_summary(
   (named `list` or `NULL`)\
   format patterns for numeric statistics. Names should match the
   statistics in `numeric_stats`. If `NULL`, defaults from
-  [`tern::analyze_vars()`](https://rdrr.io/pkg/tern/man/analyze_variables.html)
+  [`tern::analyze_vars()`](https://pharmaverse.github.io/tern/latest-tag/reference/analyze_variables.html)
   are used.
 
 - denominator:
@@ -173,7 +173,7 @@ This module generates the following objects, which can be modified in
 place using decorators:
 
 - `table` (`TableTree` - output of
-  [`rtables::build_table()`](https://rdrr.io/pkg/rtables/man/build_table.html))
+  [`rtables::build_table()`](https://insightsengineering.github.io/rtables/latest-tag/reference/build_table.html))
 
 A Decorator is applied to the specific output using a named list of
 `teal_transform_module` objects. The name of this list corresponds to

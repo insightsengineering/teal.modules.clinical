@@ -156,9 +156,9 @@ tm_g_km(
   (`list`)\
   parameters to control the position and size of the annotation table
   added to the plot when `annot_surv_med = TRUE`, specified using the
-  [`control_surv_med_annot()`](https://rdrr.io/pkg/tern/man/control_annot.html)
+  [`control_surv_med_annot()`](https://pharmaverse.github.io/tern/latest-tag/reference/control_annot.html)
   function. Parameter options are: `x`, `y`, `w`, `h`, and `fill`. See
-  [`control_surv_med_annot()`](https://rdrr.io/pkg/tern/man/control_annot.html)
+  [`control_surv_med_annot()`](https://pharmaverse.github.io/tern/latest-tag/reference/control_annot.html)
   for details.
 
 - control_annot_coxph:
@@ -166,10 +166,10 @@ tm_g_km(
   (`list`)\
   parameters to control the position and size of the annotation table
   added to the plot when `annot_coxph = TRUE`, specified using the
-  [`control_coxph_annot()`](https://rdrr.io/pkg/tern/man/control_annot.html)
+  [`control_coxph_annot()`](https://pharmaverse.github.io/tern/latest-tag/reference/control_annot.html)
   function. Parameter options are: `x`, `y`, `w`, `h`, `fill`, and
   `ref_lbls`. See
-  [`control_coxph_annot()`](https://rdrr.io/pkg/tern/man/control_annot.html)
+  [`control_coxph_annot()`](https://pharmaverse.github.io/tern/latest-tag/reference/control_annot.html)
   for details.
 
 - legend_pos:

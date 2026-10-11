@@ -72,7 +72,7 @@ tm_t_glm_counts(
 
   (`character`) method used to estimate the mean odds ratio. Either
   "emmeans" or "ppmeans" (as in
-  [`summarize_glm_count()`](https://rdrr.io/pkg/tern/man/summarize_glm_count.html)).
+  [`summarize_glm_count()`](https://pharmaverse.github.io/tern/latest-tag/reference/summarize_glm_count.html)).
 
 - distribution:
 
@@ -171,7 +171,7 @@ a `teal_module` object.
 ## Details
 
 - Teal module for
-  [`tern::summarize_glm_count()`](https://rdrr.io/pkg/tern/man/summarize_glm_count.html)
+  [`tern::summarize_glm_count()`](https://pharmaverse.github.io/tern/latest-tag/reference/summarize_glm_count.html)
   analysis, that summarizes results of a Poisson negative binomial
   regression.
 
@@ -184,7 +184,7 @@ This module generates the following objects, which can be modified in
 place using decorators:
 
 - `table` (`TableTree` - output of
-  [`rtables::build_table()`](https://rdrr.io/pkg/rtables/man/build_table.html))
+  [`rtables::build_table()`](https://insightsengineering.github.io/rtables/latest-tag/reference/build_table.html))
 
 A Decorator is applied to the specific output using a named list of
 `teal_transform_module` objects. The name of this list corresponds to
@@ -223,7 +223,7 @@ For more information on reporting in `teal`, see the vignettes:
 
 ## See also
 
-[`summarize_glm_count()`](https://rdrr.io/pkg/tern/man/summarize_glm_count.html)
+[`summarize_glm_count()`](https://pharmaverse.github.io/tern/latest-tag/reference/summarize_glm_count.html)
 
 ## Examples in Shinylive
 

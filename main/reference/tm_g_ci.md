@@ -288,10 +288,6 @@ app <- init(
   )
 )
 #> Initializing tm_g_ci
-#> Warning: rlang::dots_list(..., .ignore_empty = "trailing")
-#>  - Setting explicit `selected` while `choices` are delayed (set using `tidyselect`) doesn't guarantee that `selected` is a subset of `choices`.
-#> Warning: rlang::dots_list(..., .ignore_empty = "trailing")
-#>  - Setting explicit `selected` while `choices` are delayed (set using `tidyselect`) doesn't guarantee that `selected` is a subset of `choices`.
 if (interactive()) {
   shinyApp(app$ui, app$server)
 }

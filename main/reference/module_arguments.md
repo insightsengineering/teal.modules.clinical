@@ -252,7 +252,7 @@ modules that are used repeatedly to express an analysis.
   is deprecated but still accepted)\
   object with all available choices and preselected option for time
   points that can be used in
-  [`tern::surv_timepoint()`](https://rdrr.io/pkg/tern/man/survival_timepoint.html).
+  [`tern::surv_timepoint()`](https://pharmaverse.github.io/tern/latest-tag/reference/survival_timepoint.html).
 
 - time_unit_var:
 

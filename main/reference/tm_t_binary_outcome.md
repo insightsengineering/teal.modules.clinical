@@ -137,18 +137,18 @@ tm_t_binary_outcome(
 
   - `unstrat`: a list of settings for unstratified analysis with 3 named
     elements `method_ci` and `method_test`, and `odds`. See
-    [`tern::estimate_proportion_diff()`](https://rdrr.io/pkg/tern/man/prop_diff.html),
-    [`tern::test_proportion_diff()`](https://rdrr.io/pkg/tern/man/prop_diff_test.html),
+    [`tern::estimate_proportion_diff()`](https://pharmaverse.github.io/tern/latest-tag/reference/prop_diff.html),
+    [`tern::test_proportion_diff()`](https://pharmaverse.github.io/tern/latest-tag/reference/prop_diff_test.html),
     and
-    [`tern::estimate_odds_ratio()`](https://rdrr.io/pkg/tern/man/odds_ratio.html),
+    [`tern::estimate_odds_ratio()`](https://pharmaverse.github.io/tern/latest-tag/reference/odds_ratio.html),
     respectively, for options and details on how these settings are
     implemented in the analysis.
 
   - `strat`: a list of settings for stratified analysis with elements
     `method_ci` and `method_test`. See
-    [`tern::estimate_proportion_diff()`](https://rdrr.io/pkg/tern/man/prop_diff.html)
+    [`tern::estimate_proportion_diff()`](https://pharmaverse.github.io/tern/latest-tag/reference/prop_diff.html)
     and
-    [`tern::test_proportion_diff()`](https://rdrr.io/pkg/tern/man/prop_diff_test.html),
+    [`tern::test_proportion_diff()`](https://pharmaverse.github.io/tern/latest-tag/reference/prop_diff_test.html),
     respectively, for options and details on how these settings are
     implemented in the analysis.
 
@@ -247,7 +247,7 @@ This module generates the following objects, which can be modified in
 place using decorators:
 
 - `table` (`TableTree` - output of
-  [`rtables::build_table()`](https://rdrr.io/pkg/rtables/man/build_table.html))
+  [`rtables::build_table()`](https://insightsengineering.github.io/rtables/latest-tag/reference/build_table.html))
 
 A Decorator is applied to the specific output using a named list of
 `teal_transform_module` objects. The name of this list corresponds to

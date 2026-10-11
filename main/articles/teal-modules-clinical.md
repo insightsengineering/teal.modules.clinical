@@ -59,43 +59,41 @@ A `teal.modules.clinical` module needs to be embedded inside a
 `shiny`/`teal` application to interact with it. A simple application
 including a bar chart module could look like this:
 
-``` r
-
-library(teal.modules.clinical)
-library(nestcolor)
-
-ADSL <- tmc_ex_adsl
-ADAE <- tmc_ex_adae
-
-app <- init(
-  data = cdisc_data(
-    ADSL = ADSL,
-    ADAE = ADAE,
-    code = "
-      ADSL <- tmc_ex_adsl
-      ADAE <- tmc_ex_adae
-    "
-  ),
-  modules = list(
-    tm_g_barchart_simple(
-      label = "ADAE Analysis",
-      x = picks(
-        datasets("ADAE"),
-        variables(
-          choices = c(
-            "ARM", "ACTARM", "SEX",
-            "RACE", "SAFFL", "STRATA2"
-          ),
-          selected = "ACTARM",
-          multiple = FALSE
-        )
-      )
-    )
-  )
-)
-
-shinyApp(app$ui, app$server)
-```
+\
+[`library`](https://rdrr.io/r/base/library.html)`(`[`teal.modules.clinical`](https://insightsengineering.github.io/teal.modules.clinical/)`)`\
+[`library`](https://rdrr.io/r/base/library.html)`(`[`nestcolor`](https://insightsengineering.github.io/nestcolor/)`)`\
+\
+`ADSL`` ``<-`` ``tmc_ex_adsl`\
+`ADAE`` ``<-`` ``tmc_ex_adae`\
+\
+`app`` ``<-`` `[`init`](https://insightsengineering.github.io/teal/latest-tag/reference/init.html)`(`\
+`  data ``=`` `[`cdisc_data`](https://insightsengineering.github.io/teal.data/latest-tag/reference/cdisc_data.html)`(`\
+`    ADSL ``=`` ``ADSL``,`\
+`    ADAE ``=`` ``ADAE``,`\
+`    code ``=`` ``"`\
+`      ADSL <- tmc_ex_adsl`\
+`      ADAE <- tmc_ex_adae`\
+`    "`\
+`  ``)``,`\
+`  modules ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(`\
+`    `[`tm_g_barchart_simple`](https://insightsengineering.github.io/teal.modules.clinical/reference/tm_g_barchart_simple.md)`(`\
+`      label ``=`` ``"ADAE Analysis"``,`\
+`      x ``=`` ``picks``(`\
+`        ``datasets``(``"ADAE"``)``,`\
+`        ``variables``(`\
+`          choices ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(`\
+`            ``"ARM"``, ``"ACTARM"``, ``"SEX"``,`\
+`            ``"RACE"``, ``"SAFFL"``, ``"STRATA2"`\
+`          ``)``,`\
+`          selected ``=`` ``"ACTARM"``,`\
+`          multiple ``=`` ``FALSE`\
+`        ``)`\
+`      ``)`\
+`    ``)`\
+`  ``)`\
+`)`\
+\
+[`shinyApp`](https://rdrr.io/pkg/shiny/man/shinyApp.html)`(``app``$``ui``, ``app``$``server``)`
 
 #### Try it out in Shinylive
 
@@ -121,20 +119,16 @@ is a `teal.data` function.
 
 Let’s break the above app down into pieces:
 
-``` r
-
-library(teal.modules.clinical)
-library(nestcolor)
-```
+\
+[`library`](https://rdrr.io/r/base/library.html)`(`[`teal.modules.clinical`](https://insightsengineering.github.io/teal.modules.clinical/)`)`\
+[`library`](https://rdrr.io/r/base/library.html)`(`[`nestcolor`](https://insightsengineering.github.io/nestcolor/)`)`
 
 The above lines load the libraries used in this example. We will use the
 example data provided in the `teal.modules.clinical` package:
 
-``` r
-
-ADSL <- tmc_ex_adsl
-ADAE <- tmc_ex_adae
-```
+\
+`ADSL`` ``<-`` ``tmc_ex_adsl`\
+`ADAE`` ``<-`` ``tmc_ex_adae`
 
 `nestcolor` is an optional package that can be loaded in to apply the
 standardized NEST color palette to all module plots.
@@ -149,42 +143,38 @@ the `modules` argument indicates the modules included in the
 application. Here, we include only one module:
 [`tm_g_barchart_simple()`](https://insightsengineering.github.io/teal.modules.clinical/reference/tm_g_barchart_simple.md).
 
-``` r
-
-app <- init(
-  data = cdisc_data(
-    ADSL = ADSL,
-    ADAE = ADAE,
-    code = "
-      ADSL <- tmc_ex_adsl
-      ADAE <- tmc_ex_adae
-    "
-  ),
-  modules = list(
-    tm_g_barchart_simple(
-      label = "ADAE Analysis",
-      x = picks(
-        datasets("ADAE"),
-        variables(
-          choices = c(
-            "ARM", "ACTARM", "SEX",
-            "RACE", "SAFFL", "STRATA2"
-          ),
-          selected = "ACTARM",
-          multiple = FALSE
-        )
-      )
-    )
-  )
-)
-```
+\
+`app`` ``<-`` `[`init`](https://insightsengineering.github.io/teal/latest-tag/reference/init.html)`(`\
+`  data ``=`` `[`cdisc_data`](https://insightsengineering.github.io/teal.data/latest-tag/reference/cdisc_data.html)`(`\
+`    ADSL ``=`` ``ADSL``,`\
+`    ADAE ``=`` ``ADAE``,`\
+`    code ``=`` ``"`\
+`      ADSL <- tmc_ex_adsl`\
+`      ADAE <- tmc_ex_adae`\
+`    "`\
+`  ``)``,`\
+`  modules ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(`\
+`    `[`tm_g_barchart_simple`](https://insightsengineering.github.io/teal.modules.clinical/reference/tm_g_barchart_simple.md)`(`\
+`      label ``=`` ``"ADAE Analysis"``,`\
+`      x ``=`` ``picks``(`\
+`        ``datasets``(``"ADAE"``)``,`\
+`        ``variables``(`\
+`          choices ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(`\
+`            ``"ARM"``, ``"ACTARM"``, ``"SEX"``,`\
+`            ``"RACE"``, ``"SAFFL"``, ``"STRATA2"`\
+`          ``)``,`\
+`          selected ``=`` ``"ACTARM"``,`\
+`          multiple ``=`` ``FALSE`\
+`        ``)`\
+`      ``)`\
+`    ``)`\
+`  ``)`\
+`)`
 
 Finally, we use `shiny` to launch the application:
 
-``` r
-
-shinyApp(app$ui, app$server)
-```
+\
+[`shinyApp`](https://rdrr.io/pkg/shiny/man/shinyApp.html)`(``app``$``ui``, ``app``$``server``)`
 
 Many `teal.modules.clinical` modules take column choices via
 \[teal.picks::variables()\]. Literal column names are usually passed as
@@ -195,32 +185,30 @@ resolved dynamically against the data. Dataset-scoped encodings use
 [`tm_t_summary()`](https://insightsengineering.github.io/teal.modules.clinical/reference/tm_t_summary.md)
 module illustrates the `variables()` pattern:
 
-``` r
-
-library(teal)
-library(teal.modules.clinical)
-
-ADSL <- tmc_ex_adsl
-
-app <- init(
-  data = cdisc_data(ADSL = ADSL, code = "ADSL <- tmc_ex_adsl"),
-  modules = list(
-    tm_t_summary(
-      label = "Demographic Table",
-      dataname = "ADSL",
-      arm_var = variables(choices = c("ARM", "ARMCD"), selected = "ARM"),
-      summarize_vars = variables(
-        choices = c("SEX", "RACE", "BMRKR2", "EOSDY", "DCSREAS", "AGE"),
-        selected = c("SEX", "RACE"),
-        multiple = TRUE,
-        ordered = TRUE
-      )
-    )
-  )
-)
-
-shinyApp(app$ui, app$server)
-```
+\
+[`library`](https://rdrr.io/r/base/library.html)`(`[`teal`](https://insightsengineering.github.io/teal/)`)`\
+[`library`](https://rdrr.io/r/base/library.html)`(`[`teal.modules.clinical`](https://insightsengineering.github.io/teal.modules.clinical/)`)`\
+\
+`ADSL`` ``<-`` ``tmc_ex_adsl`\
+\
+`app`` ``<-`` `[`init`](https://insightsengineering.github.io/teal/latest-tag/reference/init.html)`(`\
+`  data ``=`` `[`cdisc_data`](https://insightsengineering.github.io/teal.data/latest-tag/reference/cdisc_data.html)`(``ADSL ``=`` ``ADSL``, code ``=`` ``"ADSL <- tmc_ex_adsl"``)``,`\
+`  modules ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(`\
+`    `[`tm_t_summary`](https://insightsengineering.github.io/teal.modules.clinical/reference/tm_t_summary.md)`(`\
+`      label ``=`` ``"Demographic Table"``,`\
+`      dataname ``=`` ``"ADSL"``,`\
+`      arm_var ``=`` ``variables``(``choices ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``"ARM"``, ``"ARMCD"``)``, selected ``=`` ``"ARM"``)``,`\
+`      summarize_vars ``=`` ``variables``(`\
+`        choices ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``"SEX"``, ``"RACE"``, ``"BMRKR2"``, ``"EOSDY"``, ``"DCSREAS"``, ``"AGE"``)``,`\
+`        selected ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``"SEX"``, ``"RACE"``)``,`\
+`        multiple ``=`` ``TRUE``,`\
+`        ordered ``=`` ``TRUE`\
+`      ``)`\
+`    ``)`\
+`  ``)`\
+`)`\
+\
+[`shinyApp`](https://rdrr.io/pkg/shiny/man/shinyApp.html)`(``app``$``ui``, ``app``$``server``)`
 
 Please refer to the [API
 reference](https://insightsengineering.github.io/teal.modules.clinical/latest-tag/reference/)

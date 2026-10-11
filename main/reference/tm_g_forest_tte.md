@@ -138,7 +138,7 @@ tm_g_forest_tte(
   (`list`)\
   if a risk (proportion) difference column should be added, a list of
   settings to apply within the column. See
-  [`tern::control_riskdiff()`](https://rdrr.io/pkg/tern/man/control_riskdiff.html)
+  [`tern::control_riskdiff()`](https://pharmaverse.github.io/tern/latest-tag/reference/control_riskdiff.html)
   for details. If `NULL`, no risk difference column will be added.
 
 - conf_level:
@@ -336,8 +336,6 @@ app <- init(
   )
 )
 #> Initializing tm_g_forest_tte
-#> Warning: rlang::dots_list(..., .ignore_empty = "trailing")
-#>  - Setting explicit `selected` while `choices` are delayed (set using `tidyselect`) doesn't guarantee that `selected` is a subset of `choices`.
 if (interactive()) {
   shinyApp(app$ui, app$server)
 }

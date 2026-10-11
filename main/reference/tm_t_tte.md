@@ -123,7 +123,7 @@ tm_t_tte(
   is deprecated but still accepted)\
   object with all available choices and preselected option for time
   points that can be used in
-  [`tern::surv_timepoint()`](https://rdrr.io/pkg/tern/man/survival_timepoint.html).
+  [`tern::surv_timepoint()`](https://pharmaverse.github.io/tern/latest-tag/reference/survival_timepoint.html).
 
 - time_unit_var:
 
@@ -207,10 +207,10 @@ a `teal_module` object.
 ## Details
 
 - The core functionality of this module is based on
-  [`tern::coxph_pairwise()`](https://rdrr.io/pkg/tern/man/survival_coxph_pairwise.html),
-  [`tern::surv_timepoint()`](https://rdrr.io/pkg/tern/man/survival_timepoint.html),
+  [`tern::coxph_pairwise()`](https://pharmaverse.github.io/tern/latest-tag/reference/survival_coxph_pairwise.html),
+  [`tern::surv_timepoint()`](https://pharmaverse.github.io/tern/latest-tag/reference/survival_timepoint.html),
   and
-  [`tern::surv_time()`](https://rdrr.io/pkg/tern/man/survival_time.html)
+  [`tern::surv_time()`](https://pharmaverse.github.io/tern/latest-tag/reference/survival_time.html)
   from the `tern` package.
 
 - The arm and stratification variables are taken from the `parentname`
@@ -231,7 +231,7 @@ This module generates the following objects, which can be modified in
 place using decorators:
 
 - `table` (`TableTree` - output of
-  [`rtables::build_table()`](https://rdrr.io/pkg/rtables/man/build_table.html))
+  [`rtables::build_table()`](https://insightsengineering.github.io/rtables/latest-tag/reference/build_table.html))
 
 A Decorator is applied to the specific output using a named list of
 `teal_transform_module` objects. The name of this list corresponds to

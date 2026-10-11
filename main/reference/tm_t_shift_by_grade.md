@@ -190,7 +190,7 @@ This module generates the following objects, which can be modified in
 place using decorators:
 
 - `table` (`TableTree` - output of
-  [`rtables::build_table()`](https://rdrr.io/pkg/rtables/man/build_table.html))
+  [`rtables::build_table()`](https://insightsengineering.github.io/rtables/latest-tag/reference/build_table.html))
 
 A Decorator is applied to the specific output using a named list of
 `teal_transform_module` objects. The name of this list corresponds to
@@ -268,8 +268,6 @@ app <- init(
   filter = teal_slices(teal_slice("ADSL", "SAFFL", selected = "Y"))
 )
 #> Initializing tm_t_shift_by_grade
-#> Warning: rlang::dots_list(..., .ignore_empty = "trailing")
-#>  - Setting explicit `selected` while `choices` are delayed (set using `tidyselect`) doesn't guarantee that `selected` is a subset of `choices`.
 if (interactive()) {
   shinyApp(app$ui, app$server)
 }
