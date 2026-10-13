@@ -1,0 +1,76 @@
+---
+# This file generates AGENTS.md in the package root.
+# It is not part of the package build or the pkgdown site.
+# To regenerate it, run from the package root:
+#     rmarkdown::render("vignettes/_AGENTS.Rmd", output_file = file.path("AGENTS.md"), output_dir = ".")
+output:
+  github_document:
+    html_preview: false
+params:
+  url:  "https://raw.githubusercontent.com/insightsengineering/teal/refs/heads/main/SHARED_AGENTS.md"
+---
+# teal.modules.clinical R Package Development Guide
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Package Overview
+
+`teal.modules.clinical` is a package of the `teal` framework that provides modules for clinical tasks.
+
+The most important functions are the module functions that start with `tm_*`.
+
+## Development Context
+
+The main feature of this package is to provide modules that are used in apps.
+
+
+### Direct dependencies
+
+- **shiny** - Web app generation and isolating framework. 
+- **teal** - Provides the framework and helpers to operate with teal modules.
+- **teal.code** - Bare code generation and evaluation ensuring reproducibility.
+- **teal.data** - Data management and relationships between datasets via join_keys.
+(contains sample data for ADaM datasets and default keys to merge ADaM datasets).
+- **teal.reporter** - Report generation functionality.
+- **teal.slice** - Data filtering capabilities for application.
+- **teal.widgets** - Reusable UI components for user input and output.
+- **teal.logger** - Standardized logging across the framework.
+- **teal.transform** - Helpers to transform and work with user input (deprecated in favor of `teal.picks`).
+- **teal.picks** - Helpers to select, transform and manipulate them.
+
+### Supporting Packages
+
+The `teal.modules.clinical` package uses:
+
+- **tern**: for `rtables`. 
+- **ggplot2**: For plots 
+
+The `teal.modules.clinical` package is used in examples by:
+
+- **uteals** - Utility package that provides decorators and transformators for teal modules.
+
+
+## Workflows
+
+- Before fixing an issue consider that this package is part of teal framework, so a bug that manifests in this package might have a different origin.
+- The internal `teal` class `TealAppDriver` is used for end to end test the modules packages with `shinytest2`. 
+- If something is needed for more than one module consider if it fits on `teal` package. 
+- Use the pattern `tm_<name>.R` for shiny modules.
+- Group related utilities in shared files (e.g., `utils.R`, `validate_stanrard_inputs.R`).
+
+```{r teal_content, echo=FALSE, results='asis'}
+# Append common shared instructions from teal framework (special case as they are on this repo)
+common_agents_url <- params$url
+common_agents_path <- tempfile()
+download.file(url = common_agents_url, destfile = common_agents_path, quiet = TRUE)
+common_agents_shared <- readLines(common_agents_path)
+# remove a heading line only intented to aovid a markdown lint error
+line_to_avoid_lintr <- grep("^# ", common_agents_shared)
+# remove section intended only for module packages
+# begins_module_section <- grep("<!-- Begins Module Section", common_agents_shared, fixed = TRUE)
+# ends_module_section <- grep("<!-- Ends Module Section", common_agents_shared, fixed = TRUE)
+common_agents_shared <- common_agents_shared[-1 * line_to_avoid_lintr]
+cat(common_agents_shared, sep = "\n")
+```
