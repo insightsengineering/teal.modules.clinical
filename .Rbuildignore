@@ -55,3 +55,4 @@ coverage.*
 ^cran-comments\.md$
 ^AGENTS\.md$
 ^CLAUDE\.md$
+^vignettes/_AGENTS\.Rmd$
