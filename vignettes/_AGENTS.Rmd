@@ -65,9 +65,6 @@ download.file(url = common_agents_url, destfile = common_agents_path, quiet = TR
 common_agents_shared <- readLines(common_agents_path)
 # remove a heading line only intented to aovid a markdown lint error
 line_to_avoid_lintr <- grep("^# ", common_agents_shared)
-# remove section intended only for module packages
-# begins_module_section <- grep("<!-- Begins Module Section", common_agents_shared, fixed = TRUE)
-# ends_module_section <- grep("<!-- Ends Module Section", common_agents_shared, fixed = TRUE)
 common_agents_shared <- common_agents_shared[-1 * line_to_avoid_lintr]
 cat(common_agents_shared, sep = "\n")
 ```
