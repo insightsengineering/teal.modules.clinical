@@ -53,5 +53,5 @@ coverage.*
 ^.copilot
 ^CRAN-SUBMISSION$
 ^cran-comments\.md$
-^AGENTs\.md$
+^AGENTS\.md$
 ^CLAUDE\.md$
