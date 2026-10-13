@@ -49,13 +49,8 @@ The `teal.modules.clinical` package is used in examples by:
 - Before fixing an issue consider that this package is part of teal
   framework, so a bug that manifests in this package might have a
   different origin.
-- The internal `teal` class `TealAppDriver` is used for end to end test
-  the modules packages with `shinytest2`.
 - If something is needed for more than one module consider if it fits on
   `teal` package.
-- Use the pattern `tm_<name>.R` for shiny modules.
-- Group related utilities in shared files (e.g., `utils.R`,
-  `validate_stanrard_inputs.R`).
 
 <!-- markdownlint-disable-file MD002 MD041 -->
 
