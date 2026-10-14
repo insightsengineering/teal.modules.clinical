@@ -36,10 +36,8 @@ apps.
 The `teal.modules.clinical` package uses many package for its modules:
 
 - **DT** - For tables
-- **gtsummary** - For generating tables with **gt**.
 - **tern.gee**, **tern.mmrm**, **tern** and **rlistings** - For
   generating tables with **rtables** for different packages.
-- **goftest** - For some statistical methods.
 - **broom** - For nice visualization of statistical methods.
 - **ggrepel** and **cowplot** - For different visualizations helpers for
   **ggplot2**.
