@@ -4,7 +4,7 @@
 ## Package Overview
 
 `teal.modules.clinical` is a package of the `teal` framework that
-provides modules for clinical tasks.
+provides modules for clinical analysis tasks.
 
 The most important functions are the module functions that start with
 `tm_*`.
@@ -16,7 +16,6 @@ apps.
 
 ### Direct dependencies
 
-- **shiny** - Web app generation and isolating framework.
 - **teal** - Provides the framework and helpers to operate with teal
   modules.
 - **teal.code** - Bare code generation and evaluation ensuring
@@ -34,15 +33,23 @@ apps.
 
 ### Supporting Packages
 
-The `teal.modules.clinical` package uses:
+The `teal.modules.clinical` package uses many package for its modules:
 
-- **tern**: for `rtables`.
-- **ggplot2**: For plots
+- **DT** - For tables
+- **gtsummary** - For generating tables with **gt**.
+- **tern.gee**, **tern.mmrm**, **tern** and **rlistings** - For
+  generating tables with **rtables** for different packages.
+- **goftest** - For some statistical methods.
+- **broom** - For nice visualization of statistical methods.
+- **ggrepel** and **cowplot** - For different visualizations helpers for
+  **ggplot2**.
 
 The `teal.modules.clinical` package is used in examples by:
 
 - **uteals** - Utility package that provides decorators and
   transformators for teal modules.
+- **teal.gallery** - Repository with several example apps that use these
+  modules.
 
 ## Workflows
 
