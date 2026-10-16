@@ -108,3 +108,49 @@ testthat::test_that("template_events can generate customized table with pruning 
   res <- testthat::expect_silent(result)
   testthat::expect_snapshot(res)
 })
+
+count_fixed <- function(text, pattern) {
+  matches <- gregexpr(pattern, text, fixed = TRUE)[[1]]
+  if (length(matches) == 1L && matches[[1]] == -1L) {
+    0L
+  } else {
+    length(matches)
+  }
+}
+
+testthat::test_that("template_events can omit per-HLT patient and event summary rows", {
+  base_args <- list(
+    dataname = "adae",
+    parentname = "adsl",
+    arm_var = "ACTARM",
+    hlt = "AEBODSYS",
+    llt = "AEDECOD",
+    add_total = TRUE
+  )
+
+  both_off <- do.call(
+    template_events,
+    c(base_args, list(incl_num_patients_hlt = FALSE, incl_num_events_hlt = FALSE))
+  )
+  layout_off <- paste(deparse(both_off$layout), collapse = " ")
+  sort_off <- paste(deparse(both_off$sort), collapse = " ")
+  # The patient row stays in the layout so frequency sorting still uses it.
+  testthat::expect_equal(count_fixed(layout_off, "summarize_num_patients"), 2L)
+  testthat::expect_equal(count_fixed(layout_off, "Overall total number of events"), 1L)
+  testthat::expect_true(grepl("drop_rows", sort_off, fixed = TRUE))
+  testthat::expect_false(grepl("scorefun_hlt_no_sum", sort_off, fixed = TRUE))
+
+  events_off <- do.call(
+    template_events,
+    c(base_args, list(incl_num_patients_hlt = TRUE, incl_num_events_hlt = FALSE))
+  )
+  layout_events_off <- paste(deparse(events_off$layout), collapse = " ")
+  testthat::expect_equal(count_fixed(layout_events_off, "Overall total number of events"), 1L)
+  testthat::expect_equal(
+    count_fixed(layout_events_off, "Total number of patients with at least one event"),
+    2L
+  )
+  testthat::expect_false(
+    grepl("scorefun_hlt_no_sum", paste(deparse(events_off$sort), collapse = " "), fixed = TRUE)
+  )
+})
