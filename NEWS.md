@@ -1,9 +1,14 @@
-# teal.modules.clinical 0.13.0.9003
+# teal.modules.clinical 0.14.0.9000
+
+# teal.modules.clinical 0.14.0
 
 ### Enhancements
-
 * Introduced `teal.picks` as the primary method to select dataset, variables and values in modules.
 * Added `incl_num_patients_hlt` and `incl_num_events_hlt` to `tm_t_events` so the per-HLT patient and event summary rows can be hidden (#1496).
+
+### Miscellaneous
+* Added `teal.picks` and `tidyselect` as dependencies.
+* Updated the vignettes to use `teal.picks`.
 
 # teal.modules.clinical 0.13.0
 
