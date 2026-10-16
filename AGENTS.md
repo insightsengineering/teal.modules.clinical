@@ -12,7 +12,9 @@ The most important functions are the module functions that start with
 ## Development Context
 
 The main feature of this package is to provide modules that are used in
-apps.
+apps. Some modules have S3 method dispatch as their arguments differ
+whether the variables/values are encoded using `teal.picks` or
+`teal.transform`
 
 ### Direct dependencies
 
@@ -56,6 +58,9 @@ The `teal.modules.clinical` package is used in examples by:
   different origin.
 - If something is needed for more than one module consider if it fits on
   `teal` package.
+- When updating documentation, take remember that arguments shared by
+  modules have a common R file `argument_convention.R` to not duplicate
+  documentation entries.
 
 <!-- markdownlint-disable-file MD002 MD041 -->
 
@@ -158,6 +163,7 @@ Each module should produce one or more Table, Listing, or Graph (TLG):
 Teal modules follow a specific pattern with UI and server components:
 
 ``` r
+# UI Function
 ui_example_module <- function(id, var_x, var_y, decorators) {
   ns <- shiny::NS(id)
   select_decorators <- getFromNamespace("select_decorators", "teal") # import from teal internal functions
@@ -191,6 +197,7 @@ ui_example_module <- function(id, var_x, var_y, decorators) {
   )
 }
 
+# Server Function
 srv_example_module <- function(id, data, var_x, var_y, decorators) {
   checkmate::assert_string(id)
   checkmate::assert_class(data, "reactive")
@@ -300,6 +307,7 @@ tm_example_module <- function(
   `shiny::validate(teal::need_input(...))`
 
 ``` r
+# Good: Clear data manipulation
 plot_data <- data %>%
   dplyr::filter(!is.na(variable)) %>%
   dplyr::group_by(category) %>%
@@ -309,6 +317,7 @@ plot_data <- data %>%
     .groups = "drop"
   )
 
+# Good: Descriptive ggplot2 code
 ggplot2::ggplot(plot_data, ggplot2::aes(x = category, y = mean_value)) +
   ggplot2::geom_col(fill = "steelblue") +
   ggplot2::labs(
