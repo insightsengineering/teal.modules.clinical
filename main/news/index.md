@@ -1,5 +1,7 @@
 # Changelog
 
+## teal.modules.clinical 0.14.0.9001
+
 ## teal.modules.clinical 0.14.0
 
 CRAN release: 2026-10-09
