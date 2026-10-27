@@ -53,3 +53,6 @@ coverage.*
 ^.copilot
 ^CRAN-SUBMISSION$
 ^cran-comments\.md$
+^AGENTS\.md$
+^CLAUDE\.md$
+^vignettes/_AGENTS\.Rmd$
