@@ -20,7 +20,7 @@ cs_to_des_filter(
 
   (`choices_selected`)\
   object to be transformed. See
-  [`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html)
+  [`teal.transform::choices_selected()`](https://rdrr.io/pkg/teal.transform/man/choices_selected.html)
   for details.
 
 - dataname:
@@ -48,4 +48,4 @@ cs_to_des_filter(
 
 ## Value
 
-([`teal.transform::data_extract_spec()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/data_extract_spec.html))
+([`teal.transform::data_extract_spec()`](https://rdrr.io/pkg/teal.transform/man/data_extract_spec.html))

@@ -399,7 +399,7 @@ and stable test data and it is kept internal for feature tracking.
 `        `[`as.character`](https://rdrr.io/r/base/character.html)`(``sample_fct``(``actions``, `[`nrow`](https://rdrr.io/r/base/nrow.html)`(``adae``)``, prob ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``0.05``, ``0.05``, ``0.05``, ``0.01``, ``0.05``, ``0.1``, ``0.45``, ``0.1``, ``0.05``)``)``)`\
 `      ``)``)`` `[`%>%`](https://magrittr.tidyverse.org/reference/pipe.html)` `[`with_label`](https://pharmaverse.github.io/formatters/latest-tag/reference/with_label.html)`(``"Action Taken With Study Treatment"``)`\
 `    ``)`` `[`%>%`](https://magrittr.tidyverse.org/reference/pipe.html)\
-`    `[`col_relabel`](https://insightsengineering.github.io/teal.data/latest-tag/reference/col_labels.html)`(`\
+`    `[`col_relabel`](https://rdrr.io/pkg/teal.data/man/col_labels.html)`(`\
 `      AEBODSYS ``=`` ``"Body System or Organ Class"``,`\
 `      AELLT ``=`` ``"Lowest Level Term"``,`\
 `      AEDECOD ``=`` ``"Dictionary-Derived Term"``,`\
@@ -419,9 +419,9 @@ and stable test data and it is kept internal for feature tracking.
 `    ``)`\
 \
 `  ``i_lbls`` ``<-`` `[`sapply`](https://rdrr.io/r/base/lapply.html)`(`\
-`    `[`names`](https://rdrr.io/r/base/names.html)`(`[`col_labels`](https://insightsengineering.github.io/teal.data/latest-tag/reference/col_labels.html)`(``tmc_ex_adae``)``[`[`is.na`](https://rdrr.io/r/base/NA.html)`(`[`col_labels`](https://insightsengineering.github.io/teal.data/latest-tag/reference/col_labels.html)`(``tmc_ex_adae``)``)``]``)``, ``function``(``x``)`` `[`which`](https://rdrr.io/r/base/which.html)`(`[`names`](https://rdrr.io/r/base/names.html)`(``common_var_labels``)`` ``==`` ``x``)`\
+`    `[`names`](https://rdrr.io/r/base/names.html)`(`[`col_labels`](https://rdrr.io/pkg/teal.data/man/col_labels.html)`(``tmc_ex_adae``)``[`[`is.na`](https://rdrr.io/r/base/NA.html)`(`[`col_labels`](https://rdrr.io/pkg/teal.data/man/col_labels.html)`(``tmc_ex_adae``)``)``]``)``, ``function``(``x``)`` `[`which`](https://rdrr.io/r/base/which.html)`(`[`names`](https://rdrr.io/r/base/names.html)`(``common_var_labels``)`` ``==`` ``x``)`\
 `  ``)`\
-`  `[`col_labels`](https://insightsengineering.github.io/teal.data/latest-tag/reference/col_labels.html)`(``tmc_ex_adae``[`[`names`](https://rdrr.io/r/base/names.html)`(``i_lbls``)``]``)`` ``<-`` ``common_var_labels``[``i_lbls``]`\
+`  `[`col_labels`](https://rdrr.io/pkg/teal.data/man/col_labels.html)`(``tmc_ex_adae``[`[`names`](https://rdrr.io/r/base/names.html)`(``i_lbls``)``]``)`` ``<-`` ``common_var_labels``[``i_lbls``]`\
 \
 `  `[`save`](https://rdrr.io/r/base/save.html)`(``tmc_ex_adae``, file ``=`` ``"data/tmc_ex_adae.rda"``, compress ``=`` ``"xz"``)`\
 `}`
@@ -592,10 +592,10 @@ and stable test data and it is kept internal for feature tracking.
 `    ``)`\
 \
 `  ``i_lbls`` ``<-`` `[`sapply`](https://rdrr.io/r/base/lapply.html)`(`\
-`    `[`names`](https://rdrr.io/r/base/names.html)`(`[`col_labels`](https://insightsengineering.github.io/teal.data/latest-tag/reference/col_labels.html)`(``tmc_ex_adaette``)``[`[`is.na`](https://rdrr.io/r/base/NA.html)`(`[`col_labels`](https://insightsengineering.github.io/teal.data/latest-tag/reference/col_labels.html)`(``tmc_ex_adaette``)``)``]``)``,`\
+`    `[`names`](https://rdrr.io/r/base/names.html)`(`[`col_labels`](https://rdrr.io/pkg/teal.data/man/col_labels.html)`(``tmc_ex_adaette``)``[`[`is.na`](https://rdrr.io/r/base/NA.html)`(`[`col_labels`](https://rdrr.io/pkg/teal.data/man/col_labels.html)`(``tmc_ex_adaette``)``)``]``)``,`\
 `    ``function``(``x``)`` `[`which`](https://rdrr.io/r/base/which.html)`(`[`names`](https://rdrr.io/r/base/names.html)`(``common_var_labels``)`` ``==`` ``x``)`\
 `  ``)`\
-`  `[`col_labels`](https://insightsengineering.github.io/teal.data/latest-tag/reference/col_labels.html)`(``tmc_ex_adaette``[`[`names`](https://rdrr.io/r/base/names.html)`(``i_lbls``)``]``)`` ``<-`` ``common_var_labels``[``i_lbls``]`\
+`  `[`col_labels`](https://rdrr.io/pkg/teal.data/man/col_labels.html)`(``tmc_ex_adaette``[`[`names`](https://rdrr.io/r/base/names.html)`(``i_lbls``)``]``)`` ``<-`` ``common_var_labels``[``i_lbls``]`\
 \
 `  `[`save`](https://rdrr.io/r/base/save.html)`(``tmc_ex_adaette``, file ``=`` ``"data/tmc_ex_adaette.rda"``, compress ``=`` ``"xz"``)`\
 `}`
@@ -692,7 +692,7 @@ and stable test data and it is kept internal for feature tracking.
 `        ``"Q4H"``, ``"QD"``, ``"TID"``, ``"4 TIMES PER MONTH"`\
 `      ``)``, ``dplyr``::`[`n`](https://dplyr.tidyverse.org/reference/context.html)`(``)``, replace ``=`` ``TRUE``)`` `[`%>%`](https://magrittr.tidyverse.org/reference/pipe.html)` `[`with_label`](https://pharmaverse.github.io/formatters/latest-tag/reference/with_label.html)`(``"Dosing Frequency per Interval"``)`\
 `    ``)`` `[`%>%`](https://magrittr.tidyverse.org/reference/pipe.html)\
-`    `[`col_relabel`](https://insightsengineering.github.io/teal.data/latest-tag/reference/col_labels.html)`(`\
+`    `[`col_relabel`](https://rdrr.io/pkg/teal.data/man/col_labels.html)`(`\
 `      CMCLAS ``=`` ``"Medication Class"``,`\
 `      CMDECOD ``=`` ``"Standardized Medication Name"``,`\
 `      ATIREL ``=`` ``"Time Relation of Medication"``,`\
@@ -700,9 +700,9 @@ and stable test data and it is kept internal for feature tracking.
 `    ``)`\
 \
 `  ``i_lbls`` ``<-`` `[`sapply`](https://rdrr.io/r/base/lapply.html)`(`\
-`    `[`names`](https://rdrr.io/r/base/names.html)`(`[`col_labels`](https://insightsengineering.github.io/teal.data/latest-tag/reference/col_labels.html)`(``tmc_ex_adcm``)``[`[`is.na`](https://rdrr.io/r/base/NA.html)`(`[`col_labels`](https://insightsengineering.github.io/teal.data/latest-tag/reference/col_labels.html)`(``tmc_ex_adcm``)``)``]``)``, ``function``(``x``)`` `[`which`](https://rdrr.io/r/base/which.html)`(`[`names`](https://rdrr.io/r/base/names.html)`(``common_var_labels``)`` ``==`` ``x``)`\
+`    `[`names`](https://rdrr.io/r/base/names.html)`(`[`col_labels`](https://rdrr.io/pkg/teal.data/man/col_labels.html)`(``tmc_ex_adcm``)``[`[`is.na`](https://rdrr.io/r/base/NA.html)`(`[`col_labels`](https://rdrr.io/pkg/teal.data/man/col_labels.html)`(``tmc_ex_adcm``)``)``]``)``, ``function``(``x``)`` `[`which`](https://rdrr.io/r/base/which.html)`(`[`names`](https://rdrr.io/r/base/names.html)`(``common_var_labels``)`` ``==`` ``x``)`\
 `  ``)`\
-`  `[`col_labels`](https://insightsengineering.github.io/teal.data/latest-tag/reference/col_labels.html)`(``tmc_ex_adcm``[`[`names`](https://rdrr.io/r/base/names.html)`(``i_lbls``)``]``)`` ``<-`` ``common_var_labels``[``i_lbls``]`\
+`  `[`col_labels`](https://rdrr.io/pkg/teal.data/man/col_labels.html)`(``tmc_ex_adcm``[`[`names`](https://rdrr.io/r/base/names.html)`(``i_lbls``)``]``)`` ``<-`` ``common_var_labels``[``i_lbls``]`\
 \
 `  `[`save`](https://rdrr.io/r/base/save.html)`(``tmc_ex_adcm``, file ``=`` ``"data/tmc_ex_adcm.rda"``, compress ``=`` ``"xz"``)`\
 `}`
@@ -877,13 +877,13 @@ and stable test data and it is kept internal for feature tracking.
 `    ``data`\
 `  ``}`\
 \
-`  ``lbls`` ``<-`` `[`col_labels`](https://insightsengineering.github.io/teal.data/latest-tag/reference/col_labels.html)`(``adeg``)`\
+`  ``lbls`` ``<-`` `[`col_labels`](https://rdrr.io/pkg/teal.data/man/col_labels.html)`(``adeg``)`\
 `  ``adeg`` ``<-`` `[`rbind`](https://insightsengineering.github.io/rtables/latest-tag/reference/rbind.html)`(``adeg``, ``get_groups``(``adeg``, ``TRUE``)``, ``get_groups``(``adeg``, ``FALSE``)``)`` `[`%>%`](https://magrittr.tidyverse.org/reference/pipe.html)\
 `    ``dplyr``::`[`arrange`](https://dplyr.tidyverse.org/reference/arrange.html)`(``.data``$``row_check``)`` `[`%>%`](https://magrittr.tidyverse.org/reference/pipe.html)\
 `    ``dplyr``::`[`group_by`](https://dplyr.tidyverse.org/reference/group_by.html)`(``.data``$``USUBJID``, ``.data``$``PARAMCD``, ``.data``$``BASETYPE``)`` `[`%>%`](https://magrittr.tidyverse.org/reference/pipe.html)\
 `    ``dplyr``::`[`arrange`](https://dplyr.tidyverse.org/reference/arrange.html)`(``.data``$``AVISIT``, .by_group ``=`` ``TRUE``)`` `[`%>%`](https://magrittr.tidyverse.org/reference/pipe.html)\
 `    ``dplyr``::`[`ungroup`](https://dplyr.tidyverse.org/reference/group_by.html)`(``)`\
-`  `[`col_labels`](https://insightsengineering.github.io/teal.data/latest-tag/reference/col_labels.html)`(``adeg``)`` ``<-`` ``lbls`\
+`  `[`col_labels`](https://rdrr.io/pkg/teal.data/man/col_labels.html)`(``adeg``)`` ``<-`` ``lbls`\
 \
 `  ``adeg`` ``<-`` ``adeg``[``, ``-`[`which`](https://rdrr.io/r/base/which.html)`(`[`names`](https://rdrr.io/r/base/names.html)`(``adeg``)`` `[`%in%`](https://rdrr.io/r/base/match.html)` `[`c`](https://rdrr.io/r/base/c.html)`(``"row_check"``)``)``]`\
 `  ``flag_variables`` ``<-`` ``function``(``data``, ``worst_obs``)`` ``{`\
@@ -951,12 +951,12 @@ and stable test data and it is kept internal for feature tracking.
 `      `[`as.character`](https://rdrr.io/r/base/character.html)`(``.data``$``BASE``)`\
 `    ``)``)`` `[`%>%`](https://magrittr.tidyverse.org/reference/pipe.html)\
 `    ``dplyr``::`[`ungroup`](https://dplyr.tidyverse.org/reference/group_by.html)`(``)`` `[`%>%`](https://magrittr.tidyverse.org/reference/pipe.html)\
-`    `[`col_relabel`](https://insightsengineering.github.io/teal.data/latest-tag/reference/col_labels.html)`(``BASEC ``=`` ``"Baseline Character Value"``)`\
+`    `[`col_relabel`](https://rdrr.io/pkg/teal.data/man/col_labels.html)`(``BASEC ``=`` ``"Baseline Character Value"``)`\
 \
 `  ``i_lbls`` ``<-`` `[`sapply`](https://rdrr.io/r/base/lapply.html)`(`\
-`    `[`names`](https://rdrr.io/r/base/names.html)`(`[`col_labels`](https://insightsengineering.github.io/teal.data/latest-tag/reference/col_labels.html)`(``tmc_ex_adeg``)``[`[`is.na`](https://rdrr.io/r/base/NA.html)`(`[`col_labels`](https://insightsengineering.github.io/teal.data/latest-tag/reference/col_labels.html)`(``tmc_ex_adeg``)``)``]``)``, ``function``(``x``)`` `[`which`](https://rdrr.io/r/base/which.html)`(`[`names`](https://rdrr.io/r/base/names.html)`(``common_var_labels``)`` ``==`` ``x``)`\
+`    `[`names`](https://rdrr.io/r/base/names.html)`(`[`col_labels`](https://rdrr.io/pkg/teal.data/man/col_labels.html)`(``tmc_ex_adeg``)``[`[`is.na`](https://rdrr.io/r/base/NA.html)`(`[`col_labels`](https://rdrr.io/pkg/teal.data/man/col_labels.html)`(``tmc_ex_adeg``)``)``]``)``, ``function``(``x``)`` `[`which`](https://rdrr.io/r/base/which.html)`(`[`names`](https://rdrr.io/r/base/names.html)`(``common_var_labels``)`` ``==`` ``x``)`\
 `  ``)`\
-`  `[`col_labels`](https://insightsengineering.github.io/teal.data/latest-tag/reference/col_labels.html)`(``tmc_ex_adeg``[`[`names`](https://rdrr.io/r/base/names.html)`(``i_lbls``)``]``)`` ``<-`` ``common_var_labels``[``i_lbls``]`\
+`  `[`col_labels`](https://rdrr.io/pkg/teal.data/man/col_labels.html)`(``tmc_ex_adeg``[`[`names`](https://rdrr.io/r/base/names.html)`(``i_lbls``)``]``)`` ``<-`` ``common_var_labels``[``i_lbls``]`\
 \
 `  `[`save`](https://rdrr.io/r/base/save.html)`(``tmc_ex_adeg``, file ``=`` ``"data/tmc_ex_adeg.rda"``, compress ``=`` ``"xz"``)`\
 `}`
@@ -1146,7 +1146,7 @@ and stable test data and it is kept internal for feature tracking.
 `      ``.data``$``ASTDTM``,`\
 `      ``.data``$``AVISITN`\
 `    ``)`` `[`%>%`](https://magrittr.tidyverse.org/reference/pipe.html)\
-`    `[`col_relabel`](https://insightsengineering.github.io/teal.data/latest-tag/reference/col_labels.html)`(`\
+`    `[`col_relabel`](https://rdrr.io/pkg/teal.data/man/col_labels.html)`(`\
 `      PARCAT1 ``=`` ``"Parameter Category (Individual/Overall)"``,`\
 `      PARCAT2 ``=`` ``"Parameter Category (Drug A/Drug B)"``,`\
 `      EXSEQ ``=`` ``"Analysis Sequence Number"`\
@@ -1162,9 +1162,9 @@ and stable test data and it is kept internal for feature tracking.
 `    ``dplyr``::`[`distinct`](https://dplyr.tidyverse.org/reference/distinct.html)`(``USUBJID``, .keep_all ``=`` ``TRUE``)`\
 \
 `  ``i_lbls`` ``<-`` `[`sapply`](https://rdrr.io/r/base/lapply.html)`(`\
-`    `[`names`](https://rdrr.io/r/base/names.html)`(`[`col_labels`](https://insightsengineering.github.io/teal.data/latest-tag/reference/col_labels.html)`(``tmc_ex_adex``)``[`[`is.na`](https://rdrr.io/r/base/NA.html)`(`[`col_labels`](https://insightsengineering.github.io/teal.data/latest-tag/reference/col_labels.html)`(``tmc_ex_adex``)``)``]``)``, ``function``(``x``)`` `[`which`](https://rdrr.io/r/base/which.html)`(`[`names`](https://rdrr.io/r/base/names.html)`(``common_var_labels``)`` ``==`` ``x``)`\
+`    `[`names`](https://rdrr.io/r/base/names.html)`(`[`col_labels`](https://rdrr.io/pkg/teal.data/man/col_labels.html)`(``tmc_ex_adex``)``[`[`is.na`](https://rdrr.io/r/base/NA.html)`(`[`col_labels`](https://rdrr.io/pkg/teal.data/man/col_labels.html)`(``tmc_ex_adex``)``)``]``)``, ``function``(``x``)`` `[`which`](https://rdrr.io/r/base/which.html)`(`[`names`](https://rdrr.io/r/base/names.html)`(``common_var_labels``)`` ``==`` ``x``)`\
 `  ``)`\
-`  `[`col_labels`](https://insightsengineering.github.io/teal.data/latest-tag/reference/col_labels.html)`(``tmc_ex_adex``[`[`names`](https://rdrr.io/r/base/names.html)`(``i_lbls``)``]``)`` ``<-`` ``common_var_labels``[``i_lbls``]`\
+`  `[`col_labels`](https://rdrr.io/pkg/teal.data/man/col_labels.html)`(``tmc_ex_adex``[`[`names`](https://rdrr.io/r/base/names.html)`(``i_lbls``)``]``)`` ``<-`` ``common_var_labels``[``i_lbls``]`\
 \
 `  `[`save`](https://rdrr.io/r/base/save.html)`(``tmc_ex_adex``, file ``=`` ``"data/tmc_ex_adex.rda"``, compress ``=`` ``"xz"``)`\
 `}`
@@ -1295,7 +1295,7 @@ and stable test data and it is kept internal for feature tracking.
 `    ``dplyr``::`[`group_by`](https://dplyr.tidyverse.org/reference/group_by.html)`(``.data``$``USUBJID``, ``.data``$``PARAMCD``, ``.data``$``BASETYPE``)`` `[`%>%`](https://magrittr.tidyverse.org/reference/pipe.html)\
 `    ``dplyr``::`[`mutate`](https://dplyr.tidyverse.org/reference/mutate.html)`(``BTOXGR ``=`` ``.data``$``ATOXGR``[``.data``$``ABLFL`` ``==`` ``"Y"``]``)`` `[`%>%`](https://magrittr.tidyverse.org/reference/pipe.html)\
 `    ``dplyr``::`[`ungroup`](https://dplyr.tidyverse.org/reference/group_by.html)`(``)`` `[`%>%`](https://magrittr.tidyverse.org/reference/pipe.html)\
-`    `[`col_relabel`](https://insightsengineering.github.io/teal.data/latest-tag/reference/col_labels.html)`(``BTOXGR ``=`` ``"Baseline Toxicity Grade"``)`\
+`    `[`col_relabel`](https://rdrr.io/pkg/teal.data/man/col_labels.html)`(``BTOXGR ``=`` ``"Baseline Toxicity Grade"``)`\
 \
 `  ``# High and low descriptions of the different PARAMCD values`\
 `  ``# This is currently hard coded as the GDSR does not have these descriptions yet`\
@@ -1366,7 +1366,7 @@ and stable test data and it is kept internal for feature tracking.
 `      ``.data``$``ADTM``,`\
 `      ``.data``$``LBSEQ`\
 `    ``)`` `[`%>%`](https://magrittr.tidyverse.org/reference/pipe.html)\
-`    `[`col_relabel`](https://insightsengineering.github.io/teal.data/latest-tag/reference/col_labels.html)`(``LBSEQ ``=`` ``"Lab Test or Examination Sequence Number"``)`\
+`    `[`col_relabel`](https://rdrr.io/pkg/teal.data/man/col_labels.html)`(``LBSEQ ``=`` ``"Lab Test or Examination Sequence Number"``)`\
 \
 `  ``adlb`` ``<-`` ``adlb`` `[`%>%`](https://magrittr.tidyverse.org/reference/pipe.html)` ``dplyr``::`[`mutate`](https://dplyr.tidyverse.org/reference/mutate.html)`(``ONTRTFL ``=`` `[`factor`](https://rdrr.io/r/base/factor.html)`(``dplyr``::`[`case_when`](https://dplyr.tidyverse.org/reference/case-and-replace-when.html)`(`\
 `    `[`is.na`](https://rdrr.io/r/base/NA.html)`(``.data``$``TRTSDTM``)`` ``~`` ``""``,`\
@@ -1454,7 +1454,7 @@ and stable test data and it is kept internal for feature tracking.
 `  ``tmc_ex_adlb`` ``<-`` ``tmc_ex_adlb`` `[`%>%`](https://magrittr.tidyverse.org/reference/pipe.html)\
 `    ``dplyr``::`[`mutate`](https://dplyr.tidyverse.org/reference/mutate.html)`(``CHG ``=`` ``.data``$``AVAL`` ``-`` ``.data``$``BASE``)`` `[`%>%`](https://magrittr.tidyverse.org/reference/pipe.html)\
 `    ``dplyr``::`[`mutate`](https://dplyr.tidyverse.org/reference/mutate.html)`(``PCHG ``=`` ``100`` ``*`` ``(``.data``$``CHG`` ``/`` ``.data``$``BASE``)``)`` `[`%>%`](https://magrittr.tidyverse.org/reference/pipe.html)\
-`    `[`col_relabel`](https://insightsengineering.github.io/teal.data/latest-tag/reference/col_labels.html)`(`\
+`    `[`col_relabel`](https://rdrr.io/pkg/teal.data/man/col_labels.html)`(`\
 `      LBCAT ``=`` ``"Category for Lab Test"``,`\
 `      ATOXDSCL ``=`` ``"Analysis Toxicity Description Low"``,`\
 `      ATOXDSCH ``=`` ``"Analysis Toxicity Description High"``,`\
@@ -1465,9 +1465,9 @@ and stable test data and it is kept internal for feature tracking.
 `    ``)`\
 \
 `  ``i_lbls`` ``<-`` `[`sapply`](https://rdrr.io/r/base/lapply.html)`(`\
-`    `[`names`](https://rdrr.io/r/base/names.html)`(`[`col_labels`](https://insightsengineering.github.io/teal.data/latest-tag/reference/col_labels.html)`(``tmc_ex_adlb``)``[`[`is.na`](https://rdrr.io/r/base/NA.html)`(`[`col_labels`](https://insightsengineering.github.io/teal.data/latest-tag/reference/col_labels.html)`(``tmc_ex_adlb``)``)``]``)``, ``function``(``x``)`` `[`which`](https://rdrr.io/r/base/which.html)`(`[`names`](https://rdrr.io/r/base/names.html)`(``common_var_labels``)`` ``==`` ``x``)`\
+`    `[`names`](https://rdrr.io/r/base/names.html)`(`[`col_labels`](https://rdrr.io/pkg/teal.data/man/col_labels.html)`(``tmc_ex_adlb``)``[`[`is.na`](https://rdrr.io/r/base/NA.html)`(`[`col_labels`](https://rdrr.io/pkg/teal.data/man/col_labels.html)`(``tmc_ex_adlb``)``)``]``)``, ``function``(``x``)`` `[`which`](https://rdrr.io/r/base/which.html)`(`[`names`](https://rdrr.io/r/base/names.html)`(``common_var_labels``)`` ``==`` ``x``)`\
 `  ``)`\
-`  `[`col_labels`](https://insightsengineering.github.io/teal.data/latest-tag/reference/col_labels.html)`(``tmc_ex_adlb``[`[`names`](https://rdrr.io/r/base/names.html)`(``i_lbls``)``]``)`` ``<-`` ``common_var_labels``[``i_lbls``]`\
+`  `[`col_labels`](https://rdrr.io/pkg/teal.data/man/col_labels.html)`(``tmc_ex_adlb``[`[`names`](https://rdrr.io/r/base/names.html)`(``i_lbls``)``]``)`` ``<-`` ``common_var_labels``[``i_lbls``]`\
 \
 `  `[`save`](https://rdrr.io/r/base/save.html)`(``tmc_ex_adlb``, file ``=`` ``"data/tmc_ex_adlb.rda"``, compress ``=`` ``"xz"``)`\
 `}`
@@ -1539,7 +1539,7 @@ and stable test data and it is kept internal for feature tracking.
 `    ``dplyr``::`[`mutate`](https://dplyr.tidyverse.org/reference/mutate.html)`(``MHSEQ ``=`` `[`seq_len`](https://rdrr.io/r/base/seq.html)`(``dplyr``::`[`n`](https://dplyr.tidyverse.org/reference/context.html)`(``)``)``)`` `[`%>%`](https://magrittr.tidyverse.org/reference/pipe.html)\
 `    ``dplyr``::`[`ungroup`](https://dplyr.tidyverse.org/reference/group_by.html)`(``)`` `[`%>%`](https://magrittr.tidyverse.org/reference/pipe.html)\
 `    ``dplyr``::`[`arrange`](https://dplyr.tidyverse.org/reference/arrange.html)`(``.data``$``STUDYID``, ``.data``$``USUBJID``, ``.data``$``ASTDTM``)`` `[`%>%`](https://magrittr.tidyverse.org/reference/pipe.html)\
-`    `[`col_relabel`](https://insightsengineering.github.io/teal.data/latest-tag/reference/col_labels.html)`(`\
+`    `[`col_relabel`](https://rdrr.io/pkg/teal.data/man/col_labels.html)`(`\
 `      MHBODSYS ``=`` ``"Body System or Organ Class"``,`\
 `      MHDECOD ``=`` ``"Dictionary-Derived Term"``,`\
 `      MHSOC ``=`` ``"Primary System Organ Class"``,`\
@@ -1547,9 +1547,9 @@ and stable test data and it is kept internal for feature tracking.
 `    ``)`\
 \
 `  ``i_lbls`` ``<-`` `[`sapply`](https://rdrr.io/r/base/lapply.html)`(`\
-`    `[`names`](https://rdrr.io/r/base/names.html)`(`[`col_labels`](https://insightsengineering.github.io/teal.data/latest-tag/reference/col_labels.html)`(``tmc_ex_admh``)``[`[`is.na`](https://rdrr.io/r/base/NA.html)`(`[`col_labels`](https://insightsengineering.github.io/teal.data/latest-tag/reference/col_labels.html)`(``tmc_ex_admh``)``)``]``)``, ``function``(``x``)`` `[`which`](https://rdrr.io/r/base/which.html)`(`[`names`](https://rdrr.io/r/base/names.html)`(``common_var_labels``)`` ``==`` ``x``)`\
+`    `[`names`](https://rdrr.io/r/base/names.html)`(`[`col_labels`](https://rdrr.io/pkg/teal.data/man/col_labels.html)`(``tmc_ex_admh``)``[`[`is.na`](https://rdrr.io/r/base/NA.html)`(`[`col_labels`](https://rdrr.io/pkg/teal.data/man/col_labels.html)`(``tmc_ex_admh``)``)``]``)``, ``function``(``x``)`` `[`which`](https://rdrr.io/r/base/which.html)`(`[`names`](https://rdrr.io/r/base/names.html)`(``common_var_labels``)`` ``==`` ``x``)`\
 `  ``)`\
-`  `[`col_labels`](https://insightsengineering.github.io/teal.data/latest-tag/reference/col_labels.html)`(``tmc_ex_admh``[`[`names`](https://rdrr.io/r/base/names.html)`(``i_lbls``)``]``)`` ``<-`` ``common_var_labels``[``i_lbls``]`\
+`  `[`col_labels`](https://rdrr.io/pkg/teal.data/man/col_labels.html)`(``tmc_ex_admh``[`[`names`](https://rdrr.io/r/base/names.html)`(``i_lbls``)``]``)`` ``<-`` ``common_var_labels``[``i_lbls``]`\
 \
 `  `[`save`](https://rdrr.io/r/base/save.html)`(``tmc_ex_admh``, file ``=`` ``"data/tmc_ex_admh.rda"``, compress ``=`` ``"xz"``)`\
 `}`
@@ -1656,9 +1656,9 @@ and stable test data and it is kept internal for feature tracking.
 `    ``)`\
 \
 `  ``i_lbls`` ``<-`` `[`sapply`](https://rdrr.io/r/base/lapply.html)`(`\
-`    `[`names`](https://rdrr.io/r/base/names.html)`(`[`col_labels`](https://insightsengineering.github.io/teal.data/latest-tag/reference/col_labels.html)`(``tmc_ex_adqs``)``[`[`is.na`](https://rdrr.io/r/base/NA.html)`(`[`col_labels`](https://insightsengineering.github.io/teal.data/latest-tag/reference/col_labels.html)`(``tmc_ex_adqs``)``)``]``)``, ``function``(``x``)`` `[`which`](https://rdrr.io/r/base/which.html)`(`[`names`](https://rdrr.io/r/base/names.html)`(``common_var_labels``)`` ``==`` ``x``)`\
+`    `[`names`](https://rdrr.io/r/base/names.html)`(`[`col_labels`](https://rdrr.io/pkg/teal.data/man/col_labels.html)`(``tmc_ex_adqs``)``[`[`is.na`](https://rdrr.io/r/base/NA.html)`(`[`col_labels`](https://rdrr.io/pkg/teal.data/man/col_labels.html)`(``tmc_ex_adqs``)``)``]``)``, ``function``(``x``)`` `[`which`](https://rdrr.io/r/base/which.html)`(`[`names`](https://rdrr.io/r/base/names.html)`(``common_var_labels``)`` ``==`` ``x``)`\
 `  ``)`\
-`  `[`col_labels`](https://insightsengineering.github.io/teal.data/latest-tag/reference/col_labels.html)`(``tmc_ex_adqs``[`[`names`](https://rdrr.io/r/base/names.html)`(``i_lbls``)``]``)`` ``<-`` ``common_var_labels``[``i_lbls``]`\
+`  `[`col_labels`](https://rdrr.io/pkg/teal.data/man/col_labels.html)`(``tmc_ex_adqs``[`[`names`](https://rdrr.io/r/base/names.html)`(``i_lbls``)``]``)`` ``<-`` ``common_var_labels``[``i_lbls``]`\
 \
 `  `[`save`](https://rdrr.io/r/base/save.html)`(``tmc_ex_adqs``, file ``=`` ``"data/tmc_ex_adqs.rda"``, compress ``=`` ``"xz"``)`\
 `}`
@@ -1770,9 +1770,9 @@ and stable test data and it is kept internal for feature tracking.
 `    ``)`\
 \
 `  ``i_lbls`` ``<-`` `[`sapply`](https://rdrr.io/r/base/lapply.html)`(`\
-`    `[`names`](https://rdrr.io/r/base/names.html)`(`[`col_labels`](https://insightsengineering.github.io/teal.data/latest-tag/reference/col_labels.html)`(``tmc_ex_adrs``)``[`[`is.na`](https://rdrr.io/r/base/NA.html)`(`[`col_labels`](https://insightsengineering.github.io/teal.data/latest-tag/reference/col_labels.html)`(``tmc_ex_adrs``)``)``]``)``, ``function``(``x``)`` `[`which`](https://rdrr.io/r/base/which.html)`(`[`names`](https://rdrr.io/r/base/names.html)`(``common_var_labels``)`` ``==`` ``x``)`\
+`    `[`names`](https://rdrr.io/r/base/names.html)`(`[`col_labels`](https://rdrr.io/pkg/teal.data/man/col_labels.html)`(``tmc_ex_adrs``)``[`[`is.na`](https://rdrr.io/r/base/NA.html)`(`[`col_labels`](https://rdrr.io/pkg/teal.data/man/col_labels.html)`(``tmc_ex_adrs``)``)``]``)``, ``function``(``x``)`` `[`which`](https://rdrr.io/r/base/which.html)`(`[`names`](https://rdrr.io/r/base/names.html)`(``common_var_labels``)`` ``==`` ``x``)`\
 `  ``)`\
-`  `[`col_labels`](https://insightsengineering.github.io/teal.data/latest-tag/reference/col_labels.html)`(``tmc_ex_adrs``[`[`names`](https://rdrr.io/r/base/names.html)`(``i_lbls``)``]``)`` ``<-`` ``common_var_labels``[``i_lbls``]`\
+`  `[`col_labels`](https://rdrr.io/pkg/teal.data/man/col_labels.html)`(``tmc_ex_adrs``[`[`names`](https://rdrr.io/r/base/names.html)`(``i_lbls``)``]``)`` ``<-`` ``common_var_labels``[``i_lbls``]`\
 \
 `  `[`save`](https://rdrr.io/r/base/save.html)`(``tmc_ex_adrs``, file ``=`` ``"data/tmc_ex_adrs.rda"``, compress ``=`` ``"xz"``)`\
 `}`
@@ -1868,7 +1868,7 @@ and stable test data and it is kept internal for feature tracking.
 `      ``.data``$``PARAMCD``,`\
 `      ``.data``$``ADTM`\
 `    ``)`\
-`  ``lbls`` ``<-`` `[`col_labels`](https://insightsengineering.github.io/teal.data/latest-tag/reference/col_labels.html)`(``adtte``)`\
+`  ``lbls`` ``<-`` `[`col_labels`](https://rdrr.io/pkg/teal.data/man/col_labels.html)`(``adtte``)`\
 \
 `  ``# adding adverse event counts and log follow-up time`\
 `  ``tmc_ex_adtte`` ``<-`` ``dplyr``::`[`bind_rows`](https://dplyr.tidyverse.org/reference/bind_rows.html)`(`\
@@ -1891,12 +1891,12 @@ and stable test data and it is kept internal for feature tracking.
 `      ``.data``$``PARAMCD``,`\
 `      ``.data``$``ADTM`\
 `    ``)`\
-`  `[`col_labels`](https://insightsengineering.github.io/teal.data/latest-tag/reference/col_labels.html)`(``tmc_ex_adtte``)`` ``<-`` `[`c`](https://rdrr.io/r/base/c.html)`(``lbls``, lgTMATRSK ``=`` ``"Log Time At Risk"``)`\
+`  `[`col_labels`](https://rdrr.io/pkg/teal.data/man/col_labels.html)`(``tmc_ex_adtte``)`` ``<-`` `[`c`](https://rdrr.io/r/base/c.html)`(``lbls``, lgTMATRSK ``=`` ``"Log Time At Risk"``)`\
 \
 `  ``i_lbls`` ``<-`` `[`sapply`](https://rdrr.io/r/base/lapply.html)`(`\
-`    `[`names`](https://rdrr.io/r/base/names.html)`(`[`col_labels`](https://insightsengineering.github.io/teal.data/latest-tag/reference/col_labels.html)`(``tmc_ex_adtte``)``[`[`is.na`](https://rdrr.io/r/base/NA.html)`(`[`col_labels`](https://insightsengineering.github.io/teal.data/latest-tag/reference/col_labels.html)`(``tmc_ex_adtte``)``)``]``)``, ``function``(``x``)`` `[`which`](https://rdrr.io/r/base/which.html)`(`[`names`](https://rdrr.io/r/base/names.html)`(``common_var_labels``)`` ``==`` ``x``)`\
+`    `[`names`](https://rdrr.io/r/base/names.html)`(`[`col_labels`](https://rdrr.io/pkg/teal.data/man/col_labels.html)`(``tmc_ex_adtte``)``[`[`is.na`](https://rdrr.io/r/base/NA.html)`(`[`col_labels`](https://rdrr.io/pkg/teal.data/man/col_labels.html)`(``tmc_ex_adtte``)``)``]``)``, ``function``(``x``)`` `[`which`](https://rdrr.io/r/base/which.html)`(`[`names`](https://rdrr.io/r/base/names.html)`(``common_var_labels``)`` ``==`` ``x``)`\
 `  ``)`\
-`  `[`col_labels`](https://insightsengineering.github.io/teal.data/latest-tag/reference/col_labels.html)`(``tmc_ex_adtte``[`[`names`](https://rdrr.io/r/base/names.html)`(``i_lbls``)``]``)`` ``<-`` ``common_var_labels``[``i_lbls``]`\
+`  `[`col_labels`](https://rdrr.io/pkg/teal.data/man/col_labels.html)`(``tmc_ex_adtte``[`[`names`](https://rdrr.io/r/base/names.html)`(``i_lbls``)``]``)`` ``<-`` ``common_var_labels``[``i_lbls``]`\
 \
 `  `[`save`](https://rdrr.io/r/base/save.html)`(``tmc_ex_adtte``, file ``=`` ``"data/tmc_ex_adtte.rda"``, compress ``=`` ``"xz"``)`\
 `}`
@@ -1988,9 +1988,9 @@ and stable test data and it is kept internal for feature tracking.
 `    ``)`\
 \
 `  ``i_lbls`` ``<-`` `[`sapply`](https://rdrr.io/r/base/lapply.html)`(`\
-`    `[`names`](https://rdrr.io/r/base/names.html)`(`[`col_labels`](https://insightsengineering.github.io/teal.data/latest-tag/reference/col_labels.html)`(``tmc_ex_advs``)``[`[`is.na`](https://rdrr.io/r/base/NA.html)`(`[`col_labels`](https://insightsengineering.github.io/teal.data/latest-tag/reference/col_labels.html)`(``tmc_ex_advs``)``)``]``)``, ``function``(``x``)`` `[`which`](https://rdrr.io/r/base/which.html)`(`[`names`](https://rdrr.io/r/base/names.html)`(``common_var_labels``)`` ``==`` ``x``)`\
+`    `[`names`](https://rdrr.io/r/base/names.html)`(`[`col_labels`](https://rdrr.io/pkg/teal.data/man/col_labels.html)`(``tmc_ex_advs``)``[`[`is.na`](https://rdrr.io/r/base/NA.html)`(`[`col_labels`](https://rdrr.io/pkg/teal.data/man/col_labels.html)`(``tmc_ex_advs``)``)``]``)``, ``function``(``x``)`` `[`which`](https://rdrr.io/r/base/which.html)`(`[`names`](https://rdrr.io/r/base/names.html)`(``common_var_labels``)`` ``==`` ``x``)`\
 `  ``)`\
-`  `[`col_labels`](https://insightsengineering.github.io/teal.data/latest-tag/reference/col_labels.html)`(``tmc_ex_advs``[`[`names`](https://rdrr.io/r/base/names.html)`(``i_lbls``)``]``)`` ``<-`` ``common_var_labels``[``i_lbls``]`\
+`  `[`col_labels`](https://rdrr.io/pkg/teal.data/man/col_labels.html)`(``tmc_ex_advs``[`[`names`](https://rdrr.io/r/base/names.html)`(``i_lbls``)``]``)`` ``<-`` ``common_var_labels``[``i_lbls``]`\
 \
 `  `[`save`](https://rdrr.io/r/base/save.html)`(``tmc_ex_advs``, file ``=`` ``"data/tmc_ex_advs.rda"``, compress ``=`` ``"xz"``)`\
 `}`

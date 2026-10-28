@@ -11,20 +11,20 @@ modules that are used repeatedly to express an analysis.
   if specified it must be a named list with each element corresponding
   to an arm variable in `ADSL` and the element must be another list
   (possibly with delayed
-  [`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html)
+  [`teal.picks::variables()`](https://rdrr.io/pkg/teal.picks/man/picks.html)
   or
-  [`teal.picks::values()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  [`teal.picks::values()`](https://rdrr.io/pkg/teal.picks/man/picks.html);
   legacy
-  [`teal.transform::variable_choices()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/variable_choices.html)
+  [`teal.transform::variable_choices()`](https://rdrr.io/pkg/teal.transform/man/variable_choices.html)
   and
-  [`teal.transform::value_choices()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/value_choices.html)
+  [`teal.transform::value_choices()`](https://rdrr.io/pkg/teal.transform/man/value_choices.html)
   are deprecated but still accepted) with the elements named `ref` and
   `comp` that define the default reference and comparison arms when the
   arm variable is changed.
 
 - arm_var:
 
-  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  ([`teal.picks::variables()`](https://rdrr.io/pkg/teal.picks/man/picks.html);
   legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for variable
   names that can be used as `arm_var`. It defines the grouping variable
@@ -32,85 +32,85 @@ modules that are used repeatedly to express an analysis.
 
 - atirel:
 
-  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  ([`teal.picks::variables()`](https://rdrr.io/pkg/teal.picks/man/picks.html);
   legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for the
   `ATIREL` variable from `dataname`.
 
 - aval_var:
 
-  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  ([`teal.picks::variables()`](https://rdrr.io/pkg/teal.picks/man/picks.html);
   legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and pre-selected option for the
   analysis variable.
 
 - avalu_var:
 
-  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  ([`teal.picks::variables()`](https://rdrr.io/pkg/teal.picks/man/picks.html);
   legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for the
   analysis unit variable.
 
 - avisit:
 
-  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  ([`teal.picks::variables()`](https://rdrr.io/pkg/teal.picks/man/picks.html);
   legacy `teal.transform` objects are deprecated but still accepted)\
   value of analysis visit `AVISIT` of interest.
 
 - baseline_var:
 
-  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  ([`teal.picks::variables()`](https://rdrr.io/pkg/teal.picks/man/picks.html);
   legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for variable
   values that can be used as `baseline_var`.
 
 - by_vars:
 
-  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  ([`teal.picks::variables()`](https://rdrr.io/pkg/teal.picks/man/picks.html);
   legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for variable
   names used to split the summary by rows.
 
 - cmdecod:
 
-  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  ([`teal.picks::variables()`](https://rdrr.io/pkg/teal.picks/man/picks.html);
   legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for the
   `CMDECOD` variable from `dataname`.
 
 - cmindc:
 
-  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  ([`teal.picks::variables()`](https://rdrr.io/pkg/teal.picks/man/picks.html);
   legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for the
   `CMINDC` variable from `dataname`.
 
 - cmstdy:
 
-  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  ([`teal.picks::variables()`](https://rdrr.io/pkg/teal.picks/man/picks.html);
   legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for the
   `CMSTDY` variable from `dataname`.
 
 - cnsr_var:
 
-  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  ([`teal.picks::variables()`](https://rdrr.io/pkg/teal.picks/man/picks.html);
   legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for the
   censoring variable.
 
 - conf_level:
 
-  ([`teal.picks::values()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  ([`teal.picks::values()`](https://rdrr.io/pkg/teal.picks/man/picks.html);
   legacy
-  [`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html)
+  [`teal.transform::choices_selected()`](https://rdrr.io/pkg/teal.transform/man/choices_selected.html)
   is deprecated but still accepted)\
   available confidence levels and default selection, each in the range
   (0, 1).
 
 - cov_var:
 
-  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  ([`teal.picks::variables()`](https://rdrr.io/pkg/teal.picks/man/picks.html);
   legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for the
   covariates variables.
@@ -145,13 +145,13 @@ modules that are used repeatedly to express an analysis.
 
 - hlt:
 
-  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  ([`teal.picks::variables()`](https://rdrr.io/pkg/teal.picks/man/picks.html);
   legacy `teal.transform` objects are deprecated but still accepted)\
   name of the variable with high level term for events.
 
 - id_var:
 
-  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  ([`teal.picks::variables()`](https://rdrr.io/pkg/teal.picks/man/picks.html);
   legacy `teal.transform` objects are deprecated but still accepted)\
   object specifying the variable name for subject id.
 
@@ -175,13 +175,13 @@ modules that are used repeatedly to express an analysis.
 
 - llt:
 
-  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  ([`teal.picks::variables()`](https://rdrr.io/pkg/teal.picks/man/picks.html);
   legacy `teal.transform` objects are deprecated but still accepted)\
   name of the variable with low level term for events.
 
 - paramcd:
 
-  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  ([`teal.picks::variables()`](https://rdrr.io/pkg/teal.picks/man/picks.html);
   legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for the
   parameter code variable from `dataname`.
@@ -227,28 +227,28 @@ modules that are used repeatedly to express an analysis.
 
 - strata_var:
 
-  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  ([`teal.picks::variables()`](https://rdrr.io/pkg/teal.picks/man/picks.html);
   legacy `teal.transform` objects are deprecated but still accepted)\
   names of the variables for stratified analysis.
 
 - summarize_vars:
 
-  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  ([`teal.picks::variables()`](https://rdrr.io/pkg/teal.picks/man/picks.html);
   legacy `teal.transform` objects are deprecated but still accepted)\
   names of the variables that should be summarized.
 
 - subgroup_var:
 
-  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  ([`teal.picks::variables()`](https://rdrr.io/pkg/teal.picks/man/picks.html);
   legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for variable
   names that can be used as the default subgroups.
 
 - time_points:
 
-  ([`teal.picks::values()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  ([`teal.picks::values()`](https://rdrr.io/pkg/teal.picks/man/picks.html);
   legacy
-  [`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html)
+  [`teal.transform::choices_selected()`](https://rdrr.io/pkg/teal.transform/man/choices_selected.html)
   is deprecated but still accepted)\
   object with all available choices and preselected option for time
   points that can be used in
@@ -256,22 +256,22 @@ modules that are used repeatedly to express an analysis.
 
 - time_unit_var:
 
-  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  ([`teal.picks::variables()`](https://rdrr.io/pkg/teal.picks/man/picks.html);
   legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and pre-selected option for the time
   unit variable.
 
 - treatment_flag:
 
-  ([`teal.picks::values()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  ([`teal.picks::values()`](https://rdrr.io/pkg/teal.picks/man/picks.html);
   legacy
-  [`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html)
+  [`teal.transform::choices_selected()`](https://rdrr.io/pkg/teal.transform/man/choices_selected.html)
   is deprecated but still accepted)\
   value indicating on treatment records in `treatment_flag_var`.
 
 - treatment_flag_var:
 
-  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  ([`teal.picks::variables()`](https://rdrr.io/pkg/teal.picks/man/picks.html);
   legacy `teal.transform` objects are deprecated but still accepted)\
   on treatment flag variable.
 
@@ -282,7 +282,7 @@ modules that are used repeatedly to express an analysis.
 
 - visit_var:
 
-  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  ([`teal.picks::variables()`](https://rdrr.io/pkg/teal.picks/man/picks.html);
   legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for variable
   names that can be used as `visit` variable. Must be a factor in
@@ -290,15 +290,15 @@ modules that are used repeatedly to express an analysis.
 
 - worst_flag_indicator:
 
-  ([`teal.picks::values()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  ([`teal.picks::values()`](https://rdrr.io/pkg/teal.picks/man/picks.html);
   legacy
-  [`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html)
+  [`teal.transform::choices_selected()`](https://rdrr.io/pkg/teal.transform/man/choices_selected.html)
   is deprecated but still accepted)\
   value indicating worst grade.
 
 - worst_flag_var:
 
-  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  ([`teal.picks::variables()`](https://rdrr.io/pkg/teal.picks/man/picks.html);
   legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for variable
   names that can be used as worst flag variable.

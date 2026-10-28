@@ -163,7 +163,7 @@
   :
 
   Whether object is of class
-  [`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html)
+  [`teal.transform::choices_selected()`](https://rdrr.io/pkg/teal.transform/man/choices_selected.html)
 
 - [`pipe_expr()`](https://insightsengineering.github.io/teal.modules.clinical/reference/pipe_expr.md)
   : Expressions as a Pipeline

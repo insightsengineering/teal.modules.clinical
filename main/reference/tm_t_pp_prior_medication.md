@@ -47,28 +47,28 @@ tm_t_pp_prior_medication(
 
 - atirel:
 
-  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  ([`teal.picks::variables()`](https://rdrr.io/pkg/teal.picks/man/picks.html);
   legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for the
   `ATIREL` variable from `dataname`.
 
 - cmdecod:
 
-  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  ([`teal.picks::variables()`](https://rdrr.io/pkg/teal.picks/man/picks.html);
   legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for the
   `CMDECOD` variable from `dataname`.
 
 - cmindc:
 
-  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  ([`teal.picks::variables()`](https://rdrr.io/pkg/teal.picks/man/picks.html);
   legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for the
   `CMINDC` variable from `dataname`.
 
 - cmstdy:
 
-  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  ([`teal.picks::variables()`](https://rdrr.io/pkg/teal.picks/man/picks.html);
   legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for the
   `CMSTDY` variable from `dataname`.
@@ -91,7 +91,7 @@ tm_t_pp_prior_medication(
 
   (`list` of `teal_transform_module`) that will be applied to transform
   module's data input. To learn more check
-  [`vignette("transform-input-data", package = "teal")`](https://insightsengineering.github.io/teal/latest-tag/articles/transform-input-data.html).
+  [`vignette("transform-input-data", package = "teal")`](https://cran.rstudio.com/web/packages/teal/vignettes/transform-input-data.html).
 
 - decorators:
 
@@ -116,7 +116,7 @@ framework.
 
 For more information on reporting in `teal`, see the vignettes:
 
-- [`vignette("reportable-shiny-application", package = "teal.reporter")`](https://insightsengineering.github.io/teal.reporter/latest-tag/articles/reportable-shiny-application.html)
+- [`vignette("reportable-shiny-application", package = "teal.reporter")`](https://cran.rstudio.com/web/packages/teal.reporter/vignettes/reportable-shiny-application.html)
 
 - `vignette("adding-support-for-reporting-to-custom-modules", package = "teal")`
 

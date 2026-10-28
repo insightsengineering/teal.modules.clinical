@@ -14,7 +14,7 @@ cs_to_filter_spec(cs, multiple = FALSE, label = "Filter by")
 
   (`choices_selected`)\
   object to be transformed. See
-  [`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html)
+  [`teal.transform::choices_selected()`](https://rdrr.io/pkg/teal.transform/man/choices_selected.html)
   for details.
 
 - multiple:
@@ -30,4 +30,4 @@ cs_to_filter_spec(cs, multiple = FALSE, label = "Filter by")
 
 ## Value
 
-([`teal.transform::filter_spec()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/filter_spec.html))
+([`teal.transform::filter_spec()`](https://rdrr.io/pkg/teal.transform/man/filter_spec.html))

@@ -66,8 +66,8 @@ including a bar chart module could look like this:
 `ADSL`` ``<-`` ``tmc_ex_adsl`\
 `ADAE`` ``<-`` ``tmc_ex_adae`\
 \
-`app`` ``<-`` `[`init`](https://insightsengineering.github.io/teal/latest-tag/reference/init.html)`(`\
-`  data ``=`` `[`cdisc_data`](https://insightsengineering.github.io/teal.data/latest-tag/reference/cdisc_data.html)`(`\
+`app`` ``<-`` `[`init`](https://rdrr.io/pkg/teal/man/init.html)`(`\
+`  data ``=`` `[`cdisc_data`](https://rdrr.io/pkg/teal.data/man/cdisc_data.html)`(`\
 `    ADSL ``=`` ``ADSL``,`\
 `    ADAE ``=`` ``ADAE``,`\
 `    code ``=`` ``"`\
@@ -111,10 +111,9 @@ libraries to run a `teal` app and flesh out its functionality. In the
 example above,
 [`tm_g_barchart_simple()`](https://insightsengineering.github.io/teal.modules.clinical/reference/tm_g_barchart_simple.md)
 is the only function from `teal.modules.clinical` whereas
-[`init()`](https://insightsengineering.github.io/teal/latest-tag/reference/init.html)
-is a `teal` function, `picks()`, `datasets()`, and `variables()` are
-`teal.picks` functions, and
-[`cdisc_data()`](https://insightsengineering.github.io/teal.data/latest-tag/reference/cdisc_data.html)
+[`init()`](https://rdrr.io/pkg/teal/man/init.html) is a `teal` function,
+`picks()`, `datasets()`, and `variables()` are `teal.picks` functions,
+and [`cdisc_data()`](https://rdrr.io/pkg/teal.data/man/cdisc_data.html)
 is a `teal.data` function.
 
 Let’s break the above app down into pieces:
@@ -144,8 +143,8 @@ application. Here, we include only one module:
 [`tm_g_barchart_simple()`](https://insightsengineering.github.io/teal.modules.clinical/reference/tm_g_barchart_simple.md).
 
 \
-`app`` ``<-`` `[`init`](https://insightsengineering.github.io/teal/latest-tag/reference/init.html)`(`\
-`  data ``=`` `[`cdisc_data`](https://insightsengineering.github.io/teal.data/latest-tag/reference/cdisc_data.html)`(`\
+`app`` ``<-`` `[`init`](https://rdrr.io/pkg/teal/man/init.html)`(`\
+`  data ``=`` `[`cdisc_data`](https://rdrr.io/pkg/teal.data/man/cdisc_data.html)`(`\
 `    ADSL ``=`` ``ADSL``,`\
 `    ADAE ``=`` ``ADAE``,`\
 `    code ``=`` ``"`\
@@ -191,8 +190,8 @@ module illustrates the `variables()` pattern:
 \
 `ADSL`` ``<-`` ``tmc_ex_adsl`\
 \
-`app`` ``<-`` `[`init`](https://insightsengineering.github.io/teal/latest-tag/reference/init.html)`(`\
-`  data ``=`` `[`cdisc_data`](https://insightsengineering.github.io/teal.data/latest-tag/reference/cdisc_data.html)`(``ADSL ``=`` ``ADSL``, code ``=`` ``"ADSL <- tmc_ex_adsl"``)``,`\
+`app`` ``<-`` `[`init`](https://rdrr.io/pkg/teal/man/init.html)`(`\
+`  data ``=`` `[`cdisc_data`](https://rdrr.io/pkg/teal.data/man/cdisc_data.html)`(``ADSL ``=`` ``ADSL``, code ``=`` ``"ADSL <- tmc_ex_adsl"``)``,`\
 `  modules ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(`\
 `    `[`tm_t_summary`](https://insightsengineering.github.io/teal.modules.clinical/reference/tm_t_summary.md)`(`\
 `      label ``=`` ``"Demographic Table"``,`\

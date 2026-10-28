@@ -1,6 +1,14 @@
 # Changelog
 
-## teal.modules.clinical 0.14.0.9001
+## teal.modules.clinical 0.14.0.9002
+
+#### Enhancements
+
+- Added `incl_num_events_hlt` to
+  [`tm_t_events()`](https://insightsengineering.github.io/teal.modules.clinical/reference/tm_t_events.md)
+  to optionally hide the overall total number of events row under each
+  high-level term
+  ([\#1496](https://github.com/insightsengineering/teal.modules.clinical/issues/1496)).
 
 ## teal.modules.clinical 0.14.0
 
@@ -126,7 +134,7 @@ CRAN release: 2025-02-28
 #### Bug fixes
 
 - Fixed bug in creating modules with `delayed_data` and
-  [`teal.transform::all_choices`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/delayed_choices.html).
+  [`teal.transform::all_choices`](https://rdrr.io/pkg/teal.transform/man/delayed_choices.html).
 - Fixed bug in `tm_g_forest_tte` and `tm_g_forest_rsp` to resolve
   delayed data loading variables.
 
@@ -189,11 +197,11 @@ CRAN release: 2024-02-23
 
 - Adapted all modules to use `teal_data` objects.
 - Module arguments that previously accepted inputs from
-  [`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html)
+  [`teal.transform::choices_selected()`](https://rdrr.io/pkg/teal.transform/man/choices_selected.html)
   or
-  [`teal.transform::data_extract_spec()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/data_extract_spec.html)
+  [`teal.transform::data_extract_spec()`](https://rdrr.io/pkg/teal.transform/man/data_extract_spec.html)
   now only accept input from
-  [`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html).
+  [`teal.transform::choices_selected()`](https://rdrr.io/pkg/teal.transform/man/choices_selected.html).
   The affected modules are: `tm_a_gee`, `tm_a_mmrm`, `tm_g_ci`,
   `tm_g_forest_rsp`, `tm_g_forest_tte`, `tm_g_ipp`, `tm_g_km`,
   `tm_g_lineplot`, `tm_g_pp_adverse_events`, `tm_g_pp_patient_timeline`,
@@ -211,7 +219,7 @@ CRAN release: 2024-02-23
 
 - Updated the documentation and vignettes to demonstrate method to pass
   `teal_data` object to
-  [`teal::init()`](https://insightsengineering.github.io/teal/latest-tag/reference/init.html).
+  [`teal::init()`](https://rdrr.io/pkg/teal/man/init.html).
 - Simplify examples and vignettes code by removing package prefixes
   where possible.
 - Added parameter `sort_freq_col` to `tm_t_events` to allow the user to
@@ -221,7 +229,7 @@ CRAN release: 2024-02-23
   table.
 - Updated the documentation and vignettes to demonstrate method to pass
   `teal_data` object to
-  [`teal::init()`](https://insightsengineering.github.io/teal/latest-tag/reference/init.html).
+  [`teal::init()`](https://rdrr.io/pkg/teal/man/init.html).
 - Added `default_total_label` and `set_default_total_label` functions to
   get and set default total column label (`total_label`) for modules.
 - Implemented
@@ -289,7 +297,7 @@ CRAN release: 2024-02-23
 - Updated `tm_g_lineplot` to allow user to remove interval from plot.
 - Updated the documentation and vignettes to demonstrate method to pass
   `teal_data` object to
-  [`teal::init()`](https://insightsengineering.github.io/teal/latest-tag/reference/init.html).
+  [`teal::init()`](https://rdrr.io/pkg/teal/man/init.html).
 
 #### Bug fixes
 
@@ -491,7 +499,7 @@ CRAN release: 2024-02-23
   `teal.devel`. Use `ordered = TRUE` in `cs_to_des_select` or
   `cs_to_select_spec` to return ordered selection.
 - Replaced calls to `teal::root_modules` with
-  [`teal::modules`](https://insightsengineering.github.io/teal/latest-tag/reference/teal_modules.html)
+  [`teal::modules`](https://rdrr.io/pkg/teal/man/teal_modules.html)
   following deprecation of `teal::root_modules`.
 - `tm_t_events_summary` now allows nested `arm_var` columns matching
   other outputs such as `tm_t_events`.

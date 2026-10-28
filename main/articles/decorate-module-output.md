@@ -93,7 +93,7 @@ the help of `rtables` modifiers like
 \
 [`library`](https://rdrr.io/r/base/library.html)`(`[`teal.modules.clinical`](https://insightsengineering.github.io/teal.modules.clinical/)`)`\
 \
-`data`` ``<-`` `[`within`](https://rdrr.io/r/base/with.html)`(`[`teal_data`](https://insightsengineering.github.io/teal.data/latest-tag/reference/teal_data.html)`(``)``, ``{`\
+`data`` ``<-`` `[`within`](https://rdrr.io/r/base/with.html)`(`[`teal_data`](https://rdrr.io/pkg/teal.data/man/teal_data.html)`(``)``, ``{`\
 `  `[`library`](https://rdrr.io/r/base/library.html)`(`[`dplyr`](https://dplyr.tidyverse.org)`)`\
 `  ``ADSL`` ``<-`` ``tmc_ex_adsl`` ``|>`\
 `    `[`mutate`](https://dplyr.tidyverse.org/reference/mutate.html)`(`\
@@ -111,7 +111,7 @@ the help of `rtables` modifiers like
 `      ``)`` ``|>`` `[`with_label`](https://pharmaverse.github.io/formatters/latest-tag/reference/with_label.html)`(``"On Treatment Record Flag"``)`\
 `    ``)`\
 `}``)`\
-[`join_keys`](https://insightsengineering.github.io/teal.data/latest-tag/reference/join_keys.html)`(``data``)`` ``<-`` ``default_cdisc_join_keys``[`[`names`](https://rdrr.io/r/base/names.html)`(``data``)``]`\
+[`join_keys`](https://rdrr.io/pkg/teal.data/man/join_keys.html)`(``data``)`` ``<-`` ``default_cdisc_join_keys``[`[`names`](https://rdrr.io/r/base/names.html)`(``data``)``]`\
 \
 `insert_rrow_decorator`` ``<-`` ``function``(``default_caption`` ``=`` ``"I am a good new row"``)`` ``{`\
 `  ``teal_transform_module``(`\
@@ -181,13 +181,13 @@ Here’s an example to showcase how you can edit an output of class
 \
 [`library`](https://rdrr.io/r/base/library.html)`(`[`teal.modules.clinical`](https://insightsengineering.github.io/teal.modules.clinical/)`)`\
 \
-`data`` ``<-`` `[`teal_data`](https://insightsengineering.github.io/teal.data/latest-tag/reference/teal_data.html)`(``join_keys ``=`` ``default_cdisc_join_keys``[`[`c`](https://rdrr.io/r/base/c.html)`(``"ADSL"``, ``"ADRS"``)``]``)`\
+`data`` ``<-`` `[`teal_data`](https://rdrr.io/pkg/teal.data/man/teal_data.html)`(``join_keys ``=`` ``default_cdisc_join_keys``[`[`c`](https://rdrr.io/r/base/c.html)`(``"ADSL"``, ``"ADRS"``)``]``)`\
 `data`` ``<-`` `[`within`](https://rdrr.io/r/base/with.html)`(``data``, ``{`\
 `  `[`require`](https://rdrr.io/r/base/library.html)`(`[`nestcolor`](https://insightsengineering.github.io/nestcolor/)`)`\
 `  ``ADSL`` ``<-`` ``rADSL`\
 `  ``ADTTE`` ``<-`` ``tmc_ex_adtte`\
 `}``)`\
-[`join_keys`](https://insightsengineering.github.io/teal.data/latest-tag/reference/join_keys.html)`(``data``)`` ``<-`` ``default_cdisc_join_keys``[`[`names`](https://rdrr.io/r/base/names.html)`(``data``)``]`\
+[`join_keys`](https://rdrr.io/pkg/teal.data/man/join_keys.html)`(``data``)`` ``<-`` ``default_cdisc_join_keys``[`[`names`](https://rdrr.io/r/base/names.html)`(``data``)``]`\
 \
 `ADTTE`` ``<-`` ``data``[[``"ADTTE"``]``]`\
 \
@@ -275,7 +275,7 @@ package to learn more about extending the `datatables` objects.
 \
 [`library`](https://rdrr.io/r/base/library.html)`(`[`teal.modules.clinical`](https://insightsengineering.github.io/teal.modules.clinical/)`)`\
 \
-`data`` ``<-`` `[`teal_data`](https://insightsengineering.github.io/teal.data/latest-tag/reference/teal_data.html)`(``join_keys ``=`` ``default_cdisc_join_keys``[`[`c`](https://rdrr.io/r/base/c.html)`(``"ADSL"``, ``"ADRS"``)``]``)`\
+`data`` ``<-`` `[`teal_data`](https://rdrr.io/pkg/teal.data/man/teal_data.html)`(``join_keys ``=`` ``default_cdisc_join_keys``[`[`c`](https://rdrr.io/r/base/c.html)`(``"ADSL"``, ``"ADRS"``)``]``)`\
 `data`` ``<-`` `[`within`](https://rdrr.io/r/base/with.html)`(``data``, ``{`\
 `  ``ADSL`` ``<-`` ``rADSL`\
 `  ``ADLB`` ``<-`` ``tmc_ex_adlb`` ``|>`\
@@ -287,7 +287,7 @@ package to learn more about extending the `datatables` objects.
 `      ``)`` ``|>`` `[`with_label`](https://pharmaverse.github.io/formatters/latest-tag/reference/with_label.html)`(``"On Treatment Record Flag"``)`\
 `    ``)`\
 `}``)`\
-[`join_keys`](https://insightsengineering.github.io/teal.data/latest-tag/reference/join_keys.html)`(``data``)`` ``<-`` ``default_cdisc_join_keys``[`[`names`](https://rdrr.io/r/base/names.html)`(``data``)``]`\
+[`join_keys`](https://rdrr.io/pkg/teal.data/man/join_keys.html)`(``data``)`` ``<-`` ``default_cdisc_join_keys``[`[`names`](https://rdrr.io/r/base/names.html)`(``data``)``]`\
 \
 `dt_table_decorator`` ``<-`` ``function``(``color1`` ``=`` ``"pink"``, ``color2`` ``=`` ``"lightblue"``)`` ``{`\
 `  ``teal_transform_module``(`\

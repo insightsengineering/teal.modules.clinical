@@ -37,9 +37,9 @@ tm_t_pp_basic_info(
 
 - vars:
 
-  ([`teal.picks::variables`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html)
+  ([`teal.picks::variables`](https://rdrr.io/pkg/teal.picks/man/picks.html)
   or
-  [`teal.transform::choices_selected`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))
+  [`teal.transform::choices_selected`](https://rdrr.io/pkg/teal.transform/man/choices_selected.html))
 
   object specifying available choices and preselected variables from
   `dataname` to show in the table.
@@ -62,7 +62,7 @@ tm_t_pp_basic_info(
 
   (`list` of `teal_transform_module`) that will be applied to transform
   module's data input. To learn more check
-  [`vignette("transform-input-data", package = "teal")`](https://insightsengineering.github.io/teal/latest-tag/articles/transform-input-data.html).
+  [`vignette("transform-input-data", package = "teal")`](https://cran.rstudio.com/web/packages/teal/vignettes/transform-input-data.html).
 
 - decorators:
 
@@ -87,7 +87,7 @@ framework.
 
 For more information on reporting in `teal`, see the vignettes:
 
-- [`vignette("reportable-shiny-application", package = "teal.reporter")`](https://insightsengineering.github.io/teal.reporter/latest-tag/articles/reportable-shiny-application.html)
+- [`vignette("reportable-shiny-application", package = "teal.reporter")`](https://cran.rstudio.com/web/packages/teal.reporter/vignettes/reportable-shiny-application.html)
 
 - `vignette("adding-support-for-reporting-to-custom-modules", package = "teal")`
 

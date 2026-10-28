@@ -19,7 +19,7 @@ split_choices(x)
 ## Value
 
 a
-[`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html)
+[`teal.transform::choices_selected()`](https://rdrr.io/pkg/teal.transform/man/choices_selected.html)
 object. When `x` is a `delayed_choices_selected` object (created with
 delayed data), it is returned unchanged because the actual choices are
 not available until data is resolved at runtime.

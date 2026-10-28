@@ -1,7 +1,7 @@
 # Flatten draggable bucket contents to non-empty character arms
 
 Aligns with
-[`teal::validate_has_elements()`](https://insightsengineering.github.io/teal/latest-tag/reference/validate_has_elements.html)
+[`teal::validate_has_elements()`](https://rdrr.io/pkg/teal/man/validate_has_elements.html)
 used by
 [`validate_standard_inputs()`](https://insightsengineering.github.io/teal.modules.clinical/reference/validate_standard_inputs.md):
 list length can be positive while

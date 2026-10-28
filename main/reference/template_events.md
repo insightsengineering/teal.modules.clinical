@@ -23,6 +23,7 @@ template_events(
   prune_diff = 0,
   drop_arm_levels = TRUE,
   incl_overall_sum = TRUE,
+  incl_num_events_hlt = TRUE,
   basic_table_args = teal.widgets::basic_table_args()
 )
 ```
@@ -134,15 +135,22 @@ template_events(
   whether two rows which summarize the overall number of adverse events
   should be included at the top of the table.
 
+- incl_num_events_hlt:
+
+  (`flag`)\
+  whether to include a summary row for the overall total number of
+  events under each high-level term when both a high-level and a
+  low-level term are selected. The patient-count row is always included.
+
 - basic_table_args:
 
   (`basic_table_args`) optional\
   object created by
-  [`teal.widgets::basic_table_args()`](https://insightsengineering.github.io/teal.widgets/latest-tag/reference/basic_table_args.html)
+  [`teal.widgets::basic_table_args()`](https://rdrr.io/pkg/teal.widgets/man/basic_table_args.html)
   with settings for the module table. The argument is merged with option
   `teal.basic_table_args` and with default module arguments (hard coded
   in the module body). For more details, see the vignette:
-  [`vignette("custom-basic-table-arguments", package = "teal.widgets")`](https://insightsengineering.github.io/teal.widgets/latest-tag/articles/custom-basic-table-arguments.html).
+  [`vignette("custom-basic-table-arguments", package = "teal.widgets")`](https://cran.rstudio.com/web/packages/teal.widgets/vignettes/custom-basic-table-arguments.html).
 
 ## Value
 

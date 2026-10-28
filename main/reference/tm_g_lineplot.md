@@ -63,14 +63,14 @@ tm_g_lineplot(
 
 - group_var, x, y, y_unit:
 
-  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html),
-  [`teal.picks::picks()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html),
+  ([`teal.picks::variables()`](https://rdrr.io/pkg/teal.picks/man/picks.html),
+  [`teal.picks::picks()`](https://rdrr.io/pkg/teal.picks/man/picks.html),
   or legacy `choices_selected`)\
   encodings; legacy inputs are coerced with a deprecation warning.
 
 - paramcd:
 
-  ([`teal.picks::picks()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html)
+  ([`teal.picks::picks()`](https://rdrr.io/pkg/teal.picks/man/picks.html)
   or legacy `choices_selected` from `value_choices()`)\
   parameter code filter: a `picks()` chain with the `PARAMCD` variable
   and biomarker `values()`; defaults to `ALT` / `CRP` / `IGA` with `ALT`
@@ -78,9 +78,9 @@ tm_g_lineplot(
 
 - conf_level:
 
-  ([`teal.picks::values()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  ([`teal.picks::values()`](https://rdrr.io/pkg/teal.picks/man/picks.html);
   legacy
-  [`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html)
+  [`teal.transform::choices_selected()`](https://rdrr.io/pkg/teal.transform/man/choices_selected.html)
   is deprecated but still accepted)\
   available confidence levels and default selection, each in the range
   (0, 1).
@@ -166,7 +166,7 @@ tm_g_lineplot(
 
   (`ggplot2_args`) optional\
   object created by
-  [`teal.widgets::ggplot2_args()`](https://insightsengineering.github.io/teal.widgets/latest-tag/reference/ggplot2_args.html)
+  [`teal.widgets::ggplot2_args()`](https://rdrr.io/pkg/teal.widgets/man/ggplot2_args.html)
   with settings for the module plot. For this module, this argument will
   only accept `ggplot2_args` object with `labs` list of following child
   elements: `title`, `subtitle`, `caption`, `y`, `lty`. No other
@@ -175,13 +175,13 @@ tm_g_lineplot(
   coded in the module body).
 
   For more details, see the vignette:
-  [`vignette("custom-ggplot2-arguments", package = "teal.widgets")`](https://insightsengineering.github.io/teal.widgets/latest-tag/articles/custom-ggplot2-arguments.html).
+  [`vignette("custom-ggplot2-arguments", package = "teal.widgets")`](https://cran.rstudio.com/web/packages/teal.widgets/vignettes/custom-ggplot2-arguments.html).
 
 - transformators:
 
   (`list` of `teal_transform_module`) that will be applied to transform
   module's data input. To learn more check
-  [`vignette("transform-input-data", package = "teal")`](https://insightsengineering.github.io/teal/latest-tag/articles/transform-input-data.html).
+  [`vignette("transform-input-data", package = "teal")`](https://cran.rstudio.com/web/packages/teal/vignettes/transform-input-data.html).
 
 - decorators:
 
@@ -219,9 +219,9 @@ For additional details and examples of decorators, refer to the vignette
 [`vignette("decorate-module-output", package = "teal.modules.clinical")`](https://insightsengineering.github.io/teal.modules.clinical/articles/decorate-module-output.md).
 
 To learn more please refer to the vignette
-[`vignette("transform-module-output", package = "teal")`](https://insightsengineering.github.io/teal/latest-tag/articles/transform-module-output.html)
+[`vignette("transform-module-output", package = "teal")`](https://cran.rstudio.com/web/packages/teal/vignettes/transform-module-output.html)
 or the
-[`teal::teal_transform_module()`](https://insightsengineering.github.io/teal/latest-tag/reference/teal_transform_module.html)
+[`teal::teal_transform_module()`](https://rdrr.io/pkg/teal/man/teal_transform_module.html)
 documentation.
 
 ## Reporting
@@ -234,7 +234,7 @@ framework.
 
 For more information on reporting in `teal`, see the vignettes:
 
-- [`vignette("reportable-shiny-application", package = "teal.reporter")`](https://insightsengineering.github.io/teal.reporter/latest-tag/articles/reportable-shiny-application.html)
+- [`vignette("reportable-shiny-application", package = "teal.reporter")`](https://cran.rstudio.com/web/packages/teal.reporter/vignettes/reportable-shiny-application.html)
 
 - `vignette("adding-support-for-reporting-to-custom-modules", package = "teal")`
 

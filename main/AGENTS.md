@@ -145,11 +145,11 @@ Each module should produce one or more Table, Listing, or Graph (TLG):
 - **Reproducibility**: All code being executed to generate TLGs should
   be run using `teal_data` and
   [`within()`](https://rdrr.io/r/base/with.html) /
-  [`teal.code::eval_code()`](https://insightsengineering.github.io/teal.code/latest-tag/reference/eval_code.html)
+  [`teal.code::eval_code()`](https://rdrr.io/pkg/teal.code/man/eval_code.html)
   - At the end of the module this object should be returned to enable
     Reporter and “Show R code” functionalities
 - **User Parameters**: Configurable inputs via
-  [`teal.picks::picks()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html)
+  [`teal.picks::picks()`](https://rdrr.io/pkg/teal.picks/man/picks.html)
   for flexible data selection
 - **Transformators**: Optional pre-processing functions that derive
   variables and validate data before analysis
@@ -168,11 +168,11 @@ Teal modules follow a specific pattern with UI and server components:
 \
 `  ``shiny``::`[`tagList`](https://rstudio.github.io/htmltools/reference/tagList.html)`(`\
 `    ``# Input controls`\
-`    ``teal.widgets``::`[`standard_layout`](https://insightsengineering.github.io/teal.widgets/latest-tag/reference/standard_layout.html)`(`\
+`    ``teal.widgets``::`[`standard_layout`](https://rdrr.io/pkg/teal.widgets/man/standard_layout.html)`(`\
 `      ``# Output displays`\
-`      output ``=`` ``teal.widgets``::`[`white_small_well`](https://insightsengineering.github.io/teal.widgets/latest-tag/reference/white_small_well.html)`(`\
-`        ``teal``::`[`ui_transform_teal_data`](https://insightsengineering.github.io/teal/latest-tag/reference/module_transform_data.html)`(``"decorator_table"``, ``select_decorators``(``decorators``, ``"plot"``)``)``,`\
-`        ``teal``::`[`ui_transform_teal_data`](https://insightsengineering.github.io/teal/latest-tag/reference/module_transform_data.html)`(``"decorator_table"``, ``select_decorators``(``decorators``, ``"table"``)``)``,`\
+`      output ``=`` ``teal.widgets``::`[`white_small_well`](https://rdrr.io/pkg/teal.widgets/man/white_small_well.html)`(`\
+`        ``teal``::`[`ui_transform_teal_data`](https://rdrr.io/pkg/teal/man/module_transform_data.html)`(``"decorator_table"``, ``select_decorators``(``decorators``, ``"plot"``)``)``,`\
+`        ``teal``::`[`ui_transform_teal_data`](https://rdrr.io/pkg/teal/man/module_transform_data.html)`(``"decorator_table"``, ``select_decorators``(``decorators``, ``"table"``)``)``,`\
 `        ``shiny``::`[`tags`](https://rstudio.github.io/htmltools/reference/builder.html)`$``h4``(``"Results"``)``,`\
 `        ``shiny``::`[`plotOutput`](https://rdrr.io/pkg/shiny/man/plotOutput.html)`(``ns``(``"plot"``)``)``,`\
 `        ``shiny``::`[`tags`](https://rstudio.github.io/htmltools/reference/builder.html)`$``h4``(``"Summary data"``)``,`\
@@ -184,11 +184,11 @@ Teal modules follow a specific pattern with UI and server components:
 `        ``shiny``::`[`tags`](https://rstudio.github.io/htmltools/reference/builder.html)`$``br``(``)``,`\
 `        ``shiny``::`[`tags`](https://rstudio.github.io/htmltools/reference/builder.html)`$``div``(`\
 `          ``shiny``::`[`tags`](https://rstudio.github.io/htmltools/reference/builder.html)`$``strong``(``"Select X-Axis Variable"``)``,`\
-`          ``teal.picks``::`[`picks_ui`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks_module.html)`(``ns``(``"var_x"``)``, ``var_x``)`\
+`          ``teal.picks``::`[`picks_ui`](https://rdrr.io/pkg/teal.picks/man/picks_module.html)`(``ns``(``"var_x"``)``, ``var_x``)`\
 `        ``)``,`\
 `        ``shiny``::`[`tags`](https://rstudio.github.io/htmltools/reference/builder.html)`$``div``(`\
 `          ``shiny``::`[`tags`](https://rstudio.github.io/htmltools/reference/builder.html)`$``strong``(``"Select Y-Axis Variable"``)``,`\
-`          ``teal.picks``::`[`picks_ui`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks_module.html)`(``ns``(``"var_y"``)``, ``var_y``)`\
+`          ``teal.picks``::`[`picks_ui`](https://rdrr.io/pkg/teal.picks/man/picks_module.html)`(``ns``(``"var_y"``)``, ``var_y``)`\
 `        ``)`\
 `      ``)`\
 `    ``)`\
@@ -202,8 +202,8 @@ Teal modules follow a specific pattern with UI and server components:
 \
 `  ``select_decorators`` ``<-`` `[`getFromNamespace`](https://rdrr.io/r/utils/getFromNamespace.html)`(``"select_decorators"``, ``"teal"``)`` ``# import from teal internal functions`\
 `  ``shiny``::`[`moduleServer`](https://rdrr.io/pkg/shiny/man/moduleServer.html)`(``id``, ``function``(``input``, ``output``, ``session``)`` ``{`\
-`    ``selectors`` ``<-`` ``teal.picks``::`[`picks_srv`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks_module.html)`(``"picks"``, picks ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(``var_x ``=`` ``var_x``, var_y ``=`` ``var_y``)``, data ``=`` ``data``)`\
-`    ``merged`` ``<-`` ``teal.picks``::`[`merge_srv`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/merge_srv.html)`(`\
+`    ``selectors`` ``<-`` ``teal.picks``::`[`picks_srv`](https://rdrr.io/pkg/teal.picks/man/picks_module.html)`(``"picks"``, picks ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(``var_x ``=`` ``var_x``, var_y ``=`` ``var_y``)``, data ``=`` ``data``)`\
+`    ``merged`` ``<-`` ``teal.picks``::`[`merge_srv`](https://rdrr.io/pkg/teal.picks/man/merge_srv.html)`(`\
 `      ``"merge_picks"``,`\
 `      data ``=`` ``data``,`\
 `      selectors ``=`` ``selectors``,`\
@@ -213,26 +213,26 @@ Teal modules follow a specific pattern with UI and server components:
 `    ``# Data preparation`\
 `    ``validated_q`` ``<-`` ``shiny``::`[`reactive`](https://rdrr.io/pkg/shiny/man/reactive.html)`(``{`\
 `      ``shiny``::`[`validate`](https://rdrr.io/pkg/shiny/man/validate.html)`(`\
-`        ``teal``::`[`need_input`](https://insightsengineering.github.io/teal/latest-tag/reference/validate_input.html)`(`\
+`        ``teal``::`[`need_input`](https://rdrr.io/pkg/teal/man/validate_input.html)`(`\
 `          inputId ``=`` ``"var_x-variables-selected"``,`\
 `          condition ``=`` `[`length`](https://rdrr.io/r/base/length.html)`(``selectors``$``var_x``(``)``$``variables``$``selected``)`` ``>`` ``0``,`\
 `          message ``=`` ``"X-Axis Variable must be selected"`\
 `        ``)``,`\
-`        ``teal``::`[`need_input`](https://insightsengineering.github.io/teal/latest-tag/reference/validate_input.html)`(`\
+`        ``teal``::`[`need_input`](https://rdrr.io/pkg/teal/man/validate_input.html)`(`\
 `          inputId ``=`` ``"var_y-variables-selected"``,`\
 `          condition ``=`` `[`length`](https://rdrr.io/r/base/length.html)`(``selectors``$``var_y``(``)``$``variables``$``selected``)`` ``>`` ``0``,`\
 `          message ``=`` ``"Y-Axis Variable must be selected"`\
 `        ``)`\
 `      ``)`\
 `      ``shiny``::`[`validate`](https://rdrr.io/pkg/shiny/man/validate.html)`(`\
-`        ``teal``::`[`need_input`](https://insightsengineering.github.io/teal/latest-tag/reference/validate_input.html)`(`\
+`        ``teal``::`[`need_input`](https://rdrr.io/pkg/teal/man/validate_input.html)`(`\
 `          inputId ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``"var_x-variables-selected"``, ``"var_y-variables-selected"``)``,`\
 `          condition ``=`` ``!`[`any`](https://rdrr.io/r/base/any.html)`(``selectors``$``var_x``(``)``$``variables``$``selected`` `[`%in%`](https://rdrr.io/r/base/match.html)` ``selectors``$``var_y``(``)``$``variables``$``selected``)``,`\
 `          message ``=`` ``"X-axis variable and Y-axis variable must be different"`\
 `        ``)`\
 `      ``)`\
 `      ``q`` ``<-`` ``merged``$``data``(``)`\
-`      ``teal.reporter``::`[`teal_card`](https://insightsengineering.github.io/teal.reporter/latest-tag/reference/teal_card.html)`(``q``)`` ``<-`` `[`c`](https://rdrr.io/r/base/c.html)`(``teal.reporter``::`[`teal_card`](https://insightsengineering.github.io/teal.reporter/latest-tag/reference/teal_card.html)`(``q``)``, ``"## Module's output"``)`\
+`      ``teal.reporter``::`[`teal_card`](https://rdrr.io/pkg/teal.reporter/man/teal_card.html)`(``q``)`` ``<-`` `[`c`](https://rdrr.io/r/base/c.html)`(``teal.reporter``::`[`teal_card`](https://rdrr.io/pkg/teal.reporter/man/teal_card.html)`(``q``)``, ``"## Module's output"``)`\
 `      ``q`\
 `    ``}``)`\
 \
@@ -243,7 +243,7 @@ Teal modules follow a specific pattern with UI and server components:
 `          ``ggplot2``::`[`geom_point`](https://ggplot2.tidyverse.org/reference/geom_point.html)`(``ggplot2``::`[`aes`](https://ggplot2.tidyverse.org/reference/aes.html)`(``x ``=`` ``env_var_x``, y ``=`` ``env_var_y``)``)`\
 `      ``}``, env_var_x ``=`` `[`as.name`](https://rdrr.io/r/base/name.html)`(``merged``$``variables``(``)``$``var_x``)``, env_var_y ``=`` `[`as.name`](https://rdrr.io/r/base/name.html)`(``merged``$``variables``(``)``$``var_y``)``)`\
 `    ``}``)`\
-`    ``decorated_plot`` ``<-`` ``teal``::`[`srv_transform_teal_data`](https://insightsengineering.github.io/teal/latest-tag/reference/module_transform_data.html)`(`\
+`    ``decorated_plot`` ``<-`` ``teal``::`[`srv_transform_teal_data`](https://rdrr.io/pkg/teal/man/module_transform_data.html)`(`\
 `      ``"decorator_table"``,`\
 `      ``qenv_plot``,`\
 `      ``select_decorators``(``decorators``, ``"plot"``)``,`\
@@ -255,7 +255,7 @@ Teal modules follow a specific pattern with UI and server components:
 `        ``table`` ``<-`` ``gtsummary``::`[`tbl_summary`](https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html)`(``anl``, by ``=`` ``env_var_x``, missing ``=`` ``"no"``)`\
 `      ``}``, env_var_x ``=`` `[`as.name`](https://rdrr.io/r/base/name.html)`(``merged``$``variables``(``)``$``var_x``)``, env_var_y ``=`` `[`as.name`](https://rdrr.io/r/base/name.html)`(``merged``$``variables``(``)``$``var_y``)``)`\
 `    ``}``)`\
-`    ``decorated_table`` ``<-`` ``teal``::`[`srv_transform_teal_data`](https://insightsengineering.github.io/teal/latest-tag/reference/module_transform_data.html)`(`\
+`    ``decorated_table`` ``<-`` ``teal``::`[`srv_transform_teal_data`](https://rdrr.io/pkg/teal/man/module_transform_data.html)`(`\
 `      ``"decorator_table"``,`\
 `      ``qenv_table``,`\
 `      ``select_decorators``(``decorators``, ``"table"``)``,`\
@@ -273,8 +273,8 @@ Teal modules follow a specific pattern with UI and server components:
 \
 `tm_example_module`` ``<-`` ``function``(`\
 `  ``label`` ``=`` ``"Example Module"``,`\
-`  ``var_x`` ``=`` ``teal.picks``::`[`picks`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html)`(``teal.picks``::`[`datasets`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html)`(``)``, ``teal.picks``::`[`variables`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html)`(``is.numeric``, selected ``=`` ``1L``)``)``,`\
-`  ``var_y`` ``=`` ``teal.picks``::`[`picks`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html)`(``teal.picks``::`[`datasets`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html)`(``)``, ``teal.picks``::`[`variables`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html)`(``is.numeric``, selected ``=`` ``2L``)``)``,`\
+`  ``var_x`` ``=`` ``teal.picks``::`[`picks`](https://rdrr.io/pkg/teal.picks/man/picks.html)`(``teal.picks``::`[`datasets`](https://rdrr.io/pkg/teal.picks/man/picks.html)`(``)``, ``teal.picks``::`[`variables`](https://rdrr.io/pkg/teal.picks/man/picks.html)`(``is.numeric``, selected ``=`` ``1L``)``)``,`\
+`  ``var_y`` ``=`` ``teal.picks``::`[`picks`](https://rdrr.io/pkg/teal.picks/man/picks.html)`(``teal.picks``::`[`datasets`](https://rdrr.io/pkg/teal.picks/man/picks.html)`(``)``, ``teal.picks``::`[`variables`](https://rdrr.io/pkg/teal.picks/man/picks.html)`(``is.numeric``, selected ``=`` ``2L``)``)``,`\
 `  ``decorators`` ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(``)``,`\
 `  ``transformators`` ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(``)`\
 `)`` ``{`\
@@ -283,7 +283,7 @@ Teal modules follow a specific pattern with UI and server components:
 `  ``checkmate``::`[`assert_class`](https://mllg.github.io/checkmate/reference/checkClass.html)`(``var_y``, ``"picks"``)`\
 `  ``checkmate``::`[`assert_list`](https://mllg.github.io/checkmate/reference/checkList.html)`(``transformators``, types ``=`` ``"teal_transform_module"``)`\
 `  ``args`` ``<-`` `[`list`](https://rdrr.io/r/base/list.html)`(``var_x ``=`` ``var_x``, var_y ``=`` ``var_y``, decorators ``=`` ``decorators``)`\
-`  ``teal``::`[`module`](https://insightsengineering.github.io/teal/latest-tag/reference/teal_modules.html)`(`\
+`  ``teal``::`[`module`](https://rdrr.io/pkg/teal/man/teal_modules.html)`(`\
 `    label ``=`` ``label``,`\
 `    server ``=`` ``srv_example_module``,`\
 `    ui ``=`` ``ui_example_module``,`\

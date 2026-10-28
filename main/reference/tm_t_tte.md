@@ -53,7 +53,7 @@ tm_t_tte(
 
 - arm_var:
 
-  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  ([`teal.picks::variables()`](https://rdrr.io/pkg/teal.picks/man/picks.html);
   legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for variable
   names that can be used as `arm_var`. It defines the grouping variable
@@ -65,61 +65,61 @@ tm_t_tte(
   if specified it must be a named list with each element corresponding
   to an arm variable in `ADSL` and the element must be another list
   (possibly with delayed
-  [`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html)
+  [`teal.picks::variables()`](https://rdrr.io/pkg/teal.picks/man/picks.html)
   or
-  [`teal.picks::values()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  [`teal.picks::values()`](https://rdrr.io/pkg/teal.picks/man/picks.html);
   legacy
-  [`teal.transform::variable_choices()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/variable_choices.html)
+  [`teal.transform::variable_choices()`](https://rdrr.io/pkg/teal.transform/man/variable_choices.html)
   and
-  [`teal.transform::value_choices()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/value_choices.html)
+  [`teal.transform::value_choices()`](https://rdrr.io/pkg/teal.transform/man/value_choices.html)
   are deprecated but still accepted) with the elements named `ref` and
   `comp` that define the default reference and comparison arms when the
   arm variable is changed.
 
 - paramcd:
 
-  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  ([`teal.picks::variables()`](https://rdrr.io/pkg/teal.picks/man/picks.html);
   legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for the
   parameter code variable from `dataname`.
 
 - strata_var:
 
-  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  ([`teal.picks::variables()`](https://rdrr.io/pkg/teal.picks/man/picks.html);
   legacy `teal.transform` objects are deprecated but still accepted)\
   names of the variables for stratified analysis.
 
 - aval_var:
 
-  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  ([`teal.picks::variables()`](https://rdrr.io/pkg/teal.picks/man/picks.html);
   legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and pre-selected option for the
   analysis variable.
 
 - cnsr_var:
 
-  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  ([`teal.picks::variables()`](https://rdrr.io/pkg/teal.picks/man/picks.html);
   legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for the
   censoring variable.
 
 - conf_level_coxph:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.transform::choices_selected()`](https://rdrr.io/pkg/teal.transform/man/choices_selected.html))\
   object with all available choices and pre-selected option for
   confidence level, each within range of (0, 1).
 
 - conf_level_survfit:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  ([`teal.transform::choices_selected()`](https://rdrr.io/pkg/teal.transform/man/choices_selected.html))\
   object with all available choices and pre-selected option for
   confidence level, each within range of (0, 1).
 
 - time_points:
 
-  ([`teal.picks::values()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  ([`teal.picks::values()`](https://rdrr.io/pkg/teal.picks/man/picks.html);
   legacy
-  [`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html)
+  [`teal.transform::choices_selected()`](https://rdrr.io/pkg/teal.transform/man/choices_selected.html)
   is deprecated but still accepted)\
   object with all available choices and preselected option for time
   points that can be used in
@@ -127,16 +127,16 @@ tm_t_tte(
 
 - time_unit_var:
 
-  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  ([`teal.picks::variables()`](https://rdrr.io/pkg/teal.picks/man/picks.html);
   legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and pre-selected option for the time
   unit variable.
 
 - event_desc_var:
 
-  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html),
+  ([`teal.picks::variables()`](https://rdrr.io/pkg/teal.picks/man/picks.html),
   legacy
-  [`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html)
+  [`teal.transform::choices_selected()`](https://rdrr.io/pkg/teal.transform/man/choices_selected.html)
   objects are deprecated but still accepted\
   variable for event description.
 
@@ -179,17 +179,17 @@ tm_t_tte(
 
   (`basic_table_args`) optional\
   object created by
-  [`teal.widgets::basic_table_args()`](https://insightsengineering.github.io/teal.widgets/latest-tag/reference/basic_table_args.html)
+  [`teal.widgets::basic_table_args()`](https://rdrr.io/pkg/teal.widgets/man/basic_table_args.html)
   with settings for the module table. The argument is merged with option
   `teal.basic_table_args` and with default module arguments (hard coded
   in the module body). For more details, see the vignette:
-  [`vignette("custom-basic-table-arguments", package = "teal.widgets")`](https://insightsengineering.github.io/teal.widgets/latest-tag/articles/custom-basic-table-arguments.html).
+  [`vignette("custom-basic-table-arguments", package = "teal.widgets")`](https://cran.rstudio.com/web/packages/teal.widgets/vignettes/custom-basic-table-arguments.html).
 
 - transformators:
 
   (`list` of `teal_transform_module`) that will be applied to transform
   module's data input. To learn more check
-  [`vignette("transform-input-data", package = "teal")`](https://insightsengineering.github.io/teal/latest-tag/articles/transform-input-data.html).
+  [`vignette("transform-input-data", package = "teal")`](https://cran.rstudio.com/web/packages/teal/vignettes/transform-input-data.html).
 
 - decorators:
 
@@ -249,9 +249,9 @@ For additional details and examples of decorators, refer to the vignette
 [`vignette("decorate-module-output", package = "teal.modules.clinical")`](https://insightsengineering.github.io/teal.modules.clinical/articles/decorate-module-output.md).
 
 To learn more please refer to the vignette
-[`vignette("transform-module-output", package = "teal")`](https://insightsengineering.github.io/teal/latest-tag/articles/transform-module-output.html)
+[`vignette("transform-module-output", package = "teal")`](https://cran.rstudio.com/web/packages/teal/vignettes/transform-module-output.html)
 or the
-[`teal::teal_transform_module()`](https://insightsengineering.github.io/teal/latest-tag/reference/teal_transform_module.html)
+[`teal::teal_transform_module()`](https://rdrr.io/pkg/teal/man/teal_transform_module.html)
 documentation.
 
 ## Reporting
@@ -264,7 +264,7 @@ framework.
 
 For more information on reporting in `teal`, see the vignettes:
 
-- [`vignette("reportable-shiny-application", package = "teal.reporter")`](https://insightsengineering.github.io/teal.reporter/latest-tag/articles/reportable-shiny-application.html)
+- [`vignette("reportable-shiny-application", package = "teal.reporter")`](https://cran.rstudio.com/web/packages/teal.reporter/vignettes/reportable-shiny-application.html)
 
 - `vignette("adding-support-for-reporting-to-custom-modules", package = "teal")`
 

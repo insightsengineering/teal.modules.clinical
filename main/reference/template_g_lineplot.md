@@ -140,7 +140,7 @@ template_g_lineplot(
 
   (`ggplot2_args`) optional\
   object created by
-  [`teal.widgets::ggplot2_args()`](https://insightsengineering.github.io/teal.widgets/latest-tag/reference/ggplot2_args.html)
+  [`teal.widgets::ggplot2_args()`](https://rdrr.io/pkg/teal.widgets/man/ggplot2_args.html)
   with settings for the module plot. For this module, this argument will
   only accept `ggplot2_args` object with `labs` list of following child
   elements: `title`, `subtitle`, `caption`, `y`, `lty`. No other
@@ -149,7 +149,7 @@ template_g_lineplot(
   coded in the module body).
 
   For more details, see the vignette:
-  [`vignette("custom-ggplot2-arguments", package = "teal.widgets")`](https://insightsengineering.github.io/teal.widgets/latest-tag/articles/custom-ggplot2-arguments.html).
+  [`vignette("custom-ggplot2-arguments", package = "teal.widgets")`](https://cran.rstudio.com/web/packages/teal.widgets/vignettes/custom-ggplot2-arguments.html).
 
 ## Value
 

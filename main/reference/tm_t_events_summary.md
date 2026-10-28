@@ -52,14 +52,14 @@ tm_t_events_summary(
 
 - arm_var:
 
-  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  ([`teal.picks::variables()`](https://rdrr.io/pkg/teal.picks/man/picks.html);
   legacy `teal.transform` objects are deprecated but still accepted)\
   If there are two elements selected for `arm_var`, the second variable
   is nested under the first.
 
 - flag_var_anl:
 
-  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  ([`teal.picks::variables()`](https://rdrr.io/pkg/teal.picks/man/picks.html);
   legacy `teal.transform` objects are deprecated but still accepted or
   `NULL`)\
   vector with names of flag variables from `dataset` used to count
@@ -68,7 +68,7 @@ tm_t_events_summary(
 
 - flag_var_aesi:
 
-  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  ([`teal.picks::variables()`](https://rdrr.io/pkg/teal.picks/man/picks.html);
   legacy `teal.transform` objects are deprecated but still accepted or
   `NULL`)\
   vector with names of flag variables from `dataset` used to count
@@ -78,7 +78,7 @@ tm_t_events_summary(
 
 - dthfl_var:
 
-  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  ([`teal.picks::variables()`](https://rdrr.io/pkg/teal.picks/man/picks.html);
   legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for variable
   names that can be used as death flag variable. Records with \`"Y"“ are
@@ -86,7 +86,7 @@ tm_t_events_summary(
 
 - dcsreas_var:
 
-  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  ([`teal.picks::variables()`](https://rdrr.io/pkg/teal.picks/man/picks.html);
   legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected with all available
   choices and preselected option for variable names that can be used as
@@ -96,13 +96,13 @@ tm_t_events_summary(
 
 - llt:
 
-  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  ([`teal.picks::variables()`](https://rdrr.io/pkg/teal.picks/man/picks.html);
   legacy `teal.transform` objects are deprecated but still accepted)\
   name of the variable with low level term for events.
 
 - aeseq_var:
 
-  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  ([`teal.picks::variables()`](https://rdrr.io/pkg/teal.picks/man/picks.html);
   legacy `teal.transform` objects are deprecated but still accepted)\
   variable for adverse events sequence number from `dataset`. Used for
   counting total number of events.
@@ -176,17 +176,17 @@ tm_t_events_summary(
 
   (`basic_table_args`) optional\
   object created by
-  [`teal.widgets::basic_table_args()`](https://insightsengineering.github.io/teal.widgets/latest-tag/reference/basic_table_args.html)
+  [`teal.widgets::basic_table_args()`](https://rdrr.io/pkg/teal.widgets/man/basic_table_args.html)
   with settings for the module table. The argument is merged with option
   `teal.basic_table_args` and with default module arguments (hard coded
   in the module body). For more details, see the vignette:
-  [`vignette("custom-basic-table-arguments", package = "teal.widgets")`](https://insightsengineering.github.io/teal.widgets/latest-tag/articles/custom-basic-table-arguments.html).
+  [`vignette("custom-basic-table-arguments", package = "teal.widgets")`](https://cran.rstudio.com/web/packages/teal.widgets/vignettes/custom-basic-table-arguments.html).
 
 - transformators:
 
   (`list` of `teal_transform_module`) that will be applied to transform
   module's data input. To learn more check
-  [`vignette("transform-input-data", package = "teal")`](https://insightsengineering.github.io/teal/latest-tag/articles/transform-input-data.html).
+  [`vignette("transform-input-data", package = "teal")`](https://cran.rstudio.com/web/packages/teal/vignettes/transform-input-data.html).
 
 - decorators:
 
@@ -225,9 +225,9 @@ For additional details and examples of decorators, refer to the vignette
 [`vignette("decorate-module-output", package = "teal.modules.clinical")`](https://insightsengineering.github.io/teal.modules.clinical/articles/decorate-module-output.md).
 
 To learn more please refer to the vignette
-[`vignette("transform-module-output", package = "teal")`](https://insightsengineering.github.io/teal/latest-tag/articles/transform-module-output.html)
+[`vignette("transform-module-output", package = "teal")`](https://cran.rstudio.com/web/packages/teal/vignettes/transform-module-output.html)
 or the
-[`teal::teal_transform_module()`](https://insightsengineering.github.io/teal/latest-tag/reference/teal_transform_module.html)
+[`teal::teal_transform_module()`](https://rdrr.io/pkg/teal/man/teal_transform_module.html)
 documentation.
 
 ## Reporting
@@ -240,7 +240,7 @@ framework.
 
 For more information on reporting in `teal`, see the vignettes:
 
-- [`vignette("reportable-shiny-application", package = "teal.reporter")`](https://insightsengineering.github.io/teal.reporter/latest-tag/articles/reportable-shiny-application.html)
+- [`vignette("reportable-shiny-application", package = "teal.reporter")`](https://cran.rstudio.com/web/packages/teal.reporter/vignettes/reportable-shiny-application.html)
 
 - `vignette("adding-support-for-reporting-to-custom-modules", package = "teal")`
 

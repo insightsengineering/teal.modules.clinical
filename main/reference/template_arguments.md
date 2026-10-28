@@ -56,11 +56,11 @@ module templates that are used repeatedly to express an analysis.
 
   (`basic_table_args`) optional\
   object created by
-  [`teal.widgets::basic_table_args()`](https://insightsengineering.github.io/teal.widgets/latest-tag/reference/basic_table_args.html)
+  [`teal.widgets::basic_table_args()`](https://rdrr.io/pkg/teal.widgets/man/basic_table_args.html)
   with settings for the module table. The argument is merged with option
   `teal.basic_table_args` and with default module arguments (hard coded
   in the module body). For more details, see the vignette:
-  [`vignette("custom-basic-table-arguments", package = "teal.widgets")`](https://insightsengineering.github.io/teal.widgets/latest-tag/articles/custom-basic-table-arguments.html).
+  [`vignette("custom-basic-table-arguments", package = "teal.widgets")`](https://cran.rstudio.com/web/packages/teal.widgets/vignettes/custom-basic-table-arguments.html).
 
 - by_vars:
 
@@ -155,11 +155,11 @@ module templates that are used repeatedly to express an analysis.
 
   (`ggplot2_args`) optional\
   object created by
-  [`teal.widgets::ggplot2_args()`](https://insightsengineering.github.io/teal.widgets/latest-tag/reference/ggplot2_args.html)
+  [`teal.widgets::ggplot2_args()`](https://rdrr.io/pkg/teal.widgets/man/ggplot2_args.html)
   with settings for the module plot. The argument is merged with option
   `teal.ggplot2_args` and with default module arguments (hard coded in
   the module body). For more details, see the vignette:
-  [`vignette("custom-ggplot2-arguments", package = "teal.widgets")`](https://insightsengineering.github.io/teal.widgets/latest-tag/articles/custom-ggplot2-arguments.html).
+  [`vignette("custom-ggplot2-arguments", package = "teal.widgets")`](https://cran.rstudio.com/web/packages/teal.widgets/vignettes/custom-ggplot2-arguments.html).
 
 - hlt:
 

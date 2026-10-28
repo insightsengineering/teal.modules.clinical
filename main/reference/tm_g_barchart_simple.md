@@ -122,17 +122,17 @@ tm_g_barchart_simple(
 
   (`ggplot2_args`) optional\
   object created by
-  [`teal.widgets::ggplot2_args()`](https://insightsengineering.github.io/teal.widgets/latest-tag/reference/ggplot2_args.html)
+  [`teal.widgets::ggplot2_args()`](https://rdrr.io/pkg/teal.widgets/man/ggplot2_args.html)
   with settings for the module plot. The argument is merged with option
   `teal.ggplot2_args` and with default module arguments (hard coded in
   the module body). For more details, see the vignette:
-  [`vignette("custom-ggplot2-arguments", package = "teal.widgets")`](https://insightsengineering.github.io/teal.widgets/latest-tag/articles/custom-ggplot2-arguments.html).
+  [`vignette("custom-ggplot2-arguments", package = "teal.widgets")`](https://cran.rstudio.com/web/packages/teal.widgets/vignettes/custom-ggplot2-arguments.html).
 
 - transformators:
 
   (`list` of `teal_transform_module`) that will be applied to transform
   module's data input. To learn more check
-  [`vignette("transform-input-data", package = "teal")`](https://insightsengineering.github.io/teal/latest-tag/articles/transform-input-data.html).
+  [`vignette("transform-input-data", package = "teal")`](https://cran.rstudio.com/web/packages/teal/vignettes/transform-input-data.html).
 
 - decorators:
 
@@ -154,19 +154,19 @@ Categories can be defined up to four levels deep through `x`, `fill`,
 `x_facet`, and `y_facet` may be `NULL` to omit them.
 
 S3 dispatch uses the class of `x`: `tm_g_barchart_simple.default()` for
-[`teal.transform::data_extract_spec()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/data_extract_spec.html)
+[`teal.transform::data_extract_spec()`](https://rdrr.io/pkg/teal.transform/man/data_extract_spec.html)
 (or `list` thereof) and `tm_g_barchart_simple.picks()` for
-[`teal.picks::picks()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html).
+[`teal.picks::picks()`](https://rdrr.io/pkg/teal.picks/man/picks.html).
 Do not mix `data_extract_spec` and `picks` encodings in one call.
 
 ## Methods (by class)
 
 - `tm_g_barchart_simple(default)`: Legacy
-  [`teal.transform::data_extract_spec()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/data_extract_spec.html)
+  [`teal.transform::data_extract_spec()`](https://rdrr.io/pkg/teal.transform/man/data_extract_spec.html)
   encodings.
 
 - `tm_g_barchart_simple(picks)`:
-  [`teal.picks::picks()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html)-based
+  [`teal.picks::picks()`](https://rdrr.io/pkg/teal.picks/man/picks.html)-based
   encodings (`picks`).
 
 ## Decorating Module
@@ -192,9 +192,9 @@ For additional details and examples of decorators, refer to the vignette
 [`vignette("decorate-module-output", package = "teal.modules.clinical")`](https://insightsengineering.github.io/teal.modules.clinical/articles/decorate-module-output.md).
 
 To learn more please refer to the vignette
-[`vignette("transform-module-output", package = "teal")`](https://insightsengineering.github.io/teal/latest-tag/articles/transform-module-output.html)
+[`vignette("transform-module-output", package = "teal")`](https://cran.rstudio.com/web/packages/teal/vignettes/transform-module-output.html)
 or the
-[`teal::teal_transform_module()`](https://insightsengineering.github.io/teal/latest-tag/reference/teal_transform_module.html)
+[`teal::teal_transform_module()`](https://rdrr.io/pkg/teal/man/teal_transform_module.html)
 documentation.
 
 ## Reporting
@@ -207,7 +207,7 @@ framework.
 
 For more information on reporting in `teal`, see the vignettes:
 
-- [`vignette("reportable-shiny-application", package = "teal.reporter")`](https://insightsengineering.github.io/teal.reporter/latest-tag/articles/reportable-shiny-application.html)
+- [`vignette("reportable-shiny-application", package = "teal.reporter")`](https://cran.rstudio.com/web/packages/teal.reporter/vignettes/reportable-shiny-application.html)
 
 - `vignette("adding-support-for-reporting-to-custom-modules", package = "teal")`
 

@@ -51,9 +51,9 @@ tm_t_pp_laboratory(
 
 - time_points:
 
-  ([teal.picks::variables](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html)
+  ([teal.picks::variables](https://rdrr.io/pkg/teal.picks/man/picks.html)
   or
-  [`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  [`teal.transform::choices_selected()`](https://rdrr.io/pkg/teal.transform/man/choices_selected.html))\
   object with all available choices and preselected option for the time
   variable from `dataname`.
 
@@ -63,7 +63,7 @@ tm_t_pp_laboratory(
 
 - aval_var:
 
-  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  ([`teal.picks::variables()`](https://rdrr.io/pkg/teal.picks/man/picks.html);
   legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and pre-selected option for the
   analysis variable.
@@ -74,31 +74,31 @@ tm_t_pp_laboratory(
 
 - avalu_var:
 
-  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  ([`teal.picks::variables()`](https://rdrr.io/pkg/teal.picks/man/picks.html);
   legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for the
   analysis unit variable.
 
 - param:
 
-  ([teal.picks::variables](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html)
+  ([teal.picks::variables](https://rdrr.io/pkg/teal.picks/man/picks.html)
   or
-  [`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  [`teal.transform::choices_selected()`](https://rdrr.io/pkg/teal.transform/man/choices_selected.html))\
   object with all available choices and preselected option for the
   `PARAM` variable from `dataname`.
 
 - paramcd:
 
-  ([`teal.picks::variables()`](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html);
+  ([`teal.picks::variables()`](https://rdrr.io/pkg/teal.picks/man/picks.html);
   legacy `teal.transform` objects are deprecated but still accepted)\
   object with all available choices and preselected option for the
   parameter code variable from `dataname`.
 
 - anrind:
 
-  ([teal.picks::variables](https://insightsengineering.github.io/teal.picks/latest-tag/reference/picks.html)
+  ([teal.picks::variables](https://rdrr.io/pkg/teal.picks/man/picks.html)
   or
-  [`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
+  [`teal.transform::choices_selected()`](https://rdrr.io/pkg/teal.transform/man/choices_selected.html))\
   object with all available choices and preselected option for the
   `ANRIND` variable from `dataname`. Variable should have the following
   3 levels: `"HIGH"`, `"LOW"`, and `"NORMAL"`.
@@ -121,7 +121,7 @@ tm_t_pp_laboratory(
 
   (`list` of `teal_transform_module`) that will be applied to transform
   module's data input. To learn more check
-  [`vignette("transform-input-data", package = "teal")`](https://insightsengineering.github.io/teal/latest-tag/articles/transform-input-data.html).
+  [`vignette("transform-input-data", package = "teal")`](https://cran.rstudio.com/web/packages/teal/vignettes/transform-input-data.html).
 
 - decorators:
 
@@ -146,7 +146,7 @@ framework.
 
 For more information on reporting in `teal`, see the vignettes:
 
-- [`vignette("reportable-shiny-application", package = "teal.reporter")`](https://insightsengineering.github.io/teal.reporter/latest-tag/articles/reportable-shiny-application.html)
+- [`vignette("reportable-shiny-application", package = "teal.reporter")`](https://cran.rstudio.com/web/packages/teal.reporter/vignettes/reportable-shiny-application.html)
 
 - `vignette("adding-support-for-reporting-to-custom-modules", package = "teal")`
 
