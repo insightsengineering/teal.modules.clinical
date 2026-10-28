@@ -1,4 +1,4 @@
-# teal.modules.clinical 0.14.0.9001
+# teal.modules.clinical 0.14.0.9002
 
 ### Enhancements
 * Added `incl_num_events_hlt` to `tm_t_events()` to optionally hide the overall total number of events row under each high-level term (#1496).
