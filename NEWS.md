@@ -1,10 +1,12 @@
 # teal.modules.clinical 0.14.0.9001
 
+### Enhancements
+* Added `incl_num_events_hlt` to `tm_t_events()` to optionally hide the overall total number of events row under each high-level term (#1496).
+
 # teal.modules.clinical 0.14.0
 
 ### Enhancements
 * Introduced `teal.picks` as the primary method to select dataset, variables and values in modules.
-* Added `incl_num_patients_hlt` and `incl_num_events_hlt` to `tm_t_events` so the per-HLT patient and event summary rows can be hidden (#1496).
 
 ### Miscellaneous
 * Added `teal.picks` and `tidyselect` as dependencies.

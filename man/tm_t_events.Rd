@@ -21,7 +21,6 @@ tm_t_events(
   prune_diff = 0,
   drop_arm_levels = TRUE,
   incl_overall_sum = TRUE,
-  incl_num_patients_hlt = TRUE,
   incl_num_events_hlt = TRUE,
   pre_output = NULL,
   post_output = NULL,
@@ -78,11 +77,9 @@ user input for this parameter is ignored.}
 \item{incl_overall_sum}{(\code{flag})\cr  whether two rows which summarize the overall number of adverse events
 should be included at the top of the table.}
 
-\item{incl_num_patients_hlt}{(\code{flag})\cr whether to include a summary row for the total number of
-patients with at least one event under each HLT split when both HLT and LLT are selected.}
-
 \item{incl_num_events_hlt}{(\code{flag})\cr whether to include a summary row for the overall total number
-of events under each HLT split when both HLT and LLT are selected.}
+of events under each high-level term when both a high-level and a low-level term are selected.
+The patient-count row is always included.}
 
 \item{pre_output}{(\code{shiny.tag}) optional,\cr with text placed before the output to put the output into context.
 For example a title.}

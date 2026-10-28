@@ -109,48 +109,84 @@ testthat::test_that("template_events can generate customized table with pruning 
   testthat::expect_snapshot(res)
 })
 
-count_fixed <- function(text, pattern) {
-  matches <- gregexpr(pattern, text, fixed = TRUE)[[1]]
-  if (length(matches) == 1L && matches[[1]] == -1L) {
-    0L
-  } else {
-    length(matches)
-  }
+build_events_table <- function(incl_num_events_hlt = TRUE, sort_criteria = "freq_desc") {
+  adae <- tern::tern_ex_adae
+  adsl <- tern::tern_ex_adsl
+  calls <- template_events(
+    dataname = "adae",
+    parentname = "adsl",
+    arm_var = "ARM",
+    hlt = "AEBODSYS",
+    llt = "AEDECOD",
+    add_total = TRUE,
+    sort_criteria = sort_criteria,
+    incl_num_events_hlt = incl_num_events_hlt
+  )
+  eval(calls$data)
+  eval(calls$layout_prep)
+  eval(calls$layout)
+  eval(calls$table)
+  eval(calls$prune)
+  eval(calls$sort)
+  pruned_and_sorted_result
 }
 
-testthat::test_that("template_events can omit per-HLT patient and event summary rows", {
+event_row_labels <- function(tbl) {
+  vapply(rtables::row_paths(tbl), function(path) tail(path, 1), character(1))
+}
+
+testthat::test_that("default incl_num_events_hlt output matches main", {
   base_args <- list(
+    dataname = "adae",
+    parentname = "adsl",
+    arm_var = "ARM",
+    hlt = "AEBODSYS",
+    llt = "AEDECOD",
+    add_total = TRUE
+  )
+  # Default expressions are main's layout; the snapshots above lock that code.
+  testthat::expect_identical(
+    do.call(template_events, base_args),
+    do.call(template_events, c(base_args, list(incl_num_events_hlt = TRUE)))
+  )
+  for (sort_criteria in c("freq_desc", "alpha")) {
+    labels <- event_row_labels(build_events_table(TRUE, sort_criteria))
+    testthat::expect_true("Overall total number of events" %in% labels)
+    testthat::expect_true("Total number of patients with at least one event" %in% labels)
+  }
+})
+
+testthat::test_that("incl_num_events_hlt = FALSE drops nonunique and keeps unique", {
+  result <- template_events(
     dataname = "adae",
     parentname = "adsl",
     arm_var = "ACTARM",
     hlt = "AEBODSYS",
     llt = "AEDECOD",
-    add_total = TRUE
+    incl_overall_sum = FALSE,
+    incl_num_events_hlt = FALSE
   )
+  layout <- paste(deparse(result$layout), collapse = " ")
+  testthat::expect_false(grepl("nonunique", layout, fixed = TRUE))
+  testthat::expect_true(grepl("unique", layout, fixed = TRUE))
+})
 
-  both_off <- do.call(
-    template_events,
-    c(base_args, list(incl_num_patients_hlt = FALSE, incl_num_events_hlt = FALSE))
-  )
-  layout_off <- paste(deparse(both_off$layout), collapse = " ")
-  sort_off <- paste(deparse(both_off$sort), collapse = " ")
-  # The patient row stays in the layout so frequency sorting still uses it.
-  testthat::expect_equal(count_fixed(layout_off, "summarize_num_patients"), 2L)
-  testthat::expect_equal(count_fixed(layout_off, "Overall total number of events"), 1L)
-  testthat::expect_true(grepl("drop_rows", sort_off, fixed = TRUE))
-  testthat::expect_false(grepl("scorefun_hlt_no_sum", sort_off, fixed = TRUE))
+testthat::test_that("hiding per-term event totals keeps high-level and low-level order", {
+  drop_per_term_events <- function(tbl) {
+    paths <- rtables::row_paths(tbl)
+    drop <- vapply(paths, function(path) {
+      length(path) > 3L && tail(path, 1) == "Overall total number of events"
+    }, logical(1))
+    tbl[!drop, , keep_topleft = TRUE, keep_titles = TRUE, keep_footers = TRUE, reindex_refs = TRUE]
+  }
 
-  events_off <- do.call(
-    template_events,
-    c(base_args, list(incl_num_patients_hlt = TRUE, incl_num_events_hlt = FALSE))
-  )
-  layout_events_off <- paste(deparse(events_off$layout), collapse = " ")
-  testthat::expect_equal(count_fixed(layout_events_off, "Overall total number of events"), 1L)
-  testthat::expect_equal(
-    count_fixed(layout_events_off, "Total number of patients with at least one event"),
-    2L
-  )
-  testthat::expect_false(
-    grepl("scorefun_hlt_no_sum", paste(deparse(events_off$sort), collapse = " "), fixed = TRUE)
-  )
+  for (sort_criteria in c("freq_desc", "alpha")) {
+    tbl_on <- build_events_table(TRUE, sort_criteria)
+    tbl_off <- build_events_table(FALSE, sort_criteria)
+    testthat::expect_equal(
+      event_row_labels(tbl_off),
+      event_row_labels(drop_per_term_events(tbl_on))
+    )
+    testthat::expect_identical(tbl_off, drop_per_term_events(tbl_on))
+  }
 })
