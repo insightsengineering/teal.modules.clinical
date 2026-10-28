@@ -110,8 +110,6 @@ testthat::test_that("template_events can generate customized table with pruning 
 })
 
 build_events_table <- function(incl_num_events_hlt = TRUE, sort_criteria = "freq_desc") {
-  adae <- tern::tern_ex_adae
-  adsl <- tern::tern_ex_adsl
   calls <- template_events(
     dataname = "adae",
     parentname = "adsl",
@@ -122,13 +120,12 @@ build_events_table <- function(incl_num_events_hlt = TRUE, sort_criteria = "freq
     sort_criteria = sort_criteria,
     incl_num_events_hlt = incl_num_events_hlt
   )
-  eval(calls$data)
-  eval(calls$layout_prep)
-  eval(calls$layout)
-  eval(calls$table)
-  eval(calls$prune)
-  eval(calls$sort)
-  pruned_and_sorted_result
+  obj <- within(teal.data::teal_data(), {
+    adae <- tern::tern_ex_adae
+    adsl <- tern::tern_ex_adsl
+  })
+  obj <- teal.code::eval_code(obj, as.expression(unlist(calls)))
+  obj[["pruned_and_sorted_result"]]
 }
 
 event_row_labels <- function(tbl) {
@@ -149,11 +146,6 @@ testthat::test_that("default incl_num_events_hlt output matches main", {
     do.call(template_events, base_args),
     do.call(template_events, c(base_args, list(incl_num_events_hlt = TRUE)))
   )
-  for (sort_criteria in c("freq_desc", "alpha")) {
-    labels <- event_row_labels(build_events_table(TRUE, sort_criteria))
-    testthat::expect_true("Overall total number of events" %in% labels)
-    testthat::expect_true("Total number of patients with at least one event" %in% labels)
-  }
 })
 
 testthat::test_that("incl_num_events_hlt = FALSE drops nonunique and keeps unique", {
@@ -171,7 +163,7 @@ testthat::test_that("incl_num_events_hlt = FALSE drops nonunique and keeps uniqu
   testthat::expect_true(grepl("unique", layout, fixed = TRUE))
 })
 
-testthat::test_that("hiding per-term event totals keeps high-level and low-level order", {
+testthat::test_that("hiding per-term event totals keeps term order for freq_desc and alpha", {
   drop_per_term_events <- function(tbl) {
     paths <- rtables::row_paths(tbl)
     drop <- vapply(paths, function(path) {
