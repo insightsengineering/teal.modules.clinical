@@ -21,6 +21,7 @@ tm_t_events(
   prune_diff = 0,
   drop_arm_levels = TRUE,
   incl_overall_sum = TRUE,
+  incl_num_events_hlt = TRUE,
   pre_output = NULL,
   post_output = NULL,
   basic_table_args = teal.widgets::basic_table_args(),
@@ -75,6 +76,10 @@ user input for this parameter is ignored.}
 
 \item{incl_overall_sum}{(\code{flag})\cr  whether two rows which summarize the overall number of adverse events
 should be included at the top of the table.}
+
+\item{incl_num_events_hlt}{(\code{flag})\cr whether to include a summary row for the overall total number
+of events under each high-level term when both a high-level and a low-level term are selected.
+The patient-count row is always included.}
 
 \item{pre_output}{(\code{shiny.tag}) optional,\cr with text placed before the output to put the output into context.
 For example a title.}

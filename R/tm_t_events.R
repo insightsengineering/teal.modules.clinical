@@ -6,6 +6,9 @@
 #' @param sort_freq_col (`character`)\cr column to sort by frequency on if `sort_criteria` is set to `freq_desc`.
 #' @param incl_overall_sum (`flag`)\cr  whether two rows which summarize the overall number of adverse events
 #'   should be included at the top of the table.
+#' @param incl_num_events_hlt (`flag`)\cr whether to include a summary row for the overall total number
+#'   of events under each high-level term when both a high-level and a low-level term are selected.
+#'   The patient-count row is always included.
 #'
 #' @inherit template_arguments return
 #'
@@ -29,6 +32,7 @@ template_events <- function(dataname,
                             prune_diff = 0,
                             drop_arm_levels = TRUE,
                             incl_overall_sum = TRUE,
+                            incl_num_events_hlt = TRUE,
                             basic_table_args = teal.widgets::basic_table_args()) {
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
@@ -45,6 +49,7 @@ template_events <- function(dataname,
   checkmate::assert_flag(drop_arm_levels)
   checkmate::assert_scalar(prune_freq)
   checkmate::assert_scalar(prune_diff)
+  checkmate::assert_flag(incl_num_events_hlt)
 
   sort_criteria <- match.arg(sort_criteria)
 
@@ -224,6 +229,12 @@ template_events <- function(dataname,
 
     y$layout_prep <- quote(split_fun <- rtables::drop_split_levels)
 
+    hlt_stats <- c("unique", if (incl_num_events_hlt) "nonunique")
+    hlt_labels <- c(
+      unique = unique_label,
+      nonunique = nonunique_label
+    )[hlt_stats]
+
     layout_list <- add_expr(
       layout_list,
       substitute(
@@ -238,11 +249,8 @@ template_events <- function(dataname,
         ) %>%
           tern::summarize_num_patients(
             var = "USUBJID",
-            .stats = c("unique", "nonunique"),
-            .labels = c(
-              unique = unique_label,
-              nonunique = nonunique_label
-            ),
+            .stats = hlt_stats,
+            .labels = hlt_labels,
             na_str = na_str
           ) %>%
           tern::count_occurrences(vars = llt, .indent_mods = c(count_fraction = 1L)) %>%
@@ -251,8 +259,8 @@ template_events <- function(dataname,
           dataname = as.name(dataname),
           hlt = hlt,
           llt = llt,
-          unique_label = unique_label,
-          nonunique_label = nonunique_label,
+          hlt_stats = hlt_stats,
+          hlt_labels = hlt_labels,
           na_str = na_level
         )
       )
@@ -539,6 +547,7 @@ tm_t_events <- function(label,
                         prune_diff = 0,
                         drop_arm_levels = TRUE,
                         incl_overall_sum = TRUE,
+                        incl_num_events_hlt = TRUE,
                         pre_output = NULL,
                         post_output = NULL,
                         basic_table_args = teal.widgets::basic_table_args(),
@@ -560,6 +569,7 @@ tm_t_events <- function(label,
   checkmate::assert_scalar(prune_diff)
   checkmate::assert_flag(drop_arm_levels)
   checkmate::assert_flag(incl_overall_sum)
+  checkmate::assert_flag(incl_num_events_hlt)
   sort_criteria <- match.arg(sort_criteria)
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
@@ -590,6 +600,7 @@ ui_t_events_byterm <- function(id,
                                hlt,
                                llt,
                                add_total,
+                               incl_num_events_hlt,
                                drop_arm_levels,
                                sort_criteria,
                                prune_freq,
@@ -618,6 +629,11 @@ ui_t_events_byterm <- function(id,
         teal.picks::picks_ui(ns("llt"), llt)
       ),
       checkboxInput(ns("add_total"), "Add All Patients columns", value = add_total),
+      checkboxInput(
+        ns("incl_num_events_hlt"),
+        "Show total events per SOC/HLT",
+        value = incl_num_events_hlt
+      ),
       teal::ui_transform_teal_data(ns("decorator"), transformators = select_decorators(decorators, "table")),
       bslib::accordion_panel(
         "Additional table settings",
@@ -781,6 +797,7 @@ srv_t_events_byterm <- function(id,
         prune_diff = input$prune_diff / 100,
         drop_arm_levels = input$drop_arm_levels,
         incl_overall_sum = incl_overall_sum,
+        incl_num_events_hlt = input$incl_num_events_hlt,
         basic_table_args = basic_table_args
       )
 
